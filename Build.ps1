@@ -30,6 +30,7 @@
 . "$PsScriptRoot\source\public\Use-Culture.ps1"
 
 
+
 function Get-Manifest {
     param(
         [string]$createDate,
@@ -39,6 +40,7 @@ function Get-Manifest {
     )
 
     Write-Verbose -Message ('Starting: {0}' -f $myInvocation.Mycommand)
+
 [string]$Result = @"
 #
 # Module manifest for module 'EulandaConnect'
@@ -309,6 +311,7 @@ function Get-AssetsFileList {
 }
 
 
+
 function Update-FrontMatter {
     param(
         [Parameter(Mandatory=$true)]
@@ -333,6 +336,7 @@ function Update-FrontMatter {
 
     return $frontMatter
 }
+
 
 
 function Sync-MarkdownFiles {
@@ -423,7 +427,6 @@ function Sync-MarkdownFiles {
             catch {
                 Write-Error "Markdown: $sourceFile  | Link: $link | NewLink: $adjustedLink | Exception: $_"
             }
-
         }
 
         # Extract the file modification date in local time
@@ -498,6 +501,7 @@ function ReleaseToGit {
 }
 
 
+
 # *****************************************************************************
 # Step 1
 # *****************************************************************************
@@ -515,6 +519,7 @@ function Update-Manifest {
     Import-Module "$projectFolder\eulandaConnect.psd1" -force -scope global
     # Import-Module "$projectFolder\eulandaConnect.psd1" -force
 }
+
 
 
 # *****************************************************************************
@@ -536,6 +541,7 @@ function Update-Markdown {
 
     # Update-ReadmeTableOfContents # we don't need it any more (06/2023)
 }
+
 
 
 # *****************************************************************************
@@ -596,6 +602,7 @@ function New-FinalImage {
 
     # Good place to run pester
 }
+
 
 
 # *****************************************************************************
@@ -722,7 +729,6 @@ function Update-OnlineDocs {
 
 
 
-
 function Invoke-Main {
     param(
         [string]$version
@@ -746,7 +752,6 @@ function Invoke-Main {
         # ----------------
         Write-Host "Preparation..."
 
-
         [string]$finalFolder = "$PSScriptRoot\final\EulandaConnect"
         [string]$projectFolder = "$PSScriptRoot"
         [string]$docFolder= "$PSScriptRoot\docs\functions"
@@ -761,7 +766,7 @@ function Invoke-Main {
         if ( ! (Test-Path $ecHomeFolder)) {
             New-Item -ItemType Directory -Path $ecHomeFolder
         }
-        ReleaseToGit
+
         if ($updateManifest) {
             Update-Manifest                 # Creates new manifest (e.g. for new functions)
         } elseif ($updateMarkdown) {

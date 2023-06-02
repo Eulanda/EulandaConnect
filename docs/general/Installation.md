@@ -60,11 +60,11 @@ If everything worked, you should see something like this:
            ___/ / /_/ / __/ /_ | |/ |/ / /_/ / /  /  __/
           /____/\____/_/  \__/ |__/|__/\__,_/_/   \___/
 
-Version:         EulandaConnect v3.0.1
+Version:         EulandaConnect v3.1.1
 Copyright:       (c) EULANDA Software GmbH. All rights reserved.
                  https://www.github.com/Eulanda/EulandaConnect
-Modul path       C:\Users\john\Documents\PowerShell\Modules\eulandaConnect\2.5.5\EulandaConnect.psm1
-Startet at:      05/04/2023 17:34:33
+Modul path       C:\Users\john\Documents\PowerShell\Modules\eulandaConnect\3.1.1\EulandaConnect.psm1
+Startet at:      06/02/2023 17:34:33
 ```
 
 If you don't configure PSGallery as "Trusted," you'll receive a prompt asking if you want to trust a module before installation. As for trusting PSGallery overall, while it is a Microsoft-provided platform, there is no guarantee that it is entirely free of malware. However, since you only install modules that you trust, the risk is manageable and predictable.
@@ -130,6 +130,8 @@ By appending the "-full" parameter to the help line, the descriptions of the par
 
 # Available Functions
 
-- The available functions are listed in the online documentation at https://eulandaconnect.eulanda.eu/docs/Functions/.
-- On GitHub there is a typical Markdown documentation at: https://github.com/Eulanda/EulandaConnect/tree/master/docs
-- Upcoming things you will find under: [Roadmap](./Roadmap)
+- The available functions are listed in the online documentation at:
+   https://eulandaconnect.eulanda.eu/docs/Functions/.
+- On GitHub there is a typical Markdown documentation at:
+   https://github.com/Eulanda/EulandaConnect/tree/master/docs
+- Upcoming things can be found at: [Roadmap](./Roadmap)
