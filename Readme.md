@@ -20,13 +20,13 @@ EulandaConnect is easy to [install](./docs/general/Installation.md) and use, and
 
 Try it now and see for yourself how it helps you optimize your processes and save time.
 
-## Some links...
+## Useful Resources
 
-- [Installation and Requirements](./docs/general/Installation.md)
+- [Installation Guidelines and System Requirements](./docs/general/Installation.md)
 - [Online Documentation](https://eulandaconnect.eulanda.eu/)
-- [Dokumentation of each functions on GitHub](./docs/functions)
-- [Source of EulandaConnect on GitHub](./source/public)
-- [EulandaConnect on PowerShell Gallary](https://www.powershellgallery.com/packages/EulandaConnect/)
+- [Dokumentation of Each functions on GitHub](./docs/functions)
+- [Source Code of EulandaConnect on GitHub](./source/public)
+- [EulandaConnect on PowerShell Gallery](https://www.powershellgallery.com/packages/EulandaConnect/)
 - [EULANDA-ERP Software](https://www.eulanda.eu)
 
 ## Support
