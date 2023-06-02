@@ -761,7 +761,7 @@ function Invoke-Main {
         if ( ! (Test-Path $ecHomeFolder)) {
             New-Item -ItemType Directory -Path $ecHomeFolder
         }
-
+        ReleaseToGit
         if ($updateManifest) {
             Update-Manifest                 # Creates new manifest (e.g. for new functions)
         } elseif ($updateMarkdown) {
