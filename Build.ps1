@@ -179,7 +179,7 @@ PrivateData = @{
         IconUri = 'https://github.com/Eulanda/EulandaConnect/blob/master/media/EulandaConnect-icon.png?raw=true'
 
         # ReleaseNotes of this module
-        ReleaseNotes = 'Look at Changelog in Project Site: https://github.com/Eulanda/EulandaConnect/blob/master/Changelog.md'
+        ReleaseNotes = 'Look at Changelog in Project Site: https://github.com/Eulanda/EulandaConnect/blob/master/docs/general/Changelog.md'
 
         # Prerelease string of this module
         # Prerelease = ''
