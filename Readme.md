@@ -24,7 +24,8 @@ Try it now and see for yourself how it helps you optimize your processes and sav
 
 - [Installation and Requirements](./docs/general/Installation.md)
 - [Online Documentation](https://eulandaconnect.eulanda.eu/)
-- [Functions in EulandaConnect on GitHub](./docs/functions)
+- [Dokumentation of each functions on GitHub](./docs/functions)
+- [Source of EulandaConnect on GitHub](./source/public)
 - [EulandaConnect on PowerShell Gallary](https://www.powershellgallery.com/packages/EulandaConnect/)
 - [EULANDA-ERP Software](https://www.eulanda.eu)
 
