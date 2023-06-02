@@ -1,0 +1,98 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+        {
+            "label": "1. Update Manifest",
+            "type": "shell",
+            "group": "build",
+            "command": "pwsh.exe",
+            "args": [
+                "-ExecutionPolicy",
+                "Unrestricted",
+                "-File",
+                "${workspaceFolder}\\Build.ps1",
+                "-updateManifest"
+            ]
+        },
+        {
+            "label": "2. Update Markdown",
+            "type": "shell",
+            "group": "build",
+            "command": "pwsh.exe",
+            "args": [
+                "-ExecutionPolicy",
+                "Unrestricted",
+                "-File",
+                "${workspaceFolder}\\Build.ps1",
+                "-updateMarkdown"
+            ]
+        },
+        {
+            "label": "3. Convert to Maml",
+            "type": "shell",
+            "group": "build",
+            "command": "pwsh.exe",
+            "args": [
+                "-ExecutionPolicy",
+                "Unrestricted",
+                "-File",
+                "${workspaceFolder}\\Build.ps1",
+                "-convertToMaml"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "4. New Final Image",
+            "type": "shell",
+            "group": "build",
+            "command": "pwsh.exe",
+            "args": [
+                "-ExecutionPolicy",
+                "Unrestricted",
+                "-File",
+                "${workspaceFolder}\\Build.ps1",
+                "-newFinalImage"
+            ]
+        },
+        {
+            "label": "5. Publish to PsGallery",
+            "type": "shell",
+            "group": "build",
+            "command": "pwsh.exe",
+            "args": [
+                "-ExecutionPolicy",
+                "Unrestricted",
+                "-File",
+                "${workspaceFolder}\\Build.ps1",
+                "-publishToPsGallery"
+            ]
+        },
+        {
+            "label": "6. Update Online Docs",
+            "type": "shell",
+            "group": "build",
+            "command": "pwsh.exe",
+            "args": [
+                "-ExecutionPolicy",
+                "Unrestricted",
+                "-File",
+                "${workspaceFolder}\\Build.ps1",
+                "-updateOnlineDocs"
+            ]
+        },
+        {
+            "label": "7. Invoke Pester",
+            "type": "shell",
+            "group": "build",
+            "command": "pwsh.exe",
+            "args": [
+                "-ExecutionPolicy",
+                "Unrestricted",
+                "-File",
+                "${workspaceFolder}\\Build.ps1",
+                "-invokePester",
+                "-pesterNoTelegram"
+            ]
+        }
+    ]
+}

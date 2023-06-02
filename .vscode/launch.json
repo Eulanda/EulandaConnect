@@ -1,0 +1,64 @@
+{
+    // Verwendet IntelliSense zum Ermitteln möglicher Attribute.
+    // Zeigen Sie auf vorhandene Attribute, um die zugehörigen Beschreibungen anzuzeigen.
+    // Weitere Informationen finden Sie unter https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Current File",
+            "type": "PowerShell",
+            "request": "launch",
+            "script": "${file}",
+            "args": ["-verbose"]
+        },
+        {
+            "name": "[DBG]:1 Update Manifest",
+            "type": "PowerShell",
+            "request": "launch",
+            "script": "${workspaceFolder}\\Build.ps1",
+            "args": ["-updateManifest -verbose"]
+        },
+        {
+            "name": "[DBG]:2 Update Markdown",
+            "type": "PowerShell",
+            "request": "launch",
+            "script": "${workspaceFolder}\\Build.ps1",
+            "args": ["-updateMarkdown -verbose"]
+        },
+        {
+            "name": "[DBG]:3 Convert to Maml",
+            "type": "PowerShell",
+            "request": "launch",
+            "script": "${workspaceFolder}\\Build.ps1",
+            "args": ["-convertToMaml -verbose"]
+        },
+        {
+            "name": "[DBG]:4 New Final Image",
+            "type": "PowerShell",
+            "request": "launch",
+            "script": "${workspaceFolder}\\Build.ps1",
+            "args": ["-newFinalImage -verbose"]
+        },
+        {
+            "name": "[DBG]:5 Publish to PsGallery",
+            "type": "PowerShell",
+            "request": "launch",
+            "script": "${workspaceFolder}\\Build.ps1",
+            "args": ["-publishToPsGallery -verbose"]
+        },
+        {
+            "name": "[DBG]:6 Update Online Docs",
+            "type": "PowerShell",
+            "request": "launch",
+            "script": "${workspaceFolder}\\Build.ps1",
+            "args": ["-updateOnlineDocs -verbose"]
+        },
+        {
+            "name": "[DBG]:7 Invoke Pester",
+            "type": "PowerShell",
+            "request": "launch",
+            "script": "${workspaceFolder}\\Build.ps1",
+            "args": ["-invokePester -pesterNoTelegram -verbose"]
+        }
+    ]
+}

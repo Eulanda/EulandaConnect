@@ -1,0 +1,564 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!--
+    Microsoft ResX Schema
+
+    Version 2.0
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
+    associated with the data types.
+
+    Example:
+
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+
+    There are any number of "resheader" rows that contain simple
+    name/value pairs.
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
+    mimetype set.
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
+    extensible. For a given mimetype the value must be set accordingly:
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
+    read any of the formats listed below.
+
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="OUT_WELCOME_VERSION" xml:space="preserve">
+    <value>Version:         {0} v{1}</value>
+  </data>
+  <data name="OUT_WELCOME_COPYRIGHT" xml:space="preserve">
+    <value>Copyright:       {0}</value>
+  </data>
+  <data name="OUT_WELCOME_LICENSEURI" xml:space="preserve">
+    <value>                 {0}</value>
+  </data>
+  <data name="OUT_WELCOME_PROJECTVERSION" xml:space="preserve">
+    <value>Projekt:         {0} v{1}</value>
+  </data>
+  <data name="OUT_WELCOME_STARTTIME" xml:space="preserve">
+    <value>Ausführungsstart:{0}</value>
+  </data>
+  <data name="OUT_WELCOME_PATH" xml:space="preserve">
+    <value>Modulpfad        {0}</value>
+  </data>
+  <data name="DENY_FINGERPRINT" xml:space="preserve">
+    <value>Der entfernte Server '{0}' ist nicht in der Liste der vertrauenswürdigen Server enthalten. Wenn Sie sicher sind, dass dieser Server vertrauenswürdig ist, können Sie den alten Eintrag mit 'Remove-RemoteFingerprint -server {0}' löschen. Bei der nächsten Serververbindung wird er dann als vertrauenswürdiger Server hinzugefügt.</value>
+  </data>
+  <data name="POSH_NOTFOUND" xml:space="preserve">
+    <value>Um SFTP-Befehle ausführen zu können, muss das POSH-SSH-Modul aus der PsGallery installiert werden. Bitte verwenden Sie den Befehl: 'Install-Module -Name POSH-SSH -Repository PsGallery'. Funktion: {0}</value>
+  </data>
+  <data name="SYMBOLIC_LINK_EXISTS_AS_FOLDER" xml:space="preserve">
+    <value>Der angegebene Link '{0}' existiert bereits als Ordner und kann nicht verwendet werden.</value>
+  </data>
+  <data name="ADMIN_RIGHTS_NEEDED" xml:space="preserve">
+    <value>Die Funktion '{0}' wurde abgebrochen, da sie zur Ausführung Administratorrechte benötigt!</value>
+  </data>
+  <data name="VERBOSE_SNAPSHOT_CREATING" xml:space="preserve">
+    <value>Erstellen eines Volume Shadows auf Laufwerk '{0}', das über einen symbolischen Link '{1}' erreichbar ist</value>
+  </data>
+  <data name="VERBOSE_SYMBOLIC_LINK_REMOVED" xml:space="preserve">
+    <value>Symbolischer Link '{0}' erfolgreich entfernt</value>
+  </data>
+  <data name="SYMBOLIC_LINK_REMOVE_ERROR" xml:space="preserve">
+    <value>Beim Versuch, den symbolischen Link '{0}' zu entfernen, ist ein Fehler aufgetreten. Der Fehler war: {1}</value>
+  </data>
+  <data name="SYMBOLIC_LINK_ISNOT_SYMBOLIC" xml:space="preserve">
+    <value>Der angegebene Pfad '{0}' verweist nicht auf einen symbolischen Link.</value>
+  </data>
+  <data name="PATH_NOT_EXISTS" xml:space="preserve">
+    <value>Der angegebene Pfad '{0}' existiert nicht!</value>
+  </data>
+  <data name="REMOTE_GENERAL_ERROR" xml:space="preserve">
+    <value>Beim Abrufen des Dateidatums in Funktion {0} ist ein Fehler aufgetreten. Meldung: {1}</value>
+  </data>
+  <data name="DRIVE_FORMAT_ERROR" xml:space="preserve">
+    <value>Der Parameter {0} in der Funktion {1} muss im Format 'Buchstabe:' sein, z.B. 'C:'!</value>
+  </data>
+  <data name="DRIVE_NOT_EXISTS" xml:space="preserve">
+    <value>Das Laufwerk '{0}' in der Funktion {1} existiert nicht.</value>
+  </data>
+  <data name="STARTING_FUNCTION" xml:space="preserve">
+    <value>Starte Funktion: {0}</value>
+  </data>
+  <data name="OUT_GOODBYE_ENDTIME" xml:space="preserve">
+    <value>Ausführungsende: {0}</value>
+  </data>
+  <data name="OUT_GOODBYE_DURATION" xml:space="preserve">
+    <value>Dauer:           {0:N0} Sekunden</value>
+  </data>
+  <data name="OUT_GOODBYE_NORMALLY" xml:space="preserve">
+    <value>Job normal beendet</value>
+  </data>
+  <data name="OUT_GOODBYE_ABNORMALLY" xml:space="preserve">
+    <value>Job abnormal beendet</value>
+  </data>
+  <data name="SIGNING_FILE" xml:space="preserve">
+    <value>Signieren der Datei '{0}'...</value>
+  </data>
+  <data name="SIGNING_FAILED" xml:space="preserve">
+    <value>SignTool ist mit Exit-Code {0} fehlgeschlagen. Meldung:</value>
+  </data>
+  <data name="SIGNING_EXCEPTION" xml:space="preserve">
+    <value>SignTool ist mit dem Exit-Code '{0]' fehlgeschlagen. Siehe die Fehlermeldung oben für weitere Details.</value>
+  </data>
+  <data name="VERBOSE_BACKUP_DATABASE_TO_FILE" xml:space="preserve">
+    <value>Datenbank '{0}' in Datei '{1}' sichern</value>
+  </data>
+  <data name="VERBOSE_COPY_ZIP_TO_FILE" xml:space="preserve">
+    <value>Kopiere die gezippte Datei nach '{0}'</value>
+  </data>
+  <data name="VERBOSE_DELETED_FILE_FROM_STORAGE" xml:space="preserve">
+    <value>Datei '{0}' vom Speicherserver entfernt</value>
+  </data>
+  <data name="VERBOSE_DELETED_FILE_FROM_REMOTE" xml:space="preserve">
+    <value>Datei '{0}' vom FTP/SFTP Server entfernt</value>
+  </data>
+  <data name="VERBOSE_DELETED_BACKUP_FROM_SQL" xml:space="preserve">
+    <value>Sicherung '{0}' vom Sql-Server entfernt</value>
+  </data>
+  <data name="CONFIRM_ADMINISTRATIVE_RIGHTS" xml:space="preserve">
+    <value>Administrative Rechte</value>
+  </data>
+  <data name="CONFIRM_RANSOMWARE" xml:space="preserve">
+    <value>Ransomware-Schutz aktiv</value>
+  </data>
+  <data name="CONFIRM_MEMORY" xml:space="preserve">
+    <value>Arbeitsspeicher (GB)</value>
+  </data>
+  <data name="CONFIRM_DRIVE_FREE" xml:space="preserve">
+    <value>Laufwerk '{0}' frei (GB)</value>
+  </data>
+  <data name="CONFIRM_SMART" xml:space="preserve">
+    <value> S.M.A.R.T. ({0})</value>
+  </data>
+  <data name="CONFIRM_GATEWAY_IP" xml:space="preserve">
+    <value>Gateway-IP</value>
+  </data>
+  <data name="CONFIRM_GATEWAY_NAME" xml:space="preserve">
+    <value>Gateway-Name</value>
+  </data>
+  <data name="CONFIRM_LOCAL_IP" xml:space="preserve">
+    <value>Lokale IP</value>
+  </data>
+  <data name="CONFIRM_LOCAL_SUBNET" xml:space="preserve">
+    <value>Lokales Subnetz</value>
+  </data>
+  <data name="CONFIRM_LOCAL_CIDR" xml:space="preserve">
+    <value>Lokale CIDR</value>
+  </data>
+  <data name="CONFIRM_PUBLIC_IP" xml:space="preserve">
+    <value>Öffentliche IP</value>
+  </data>
+  <data name="CONFIRM_MAX_HOSTS" xml:space="preserve">
+    <value>Max. mögliche Hosts</value>
+  </data>
+  <data name="CONFIRM_NETWORK_ID" xml:space="preserve">
+    <value>Netzwerk-ID</value>
+  </data>
+  <data name="CONFIRM_FIRST_IP" xml:space="preserve">
+    <value>Erste mögliche IP</value>
+  </data>
+  <data name="CONFIRM_LAST_IP" xml:space="preserve">
+    <value>Letzte mögliche IP</value>
+  </data>
+  <data name="CONFIRM_BROADCAST_IP" xml:space="preserve">
+    <value>Broadcast IP</value>
+  </data>
+  <data name="PARAMS_AT_LEAST_ONE" xml:space="preserve">
+    <value>Mindestens ein Parameter davon ({0}) muss in der Funktion '{1}' angegeben werden!</value>
+  </data>
+  <data name="VERBOSE_WRAPPED_TWO_LINES" xml:space="preserve">
+    <value>Zwei Zeilen folgen dem Schema. Passiert 1:1</value>
+  </data>
+  <data name="VERBOSE_WRAPPED_FIRST_LINE" xml:space="preserve">
+    <value>In der ersten Zeile folgt dem Schema. Passiert 1:1</value>
+  </data>
+  <data name="SPECIFY_XMLSTRING_OR_XMLFILE" xml:space="preserve">
+    <value>Sie müssen genau einen Parameter verwenden. Den '-xmlString' oder den '-pathIn'!</value>
+  </data>
+  <data name="PATHIN_DOES_NOT_EXIST" xml:space="preserve">
+    <value>Die Datei für den Parameter -pathIn '{0}' existiert nicht!</value>
+  </data>
+  <data name="PATHOUT_DOES_NOT_EXIST" xml:space="preserve">
+    <value>Der Pfad für den Parameter -pathOut '{0}' existiert nicht!</value>
+  </data>
+  <data name="MULTIPLE_RESULTS_FOUND_ERROR" xml:space="preserve">
+    <value>Der Suchbegriff '{0}' liefert mehr als ein Ergebnis! Funktion: {1}</value>
+  </data>
+  <data name="EXCEPTION_GENERAL" xml:space="preserve">
+    <value>{0} Funktion: {1}</value>
+  </data>
+  <data name="ADO_SET_ERROR" xml:space="preserve">
+    <value>Weder ein ADO-Verbindungsobjekt, noch ein UDL-Dateiname oder eine Verbindungszeichenfolge ist angegeben. Funktion: {0}</value>
+  </data>
+  <data name="DELIVERYNO_NOT_EXISTS" xml:space="preserve">
+    <value>Der Lieferschein '{0}' existiert nicht im EULANDA-ERP-System. Funktion: {1}</value>
+  </data>
+  <data name="DELIVERYNOTE_NOT_LOADED" xml:space="preserve">
+    <value>Der Lieferschein kann nicht geladen werden. SQL-Abfrage: '{0}'</value>
+  </data>
+  <data name="SALESORDER_NOT_FOUND_PARAMETER" xml:space="preserve">
+    <value>Der Kundenauftrag konnte wegen eines fehlenden Parameters nicht gefunden werden. Funktion: {0}</value>
+  </data>
+  <data name="SALESORDER_NOT_FOUND_CONDITION" xml:space="preserve">
+    <value>Der Kundenauftrag konnte für die Bedingung '{0}' nicht gefunden werden. Funktion: {1}</value>
+  </data>
+  <data name="DELIVERYNOTE_NOT_FOUND_CONDITION" xml:space="preserve">
+    <value>Für die Bedingung '{0}' konnte kein Lieferschein gefunden werden. Funktion: {1}</value>
+  </data>
+  <data name="VERBOSE_GEOINFO_WAITTIME" xml:space="preserve">
+    <value>Api Wartezeit in msec: '{0}'</value>
+  </data>
+  <data name="VERBOSE_GEOINFO_NEW_ENTRY" xml:space="preserve">
+    <value>Neuer Eintrag: Ip: '{0}' Land: '{1}'</value>
+  </data>
+  <data name="VERBOSE_GEOINFO_PATH" xml:space="preserve">
+    <value>Die XML-Datei für GeoInfo ist gespeichert in: '{0}'</value>
+  </data>
+  <data name="GEOINFO_API_FAILED" xml:space="preserve">
+    <value>Die Anfrage an die IP-API ist fehlgeschlagen: '{0}'</value>
+  </data>
+  <data name="GEOINFO_GENERAL_ERROR" xml:space="preserve">
+    <value>Es ist ein Fehler beim Abrufen der GeoInfo aufgetreten: {0}</value>
+  </data>
+  <data name="FIREWALL_NOT_CHECKED" xml:space="preserve">
+    <value>Firewall-Regeln waren nicht zu überprüfen, dies erfordert Administratorrechte. Aus diesem Grund ist FirewallValid=False.</value>
+  </data>
+  <data name="SERVER_SETTINGS_FOR" xml:space="preserve">
+    <value>SERVEREINSTELLUNGEN FÜR: [ {0} ]</value>
+  </data>
+  <data name="DATABASE_FILES_FOR" xml:space="preserve">
+    <value>DATENBANKDATEIEN FÜR: [ {0} ]</value>
+  </data>
+  <data name="SIZES_IN_MB" xml:space="preserve">
+    <value>Größen sind in MB angegeben</value>
+  </data>
+  <data name="SIGNTOOL_NOT_FOUND" xml:space="preserve">
+    <value>Das Signtool wurde nicht im erwarteten Windows SDK Ordner '{0}' gefunden! Sie können es mit 'Install-Signtool' von EulandaConnect aus installieren.</value>
+  </data>
+  <data name="FUNCTION_NEEDS_SHOP_EXTENSIONS" xml:space="preserve">
+    <value>Für die Funktion '{0}' müssen die Shop-Erweiterungen in der EULANDA-ERP installiert sein, um Varianten verwenden zu können.</value>
+  </data>
+  <data name="EXCEPTION_GENERAL_EXT" xml:space="preserve">
+    <value>{0} Funktion: {1} Zeile: '{2}' Erweitert: {3}</value>
+  </data>
+  <data name="DOWNLOADING_WINSDK" xml:space="preserve">
+    <value>Herunterladen des Windows SDK (ca. 1,5 GB)...</value>
+  </data>
+  <data name="READY" xml:space="preserve">
+    <value>(fertig)</value>
+  </data>
+  <data name="DOWNLOADLINK_MISSING" xml:space="preserve">
+    <value>SDK-Download-Link fehlt auf der offiziellen Website!</value>
+  </data>
+  <data name="RECORDSET_CLOSED" xml:space="preserve">
+    <value>Die Funktion '{0}' ist fehlgeschlagen. Der Datensatz ist geschlossen. Sql: {1}</value>
+  </data>
+  <data name="ADO_ERROR_EXT" xml:space="preserve">
+    <value>ADO-Fehler: '{0}' Relevanter Fehler: '{1}'</value>
+  </data>
+  <data name="LOGFILE_RETRY" xml:space="preserve">
+    <value>Ausnahme: '{0}' Logdatei: '{1}' Wiederholungsversuche: '{2}' von '{3}'</value>
+  </data>
+  <data name="NO_FILE_FOR_SHORTCUT" xml:space="preserve">
+    <value>WARNUNG! Die Datei '{0}' fehlt, es wird keine Verknüpfung erstellt! Funktion: {1}</value>
+  </data>
+  <data name="NEW_VARIABLES" xml:space="preserve">
+    <value>Neue Variablen:</value>
+  </data>
+  <data name="REMOTE_FILE_OR_FOLDER_NOT_EXIST" xml:space="preserve">
+    <value>Die Datei oder der Ordner '{0}' existiert nicht auf dem entfernten Server. Funktion: {1}</value>
+  </data>
+  <data name="COLUMNNAMES_STRING_ONLY" xml:space="preserve">
+    <value>Der Spaltenname muss eine Zeichenkette sein! Funktion: {0}</value>
+  </data>
+  <data name="ARGUMENT_MUST_BE_A_FILE" xml:space="preserve">
+    <value>Das Pfadargument '{0}' muss eine Datei sein. Ordnerpfade sind nicht erlaubt</value>
+  </data>
+  <data name="MUST_BE_INIFILE" xml:space="preserve">
+    <value>Die im Pfadargument '{0}' angegebene Datei muss vom Typ ini sein.</value>
+  </data>
+  <data name="FILE_OR_FOLDER_DOES_NOT_EXIST" xml:space="preserve">
+    <value>Die Datei oder der Ordner '{0}' existiert nicht!</value>
+  </data>
+  <data name="MUST_BE_PS1FILE" xml:space="preserve">
+    <value>Die im Argument Pfad '{0}' angegebene Datei muss vom Typ ps1 sein.</value>
+  </data>
+  <data name="REMOVE_FILE_ERROR" xml:space="preserve">
+    <value>Fehler in der Funktion '{0}'. Es ist nicht möglich, die Datei '{1}' zu löschen! Erweitert: {2}</value>
+  </data>
+  <data name="REMOVE_FILE_RETRY" xml:space="preserve">
+    <value>Das Entfernen der Datei '{0}' funktioniert nicht direkt. Anzahl der Wiederholungen '{0}'. Ich versuche es erneut...</value>
+  </data>
+  <data name="REMOTE_FOLDER_NOT_DELETED" xml:space="preserve">
+    <value>Das Verzeichnis konnte nicht gelöscht werden. Die häufigsten Gründe dafür sind, dass es entweder nicht leer ist oder ein Berechtigungsproblem besteht. Der Fehler war: {0}</value>
+  </data>
+  <data name="RENAMEDB_ERROR_NO_DBID" xml:space="preserve">
+    <value>Keine DB_ID für alte Datenbank '{0}' gefunden</value>
+  </data>
+  <data name="ADO_NO_VALID_RECORDSET" xml:space="preserve">
+    <value>Kein gültiger Datensatz gefunden! Funktion: {0}</value>
+  </data>
+  <data name="RENAMEDB_NO_LOGICAL_MDF_PATH" xml:space="preserve">
+    <value>Kein Pfad für 'oldLogicalMdf' gefunden! Funktion: {0}</value>
+  </data>
+  <data name="RENAMEDB_NO_LOGICAL_LDF_PATH" xml:space="preserve">
+    <value>Kein Pfad für 'oldLogicalLdf' gefunden! Funktion: {0}</value>
+  </data>
+  <data name="RENAMEDB_NO_PHYSICAL_MDF_PATH" xml:space="preserve">
+    <value>Kein Pfad für 'oldPhysicalMdf' gefunden! Funktion: {0}</value>
+  </data>
+  <data name="RENAMEDB_NO_PHYSICAL_LDF_PATH" xml:space="preserve">
+    <value>Kein Pfad für 'oldPhysicalLdf' gefunden! Funktion: {0}</value>
+  </data>
+  <data name="WIA_NOT_INSTALLED" xml:space="preserve">
+    <value>Die Windows-Bibliothek mit dem Namen '{0}' ist nicht verfügbar. Sie können sie über das Windows-Setup installieren.</value>
+  </data>
+  <data name="WIA_OUTPUT" xml:space="preserve">
+    <value>***** AUSGABE *****</value>
+  </data>
+  <data name="WIA_INPUT" xml:space="preserve">
+    <value>***** EINGABE *****</value>
+  </data>
+  <data name="WIA_USED" xml:space="preserve">
+    <value>***** VERWENDET*****</value>
+  </data>
+  <data name="WIA_DIR_OUT" xml:space="preserve">
+    <value>VerzeichnisAusgehend {0</value>
+  </data>
+  <data name="WIA_DIR_IN" xml:space="preserve">
+    <value>VerzeichnisEingehend {0}</value>
+  </data>
+  <data name="WIA_FILE_OUT" xml:space="preserve">
+    <value>DateinameAusgehend {0}</value>
+  </data>
+  <data name="WIA_FILE_IN" xml:space="preserve">
+    <value>DateinameEingehend {0}</value>
+  </data>
+  <data name="WIA_EXT_OUT" xml:space="preserve">
+    <value>ExtensionEingehend {0}</value>
+  </data>
+  <data name="WIA_PATH_IN" xml:space="preserve">
+    <value>PfadEingehend {0}</value>
+  </data>
+  <data name="WIA_PATH_OUT" xml:space="preserve">
+    <value>PfadAusgehend {0}</value>
+  </data>
+  <data name="EMAIL_SENT" xml:space="preserve">
+    <value>E-Mail wurde mit dem Betreff '{0}' gesendet.</value>
+  </data>
+  <data name="EMAIL_SENT_WITH_ATTACHMENT" xml:space="preserve">
+    <value>E-Mail wurde mit dem Betreff '{0}' und dem Anhang gesendet: {1}</value>
+  </data>
+  <data name="EMAIL_SENT_ERROR" xml:space="preserve">
+    <value>E-Mail wurde nicht an '{0}' gesendet! Betreff '{1}'. Fehler: {2}</value>
+  </data>
+  <data name="WIA_EXT_IN" xml:space="preserve">
+    <value>ExtensionAusgehend {0}</value>
+  </data>
+  <data name="STOCK_BOOKING_BATCH" xml:space="preserve">
+    <value>Das Array 'quantities' muss mindestens ein Hash-Table-Element mit einem Paar aus 'articleNo' und 'qty' enthalten.</value>
+  </data>
+  <data name="LOGFILE_PATH_MISSED" xml:space="preserve">
+    <value>Der Pfad '{0}' existiert nicht. Bitte geben Sie einen gültigen Pfad an, aber mit einer Dateimaske wie 'C:\temp\filezilla-server.*.log'. Funktion: {1}</value>
+  </data>
+  <data name="VALIDATE_PARAM__ELEMENT_MISSED" xml:space="preserve">
+    <value>Der Parameter muss mindestens {1} enthalten.</value>
+  </data>
+  <data name="VALIDATE_PARAM_SEQUENCE" xml:space="preserve">
+    <value>Wenn {0} vorhanden ist, darf der Wert nicht am Anfang stehen er muss aber vor {1} stehen.</value>
+  </data>
+  <data name="VALIDATE_PARAM_DATEMASK" xml:space="preserve">
+    <value>Die Datumsmaske '{0}' ist nicht gültig. Bitte geben Sie eine gültige Datumsmaske wie 'yyyy-MM-dd-HH-mm-ss-ffff' an.</value>
+  </data>
+  <data name="OUTPUT_SPLITFILE" xml:space="preserve">
+    <value>Split-Datei ausgeben: {0}</value>
+  </data>
+  <data name="TOTAL_ERRORS_FOUND" xml:space="preserve">
+    <value>Es wurden insgesamt {0} Fehler entdeckt.</value>
+  </data>
+  <data name="XML_SCHEMA_VALIDATED" xml:space="preserve">
+    <value>Die Xml-Datei '{0}' wurde erfolgreich gegen das Schema '{1}' validiert.</value>
+  </data>
+  <data name="HELP_USE_CULTURE" xml:space="preserve">
+    <value>ANWENDUNG: Use-Culture -culture culture -script {ScriptBlock} wie: "Use-Culture -culture 'en-US' { (Get-Date) }"</value>
+  </data>
+  <data name="PARAM_OBJECT_WRITER_MISSED" xml:space="preserve">
+    <value>Der Parameter -writer erfordert zwingend ein instanziiertes Objekt der Klasse 'System.XML.XmlWriter'. Kommandozeilen-Hilfe: Get-Help Write-XmlMetaData</value>
+  </data>
+  <data name="PARAM_MANDATORY_MISSED" xml:space="preserve">
+    <value>Der Parameter '-{0}' ist obligatorisch. Kommandozeilen-Hilfe: Get-Help {1}</value>
+  </data>
+  <data name="REMOTE_RESPONSE_STATUS" xml:space="preserve">
+    <value>Der Antwortstatus der Remote-Anfrage ist '{0}'. Funktion: {1}</value>
+  </data>
+  <data name="REMOTE_COULD_NOT_CLOSE" xml:space="preserve">
+    <value>Remote-Verbindung konnte den Befehl zum Schließen in Funktion {0} nicht ausführen. Meldung: {1}</value>
+  </data>
+  <data name="KEY_LENGTH32_ERROR" xml:space="preserve">
+    <value>Der Schlüssel sollte nicht mehr als 32 Zeichen enthalten. Die beste Sicherheit sind 32 Zeichen, ansonsten 16 Zeichen! Funktion: {0}</value>
+  </data>
+  <data name="MAX_RETRY_COUNT_REACHED" xml:space="preserve">
+    <value>Maximale Anzahl von Wiederholungen '{0}' ist erreicht, Funktion {1} bricht ab...</value>
+  </data>
+  <data name="REMOTEFILE_ERROR_RESUMING" xml:space="preserve">
+    <value>In der Funktion {0} ist während des {1} ein Fehler aufgetreten; Wiederaufnahme ({2} von {3}) ...</value>
+  </data>
+  <data name="REMOTE_FOLDER_EXISTS_ALREADY" xml:space="preserve">
+    <value>Der neue Remote-Ordner '{0}' existiert bereits, daher ist eine Umbenennung in diesen Ordner nicht möglich! Funktion {1}</value>
+  </data>
+  <data name="REMOTE_FOLDER_ISEMPTY_OR_ROOT" xml:space="preserve">
+    <value>Der Ordner {0} ist nicht gültig, er ist entweder leer oder auf das Stammverzeichnis gesetzt! Funktion {1}</value>
+  </data>
+  <data name="REMOTEFILE_TO_OLD_TO_RESUME" xml:space="preserve">
+    <value>Die Remote-Datei {0} wurde gelöscht, da sie zu alt war, um wiederaufgenommen zu werden. Funktion {1}</value>
+  </data>
+  <data name="REMOTEFILE_TO_BIG_TO_RESUME" xml:space="preserve">
+    <value>Die Remote-Datei {0} wurde gelöscht, weil die neue Datei kleiner ist. Funktion: {1}</value>
+  </data>
+  <data name="REMOTEFILE_IS_RESUMING" xml:space="preserve">
+    <value>Fortsetzen des Uploads für die lokale Datei {0}. Funktion {1}</value>
+  </data>
+  <data name="REMOTEFILE_UPLOAD_BYPASSED" xml:space="preserve">
+    <value>Das Hochladen der lokalen Datei '{0}' wurde übersprungen, da die lokale und die entfernte Datei die gleiche Größe haben. Funktion {1}</value>
+  </data>
+  <data name="REMOTEFILE_IS_UPLOADED_NEW" xml:space="preserve">
+    <value>Der vollständige Upload der lokalen Datei '{0}' wird gestartet. Funktion {1}</value>
+  </data>
+  <data name="REMOVE_TEMPFILES" xml:space="preserve">
+    <value>Temporäre Dateien '{0}' entfernen. Funktion: {1</value>
+  </data>
+  <data name="LOCALFILE_OR_FOLDER_DONT_EXISTS" xml:space="preserve">
+    <value>Der lokale Ordner oder die Datei '{0}' existiert nicht. Funktion: {0}</value>
+  </data>
+  <data name="CUSTOMERGROPUP_NOT_VALID" xml:space="preserve">
+    <value>Ungültiger Parameter -customerGroups '{0}' muss leer, eine einzelne Zeichenkette oder eine durch Komma getrennte Liste von Zeichenketten sein. Funktion: {1}</value>
+  </data>
+  <data name="FILE_DOES_NOT_EXIST" xml:space="preserve">
+    <value>Die Datei '{0}' existiert nicht. Funktion: {1}</value>
+  </data>
+  <data name="VALIDATE_INT_ERROR" xml:space="preserve">
+    <value>Der Wert muss eine ganze Zahl und größer als 0 sein, aber es war '{0}'. Funktion: {1}</value>
+  </data>
+  <data name="VALIDATE_FROM_SET_ERROR" xml:space="preserve">
+    <value>Der Wert '{0}' ist kein gültiger Wert. Gültige Werte sind: {1}. Funktion: {2}</value>
+  </data>
+  <data name="VALIDATE_NAMED_INT_ERROR" xml:space="preserve">
+    <value>Der Wert für den Parameter '{0}' muss eine ganze Zahl und größer als 0 sein, aber es war '{1}'. Funktion: {2}</value>
+  </data>
+  <data name="PARAMETER_IS_EMPTY" xml:space="preserve">
+    <value>Der Parameter '-{0}' kann kein leerer String sein! Funktion: {1}</value>
+  </data>
+  <data name="MUST_BE_UDLFILE" xml:space="preserve">
+    <value>Die im Pfadargument '{0}' angegebene Datei muss vom Typ udl sein.</value>
+  </data>
+  <data name="MUST_BE_XMLFILE" xml:space="preserve">
+    <value>Die im Pfadargument '{0}' angegebene Datei muss vom Typ xml sein.</value>
+  </data>
+  <data name="PARAMS_EXACTLY_ONE" xml:space="preserve">
+    <value>Genau ein Parameter davon ({0}) muss in '{1}' angegeben werden!</value>
+  </data>
+  <data name="PARAMS_INVALID_VALUE" xml:space="preserve">
+    <value>Ungültiger Wert. Erlaubte Werte sind '{0}'.</value>
+  </data>
+  <data name="PARAMS_INVALID_URL" xml:space="preserve">
+    <value>Der Wert '{0}' ist keine gültige URL. Bitte geben Sie eine gültige URL an.</value>
+  </data>
+  <data name="TELEGRAM_SEND_MESSAGE_ERROR" xml:space="preserve">
+    <value>Die Nachricht konnte nicht über die Telegram API gesendet werden. Grund: {0}.</value>
+  </data>
+</root>

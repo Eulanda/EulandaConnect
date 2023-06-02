@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<desktop scan="53" scanned="20230528203922" built="20230528203945" lang="de-DE" pane="TLogPane" col="3" row=".\EulandaConnect.en-US.resx.ADO_SET_ERROR">
+  <language id="de-DE" autoime="0" autokeyboard="0"/>
+  <triggers>
+    <item class="TValidateTrigger" position="6" enabled="0"/>
+  </triggers>
+  <sheet>
+    <columns>
+      <item class="TPathColumn" width="238"/>
+      <item class="TTranslationStatusColumn" width="93"/>
+      <item class="TOriginalColumn" width="398"/>
+      <item class="TTranslationColumn" lang="de-DE" width="398"/>
+      <item class="TRowCommentColumn" width="190"/>
+    </columns>
+    <params>
+      <findtext>one</findtext>
+      <findtext>must</findtext>
+      <findtext>empty</findtext>
+      <findtext>xml</findtext>
+      <findtext>ps1</findtext>
+      <findtext>udl</findtext>
+      <findtext>exist</findtext>
+      <findtext>not exist</findtext>
+      <findtext>remote</findtext>
+      <findtext>posh</findtext>
+      <findtext>PARAM_MANDATORY_MISSED</findtext>
+      <findtext>PATHIN_DOES_NOT_EXIST</findtext>
+    </params>
+  </sheet>
+  <path>
+    <item>All</item>
+  </path>
+</desktop>

@@ -1,0 +1,619 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<document created="20230218074329" version="4.0.374" date="20230528203940" scan="53" scanned="20230528203922">
+  <lang id="de-DE"/>
+  <source class="TNetResourceSource" name=".\EulandaConnect.en-US.resx" original="en-US" date="20230528181134" usebom="1" options="[]" righttoleft="nrlNone">
+    <outputfile dir="." localized="EulandaConnect.&lt;net&gt;.&lt;ext&gt;"/>
+    <excludeddatatypes>
+      <class>TBinaryData</class>
+      <class>TColorData</class>
+      <class>TImeData</class>
+      <class>TPictureData</class>
+      <class>TReadingOrderData</class>
+      <class>TFontData</class>
+    </excludeddatatypes>
+    <mappings>
+      <keyword name="Button" class="TVisButton"/>
+      <keyword name="CheckBox" class="TVisCheckBox"/>
+      <keyword name="ComboBox" class="TVisComboBox"/>
+      <keyword name="DataGrid" class="TVisGrid"/>
+      <keyword name="GroupBox" class="TVisGroupBox"/>
+      <keyword name="Label" class="TVisLabel"/>
+      <keyword name="ListBox" class="TVisListBox"/>
+      <keyword name="Panel" class="TVisPanel"/>
+      <keyword name="RadioButton" class="TVisRadioButton"/>
+      <keyword name="TextBox" class="TVisEdit"/>
+    </mappings>
+    <row id="OUT_WELCOME_VERSION" created="20230219154101" changed="20230301175642">
+      <native>Version:         {0} v{1}</native>
+      <lang id="de-DE" date="20230301175650" status="3">Version:         {0} v{1}</lang>
+    </row>
+    <row id="OUT_WELCOME_COPYRIGHT" created="20230219154101">
+      <native>Copyright:       {0}</native>
+      <lang id="de-DE" date="20230219154255" status="3">Copyright:       {0}</lang>
+    </row>
+    <row id="OUT_WELCOME_LICENSEURI" created="20230219154101">
+      <native>                 {0}</native>
+      <lang id="de-DE" date="20230219154259" status="3">                 {0}</lang>
+    </row>
+    <row id="OUT_WELCOME_PROJECTVERSION" created="20230301203415" changed="20230302063346">
+      <native>Project:         {0} v{1}</native>
+      <lang id="de-DE" date="20230302063404" status="3">Projekt:         {0} v{1}</lang>
+    </row>
+    <row id="OUT_WELCOME_STARTTIME" created="20230301203415">
+      <native>Execution start: {0}</native>
+      <lang id="de-DE" date="20230527125307" status="3">Ausführungsstart:{0}</lang>
+    </row>
+    <row id="OUT_WELCOME_PATH" created="20230308064805">
+      <native>Module Path      {0}</native>
+      <lang id="de-DE" date="20230308064833" status="3">Modulpfad        {0}</lang>
+    </row>
+    <row id="DENY_FINGERPRINT" created="20230519141728">
+      <native>The remote server '{0}' is not in the list of trusted servers. If you are sure that this server is trustworthy, you can delete the old entry with 'Remove-RemoteFingerprint -server {0}'. It will then be added as a trusted server during the next server contact.</native>
+      <lang id="de-DE" date="20230519141812" status="3">Der entfernte Server '{0}' ist nicht in der Liste der vertrauenswürdigen Server enthalten. Wenn Sie sicher sind, dass dieser Server vertrauenswürdig ist, können Sie den alten Eintrag mit 'Remove-RemoteFingerprint -server {0}' löschen. Bei der nächsten Serververbindung wird er dann als vertrauenswürdiger Server hinzugefügt.</lang>
+    </row>
+    <row id="POSH_NOTFOUND" created="20230519142951" changed="20230528095337">
+      <native>To be able to execute SFTP commands, the POSH-SSH module needs to be installed from the PsGallery. Please use the command: 'Install-Module -Name POSH-SSH -Repository PsGallery'. Function: {0}</native>
+      <lang id="de-DE" date="20230528095409" status="3">Um SFTP-Befehle ausführen zu können, muss das POSH-SSH-Modul aus der PsGallery installiert werden. Bitte verwenden Sie den Befehl: 'Install-Module -Name POSH-SSH -Repository PsGallery'. Funktion: {0}</lang>
+    </row>
+    <row id="SYMBOLIC_LINK_EXISTS_AS_FOLDER" created="20230527062459">
+      <native>The specified link '{0}' already exists as a folder and cannot be used.</native>
+      <lang id="de-DE" date="20230527062532" status="3">Der angegebene Link '{0}' existiert bereits als Ordner und kann nicht verwendet werden.</lang>
+    </row>
+    <row id="ADMIN_RIGHTS_NEEDED" created="20230527062459">
+      <native>The function '{0}' has been terminated because it requires administrative privileges to run!</native>
+      <lang id="de-DE" date="20230527062544" status="3">Die Funktion '{0}' wurde abgebrochen, da sie zur Ausführung Administratorrechte benötigt!</lang>
+    </row>
+    <row id="VERBOSE_SNAPSHOT_CREATING" created="20230527062459">
+      <native>Creating a volume shadow on drive '{0}' accasable by symbolic link '{1}'</native>
+      <lang id="de-DE" date="20230527062603" status="3">Erstellen eines Volume Shadows auf Laufwerk '{0}', das über einen symbolischen Link '{1}' erreichbar ist</lang>
+    </row>
+    <row id="VERBOSE_SYMBOLIC_LINK_REMOVED" created="20230527062459">
+      <native>Symbolic link '{0}' removed successfully</native>
+      <lang id="de-DE" date="20230527062612" status="3">Symbolischer Link '{0}' erfolgreich entfernt</lang>
+    </row>
+    <row id="SYMBOLIC_LINK_REMOVE_ERROR" created="20230527062459">
+      <native>An error occurred while trying to remove the symbolic link '{0}'. Error was: {1}</native>
+      <lang id="de-DE" date="20230527062624" status="3">Beim Versuch, den symbolischen Link '{0}' zu entfernen, ist ein Fehler aufgetreten. Der Fehler war: {1}</lang>
+    </row>
+    <row id="SYMBOLIC_LINK_ISNOT_SYMBOLIC" created="20230527062459">
+      <native>The specified path '{0}' does not point to a symbolic link.</native>
+      <lang id="de-DE" date="20230527062634" status="3">Der angegebene Pfad '{0}' verweist nicht auf einen symbolischen Link.</lang>
+    </row>
+    <row id="PATH_NOT_EXISTS" created="20230527062459">
+      <native>The specified path '{0}' does not exist!</native>
+      <lang id="de-DE" date="20230527062644" status="3">Der angegebene Pfad '{0}' existiert nicht!</lang>
+    </row>
+    <row id="REMOTE_GENERAL_ERROR" created="20230528093416">
+      <native>An error occurred while retrieving file age in function {0}. Message: {1}</native>
+      <lang id="de-DE" date="20230528093454" status="3">Beim Abrufen des Dateidatums in Funktion {0} ist ein Fehler aufgetreten. Meldung: {1}</lang>
+    </row>
+    <row id="DRIVE_FORMAT_ERROR" created="20230527101449">
+      <native>The parameter {0} in function {1} must be in the format 'Letter:', e.g. 'C:'!</native>
+      <lang id="de-DE" date="20230527101512" status="3">Der Parameter {0} in der Funktion {1} muss im Format 'Buchstabe:' sein, z.B. 'C:'!</lang>
+    </row>
+    <row id="DRIVE_NOT_EXISTS" created="20230527101449">
+      <native>Drive '{0}' in function {1} does not exist.</native>
+      <lang id="de-DE" date="20230527101521" status="3">Das Laufwerk '{0}' in der Funktion {1} existiert nicht.</lang>
+    </row>
+    <row id="STARTING_FUNCTION" created="20230527101449">
+      <native>Starting function: {0}</native>
+      <lang id="de-DE" date="20230527101535" status="3">Starte Funktion: {0}</lang>
+    </row>
+    <row id="OUT_GOODBYE_ENDTIME" created="20230527124458">
+      <native>Execution end:   {0}</native>
+      <lang id="de-DE" date="20230527124521" status="3">Ausführungsende: {0}</lang>
+    </row>
+    <row id="OUT_GOODBYE_DURATION" created="20230527124458">
+      <native>Duration:        {0:N0} seconds</native>
+      <lang id="de-DE" date="20230527124537" status="3">Dauer:           {0:N0} Sekunden</lang>
+    </row>
+    <row id="OUT_GOODBYE_NORMALLY" created="20230527124458">
+      <native>Job finished normally</native>
+      <lang id="de-DE" date="20230527124547" status="3">Job normal beendet</lang>
+    </row>
+    <row id="OUT_GOODBYE_ABNORMALLY" created="20230527124458">
+      <native>Job finished abnormally</native>
+      <lang id="de-DE" date="20230527124557" status="3">Job abnormal beendet</lang>
+    </row>
+    <row id="SIGNING_FILE" created="20230527144331">
+      <native>Signing file '{0}'...</native>
+      <lang id="de-DE" date="20230527144348" status="3">Signieren der Datei '{0}'...</lang>
+    </row>
+    <row id="SIGNING_FAILED" created="20230527144331">
+      <native>SignTool failed with exit code {0}. Output:</native>
+      <lang id="de-DE" date="20230527144410" status="3">SignTool ist mit Exit-Code {0} fehlgeschlagen. Meldung:</lang>
+    </row>
+    <row id="SIGNING_EXCEPTION" created="20230527144331">
+      <native>SignTool failed with exit code '{0]'. See the error message above for details.</native>
+      <lang id="de-DE" date="20230527144433" status="3">SignTool ist mit dem Exit-Code '{0]' fehlgeschlagen. Siehe die Fehlermeldung oben für weitere Details.</lang>
+    </row>
+    <row id="VERBOSE_BACKUP_DATABASE_TO_FILE" created="20230527144331">
+      <native>Backup database '{0}' to file '{1}'</native>
+      <lang id="de-DE" date="20230527144446" status="3">Datenbank '{0}' in Datei '{1}' sichern</lang>
+    </row>
+    <row id="VERBOSE_COPY_ZIP_TO_FILE" created="20230527144331">
+      <native>Copy zipped file to '{0}'</native>
+      <lang id="de-DE" date="20230527144506" status="3">Kopiere die gezippte Datei nach '{0}'</lang>
+    </row>
+    <row id="VERBOSE_DELETED_FILE_FROM_STORAGE" created="20230527144331">
+      <native>Removed file '{0}' from storage server</native>
+      <lang id="de-DE" date="20230527144514" status="3">Datei '{0}' vom Speicherserver entfernt</lang>
+    </row>
+    <row id="VERBOSE_DELETED_FILE_FROM_REMOTE" created="20230527144331">
+      <native>Removed file '{0}' from remote server</native>
+      <lang id="de-DE" date="20230527144531" status="3">Datei '{0}' vom FTP/SFTP Server entfernt</lang>
+    </row>
+    <row id="VERBOSE_DELETED_BACKUP_FROM_SQL" created="20230527144331">
+      <native>Removed backup '{0}' from sql server</native>
+      <lang id="de-DE" date="20230527144538" status="3">Sicherung '{0}' vom Sql-Server entfernt</lang>
+    </row>
+    <row id="CONFIRM_ADMINISTRATIVE_RIGHTS" created="20230527144331">
+      <native>Administrative rights</native>
+      <lang id="de-DE" date="20230527144545" status="3">Administrative Rechte</lang>
+    </row>
+    <row id="CONFIRM_RANSOMWARE" created="20230527144331">
+      <native>Ransomware protection aktiv</native>
+      <lang id="de-DE" date="20230527144559" status="3">Ransomware-Schutz aktiv</lang>
+    </row>
+    <row id="CONFIRM_MEMORY" created="20230527144331">
+      <native>Working memory (GB)</native>
+      <lang id="de-DE" date="20230527144608" status="3">Arbeitsspeicher (GB)</lang>
+    </row>
+    <row id="CONFIRM_DRIVE_FREE" created="20230527144331">
+      <native>Drive free on '{0}'  (GB)</native>
+      <lang id="de-DE" date="20230527144655" status="3">Laufwerk '{0}' frei (GB)</lang>
+    </row>
+    <row id="CONFIRM_SMART" created="20230527144331">
+      <native> S.M.A.R.T. ({0})</native>
+      <lang id="de-DE" date="20230527144658" status="3"> S.M.A.R.T. ({0})</lang>
+    </row>
+    <row id="CONFIRM_GATEWAY_IP" created="20230527144331">
+      <native>Gateway IP</native>
+      <lang id="de-DE" date="20230527144709" status="3">Gateway-IP</lang>
+    </row>
+    <row id="CONFIRM_GATEWAY_NAME" created="20230527144331">
+      <native>Gateway Name</native>
+      <lang id="de-DE" date="20230527144712" status="3">Gateway-Name</lang>
+    </row>
+    <row id="CONFIRM_LOCAL_IP" created="20230527144331">
+      <native>Local IP</native>
+      <lang id="de-DE" date="20230527144719" status="3">Lokale IP</lang>
+    </row>
+    <row id="CONFIRM_LOCAL_SUBNET" created="20230527144331">
+      <native>Local subnet</native>
+      <lang id="de-DE" date="20230527144725" status="3">Lokales Subnetz</lang>
+    </row>
+    <row id="CONFIRM_LOCAL_CIDR" created="20230527144331">
+      <native>Local CIDR</native>
+      <lang id="de-DE" date="20230527144734" status="3">Lokale CIDR</lang>
+    </row>
+    <row id="CONFIRM_PUBLIC_IP" created="20230527144331">
+      <native>Public IP</native>
+      <lang id="de-DE" date="20230527144742" status="3">Öffentliche IP</lang>
+    </row>
+    <row id="CONFIRM_MAX_HOSTS" created="20230527144331">
+      <native>Max possible Hosts</native>
+      <lang id="de-DE" date="20230527144751" status="3">Max. mögliche Hosts</lang>
+    </row>
+    <row id="CONFIRM_NETWORK_ID" created="20230527144331">
+      <native>Network ID</native>
+      <lang id="de-DE" date="20230527144757" status="3">Netzwerk-ID</lang>
+    </row>
+    <row id="CONFIRM_FIRST_IP" created="20230527144331">
+      <native>First possible IP</native>
+      <lang id="de-DE" date="20230527144805" status="3">Erste mögliche IP</lang>
+    </row>
+    <row id="CONFIRM_LAST_IP" created="20230527144331">
+      <native>Last possible IP</native>
+      <lang id="de-DE" date="20230527144813" status="3">Letzte mögliche IP</lang>
+    </row>
+    <row id="CONFIRM_BROADCAST_IP" created="20230527144331">
+      <native>Broadcast IP</native>
+      <lang id="de-DE" date="20230527144817" status="3">Broadcast IP</lang>
+    </row>
+    <row id="PARAMS_AT_LEAST_ONE" created="20230527154653">
+      <native>At least one parameter of these ({0}) must be specified in function '{1}'!</native>
+      <lang id="de-DE" date="20230527154710" status="3">Mindestens ein Parameter davon ({0}) muss in der Funktion '{1}' angegeben werden!</lang>
+    </row>
+    <row id="VERBOSE_WRAPPED_TWO_LINES" created="20230527170339">
+      <native>Two lines meats the shema. Passed 1:1</native>
+      <lang id="de-DE" date="20230527191223" status="3">Zwei Zeilen folgen dem Schema. Passiert 1:1</lang>
+    </row>
+    <row id="VERBOSE_WRAPPED_FIRST_LINE" created="20230527170339">
+      <native>First line meats the shema. Passed 1:1</native>
+      <lang id="de-DE" date="20230527191218" status="3">In der ersten Zeile folgt dem Schema. Passiert 1:1</lang>
+    </row>
+    <row id="SPECIFY_XMLSTRING_OR_XMLFILE" created="20230527170339">
+      <native>You have to use exactly one parameter. The '-xmlString' or '-pathIn'!</native>
+      <lang id="de-DE" date="20230527170524" status="3">Sie müssen genau einen Parameter verwenden. Den '-xmlString' oder den '-pathIn'!</lang>
+    </row>
+    <row id="PATHIN_DOES_NOT_EXIST" created="20230527170339" changed="20230527170709">
+      <native>The file for the -pathIn '{0}' parameter does not exist!</native>
+      <lang id="de-DE" date="20230527170720" status="3">Die Datei für den Parameter -pathIn '{0}' existiert nicht!</lang>
+    </row>
+    <row id="PATHOUT_DOES_NOT_EXIST" created="20230527170339" changed="20230527170709">
+      <native>The path for the -pathOut '{0}' parameter did not exist!</native>
+      <lang id="de-DE" date="20230527170734" status="3">Der Pfad für den Parameter -pathOut '{0}' existiert nicht!</lang>
+    </row>
+    <row id="MULTIPLE_RESULTS_FOUND_ERROR" created="20230527190616">
+      <native>The search value '{0}' gives more then one result! Function: {1}</native>
+      <lang id="de-DE" date="20230527190803" status="3">Der Suchbegriff '{0}' liefert mehr als ein Ergebnis! Funktion: {1}</lang>
+    </row>
+    <row id="EXCEPTION_GENERAL" created="20230527190616">
+      <native>{0} Function: {1}</native>
+      <lang id="de-DE" date="20230527190846" status="3">{0} Funktion: {1}</lang>
+    </row>
+    <row id="ADO_SET_ERROR" created="20230527190616">
+      <native>Neither a ado connection object, or udl filename or an connection string is specified. Function: {0}</native>
+      <lang id="de-DE" date="20230527190755" status="3">Weder ein ADO-Verbindungsobjekt, noch ein UDL-Dateiname oder eine Verbindungszeichenfolge ist angegeben. Funktion: {0}</lang>
+    </row>
+    <row id="DELIVERYNO_NOT_EXISTS" created="20230527190616" changed="20230527191400">
+      <native>The delivery note '{0}' does not exist in EULANDA-ERP system. Function: {1}</native>
+      <lang id="de-DE" date="20230527190903" status="3">Der Lieferschein '{0}' existiert nicht im EULANDA-ERP-System. Funktion: {1}</lang>
+    </row>
+    <row id="DELIVERYNOTE_NOT_LOADED" created="20230527190616">
+      <native>Unable to load delivery note. SQL query: '{0}'</native>
+      <lang id="de-DE" date="20230527190921" status="3">Der Lieferschein kann nicht geladen werden. SQL-Abfrage: '{0}'</lang>
+    </row>
+    <row id="SALESORDER_NOT_FOUND_PARAMETER" created="20230527190616" changed="20230527191400">
+      <native>Sales order could not be found because of missing parameter. Function: {0}</native>
+      <lang id="de-DE" date="20230527190939" status="3">Der Kundenauftrag konnte wegen eines fehlenden Parameters nicht gefunden werden. Funktion: {0}</lang>
+    </row>
+    <row id="SALESORDER_NOT_FOUND_CONDITION" created="20230527190616" changed="20230527191400">
+      <native>Sales Order could not be found for condition '{0}'. Function: {1}</native>
+      <lang id="de-DE" date="20230527191001" status="3">Der Kundenauftrag konnte für die Bedingung '{0}' nicht gefunden werden. Funktion: {1}</lang>
+    </row>
+    <row id="DELIVERYNOTE_NOT_FOUND_CONDITION" created="20230527190616" changed="20230527191400">
+      <native>Delivery note could not be found for condition '{0}'. Function: {1}</native>
+      <lang id="de-DE" date="20230527191016" status="3">Für die Bedingung '{0}' konnte kein Lieferschein gefunden werden. Funktion: {1}</lang>
+    </row>
+    <row id="VERBOSE_GEOINFO_WAITTIME" created="20230527190616">
+      <native>Api WaitTime in msec: '{0}'</native>
+      <lang id="de-DE" date="20230527191023" status="3">Api Wartezeit in msec: '{0}'</lang>
+    </row>
+    <row id="VERBOSE_GEOINFO_NEW_ENTRY" created="20230527190616">
+      <native>New Entry: Ip: '{0}'   Country: '{1}'</native>
+      <lang id="de-DE" date="20230527191031" status="3">Neuer Eintrag: Ip: '{0}' Land: '{1}'</lang>
+    </row>
+    <row id="VERBOSE_GEOINFO_PATH" created="20230527190616" changed="20230527223037">
+      <native>XML-File for GeoInfo is stored in: '{0}'</native>
+      <lang id="de-DE" date="20230527191050" status="3">Die XML-Datei für GeoInfo ist gespeichert in: '{0}'</lang>
+    </row>
+    <row id="GEOINFO_API_FAILED" created="20230527192728">
+      <native>The request to the IP-API failed: '{0}'</native>
+      <lang id="de-DE" date="20230527192744" status="3">Die Anfrage an die IP-API ist fehlgeschlagen: '{0}'</lang>
+    </row>
+    <row id="GEOINFO_GENERAL_ERROR" created="20230527192728">
+      <native>There was an error retrieving the GeoInfo: {0}</native>
+      <lang id="de-DE" date="20230527192756" status="3">Es ist ein Fehler beim Abrufen der GeoInfo aufgetreten: {0}</lang>
+    </row>
+    <row id="FIREWALL_NOT_CHECKED" created="20230527192728">
+      <native>Firewall rules was not to check, this requires administrator privileges. For this reason FirewallValid=False.</native>
+      <lang id="de-DE" date="20230527192808" status="3">Firewall-Regeln waren nicht zu überprüfen, dies erfordert Administratorrechte. Aus diesem Grund ist FirewallValid=False.</lang>
+    </row>
+    <row id="SERVER_SETTINGS_FOR" created="20230527192728">
+      <native>SERVER SETTINGS FOR: [ {0} ]</native>
+      <lang id="de-DE" date="20230527192816" status="3">SERVEREINSTELLUNGEN FÜR: [ {0} ]</lang>
+    </row>
+    <row id="DATABASE_FILES_FOR" created="20230527192728">
+      <native>DATABASE FILES FOR: [ {0} ]</native>
+      <lang id="de-DE" date="20230527192822" status="3">DATENBANKDATEIEN FÜR: [ {0} ]</lang>
+    </row>
+    <row id="SIZES_IN_MB" created="20230527192728">
+      <native>Sizes are shown in MB</native>
+      <lang id="de-DE" date="20230527192828" status="3">Größen sind in MB angegeben</lang>
+    </row>
+    <row id="SIGNTOOL_NOT_FOUND" created="20230527200054">
+      <native>Signtool not found in expected Windows SDK folder '{0}'! You can install it with 'Install-Signtool' from EulandaConnect.</native>
+      <lang id="de-DE" date="20230527200133" status="3">Das Signtool wurde nicht im erwarteten Windows SDK Ordner '{0}' gefunden! Sie können es mit 'Install-Signtool' von EulandaConnect aus installieren.</lang>
+    </row>
+    <row id="FUNCTION_NEEDS_SHOP_EXTENSIONS" created="20230527200054">
+      <native>The function '{0}' needs shop extensions installed for using variants.</native>
+      <lang id="de-DE" date="20230527200159" status="3">Für die Funktion '{0}' müssen die Shop-Erweiterungen in der EULANDA-ERP installiert sein, um Varianten verwenden zu können.</lang>
+    </row>
+    <row id="EXCEPTION_GENERAL_EXT" created="20230527200054">
+      <native>{0} Function: {1} Line: '{2}' Extended: {3}</native>
+      <lang id="de-DE" date="20230527200208" status="3">{0} Funktion: {1} Zeile: '{2}' Erweitert: {3}</lang>
+    </row>
+    <row id="DOWNLOADING_WINSDK" created="20230527223037">
+      <native>Downloading Windows SDK (ca. 1.5 GB)...</native>
+      <lang id="de-DE" date="20230527223055" status="3">Herunterladen des Windows SDK (ca. 1,5 GB)...</lang>
+    </row>
+    <row id="READY" created="20230527223037">
+      <native>(ready)</native>
+      <lang id="de-DE" date="20230527223107" status="3">(fertig)</lang>
+    </row>
+    <row id="DOWNLOADLINK_MISSING" created="20230527223037">
+      <native>SDK download link missing on the official website!</native>
+      <lang id="de-DE" date="20230527223116" status="3">SDK-Download-Link fehlt auf der offiziellen Website!</lang>
+    </row>
+    <row id="RECORDSET_CLOSED" created="20230527223037">
+      <native>The function '{0}' has failed. The recordset is closed. Sql: {1}</native>
+      <lang id="de-DE" date="20230527223128" status="3">Die Funktion '{0}' ist fehlgeschlagen. Der Datensatz ist geschlossen. Sql: {1}</lang>
+    </row>
+    <row id="ADO_ERROR_EXT" created="20230527223037">
+      <native>ADO error: '{0}' Relevant error: '{1}'</native>
+      <lang id="de-DE" date="20230527223149" status="3">ADO-Fehler: '{0}' Relevanter Fehler: '{1}'</lang>
+    </row>
+    <row id="LOGFILE_RETRY" created="20230527223037">
+      <native>Exception: '{0}' Logfile: '{1}' retries: '{2}' from '{3}'</native>
+      <lang id="de-DE" date="20230527223159" status="3">Ausnahme: '{0}' Logdatei: '{1}' Wiederholungsversuche: '{2}' von '{3}'</lang>
+    </row>
+    <row id="NO_FILE_FOR_SHORTCUT" created="20230527223037">
+      <native>WARNING! File '{0}' is missing, no shortcut is created! Function: {1}</native>
+      <lang id="de-DE" date="20230527223216" status="3">WARNUNG! Die Datei '{0}' fehlt, es wird keine Verknüpfung erstellt! Funktion: {1}</lang>
+    </row>
+    <row id="NEW_VARIABLES" created="20230528093416" changed="20230528093528">
+      <native>New variables:</native>
+      <lang id="de-DE" date="20230528093504" status="3">Neue Variablen:</lang>
+    </row>
+    <row id="REMOTE_FILE_OR_FOLDER_NOT_EXIST" created="20230528093416" changed="20230528093643">
+      <native>File or folder '{0}' doesn't exist on the remote server. Function: {1}</native>
+      <lang id="de-DE" date="20230528093555" status="3">Die Datei oder der Ordner '{0}' existiert nicht auf dem entfernten Server. Funktion: {1}</lang>
+    </row>
+    <row id="COLUMNNAMES_STRING_ONLY" created="20230527223037">
+      <native>The column name must be a string! Function: {0}</native>
+      <lang id="de-DE" date="20230527223248" status="3">Der Spaltenname muss eine Zeichenkette sein! Funktion: {0}</lang>
+    </row>
+    <row id="ARGUMENT_MUST_BE_A_FILE" created="20230527223037">
+      <native>The path argument '{0}' must be a file. Folder paths are not allowed.</native>
+      <lang id="de-DE" date="20230527223258" status="3">Das Pfadargument '{0}' muss eine Datei sein. Ordnerpfade sind nicht erlaubt</lang>
+    </row>
+    <row id="MUST_BE_INIFILE" created="20230527223037" changed="20230527224155">
+      <native>The file specified in the '{0}' path argument must be of type ini.</native>
+      <lang id="de-DE" date="20230528121908" status="3">Die im Pfadargument '{0}' angegebene Datei muss vom Typ ini sein.</lang>
+    </row>
+    <row id="FILE_OR_FOLDER_DOES_NOT_EXIST" created="20230527223037">
+      <native>File or folder '{0}' does not exist!</native>
+      <lang id="de-DE" date="20230527223423" status="3">Die Datei oder der Ordner '{0}' existiert nicht!</lang>
+    </row>
+    <row id="MUST_BE_PS1FILE" created="20230527223037" changed="20230527224155">
+      <native>The file specified in the '{0}' path argument must be of type ps1.</native>
+      <lang id="de-DE" date="20230527223433" status="3">Die im Argument Pfad '{0}' angegebene Datei muss vom Typ ps1 sein.</lang>
+    </row>
+    <row id="REMOVE_FILE_ERROR" created="20230527223037">
+      <native>Error in function '{0}'. It is not possible to delete file '{1}'! Extended: {2}</native>
+      <lang id="de-DE" date="20230527223516" status="3">Fehler in der Funktion '{0}'. Es ist nicht möglich, die Datei '{1}' zu löschen! Erweitert: {2}</lang>
+    </row>
+    <row id="REMOVE_FILE_RETRY" created="20230527223037" changed="20230527224155">
+      <native>Removing file '{0}' not working directly. Retry count '{0}'. Trying again...</native>
+      <lang id="de-DE" date="20230527223532" status="3">Das Entfernen der Datei '{0}' funktioniert nicht direkt. Anzahl der Wiederholungen '{0}'. Ich versuche es erneut...</lang>
+    </row>
+    <row id="REMOTE_FOLDER_NOT_DELETED" created="20230527223037">
+      <native>Directory could not be deleted. The most common reasons are that it is either not empty or there is a permission issue. Error was: {0}</native>
+      <lang id="de-DE" date="20230527223559" status="3">Das Verzeichnis konnte nicht gelöscht werden. Die häufigsten Gründe dafür sind, dass es entweder nicht leer ist oder ein Berechtigungsproblem besteht. Der Fehler war: {0}</lang>
+    </row>
+    <row id="RENAMEDB_ERROR_NO_DBID" created="20230527223037" changed="20230527224155">
+      <native>No DB_ID found for old databse '{0}'</native>
+      <lang id="de-DE" date="20230527223624" status="3">Keine DB_ID für alte Datenbank '{0}' gefunden</lang>
+    </row>
+    <row id="ADO_NO_VALID_RECORDSET" created="20230527223037">
+      <native>No valid recordset found! Function: {0}</native>
+      <lang id="de-DE" date="20230527223632" status="3">Kein gültiger Datensatz gefunden! Funktion: {0}</lang>
+    </row>
+    <row id="RENAMEDB_NO_LOGICAL_MDF_PATH" created="20230527223037">
+      <native>No path for 'oldLogicalMdf' found! Function: {0}</native>
+      <lang id="de-DE" date="20230527223639" status="3">Kein Pfad für 'oldLogicalMdf' gefunden! Funktion: {0}</lang>
+    </row>
+    <row id="RENAMEDB_NO_LOGICAL_LDF_PATH" created="20230527223037">
+      <native>No path for 'oldLogicalLdf' found! Function: {0}</native>
+      <lang id="de-DE" date="20230527223645" status="3">Kein Pfad für 'oldLogicalLdf' gefunden! Funktion: {0}</lang>
+    </row>
+    <row id="RENAMEDB_NO_PHYSICAL_MDF_PATH" created="20230527223037">
+      <native>No path for 'oldPhysicalMdf' found! Function: {0}</native>
+      <lang id="de-DE" date="20230527223655" status="3">Kein Pfad für 'oldPhysicalMdf' gefunden! Funktion: {0}</lang>
+    </row>
+    <row id="RENAMEDB_NO_PHYSICAL_LDF_PATH" created="20230527223037">
+      <native>No path for 'oldPhysicalLdf' found! Function: {0}</native>
+      <lang id="de-DE" date="20230527223703" status="3">Kein Pfad für 'oldPhysicalLdf' gefunden! Funktion: {0}</lang>
+    </row>
+    <row id="WIA_NOT_INSTALLED" created="20230527223037">
+      <native>The Windows library with the name '{0}' is not available. You can install it in the Windows Setup.</native>
+      <lang id="de-DE" date="20230527223712" status="3">Die Windows-Bibliothek mit dem Namen '{0}' ist nicht verfügbar. Sie können sie über das Windows-Setup installieren.</lang>
+    </row>
+    <row id="WIA_OUTPUT" created="20230527223037">
+      <native>*****  OUTPUT  *****</native>
+      <lang id="de-DE" date="20230527223741" status="3">***** AUSGABE *****</lang>
+    </row>
+    <row id="WIA_INPUT" created="20230527223037">
+      <native>*****  INPUT   *****</native>
+      <lang id="de-DE" date="20230527223752" status="3">***** EINGABE *****</lang>
+    </row>
+    <row id="WIA_USED" created="20230527223037">
+      <native>*****   USED   *****</native>
+      <lang id="de-DE" date="20230527223810" status="3">***** VERWENDET*****</lang>
+    </row>
+    <row id="WIA_DIR_OUT" created="20230527223037">
+      <native>DirectoryOut {0}</native>
+      <lang id="de-DE" date="20230527223919" status="3">VerzeichnisAusgehend {0</lang>
+    </row>
+    <row id="WIA_DIR_IN" created="20230527223037">
+      <native>DirectoryIn {0}</native>
+      <lang id="de-DE" date="20230527223856" status="3">VerzeichnisEingehend {0}</lang>
+    </row>
+    <row id="WIA_FILE_OUT" created="20230527223037">
+      <native>FilenameOut {0}</native>
+      <lang id="de-DE" date="20230527223915" status="3">DateinameAusgehend {0}</lang>
+    </row>
+    <row id="WIA_FILE_IN" created="20230527223037">
+      <native>FilenameIn {0}</native>
+      <lang id="de-DE" date="20230527223929" status="3">DateinameEingehend {0}</lang>
+    </row>
+    <row id="WIA_EXT_OUT" created="20230527223037" changed="20230527224155">
+      <native>ExtensionOut {0}</native>
+      <lang id="de-DE" date="20230527224040" status="3">ExtensionEingehend {0}</lang>
+    </row>
+    <row id="WIA_PATH_IN" created="20230527223037">
+      <native>PathIn {0}</native>
+      <lang id="de-DE" date="20230527223955" status="3">PfadEingehend {0}</lang>
+    </row>
+    <row id="WIA_PATH_OUT" created="20230527223037">
+      <native>PathOut {0}</native>
+      <lang id="de-DE" date="20230527224005" status="3">PfadAusgehend {0}</lang>
+    </row>
+    <row id="EMAIL_SENT" created="20230527223037">
+      <native>Email was sent with subject '{0}'.</native>
+      <lang id="de-DE" date="20230527224013" status="3">E-Mail wurde mit dem Betreff '{0}' gesendet.</lang>
+    </row>
+    <row id="EMAIL_SENT_WITH_ATTACHMENT" created="20230527223037">
+      <native>Email was sent with subject '{0}' and attachment: {1}</native>
+      <lang id="de-DE" date="20230527224021" status="3">E-Mail wurde mit dem Betreff '{0}' und dem Anhang gesendet: {1}</lang>
+    </row>
+    <row id="EMAIL_SENT_ERROR" created="20230527223037">
+      <native>Email was not sent to '{0}'! Subject '{1}'. Error: {2}</native>
+      <lang id="de-DE" date="20230527224028" status="3">E-Mail wurde nicht an '{0}' gesendet! Betreff '{1}'. Fehler: {2}</lang>
+    </row>
+    <row id="WIA_EXT_IN" created="20230527224155">
+      <native>ExtensionIn {0}</native>
+      <lang id="de-DE" date="20230527224209" status="3">ExtensionAusgehend {0}</lang>
+    </row>
+    <row id="STOCK_BOOKING_BATCH" created="20230528060054">
+      <native>The array 'quantities' must contain at least one hashtable element with a pair of 'articleNo' and 'qty'.</native>
+      <lang id="de-DE" date="20230528060112" status="3">Das Array 'quantities' muss mindestens ein Hash-Table-Element mit einem Paar aus 'articleNo' und 'qty' enthalten.</lang>
+    </row>
+    <row id="LOGFILE_PATH_MISSED" created="20230528060054" changed="20230528061201">
+      <native>The path '{0}' does not exist. Please specify a valid path, but with a file mask like 'C:\temp\filezilla-server.*.log'. Function: {1}</native>
+      <lang id="de-DE" date="20230528061139" status="3">Der Pfad '{0}' existiert nicht. Bitte geben Sie einen gültigen Pfad an, aber mit einer Dateimaske wie 'C:\temp\filezilla-server.*.log'. Funktion: {1}</lang>
+    </row>
+    <row id="VALIDATE_PARAM__ELEMENT_MISSED" created="20230528060054">
+      <native>The parameter must contain at least {1}.</native>
+      <lang id="de-DE" date="20230528061213" status="3">Der Parameter muss mindestens {1} enthalten.</lang>
+    </row>
+    <row id="VALIDATE_PARAM_SEQUENCE" created="20230528060054">
+      <native>If {0} is present, it must not be at the beginning and must come before {1}.</native>
+      <lang id="de-DE" date="20230528061321" status="3">Wenn {0} vorhanden ist, darf der Wert nicht am Anfang stehen er muss aber vor {1} stehen.</lang>
+    </row>
+    <row id="VALIDATE_PARAM_DATEMASK" created="20230528060054" changed="20230528061619">
+      <native>The date mask '{0}' is not valid. Please specify a valid date mask wie 'yyyy-MM-dd-HH-mm-ss-ffff' an.</native>
+      <lang id="de-DE" date="20230528061616" status="3">Die Datumsmaske '{0}' ist nicht gültig. Bitte geben Sie eine gültige Datumsmaske wie 'yyyy-MM-dd-HH-mm-ss-ffff' an.</lang>
+    </row>
+    <row id="OUTPUT_SPLITFILE" created="20230528060054">
+      <native>Output split file: {0}</native>
+      <lang id="de-DE" date="20230528061630" status="3">Split-Datei ausgeben: {0}</lang>
+    </row>
+    <row id="TOTAL_ERRORS_FOUND" created="20230528060054">
+      <native>A total of {0} errors have been detected.</native>
+      <lang id="de-DE" date="20230528061637" status="3">Es wurden insgesamt {0} Fehler entdeckt.</lang>
+    </row>
+    <row id="XML_SCHEMA_VALIDATED" created="20230528060054" changed="20230528061723">
+      <native>The xml file '{0}' file has been successfully validated against the '{1}' schema.</native>
+      <lang id="de-DE" date="20230528061726" status="3">Die Xml-Datei '{0}' wurde erfolgreich gegen das Schema '{1}' validiert.</lang>
+    </row>
+    <row id="HELP_USE_CULTURE" created="20230528060054" changed="20230528062026">
+      <native>USAGE: Use-Culture -culture culture -script {ScriptBlock} like: "Use-Culture -culture 'en-US' { (Get-Date) }"</native>
+      <lang id="de-DE" date="20230528062059" status="3">ANWENDUNG: Use-Culture -culture culture -script {ScriptBlock} wie: "Use-Culture -culture 'en-US' { (Get-Date) }"</lang>
+    </row>
+    <row id="PARAM_OBJECT_WRITER_MISSED" created="20230528064000" changed="20230528065202">
+      <native>The -writer parameter mandatorily requires an instantiated object of the 'System.XML.XmlWriter' class. Command line help: Get-Help Write-XmlMetaData</native>
+      <lang id="de-DE" date="20230528065749" status="3">Der Parameter -writer erfordert zwingend ein instanziiertes Objekt der Klasse 'System.XML.XmlWriter'. Kommandozeilen-Hilfe: Get-Help Write-XmlMetaData</lang>
+    </row>
+    <row id="PARAM_MANDATORY_MISSED" created="20230528065659" changed="20230528073245">
+      <native>The '-{0}' parameter is mandatory. Command line help: Get-Help {1}</native>
+      <lang id="de-DE" date="20230528073210" status="3">Der Parameter '-{0}' ist obligatorisch. Kommandozeilen-Hilfe: Get-Help {1}</lang>
+    </row>
+    <row id="REMOTE_RESPONSE_STATUS" created="20230528093943">
+      <native>The response status of the remote request is '{0}'. Function: {1}</native>
+      <lang id="de-DE" status="3">Der Antwortstatus der Remote-Anfrage ist '{0}'. Funktion: {1}</lang>
+    </row>
+    <row id="REMOTE_COULD_NOT_CLOSE" created="20230528093416">
+      <native>Remote connection could not execute close command in function {0}. Message: {1}</native>
+      <lang id="de-DE" date="20230528093734" status="3">Remote-Verbindung konnte den Befehl zum Schließen in Funktion {0} nicht ausführen. Meldung: {1}</lang>
+    </row>
+    <row id="KEY_LENGTH32_ERROR" created="20230528095337">
+      <native>The key should contain no more than 32 characters. The best security is 32 characters, otherwise 16 characters! Function: {0}</native>
+      <lang id="de-DE" date="20230528101834" status="3">Der Schlüssel sollte nicht mehr als 32 Zeichen enthalten. Die beste Sicherheit sind 32 Zeichen, ansonsten 16 Zeichen! Funktion: {0}</lang>
+    </row>
+    <row id="MAX_RETRY_COUNT_REACHED" created="20230528101814">
+      <native>Maximum number of retries '{0}' is reached, function {1} aborts...</native>
+      <lang id="de-DE" date="20230528101845" status="3">Maximale Anzahl von Wiederholungen '{0}' ist erreicht, Funktion {1} bricht ab...</lang>
+    </row>
+    <row id="REMOTEFILE_ERROR_RESUMING" created="20230528112124" changed="20230528112435">
+      <native>An error occurred in function {0} during the {1}, resuming ({2} of {3}) ...</native>
+      <lang id="de-DE" date="20230528112531" status="3">In der Funktion {0} ist während des {1} ein Fehler aufgetreten; Wiederaufnahme ({2} von {3}) ...</lang>
+    </row>
+    <row id="REMOTE_FOLDER_EXISTS_ALREADY" created="20230528111326">
+      <native>The new remote folder '{0}' already exists, therefore renaming to this is not possible! Function {1}</native>
+      <lang id="de-DE" date="20230528111346" status="3">Der neue Remote-Ordner '{0}' existiert bereits, daher ist eine Umbenennung in diesen Ordner nicht möglich! Funktion {1}</lang>
+    </row>
+    <row id="REMOTE_FOLDER_ISEMPTY_OR_ROOT" created="20230528111326">
+      <native>The {0} folder is not valid, it is either empty or set to the root directory! Function {1}</native>
+      <lang id="de-DE" date="20230528111358" status="3">Der Ordner {0} ist nicht gültig, er ist entweder leer oder auf das Stammverzeichnis gesetzt! Funktion {1}</lang>
+    </row>
+    <row id="REMOTEFILE_TO_OLD_TO_RESUME" created="20230528111326">
+      <native>The remote file {0} was deleted because it was too old to be resumed. Function {1}</native>
+      <lang id="de-DE" date="20230528111413" status="3">Die Remote-Datei {0} wurde gelöscht, da sie zu alt war, um wiederaufgenommen zu werden. Funktion {1}</lang>
+    </row>
+    <row id="REMOTEFILE_TO_BIG_TO_RESUME" created="20230528111326">
+      <native>The remote file {0} was deleted because the new file is smaller. Function: {1}</native>
+      <lang id="de-DE" date="20230528111424" status="3">Die Remote-Datei {0} wurde gelöscht, weil die neue Datei kleiner ist. Funktion: {1}</lang>
+    </row>
+    <row id="REMOTEFILE_IS_RESUMING" created="20230528111326">
+      <native>Resuming upload for local file {0}. Function {1}</native>
+      <lang id="de-DE" date="20230528111432" status="3">Fortsetzen des Uploads für die lokale Datei {0}. Funktion {1}</lang>
+    </row>
+    <row id="REMOTEFILE_UPLOAD_BYPASSED" created="20230528111326">
+      <native>The upload of the local file '{0}' was bypassed, because the local and the remote file have the same size. Function {1}</native>
+      <lang id="de-DE" date="20230528111456" status="3">Das Hochladen der lokalen Datei '{0}' wurde übersprungen, da die lokale und die entfernte Datei die gleiche Größe haben. Funktion {1}</lang>
+    </row>
+    <row id="REMOTEFILE_IS_UPLOADED_NEW" created="20230528111326">
+      <native>The complete upload of the local file '{0}' is started. Function {1}</native>
+      <lang id="de-DE" date="20230528111510" status="3">Der vollständige Upload der lokalen Datei '{0}' wird gestartet. Funktion {1}</lang>
+    </row>
+    <row id="REMOVE_TEMPFILES" created="20230528113758">
+      <native>Remove temp files '{0}'. Function: {1}</native>
+      <lang id="de-DE" date="20230528113821" status="3">Temporäre Dateien '{0}' entfernen. Funktion: {1</lang>
+    </row>
+    <row id="LOCALFILE_OR_FOLDER_DONT_EXISTS" created="20230528113758">
+      <native>The local folder or file '{0}' does not exist. Function: {0}</native>
+      <lang id="de-DE" date="20230528113826" status="3">Der lokale Ordner oder die Datei '{0}' existiert nicht. Funktion: {0}</lang>
+    </row>
+    <row id="CUSTOMERGROPUP_NOT_VALID" created="20230528113758">
+      <native>Invalid parameter -customerGroups '{0}' must be empty, a single string, or a comma-separated list of strings. Function: {1}</native>
+      <lang id="de-DE" date="20230528113813" status="3">Ungültiger Parameter -customerGroups '{0}' muss leer, eine einzelne Zeichenkette oder eine durch Komma getrennte Liste von Zeichenketten sein. Funktion: {1}</lang>
+    </row>
+    <row id="FILE_DOES_NOT_EXIST" created="20230528121459">
+      <native>File '{0}' does not exist. Function: {1}</native>
+      <lang id="de-DE" date="20230528121728" status="3">Die Datei '{0}' existiert nicht. Funktion: {1}</lang>
+    </row>
+    <row id="VALIDATE_INT_ERROR" created="20230528121459">
+      <native>The value must be an integer and greater than 0, but it was '{0}'. Function: {1}</native>
+      <lang id="de-DE" date="20230528121739" status="3">Der Wert muss eine ganze Zahl und größer als 0 sein, aber es war '{0}'. Funktion: {1}</lang>
+    </row>
+    <row id="VALIDATE_FROM_SET_ERROR" created="20230528121459">
+      <native>The value '{0}' is not a valid value. Valid values are: {1}. Function: {2}</native>
+      <lang id="de-DE" date="20230528121750" status="3">Der Wert '{0}' ist kein gültiger Wert. Gültige Werte sind: {1}. Funktion: {2}</lang>
+    </row>
+    <row id="VALIDATE_NAMED_INT_ERROR" created="20230528121459">
+      <native>The value for parameter '{0}' must be an integer and greater than 0, but it was '{1}'. Function: {2}</native>
+      <lang id="de-DE" date="20230528121806" status="3">Der Wert für den Parameter '{0}' muss eine ganze Zahl und größer als 0 sein, aber es war '{1}'. Funktion: {2}</lang>
+    </row>
+    <row id="PARAMETER_IS_EMPTY" created="20230528121459" changed="20230528121715">
+      <native>The parameter '-{0}' cannot be an empty string! Function: {1}</native>
+      <lang id="de-DE" date="20230528121815" status="3">Der Parameter '-{0}' kann kein leerer String sein! Funktion: {1}</lang>
+    </row>
+    <row id="MUST_BE_UDLFILE" created="20230528121459">
+      <native>The file specified in the '{0}' path argument must be of type udl.</native>
+      <lang id="de-DE" date="20230528121825" status="3">Die im Pfadargument '{0}' angegebene Datei muss vom Typ udl sein.</lang>
+    </row>
+    <row id="MUST_BE_XMLFILE" created="20230528121459">
+      <native>The file specified in the '{0}' path argument must be of type xml.</native>
+      <lang id="de-DE" date="20230528121830" status="3">Die im Pfadargument '{0}' angegebene Datei muss vom Typ xml sein.</lang>
+    </row>
+    <row id="PARAMS_EXACTLY_ONE" created="20230528123531">
+      <native>Exactly one parameter of these ({0}) must be specified in '{1}'!</native>
+      <lang id="de-DE" date="20230528123546" status="3">Genau ein Parameter davon ({0}) muss in '{1}' angegeben werden!</lang>
+    </row>
+    <row id="PARAMS_INVALID_VALUE" created="20230528123531">
+      <native>Invalid value. Allowed values are '{0}'.</native>
+      <lang id="de-DE" date="20230528123554" status="3">Ungültiger Wert. Erlaubte Werte sind '{0}'.</lang>
+    </row>
+    <row id="PARAMS_INVALID_URL" created="20230528123531">
+      <native>The value '{0}' is not a valid URL. Please enter a valid URL.</native>
+      <lang id="de-DE" date="20230528123607" status="3">Der Wert '{0}' ist keine gültige URL. Bitte geben Sie eine gültige URL an.</lang>
+    </row>
+    <row id="TELEGRAM_SEND_MESSAGE_ERROR" state="0" created="20230528203922">
+      <native>Failed to send the message via Telegram API. Reason: {0}.</native>
+      <lang id="de-DE" date="20230528203938" status="3">Die Nachricht konnte nicht über die Telegram API gesendet werden. Grund: {0}.</lang>
+    </row>
+  </source>
+</document>
