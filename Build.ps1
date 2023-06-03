@@ -182,7 +182,7 @@ PrivateData = @{
         ReleaseNotes = 'Look at Changelog in Project Site: https://github.com/Eulanda/EulandaConnect/blob/master/docs/general/Changelog.md'
 
         # Prerelease string of this module
-        # Prerelease = ''
+        Prerelease = 'beta'
 
         # Flag to indicate whether the module requires explicit user acceptance for install/update/save
         RequireLicenseAcceptance = `$false
@@ -802,4 +802,4 @@ function Invoke-Main {
 }
 
 # https://www.powershellgallery.com/api/v2/package/EulandaConnect
-Invoke-Main -version '3.1.1'
+Invoke-Main -version '3.1.2'

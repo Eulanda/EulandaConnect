@@ -1,61 +1,44 @@
 ---
 external help file: EulandaConnect-help.xml
 Module Name: EulandaConnect
-online version: https://github.com/Eulanda/EulandaConnect/blob/master/docs/Send-TelegramPhoto.md
+online version: https://github.com/Eulanda/EulandaConnect/blob/master/docs/Send-TelegramLocation.md
 schema: 2.0.0
 ---
 
-# Send-TelegramPhoto
+# Send-TelegramLocation
 
 ## SYNOPSIS
-Sends a photo with a caption via Telegram API, without requiring a locally installed Telegram app. The function is compatible with PowerShell 5.1 and PowerShell Core versions 7.x and above.
+Sends a location via a Telegram message, visualized on a map based on given latitude and longitude or IP address.
 
 ## SYNTAX
 
 ```
-Send-TelegramPhoto [[-token] <String>] [[-encryptedToken] <String>] [[-secureToken] <SecureString>]
- [[-pathToToken] <String>] [[-chatId] <String>] [[-caption] <String>] [[-uri] <String>] [[-parseMode] <String>]
- [-disableContentTypeDetection] [-disableNotification] [<CommonParameters>]
+Send-TelegramLocation [[-token] <String>] [[-encryptedToken] <String>] [[-secureToken] <SecureString>]
+ [[-pathToToken] <String>] [[-chatId] <String>] [[-latitude] <Single>] [[-longitude] <Single>]
+ [[-ip] <IPAddress>] [-disableNotification] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-This function allows the user to send a photo using the Telegram API, a cloud-based instant messaging service. It is particularly useful for sending server status updates or notifications as instant messages to a designated group, eliminating the need for a locally installed Telegram app.
+The `Send-TelegramLocation` function sends a Telegram message presenting a location on a map. The location is specified by a pair of latitude and longitude coordinates or an IP address. When the IP address is used, the function `Get-IpGeoInfo` determines the location data via a REST API.
 
-This function is designed to work with the Telegram Bot API to send messages from a PowerShell script. It supports both **PowerShell 5.1** and higher versions, including **PowerShell 7**. The function takes various parameters to configure the message, such as the chat ID, the message text, the parse mode, and whether to disable notifications.
+A valid Telegram API token and a chat ID are required to send the map. The token authenticates the sender as a valid Telegram bot, and the chat ID specifies the recipient, which can be a private chat, a group, or a channel.
 
-It accepts the bot token in several ways, including as a **plaintext** string, an **encrypted** string, a **secure** string, or a **path** to a file containing the token. For security reasons, the function purges the token from memory after it is used.
+For more secure transmission, there are options to send the token as an encrypted string or a secure string. There is also an option to refer to a file path containing the secure string version of the token. To disable automatic content type detection, use the `-disableNotification` switch.
 
-The `parseMode` parameter can be set to either `html` or `markdown`, allowing you to format the message text accordingly.
+If neither latitude and longitude nor IP address are provided, the function attempts to retrieve the current public IP address using the `Get-PublicIp` function.
 
-The function returns a boolean value, `true` if the message was sent successfully, and `false` if there was an error.
-
-> How to generate a **secureToken**, an **encryptedToken**, or an XML file with a secureToken is described in another document. Once it becomes available, it will be linked under **related links**.
+Upon successful execution, the function outputs an object that includes the sent message's details.
 
 ## EXAMPLES
 
-### Example 1: Sends a photo via Telegram API
+### Example 1: Send the location of the ip address via Telegram map
 ```powershell
-PS C:\> Send-TelegramPhoto -token "123456789:ABCdefGhIjKlmnoPQRstUvWXyz" -chatId "-713022389" -caption "My simple caption..." -uri 'c:\temp\logo.png'
+PS C:\> Send-TelegramLocation --token 'your_token' -chatId 'your_chatId' -ip '5.1.80.40'
 ```
 
-In this example, the function `Send-TelegramPhoto` is called with a token, a chatId, a caption, and a URI to the photo that you want to send. The URI in this case is a local file, 'c:\temp\logo.png'.
+The function sends a Telegram message in the form of a map. The longitude and latitude of the flag that marks the location in the map is determined from the IP number in this case. Via the function Get-IpGeoInfo, this data is determined via a REST api. A valid Telegram Api token is required, as well as a chat ID to which the map should be sent. At the end of the document there is a simple instruction how to get such a personal token from Telegram.
 
 ## PARAMETERS
-
-### -caption
-An string that represents the caption to be displayed with the photo.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 5
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
 
 ### -chatId
 Specifies the chat ID to which the message will be sent. The chat ID can be either the unique identifier for a private chat or the identifier for a group or channel. Create a Telegram group and add the bot to the group to send messages to the group members.
@@ -72,23 +55,8 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -disableContentTypeDetection
-An optional switch to disable the automatic content type detection.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases: noDetection
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -disableNotification
-(Optional) Disables notification for the message. By default, notifications are enabled, and the recipient will receive a notification for the sent message.
+An optional switch to disable the automatic content type detection.
 
 ```yaml
 Type: SwitchParameter
@@ -119,17 +87,46 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -parseMode
-(Optional) Specifies the parsing mode for the message. Valid values are 'HTML' and 'Markdown'. By default, the parse mode is set to 'HTML'. When using HTML parse mode, you can use a subset of HTML tags to format the message. When using Markdown parse mode, you can use Markdown syntax to format the message.
+### -ip
+Specifies the IP address for which is necessary to retrieve the longitudes and latitudes from a GEO database. If no longitude and latitude and also no IP address are specified, `Get-PublicIp` tries to get the current public IP address.
 
 ```yaml
-Type: String
+Type: IPAddress
 Parameter Sets: (All)
-Aliases: mode
-Accepted values: html, markdown
+Aliases:
 
 Required: False
 Position: 7
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -latitude
+Latitude of the first point in DD format. Should be a decimal number between -90 and 90.
+
+```yaml
+Type: Single
+Parameter Sets: (All)
+Aliases: lat
+
+Required: False
+Position: 5
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -longitude
+Longitude of the first point in DD format. Should be a decimal number between -180 and 180.
+
+```yaml
+Type: Single
+Parameter Sets: (All)
+Aliases: lon
+
+Required: False
+Position: 6
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -184,21 +181,6 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -uri
-The URI of the photo to be sent. This could be either a local file or an internet resource URL.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 6
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -208,10 +190,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## OUTPUTS
 
-### System.Boolean
-
-Returns $true if the message was sent successfully, otherwise $false.
-
+### System.Object
 ## NOTES
 
 Steps to create a Telegram bot and obtain the token:
@@ -230,4 +209,4 @@ Important: Treat your bot token as a password and do not share it with others. T
 
 [Send-TelegramMessage](./Send-TelegramMessage.md)
 
-[Send-TelegramLocation](./Send-TelegramLocation.md)
+[Send-TelegramPhoto](./Send-TelegramPhoto.md)

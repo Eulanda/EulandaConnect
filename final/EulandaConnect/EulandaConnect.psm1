@@ -10252,6 +10252,159 @@ Function Send-RemoteFile {
     # Test:  Send-RemoteFile -server 'myftp.eulanda.eu' -protocol 'sftp' -user 'johndoe' -password 'secure' -remoteFolder '/EULANDA' -remoteFile 'test.txt' -localFolder 'C:\temp' -localFile 'text.txt'
 }
 
+function Send-TelegramLocation() {
+    [CmdletBinding()]
+    Param(
+        [Parameter(Mandatory = $false)]
+        [string]$token
+        ,
+        [Parameter(Mandatory = $false)]
+        [Alias("eToken")]
+        [string]$encryptedToken
+        ,
+        [Parameter(Mandatory = $false)]
+        [Alias("sToken")]
+        [securestring]$secureToken
+        ,
+        [Alias("path")]
+        [Parameter(Mandatory = $false)]
+        [string]$pathToToken
+        ,
+        [Parameter(Mandatory = $false)]
+        [Alias("id")]
+        [String]$chatId = $(Throw ((Get-ResStr 'PARAM_MANDATORY_MISSED') -f 'chatId', $myInvocation.Mycommand))
+        ,
+        [Parameter(Mandatory = $false)]
+        [ValidateRange(-90,90)]
+        [Alias('lat')]
+        [Single]$latitude
+        ,
+        [Parameter(Mandatory = $false)]
+        [ValidateRange(-180,180)]
+        [Alias('lon')]
+        [Single]$longitude
+        ,
+        [Parameter(Mandatory = $false)]
+        [ipaddress]$ip = $null
+        ,
+        [Parameter(Mandatory = $false)]
+        [Alias("noNotify")]
+        [Switch]$disableNotification
+    )
+
+    begin {
+        Write-Verbose -Message ((Get-ResStr 'STARTING_FUNCTION') -f $myInvocation.Mycommand)
+        Test-ValidateSingle -validParams (Get-SingleToken) @PSBoundParameters
+        $initialVariables = Get-CurrentVariables -Debug:$DebugPreference
+    }
+
+    process {
+        [bool]$result = $false
+
+        try {
+            if ($PsVersionTable.PsVersion.Major -gt 5) {
+                # This part runs on PowerShell 6.x, 7.x
+                if ($pathToToken) {
+                    [securestring]$secureToken = Import-Clixml -Path $pathToToken
+                    [string]$token = ConvertFrom-SecureString -SecureString $secureToken -AsPlainText
+                } elseif ($secureToken) {
+                    [string]$token = ConvertFrom-SecureString -SecureString $secureToken -AsPlainText
+                } elseif ($encryptedToken) {
+                    [string]$token = ConvertFrom-SecureString -SecureString (ConvertTo-SecureString -String $encryptedToken) -AsPlainText
+                }
+            } else {
+                # This part runs on PowerShell 5.x, 6.x, 7.x
+                if ($pathToToken) {
+                    [securestring]$secureToken = Import-Clixml -Path $pathToToken
+                    $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($secureToken)
+                    [string]$token = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
+                    [System.Runtime.InteropServices.Marshal]::ZeroFreeBSTR($BSTR)
+                } elseif ($secureToken) {
+                    $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($secureToken)
+                    [string]$token = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
+                    [System.Runtime.InteropServices.Marshal]::ZeroFreeBSTR($BSTR)
+                } elseif ($encryptedToken) {
+                    $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR((ConvertTo-SecureString -String $encryptedToken))
+                    [string]$token = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
+                    [System.Runtime.InteropServices.Marshal]::ZeroFreeBSTR($BSTR)
+                }
+            }
+
+            if ((! $latitude) -and (! $latitude) -and (! $ip)) {
+                $ip = Get-PublicIp
+            }
+
+            if ($ip) {
+                Get-IpGeoInfo -ip $ip.IpAddressToString | Out-Null
+                $latitude = $global:geoHashTable[$ip.IpAddressToString].data.lat
+                $longitude = $global:geoHashTable[$ip.IpAddressToString].data.lon
+            }
+
+            $formParams = @{
+                chat_id                 = $chatId
+                latitude                = $Latitude
+                longitude               = $Longitude
+                disable_notification    = $disableNotification
+            }
+
+
+            $invokeParams = @{
+                Uri         = "https://api.telegram.org/bot$token/sendLocation"
+                ErrorAction = 'Stop'
+                Method      = 'Post'
+            }
+
+            if ($PsVersionTable.PsVersion.Major -gt 5) {
+                # This part runs on PowerShell 6.x, 7.x
+                $invokeParams.Add('Form', $formParams)
+            } else {
+                # This part runs on PowerShell 5.x, 6.x, 7.x
+                # Requires multipart conversion for binary files
+                $boundary = [System.Guid]::NewGuid().ToString()
+                $form = Convert-ToMultipart -params $formParams -boundary $boundary
+                $invokeParams.Add('ContentType', "multipart/form-data; boundary=`"$boundary`"")
+                $invokeParams.Add('Body', $form)
+            }
+
+            Set-Tls
+            $response = Invoke-RestMethod @invokeParams
+            $result = $response.ok
+        }
+
+        catch {
+            $result = $false
+            Write-Error ((Get-ResStr 'TELEGRAM_SEND_MESSAGE_ERROR') -f $_)
+        }
+
+        finally {
+            # Purge token, because it contains plain text
+            $token = -join ((48..57) + (65..90) + (97..122) | Get-Random -Count 50 | ForEach-Object { [char]$_ })
+            Remove-Variable token
+        }
+    }
+
+    end {
+        Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
+        Return $result
+    }
+    <#
+        Test:
+        https://core.telegram.org/bots/api#sendlocation
+
+        $pathToToken = "$home\.EulandaConnect\secureTelegramToken.xml"
+        $chatId = "-713022389"
+
+        # Paris -lon 2.3522 -lat 48.8566
+        Send-TelegramLocation -pathToToken $pathToToken -chatId $chatId -lon 2.3522 -lat 48.8566
+
+        # The longitude and latitude of the position of your router ofer Get-PublicIp
+        Send-TelegramLocation -pathToToken $pathToToken -chatId $chatId
+
+        # The longitude and latitude of the position over an geo api
+        Send-TelegramLocation -pathToToken $pathToToken -chatId $chatId -ip '5.1.80.40'
+    #>
+}
+
 Function Send-TelegramMessage {
     [CmdletBinding()]
     Param(
@@ -15741,8 +15894,8 @@ function Test-ValidateUrl {
 # SIG # Begin signature block
 # MIIpiAYJKoZIhvcNAQcCoIIpeTCCKXUCAQExDzANBglghkgBZQMEAgEFADB5Bgor
 # BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
-# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCAiEroOSx6x6gij
-# 6Cfn3ITmtdR7ZIwjk84Oa2Y3CKoB5aCCEngwggVvMIIEV6ADAgECAhBI/JO0YFWU
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCCQ1hZLW7BSHglU
+# UGFNQKrr/sfeq2q1QBvATtPilZiVQKCCEngwggVvMIIEV6ADAgECAhBI/JO0YFWU
 # jTanyYqJ1pQWMA0GCSqGSIb3DQEBDAUAMHsxCzAJBgNVBAYTAkdCMRswGQYDVQQI
 # DBJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcMB1NhbGZvcmQxGjAYBgNVBAoM
 # EUNvbW9kbyBDQSBMaW1pdGVkMSEwHwYDVQQDDBhBQUEgQ2VydGlmaWNhdGUgU2Vy
@@ -15845,23 +15998,23 @@ function Test-ValidateUrl {
 # IExpbWl0ZWQxLjAsBgNVBAMTJVNlY3RpZ28gUHVibGljIENvZGUgU2lnbmluZyBD
 # QSBFViBSMzYCEGilgQZhq4aQSRu7qELTizkwDQYJYIZIAWUDBAIBBQCgfDAQBgor
 # BgEEAYI3AgEMMQIwADAZBgkqhkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEE
-# AYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAvBgkqhkiG9w0BCQQxIgQgM55STiIBuSiv
-# gv5Em3x5SBadMzH2ATvcnWOAW5Ko9eYwDQYJKoZIhvcNAQEBBQAEggIAc4EG33Fb
-# jtMobg2Ifr1LmJypLG2cOubSUoh75Fo1uNGr364X3c3RHFIM5Lr2CweFIyXyJnR4
-# ditp3VwMvpBoAWkMKtbi06Sl2eAcX4tvpnZIPUf8X1gf8AnPKm1p6jW4uUW24sFo
-# TU3wCgj5wjzLQeL+KZoDh7WvHZC5oHpaFOBPIjM0uB6lIXI806CSG9BTEyaWQQsD
-# YnfdUH8wUYS1ySOO8YqOf+TF6F/FutmEzKpZESsD9DOXqJ5E7bjFAHk13JaRzqJm
-# AfHHBAz+l57qgAKIZ3m5ZIKGwBA0DX/OcNWTJ8EqPS5hQ9PslDnLScop7s4TNsSx
-# 7HCfrwnoP8Ma5eImuF/L7lCKKPJzaq9kNo8oDEa8b3OCTjJ8TFucRyaERN1Jehq9
-# oCNBXjZf0+2HytqwkTCaN2MulTF9AELBmI0ooQR8TvPLh1k6uqIbdboolaGXMynn
-# HwMXrSPTFfBtXOyQkAssaRFdYsAjamtjSn91Q9rggUW8XbcQHvZtQa/GRWesjf3S
-# Xe6F5osshc4YRSMvaG6TdCgSNZV/bXO6bxi/3QT++uiJSTaTS0NbADvpeooRKgBU
-# urmEVuKo37OZ8x1cZG1jlWNGOf3rgq5UEKDPCD659vni5dtpdctVxwl/Fs4Fnh0J
-# Pw2OXkbnVv0Q5OyEuYeGV53B7c5n08dSTluhghNOMIITSgYKKwYBBAGCNwMDATGC
+# AYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAvBgkqhkiG9w0BCQQxIgQgRGR10kvelre0
+# p7Ik7Bw7fuQZCT1QTyBKd7/S4D+cjjwwDQYJKoZIhvcNAQEBBQAEggIAL/a6NvY2
+# CWim3EyIXmt+h0X/1ualCSiq/LXchsin4yAkoacGU+peKyBxYXOyoOvx7G6dTik2
+# vidZt9wsQZPA/8w8vGArzSG+Y7+BM9s3SVw6TUAsgWdhuAcp6KcUlOFDU75HiksF
+# xOhR9rPi6kAgGlhn0525fZHNFa4eCMARz+JMe916qX3CPIG+aYaNbe7ziolvxQqz
+# SU9yqcy9BePZC0W8Hokq1KizhlKJ9BpJ09vYZNOl/ggwSbTkevZxg6vz7cy1qN+e
+# mpMa1qMVFIcK3/sEo7rvNYa2r3JqfNWjGyb5iHB6f7yq5MDcQ2n+o3B/TMZbcpYy
+# UwL4WYgsgJPE86p3gUS5Rc77CunFw6s4mt9OXdnSHHXTp9ANzrtP6QXSRnZg5DDv
+# rsiBkwQJQ9FsYMlmEl26FmwEczKfga0R2JkeW+owvZSHW5/2PuZZFf6SJNDO5Gyq
+# Vsb0hR/7oNE1D7DKhVn6b4s3r0ntyv3Y/zA55xy7Z0LixaWYMHa0XbF3JA+sK1rx
+# 2iJsCx8obH1LcjZaRpeQgtoYWrvbO9inxeKIwE5NsEiP3D15mpU55SbDfFi1s5ek
+# GAQ+LABbKsChQX0fvErWdbgq+YrIw/dJMD/y535b2xzdV+T7KDTfw8wyOSbSX04l
+# Urq4afYGruGhLm4+FiHw0Tt16TSdusldFpuhghNOMIITSgYKKwYBBAGCNwMDATGC
 # EzowghM2BgkqhkiG9w0BBwKgghMnMIITIwIBAzEPMA0GCWCGSAFlAwQCAgUAMIHv
 # BgsqhkiG9w0BCRABBKCB3wSB3DCB2QIBAQYKKwYBBAGyMQIBATAxMA0GCWCGSAFl
-# AwQCAQUABCB+stpx3Yz/YCpxJl5YO3zRTVRkw76uRUjr5EOLmp5alwIUef7WJzWM
-# +T3z6gBKvqwfTq16hZ4YDzIwMjMwNjAyMTI0MjIxWqBupGwwajELMAkGA1UEBhMC
+# AwQCAQUABCCCdikhbFiPKvh/5NsqjrOHmhZxPp9kj4kurA+qeEemogIUTcGu+THx
+# lGTUuxiA1fuzAhEihckYDzIwMjMwNjAzMTM1NjE2WqBupGwwajELMAkGA1UEBhMC
 # R0IxEzARBgNVBAgTCk1hbmNoZXN0ZXIxGDAWBgNVBAoTD1NlY3RpZ28gTGltaXRl
 # ZDEsMCoGA1UEAwwjU2VjdGlnbyBSU0EgVGltZSBTdGFtcGluZyBTaWduZXIgIzSg
 # gg3pMIIG9TCCBN2gAwIBAgIQOUwl4XygbSeoZeI72R0i1DANBgkqhkiG9w0BAQwF
@@ -15943,22 +16096,22 @@ function Test-ValidateUrl {
 # ChMPU2VjdGlnbyBMaW1pdGVkMSUwIwYDVQQDExxTZWN0aWdvIFJTQSBUaW1lIFN0
 # YW1waW5nIENBAhA5TCXhfKBtJ6hl4jvZHSLUMA0GCWCGSAFlAwQCAgUAoIIBazAa
 # BgkqhkiG9w0BCQMxDQYLKoZIhvcNAQkQAQQwHAYJKoZIhvcNAQkFMQ8XDTIzMDYw
-# MjEyNDIyMVowPwYJKoZIhvcNAQkEMTIEMHrI7MdH7E4Hvg8E1jPvTGubuLDOZsD4
-# CVYIY+RFbsqvcNBbXQ/kS6Xq4FK8/XKAajCB7QYLKoZIhvcNAQkQAgwxgd0wgdow
+# MzEzNTYxNlowPwYJKoZIhvcNAQkEMTIEMKGN2OYoKz0XTHsSYj4hhVaN8wW8eGz6
+# /Jl+ZVckg7IlU6WgM2TDBhTJHrhJUkQzqTCB7QYLKoZIhvcNAQkQAgwxgd0wgdow
 # gdcwFgQUrmKvdQoMvUfWRh91aOK8jOfKT5QwgbwEFALWW5Xig3DBVwCV+oj5I92T
 # f62PMIGjMIGOpIGLMIGIMQswCQYDVQQGEwJVUzETMBEGA1UECBMKTmV3IEplcnNl
 # eTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoTFVRoZSBVU0VSVFJVU1Qg
 # TmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0aW9uIEF1
-# dGhvcml0eQIQMA9vrN1mmHR8qUY2p3gtuTANBgkqhkiG9w0BAQEFAASCAgBPYx8v
-# PAKvvKVHEUyYE3QVNQodhfr8eRnR+oDdTEx/owM7lyOcUVKfVMJs87YgPOl+sDXJ
-# q2fISAYsfRFH9F7OPmeErz1w4yy8Tn7zsZ4Bu7gq0o1XrYwE59DNMjerleMGPlYo
-# lhmOAw5H8O98dZ4MohWpleTUZ0n+xhUiVa+dECiKTzzHe7zZ9jSmHl4rVxstE1ZD
-# s/v4nLbfi5k0GKwnq7iBUvIgznpUQnQPbbRSzkAsDj/K43LN96+6WhPuDH6C0kLC
-# Ko3yrumcW9ySQgpqIXjcdwZEpnk6MfgtztTWyGkaanho0wq+afvouUJdJbaIsvGc
-# 5ApIqERVr9k5oJeJKWr0Ban8evX9rW1Zgzsyvxvo8Mr09MdOtMXMk5ral6UTTXeN
-# F92TJLiAQsAHCAWXsGtMJ9mTQeB/qUwriRH96X6vLAgfeEMm6Y2euN5e9wu3xya3
-# CG4VJoajs2lB/NTsuUlLsmeA9qRinVzGylC82E9LOEaAzA60BIi2QUpZ3rIwYauI
-# YrgOlAUtNNVnH54tYGN6Bz7mnlJJDsTDmNHGuVxRRKts+zkWp1BWDZ7edvgC3Z9l
-# 5Ey5E3pfsy4TZ6hM+izBp00wtBEr8LMHYmXT8FiSnUJvsQJY9QGxSHMSNuBrIOfh
-# FhfAuBuscyoqe1cAihk/N7TD10jhne7Mr4esHw==
+# dGhvcml0eQIQMA9vrN1mmHR8qUY2p3gtuTANBgkqhkiG9w0BAQEFAASCAgBI4Nci
+# SiChgSZD7RILFTQcEUBFyPiuFyo3/q0FLdSv3b2OJhCbWNNLeerOjZiku2BhxNbk
+# i/RKikN2mCGZy1xIFT07uUT/n28B1TpFIx6wPn/NdN3F7qa/afpBtcLJ0oAe9D//
+# 8hWToyoqBf5ZBOjvrslWEwHHQFKOel2Kfz/Hl5f5/KNznpOQmURCTo5gQSJitZv4
+# oBrxqhrmbo2rla7Vp3k+KwUEP6wyCYNv2TZV59eHYsWVx2Fn63PeCmFXIpMpEto8
+# /Ya44JqpPzZrTNTDIB9GJHQAXDc6vHNmUDDcloH7cQxn2Vt0xPix6GQ74GqIBVzB
+# jX1jlPnqLEcnQEMggTi8/TXkNM6AXkLSPpcr0dr0GSOWbsxIFq57WCP9VsO1BTYK
+# b7JJjvoTFJgRc5FvgoSf2gAxYL2tVpOKK9WZxAnBciBjHg18LMCIEKMox+oqarkI
+# 1fXKwj9aANm8fjTrWcYyGfQ1ugxq6l22XvOpEgqh3+mS8TXj9wiHowQxqLcKoZcb
+# WXQoykPDSd0nBph4jHxRSUlLnkEt9z807IJDoJPgsvkrllQh88sk+0o2OhxQYxd4
+# t+8I8M95uCW0+qyxDl8lK1PLocUpb+SDxxGIhZhG09SsXTg0IUtJDSlemz21wmKS
+# g1VEnjsr5BSeqOsf3WBkbjjt+rkvo9d3Lqbo6Q==
 # SIG # End signature block
