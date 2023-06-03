@@ -1,3 +1,7 @@
+---
+weight: 30
+---
+
 # Changelog
 
 The most important changes to EulandaConnect can be found listed chronologically here:

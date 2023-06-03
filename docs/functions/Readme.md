@@ -6,6 +6,8 @@ bookCollapseSection: true
 
 # These functions 
 
+> **Local links in this readme document do not work, they are rendered for online documentation in HUGO CMS.**
+
 are provided by EulandaConnect. They can be executed directly in a command prompt. Simply call a PowerShell console and copy the text from the function example. Change paths passwords etc. if necessary and run the command in the console.
 
 To test that the extension is installed correctly, type the following:

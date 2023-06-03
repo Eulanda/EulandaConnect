@@ -2,6 +2,8 @@
 
 # Welcome to the Appendix
 
+> **Local links in this readme document do not work, they are rendered for online documentation in HUGO CMS.**
+
 section of EulandaConnect, your go-to resource for supplementary material and quick reference guides. This section provides you with essential information for navigating and utilizing the EulandaConnect library.
 
 Here, you'll find a variety of key resources including a detailed structure of the XML interface file for the Eulanda inventory management system. This guide helps you understand how data is structured and managed, allowing you to optimize your interaction with the system.

@@ -326,7 +326,10 @@ function Update-FrontMatter {
     Write-Verbose -Message ('Starting: {0}' -f $myInvocation.Mycommand)
 
     if ($frontMatter -match "${variable}: (.*)") {
-        $frontMatter = $frontMatter -replace "${variable}: (.*)", "${variable}: $value"
+        if ($variable -ne 'weight') {
+            # If weight is specified  in the document it should be used
+            $frontMatter = $frontMatter -replace "${variable}: (.*)", "${variable}: $value"
+        }
     }
     else {
         $frontMatter += "`r`n$($variable): $value"
@@ -351,32 +354,39 @@ function Sync-MarkdownFiles {
         [int]$weight = 10
         ,
         [Parameter(Mandatory=$false)]
-        [switch]$deleteNonReplacedFiles
+        [int]$chapterWeight = 10
     )
     Write-Verbose -Message ('Starting: {0}' -f $myInvocation.Mycommand)
 
-    # Get all markdown files from the source (sorted) and target directory
-    if ($sourceDir.IndexOf('_index.md') -gt 0 ) {
-        $sourceFiles = Get-ChildItem -Path $SourceDir
-    } else {
-        $sourceFiles = Get-ChildItem -Path $SourceDir -Filter '*.md'  |  Where-Object { $_.Name -ne '_index.md' } | Sort-Object Name
-    }
+    # Readme.md on GitHub is the a chapter. In HUGO, which
+    # is used for online documentation, this page is named _index.md.
 
-    $targetFiles = Get-ChildItem -Path $TargetDir -Recurse -Filter *.md | Where-Object { $_.Name -ne '_index.md' }
+    # Get all markdown files from the source (sorted) and target directory
+    $sourceFiles = Get-ChildItem -Path $SourceDir -Filter '*.md'  |  Sort-Object Name
+
+    $targetFiles = Get-ChildItem -Path $TargetDir -Recurse -Filter *.md
 
     foreach ($sourceFile in $sourceFiles) {
-        # Create the target file path
-        $targetFile = Join-Path -Path $TargetDir -ChildPath $sourceFile.Name
+        # String to remove in all Readme.md files
+        [string]$hugoLinks = "> **Local links in this readme document do not work, they are rendered for online documentation in HUGO CMS.**`r`n"
 
         # Read the contents of the source markdown file
         $contentOrg = Get-Content -Path $sourceFile.FullName -Raw
-        $content = $contentOrg
+
+        # Create the target file path, but change the name of the chapter page for HUGO CMS
+        if ($sourceFile.Name -eq 'Readme.md') {
+            $content = $contentOrg.Replace($hugoLinks, '')
+            $targetFile = Join-Path -Path $TargetDir -ChildPath '_index.md'
+        } else {
+            $content = $contentOrg
+            $targetFile = Join-Path -Path $TargetDir -ChildPath $sourceFile.Name
+        }
 
         # Identify local links
         $localLinks = [regex]::Matches($content, '\]\((?!http|/)([^)]+)\)') | ForEach-Object { $_.Groups[1].Value }
 
         foreach ($link in $localLinks) {
-            # Remove  markdown in the name, because it will be an html inside Hugo
+            # Remove  markdown in the name, because it will be an html folder after creation process in Hugo
             $index = $link.LastIndexOf(".md")
             if ($index -gt 0) {
                 $adjustedLink = $link.Substring(0, $index)
@@ -432,6 +442,11 @@ function Sync-MarkdownFiles {
         # Extract the file modification date in local time
         $date = $sourceFile.LastWriteTime.ToString("yyyy-MM-dd HH:mm:ss")
 
+        if ($sourceFile.Name -eq 'Readme.md') {
+            [int]$fileWeight = $chapterWeight
+        } else {
+            [int]$fileWeight = $weight
+        }
         # Matches FrontMatter by the the first occurrence of "---...---"
         if ($content -match "(?s)(---\r?\n.*?\r?\n---)(.*)") {
             $originalFrontMatter = $Matches[1]
@@ -445,31 +460,30 @@ function Sync-MarkdownFiles {
             $frontMatter = Update-FrontMatter -FrontMatter $originalFrontMatter -Variable 'lastMod' -Value $date
 
             # update 'weight' variable in FrontMatter
-            $frontMatter = Update-FrontMatter -FrontMatter $frontMatter -Variable 'weight' -Value $weight
+            $frontMatter = Update-FrontMatter -FrontMatter $frontMatter -Variable 'weight' -Value $fileWeight
 
             # Replace the original FrontMatter with the updated one
             $content = "---`r`n$frontMatter`r`n---$remainingContent"
         }
         else {
             # If there was no FrontMatter, add 'date' and 'weight'
-            $content = "---`r`nlastMod: $date`r`nweight: $weight`r`n---`r`n`r`n$content"
+            $content = "---`r`nlastMod: $date`r`nweight: $fileWeight`r`n---`r`n`r`n$content"
         }
 
-        # Leave some space in ordering
-        $weight += 10
+        # Leave some space in the order, but only if it is not a chapter page.
+        if ($sourceFile.Name -ne 'Readme.md') {
+            $weight += 10
+        }
 
         # Write the content to the target file
+        $path = Split-Path $targetFile
+        if (-not (Test-Path $path)) {
+            New-Item -ItemType Directory -Path $path -Force | Out-Null
+        }
         Set-Content -Path $targetFile -Value $content -NoNewline
 
         # Remove the copied file from the targetFiles list
         $targetFiles = $targetFiles | Where-Object { $_.FullName -ne $targetFile }
-    }
-
-    # Delete the remaining files, is only needed in folder Functions
-    if ($deleteNonReplacedFiles) {
-        foreach ($file in $targetFiles) {
-            Remove-Item -Path $file.FullName
-        }
     }
 }
 
@@ -692,34 +706,32 @@ function Update-OnlineDocs {
     $sourceBase = "$PSScriptRoot\docs"
     $targetBase = "C:\Git\Hugo\EulandaConnect"
 
+    if (Test-path "$targetBase\content\docs") {
+        Remove-Item -Path "$targetBase\content\docs" -Recurse -Force
+    }
+    New-Item -ItemType Directory -Path "$targetBase\content\docs"
+
     if ((Test-Path $targetBase)){
-        Sync-MarkdownFiles -SourceDir "$sourceBase\_index.md" -TargetDir "$targetBase\content" -weight 10
+        # The root in HUGOS did not have files in his folder
+        Sync-MarkdownFiles -SourceDir "$sourceBase\Readme.md" -TargetDir "$targetBase\content" -chapterWeight 10
 
-        Sync-MarkdownFiles -SourceDir "$sourceBase\general\_index.md" -TargetDir "$targetBase\content\docs\General" -weight 10
-
-        Sync-MarkdownFiles -SourceDir "$sourceBase\general\Installation.md" -TargetDir "$targetBase\content\docs\General" -weight 10
-        Sync-MarkdownFiles -SourceDir "$sourceBase\general\Roadmap.md" -TargetDir "$targetBase\content\docs\General" -weight 20
-        Sync-MarkdownFiles -SourceDir "$sourceBase\general\Changelog.md" -TargetDir "$targetBase\content\docs\General" -weight 30
-        Sync-MarkdownFiles -SourceDir "$sourceBase\general\License.md" -TargetDir "$targetBase\content\docs\General" -weight 40
-        Sync-MarkdownFiles -SourceDir "$sourceBase\general\Imprint.md" -TargetDir "$targetBase\content\docs\General" -weight 50
-        Sync-MarkdownFiles -SourceDir "$sourceBase\general\Privacy.md" -TargetDir "$targetBase\content\docs\General" -weight 60
-
-        Sync-MarkdownFiles -SourceDir "$sourceBase\functions\_index.md" -TargetDir "$targetBase\content\docs\Functions" -weight 20
-        Sync-MarkdownFiles -SourceDir "$sourceBase\functions" -TargetDir "$targetBase\content\docs\Functions" -DeleteNonReplacedFiles
-
-        Sync-MarkdownFiles -SourceDir "$sourceBase\examples\_index.md" -TargetDir "$targetBase\content\docs\Examples" -weight 30
-        Sync-MarkdownFiles -SourceDir "$sourceBase\examples" -TargetDir "$targetBase\content\docs\Examples" -DeleteNonReplacedFiles
-
-        Sync-MarkdownFiles -SourceDir "$sourceBase\appendix\_index.md" -TargetDir "$targetBase\content\docs\Appendix" -weight 40
-        Sync-MarkdownFiles -SourceDir "$sourceBase\appendix" -TargetDir "$targetBase\content\docs\Appendix" -DeleteNonReplacedFiles
+        Sync-MarkdownFiles -SourceDir "$sourceBase\general" -TargetDir "$targetBase\content\docs\General" -chapterWeight 10
+        Sync-MarkdownFiles -SourceDir "$sourceBase\functions" -TargetDir "$targetBase\content\docs\Functions" -chapterWeight 20
+        Sync-MarkdownFiles -SourceDir "$sourceBase\examples" -TargetDir "$targetBase\content\docs\Examples" -chapterWeight 30
+        Sync-MarkdownFiles -SourceDir "$sourceBase\appendix" -TargetDir "$targetBase\content\docs\Appendix"-chapterWeight 40
 
         try {
+            Push-Location
             Set-Location -Path $targetBase
-            Remove-Item -Path "$targetBase\public\*.*" -Force
+            if (Test-Path "$targetBase\public") {
+                Remove-Item -Path "$targetBase\public\*.*" -Force
+            }
             $hugoPath = (Get-Command hugo).Source
             & $hugoPath
         } catch {
             Throw "Error while running Hugo:: $_"
+        } finally {
+            Pop-Location
         }
 
     } else {

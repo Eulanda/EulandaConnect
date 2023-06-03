@@ -1,3 +1,7 @@
+---
+weight: 100
+---
+
 # Impressum Deutsch
 
 EULANDA Software GmbH<br />Beuerbacher Weg 20<br />65510 Hünstetten - GERMANY

@@ -2,6 +2,8 @@
 
 # Welcome to the Examples
 
+> **Local links in this readme document do not work, they are rendered for online documentation in HUGO CMS.**
+
 section of the EulandaConnect documentation. This section is dedicated to providing practical examples that illustrate how to effectively use the multitude of functions available within this PowerShell library.
 
 While there's currently one comprehensive example, this is just the beginning. In the upcoming weeks and months, we will be continuously expanding this section, adding a wealth of new examples that cover a broad range of applications and scenarios. These additions will serve as valuable resources for users at all experience levels, helping you better understand how to harness the power of EulandaConnect's functionalities.

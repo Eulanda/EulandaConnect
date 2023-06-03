@@ -1,3 +1,7 @@
+---
+weight: 20
+---
+
 # Roadmap 2023/2024
 
 Our roadmap represents an exciting journey towards achieving our goals. While we cannot guarantee that all of these points will be realized or the exact timeline, we welcome all ideas and support to help make our vision a reality. If you have any suggestions, or would like to get involved and support our project, please do not hesitate to reach out to us at [info@eulanda.de](mailto:info@eulanda.de). We look forward to collaborating with you!

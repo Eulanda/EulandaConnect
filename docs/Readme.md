@@ -4,6 +4,8 @@
 
 ## to the heart of **EulandaConnect**! 
 
+> **Local links in this readme document do not work, they are rendered for online documentation in HUGO CMS.**
+
 This is where we unravel the power of our **open-source project**: a treasury of **Powershell** functions waiting to revolutionize your workflow. Our documentation has been neatly divided into these chapters:
 
 - [General](/docs/General)

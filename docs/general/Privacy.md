@@ -1,5 +1,9 @@
-Datenschutz Deutsch
-====================
+---
+weight: 110
+---
+
+# Datenschutz Deutsch
+
 
 Wir freuen uns über Ihr Interesse an unserer Website. Der Schutz Ihrer Privatsphäre ist für uns sehr wichtig. Im Folgenden informieren wir Sie ausführlich über den Umgang mit Ihren Daten.
 

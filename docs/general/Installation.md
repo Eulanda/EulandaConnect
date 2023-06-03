@@ -1,3 +1,7 @@
+---
+weight: 10
+---
+
 # Requirements
 
 ## PowerShell 7 
