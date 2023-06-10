@@ -454,7 +454,8 @@ function Sync-MarkdownFiles {
 
             # Remove the "---" from the original FrontMatter, to get inner data
             $originalFrontMatter = $originalFrontMatter -replace '---', ''
-            $originalFrontMatter = $originalFrontMatter -replace "^\r\n", ""
+            $originalFrontMatter = $originalFrontMatter.trim()
+            $originalFrontMatter = $originalFrontMatter.Replace("`r`n`r`n", "`r`n") # $originalFrontMatter -replace "^\r\n", ""
 
             # Update 'lastMod' in  FrontMatter with last file changed date
             $frontMatter = Update-FrontMatter -FrontMatter $originalFrontMatter -Variable 'lastMod' -Value $date
@@ -802,4 +803,5 @@ function Invoke-Main {
 }
 
 # https://www.powershellgallery.com/api/v2/package/EulandaConnect
+# http://www.google.com/ping?sitemap=https://eulandaconnect.eulanda.eu/sitemap.xml
 Invoke-Main -version '3.1.2'
