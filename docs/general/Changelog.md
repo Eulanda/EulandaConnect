@@ -8,6 +8,7 @@ The most important changes to EulandaConnect can be found listed chronologically
 
 | Version | Date        | Description                                                  |
 | ------- | ----------- | ------------------------------------------------------------ |
+| 3.1.3   | Comin soon  | Typo in EulLog, Get-RestStr instead of Get-ResStr.           |
 | 3.1.3   | Coming soon | Get-SftpNextFilename has used the FullName instead of Name.  |
 | 3.1.2   | Coming soon | [Send-TelegramLocation](./docs/Send-TelegramLocation.md) sends a location via a Telegram message, visualized on a map based on given latitude and longitude or IP address. |
 | 3.1.1   | 06/02/2023  | `New`: All text outputs from error messages, help texts, warnings etc. have been converted to resources and are available as resx-file. The English edition is the template of which a German edition is now also available. |

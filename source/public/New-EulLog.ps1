@@ -43,7 +43,7 @@ Class EulLog : System.IDisposable  {
             }
             catch {
                 $i++
-                Write-Verbose ((Get-RestStr 'LOGFILE_RETRY') -f $_, $log, $i, $maxRetries)
+                Write-Verbose ((Get-ResStr 'LOGFILE_RETRY') -f $_, $log, $i, $maxRetries)
                 Start-Sleep -Seconds 0.1
             }
         }
