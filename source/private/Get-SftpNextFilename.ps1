@@ -66,14 +66,14 @@ function Get-SftpNextFilename {
             }
 
             if ($mask) {
-                $filteredList = $list | Where-Object { $_.FullName -like "$mask" }
+                $filteredList = $list | Where-Object { $_.Name -like "$mask" }
             } else {
                 $filteredList = $list
             }
 
             if ($filteredList) {
                 $sortedList = $filteredList | Sort-Object { $_.LastWriteTime }
-                $oldestFile = $sortedList[0].FullName
+                $oldestFile = $sortedList[0].Name
                 [string]$result = Split-Path $oldestFile -Leaf
             }
 
