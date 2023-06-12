@@ -12,7 +12,7 @@
 RootModule = 'EulandaConnect.psm1'
 
 # Version number of this module.
-ModuleVersion = '3.1.4'
+ModuleVersion = '3.1.5'
 
 # Supported PSEditions
 CompatiblePSEditions = @('Desktop', 'Core')
@@ -310,7 +310,7 @@ PrivateData = @{
         ReleaseNotes = 'Look at Changelog in Project Site: https://github.com/Eulanda/EulandaConnect/blob/master/docs/general/Changelog.md'
 
         # Prerelease string of this module
-        Prerelease = 'beta'
+        # Prerelease = 'beta'
 
         # Flag to indicate whether the module requires explicit user acceptance for install/update/save
         RequireLicenseAcceptance = $false
