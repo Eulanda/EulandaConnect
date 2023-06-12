@@ -8,6 +8,7 @@ The most important changes to EulandaConnect can be found listed chronologically
 
 | Version | Date        | Description                                                  |
 | ------- | ----------- | ------------------------------------------------------------ |
+| 3.1.4 | 06/12/2023 | Strange behavior of the delimiter function in New-Table, fixed by changeover. |
 | 3.1.3   | 06/12/2023  | Typo in EulLog, Get-RestStr instead of Get-ResStr.           |
 | 3.1.3   | 06/12/2023 | Get-SftpNextFilename has used the FullName instead of Name.  |
 | 3.1.2   | 06/12/2023 | [Send-TelegramLocation](./docs/Send-TelegramLocation.md) sends a location via a Telegram message, visualized on a map based on given latitude and longitude or IP address. |

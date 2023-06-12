@@ -18,7 +18,7 @@ function New-Table {
 
     process {
         if ($columnNames.GetType().Name -eq "String") {
-            $columnNames = $columnNames -split ","
+            [string[]]$columnNames = $columnNames.split(',')
         } elseif ($columnNames.GetType().BaseType.Name -ne "Array") {
             throw ((Get-ResStr 'COLUMNNAMES_STRING_ONLY') -f $myInvocation.Mycommand)
         }
