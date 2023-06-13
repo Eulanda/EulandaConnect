@@ -724,9 +724,12 @@ function Update-OnlineDocs {
         try {
             Push-Location
             Set-Location -Path $targetBase
-            if (Test-Path "$targetBase\public") {
-                Remove-Item -Path "$targetBase\public\*.*" -Force
+
+            if (Test-path "$targetBase\public") {
+                Remove-Item -Path "$targetBase\public" -Recurse -Force
             }
+            New-Item -ItemType Directory -Path "$targetBase\public"
+
             $hugoPath = (Get-Command hugo).Source
             & $hugoPath
         } catch {
@@ -804,4 +807,4 @@ function Invoke-Main {
 
 # https://www.powershellgallery.com/api/v2/package/EulandaConnect
 # http://www.google.com/ping?sitemap=https://eulandaconnect.eulanda.eu/sitemap.xml
-Invoke-Main -version '3.1.6'
+Invoke-Main -version '3.1.7'
