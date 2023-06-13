@@ -8,6 +8,7 @@ The most important changes to EulandaConnect can be found listed chronologically
 
 | Version | Date        | Description                                                  |
 | ------- | ----------- | ------------------------------------------------------------ |
+| 3.1.6 | 06/13/2023 | Conflict with Send-TelegramLocation, renamed to [Send-TelegramMap](./docs/Send-TelegramMap.md). One user already had a module that used this function name. Since the function is very new, I decided to change the name. |
 | 3.1.6 | 06/13/2023 | Typo in Get-AddressId WWrite-Verbose |
 | 3.1.5 | 06/12/2023 | Confusion, was beta flag. |
 | 3.1.4 | 06/12/2023 | Strange behavior of the delimiter function in New-Table, fixed by changeover. |

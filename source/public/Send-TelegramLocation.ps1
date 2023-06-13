@@ -1,4 +1,4 @@
-function Send-TelegramLocation() {
+function Send-TelegramMap() {
     [CmdletBinding()]
     Param(
         [Parameter(Mandatory = $false)]
@@ -141,12 +141,12 @@ function Send-TelegramLocation() {
         $chatId = "-713022389"
 
         # Paris -lon 2.3522 -lat 48.8566
-        Send-TelegramLocation -pathToToken $pathToToken -chatId $chatId -lon 2.3522 -lat 48.8566
+        Send-TelegramMap -pathToToken $pathToToken -chatId $chatId -lon 2.3522 -lat 48.8566
 
         # The longitude and latitude of the position of your router ofer Get-PublicIp
-        Send-TelegramLocation -pathToToken $pathToToken -chatId $chatId
+        Send-TelegramMap -pathToToken $pathToToken -chatId $chatId
 
         # The longitude and latitude of the position over an geo api
-        Send-TelegramLocation -pathToToken $pathToToken -chatId $chatId -ip '5.1.80.40'
+        Send-TelegramMap -pathToToken $pathToToken -chatId $chatId -ip '5.1.80.40'
     #>
 }

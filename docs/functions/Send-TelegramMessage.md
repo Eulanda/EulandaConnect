@@ -207,4 +207,4 @@ Important: Treat your bot token as a password and do not share it with others. T
 
 [Send-TelegramPhoto](./Send-TelegramPhoto.md)
 
-[Send-TelegramLocation](./Send-TelegramLocation.md)
+[Send-TelegramMap](./Send-TelegramMap.md)

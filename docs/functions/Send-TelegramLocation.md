@@ -1,11 +1,11 @@
 ---
 external help file: EulandaConnect-help.xml
 Module Name: EulandaConnect
-online version: https://github.com/Eulanda/EulandaConnect/blob/master/docs/Send-TelegramLocation.md
+online version: https://github.com/Eulanda/EulandaConnect/blob/master/docs/Send-TelegramMap.md
 schema: 2.0.0
 ---
 
-# Send-TelegramLocation
+# Send-TelegramMap
 
 ## SYNOPSIS
 Sends a location via a Telegram message, visualized on a map based on given latitude and longitude or IP address.
@@ -13,13 +13,13 @@ Sends a location via a Telegram message, visualized on a map based on given lati
 ## SYNTAX
 
 ```
-Send-TelegramLocation [[-token] <String>] [[-encryptedToken] <String>] [[-secureToken] <SecureString>]
+Send-TelegramMap [[-token] <String>] [[-encryptedToken] <String>] [[-secureToken] <SecureString>]
  [[-pathToToken] <String>] [[-chatId] <String>] [[-latitude] <Single>] [[-longitude] <Single>]
  [[-ip] <IPAddress>] [-disableNotification] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-The `Send-TelegramLocation` function sends a Telegram message presenting a location on a map. The location is specified by a pair of latitude and longitude coordinates or an IP address. When the IP address is used, the function `Get-IpGeoInfo` determines the location data via a REST API.
+The `Send-TelegramMap` function sends a Telegram message presenting a location on a map. The location is specified by a pair of latitude and longitude coordinates or an IP address. When the IP address is used, the function `Get-IpGeoInfo` determines the location data via a REST API.
 
 A valid Telegram API token and a chat ID are required to send the map. The token authenticates the sender as a valid Telegram bot, and the chat ID specifies the recipient, which can be a private chat, a group, or a channel.
 
@@ -33,7 +33,7 @@ Upon successful execution, the function outputs an object that includes the sent
 
 ### Example 1: Send the location of the ip address via Telegram map
 ```powershell
-PS C:\> Send-TelegramLocation --token 'your_token' -chatId 'your_chatId' -ip '5.1.80.40'
+PS C:\> Send-TelegramMap --token 'your_token' -chatId 'your_chatId' -ip '5.1.80.40'
 ```
 
 The function sends a Telegram message in the form of a map. The longitude and latitude of the flag that marks the location in the map is determined from the IP number in this case. Via the function Get-IpGeoInfo, this data is determined via a REST api. A valid Telegram Api token is required, as well as a chat ID to which the map should be sent. At the end of the document there is a simple instruction how to get such a personal token from Telegram.
