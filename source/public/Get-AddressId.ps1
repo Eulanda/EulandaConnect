@@ -28,7 +28,7 @@ function Get-AddressId {
     )
 
     begin {
-        WWrite-Verbose -Message ((Get-ResStr 'STARTING_FUNCTION') -f $myInvocation.Mycommand)
+        Write-Verbose -Message ((Get-ResStr 'STARTING_FUNCTION') -f $myInvocation.Mycommand)
         Test-ValidateSingle -validParams (Get-SingleAddressKeys) @PSBoundParameters
         Test-ValidateSingle -validParams (Get-SingleConnection) @PSBoundParameters
         New-Variable -Name 'firstEntry' -Scope 'Private' -Value ($null)

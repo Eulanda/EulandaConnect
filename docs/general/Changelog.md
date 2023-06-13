@@ -8,6 +8,7 @@ The most important changes to EulandaConnect can be found listed chronologically
 
 | Version | Date        | Description                                                  |
 | ------- | ----------- | ------------------------------------------------------------ |
+| 3.1.6 | 06/13/2023 | Typo in Get-AddressId WWrite-Verbose |
 | 3.1.5 | 06/12/2023 | Confusion, was beta flag. |
 | 3.1.4 | 06/12/2023 | Strange behavior of the delimiter function in New-Table, fixed by changeover. |
 | 3.1.3   | 06/12/2023  | Typo in EulLog, Get-RestStr instead of Get-ResStr.           |
