@@ -207,7 +207,7 @@ FunctionsToExport = @(
     'Select-OutdatedFilenames',
     'Send-Mail',
     'Send-RemoteFile',
-    'Send-TelegramLocation',
+    'Send-TelegramMap',
     'Send-TelegramMessage',
     'Send-TelegramPhoto',
     'Set-DeliveryQty',

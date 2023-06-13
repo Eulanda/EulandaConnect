@@ -31,7 +31,7 @@ Upon successful execution, the function outputs an object that includes the sent
 
 ## EXAMPLES
 
-### Example 1: Send the location of the ip address via Telegram map
+### Example 1: Send the location of the ip address via SendLocation
 ```powershell
 PS C:\> Send-TelegramMap --token 'your_token' -chatId 'your_chatId' -ip '5.1.80.40'
 ```

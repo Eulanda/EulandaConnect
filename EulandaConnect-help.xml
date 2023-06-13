@@ -24015,15 +24015,15 @@ Send-Email @global:mailParams
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
-      <command:name>Send-TelegramLocation</command:name>
+      <command:name>Send-TelegramMap</command:name>
       <command:verb>Send</command:verb>
-      <command:noun>TelegramLocation</command:noun>
+      <command:noun>TelegramMap</command:noun>
       <maml:description>
         <maml:para>Sends a location via a Telegram message, visualized on a map based on given latitude and longitude or IP address.</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The `Send-TelegramLocation` function sends a Telegram message presenting a location on a map. The location is specified by a pair of latitude and longitude coordinates or an IP address. When the IP address is used, the function `Get-IpGeoInfo` determines the location data via a REST API.</maml:para>
+      <maml:para>The `Send-TelegramMap` function sends a Telegram message presenting a location on a map. The location is specified by a pair of latitude and longitude coordinates or an IP address. When the IP address is used, the function `Get-IpGeoInfo` determines the location data via a REST API.</maml:para>
       <maml:para>A valid Telegram API token and a chat ID are required to send the map. The token authenticates the sender as a valid Telegram bot, and the chat ID specifies the recipient, which can be a private chat, a group, or a channel.</maml:para>
       <maml:para>For more secure transmission, there are options to send the token as an encrypted string or a secure string. There is also an option to refer to a file path containing the secure string version of the token. To disable automatic content type detection, use the `-disableNotification` switch.</maml:para>
       <maml:para>If neither latitude and longitude nor IP address are provided, the function attempts to retrieve the current public IP address using the `Get-PublicIp` function.</maml:para>
@@ -24031,7 +24031,7 @@ Send-Email @global:mailParams
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
-        <maml:name>Send-TelegramLocation</maml:name>
+        <maml:name>Send-TelegramMap</maml:name>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
           <maml:name>token</maml:name>
           <maml:description>
@@ -24287,8 +24287,8 @@ Send-Email @global:mailParams
     </maml:alertSet>
     <command:examples>
       <command:example>
-        <maml:title>Example 1: Send the location of the ip address via Telegram map</maml:title>
-        <dev:code>PS C:\&gt; Send-TelegramLocation --token 'your_token' -chatId 'your_chatId' -ip '5.1.80.40'</dev:code>
+        <maml:title>Example 1: Send the location of the ip address via SendLocation</maml:title>
+        <dev:code>PS C:\&gt; Send-TelegramMap --token 'your_token' -chatId 'your_chatId' -ip '5.1.80.40'</dev:code>
         <dev:remarks>
           <maml:para>The function sends a Telegram message in the form of a map. The longitude and latitude of the flag that marks the location in the map is determined from the IP number in this case. Via the function Get-IpGeoInfo, this data is determined via a REST api. A valid Telegram Api token is required, as well as a chat ID to which the map should be sent. At the end of the document there is a simple instruction how to get such a personal token from Telegram.</maml:para>
         </dev:remarks>
@@ -24297,7 +24297,7 @@ Send-Email @global:mailParams
     <command:relatedLinks>
       <maml:navigationLink>
         <maml:linkText>Online Version:</maml:linkText>
-        <maml:uri>https://github.com/Eulanda/EulandaConnect/blob/master/docs/Send-TelegramLocation.md</maml:uri>
+        <maml:uri>https://github.com/Eulanda/EulandaConnect/blob/master/docs/Send-TelegramMap.md</maml:uri>
       </maml:navigationLink>
       <maml:navigationLink>
         <maml:linkText>Send-TelegramMessage</maml:linkText>
@@ -24588,7 +24588,7 @@ Send-Email @global:mailParams
         <maml:uri></maml:uri>
       </maml:navigationLink>
       <maml:navigationLink>
-        <maml:linkText>Send-TelegramLocation</maml:linkText>
+        <maml:linkText>Send-TelegramMap</maml:linkText>
         <maml:uri></maml:uri>
       </maml:navigationLink>
     </command:relatedLinks>
@@ -24912,7 +24912,7 @@ Send-Email @global:mailParams
         <maml:uri></maml:uri>
       </maml:navigationLink>
       <maml:navigationLink>
-        <maml:linkText>Send-TelegramLocation</maml:linkText>
+        <maml:linkText>Send-TelegramMap</maml:linkText>
         <maml:uri></maml:uri>
       </maml:navigationLink>
     </command:relatedLinks>

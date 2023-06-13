@@ -2394,7 +2394,7 @@ function Get-AddressId {
     )
 
     begin {
-        WWrite-Verbose -Message ((Get-ResStr 'STARTING_FUNCTION') -f $myInvocation.Mycommand)
+        Write-Verbose -Message ((Get-ResStr 'STARTING_FUNCTION') -f $myInvocation.Mycommand)
         Test-ValidateSingle -validParams (Get-SingleAddressKeys) @PSBoundParameters
         Test-ValidateSingle -validParams (Get-SingleConnection) @PSBoundParameters
         New-Variable -Name 'firstEntry' -Scope 'Private' -Value ($null)
@@ -10252,7 +10252,7 @@ Function Send-RemoteFile {
     # Test:  Send-RemoteFile -server 'myftp.eulanda.eu' -protocol 'sftp' -user 'johndoe' -password 'secure' -remoteFolder '/EULANDA' -remoteFile 'test.txt' -localFolder 'C:\temp' -localFile 'text.txt'
 }
 
-function Send-TelegramLocation() {
+function Send-TelegramMap() {
     [CmdletBinding()]
     Param(
         [Parameter(Mandatory = $false)]
@@ -10395,13 +10395,13 @@ function Send-TelegramLocation() {
         $chatId = "-713022389"
 
         # Paris -lon 2.3522 -lat 48.8566
-        Send-TelegramLocation -pathToToken $pathToToken -chatId $chatId -lon 2.3522 -lat 48.8566
+        Send-TelegramMap -pathToToken $pathToToken -chatId $chatId -lon 2.3522 -lat 48.8566
 
         # The longitude and latitude of the position of your router ofer Get-PublicIp
-        Send-TelegramLocation -pathToToken $pathToToken -chatId $chatId
+        Send-TelegramMap -pathToToken $pathToToken -chatId $chatId
 
         # The longitude and latitude of the position over an geo api
-        Send-TelegramLocation -pathToToken $pathToToken -chatId $chatId -ip '5.1.80.40'
+        Send-TelegramMap -pathToToken $pathToToken -chatId $chatId -ip '5.1.80.40'
     #>
 }
 
@@ -15894,8 +15894,8 @@ function Test-ValidateUrl {
 # SIG # Begin signature block
 # MIIpiAYJKoZIhvcNAQcCoIIpeTCCKXUCAQExDzANBglghkgBZQMEAgEFADB5Bgor
 # BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
-# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCC4LNaWg2MCw5Tm
-# 83u0DcjEBqlsm05CdCvn16kUImEpiqCCEngwggVvMIIEV6ADAgECAhBI/JO0YFWU
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCBHuilRTmdG3kdK
+# lHjMdUJ1ppaMSot1fujfYqPFcdAGrKCCEngwggVvMIIEV6ADAgECAhBI/JO0YFWU
 # jTanyYqJ1pQWMA0GCSqGSIb3DQEBDAUAMHsxCzAJBgNVBAYTAkdCMRswGQYDVQQI
 # DBJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcMB1NhbGZvcmQxGjAYBgNVBAoM
 # EUNvbW9kbyBDQSBMaW1pdGVkMSEwHwYDVQQDDBhBQUEgQ2VydGlmaWNhdGUgU2Vy
@@ -15998,23 +15998,23 @@ function Test-ValidateUrl {
 # IExpbWl0ZWQxLjAsBgNVBAMTJVNlY3RpZ28gUHVibGljIENvZGUgU2lnbmluZyBD
 # QSBFViBSMzYCEGilgQZhq4aQSRu7qELTizkwDQYJYIZIAWUDBAIBBQCgfDAQBgor
 # BgEEAYI3AgEMMQIwADAZBgkqhkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEE
-# AYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAvBgkqhkiG9w0BCQQxIgQgX6scWpfYhO1V
-# XKdat4LmsiERK40UbkG8SUoJAuJBCFkwDQYJKoZIhvcNAQEBBQAEggIAl44cE1p1
-# NHdrev+uYPtI+VgXjXkCNd4RrPW4fk9NpsZMbSz85XmJh2HFDvWUYuL0X6npO56b
-# p2DE0EzY6e84StsXwW5NbQb5KyFFqc6mZM1IoERBWKw6eBvB+lTIh0V5y2tQPJHv
-# E7tXXWUTmAKpYm2fusez5e7Z/mnTAhzF4AezvuYSEoeMaejyy5zJkZ3e8m5ies/c
-# NrOGS2ZMhFOlVYh4KLMPnC8XxLMVdVzw23y+UlF1hcItUnNtdOPg1N80JXiDVXOf
-# UX6l2c01Ud4doNQ/5UVNrrSOqpTzj0IVZw0NnFd1U7buZ6yOje75HB1h2+kXh6Vy
-# Gjy1LALsd+0aXFtDf0VjCgSQH9aA+PYmngHNzWYR5lmOE0PTZItwDYNqkcLwKGR9
-# ljeoi4kEdNHK8K8nuHcHKb/D5awYdWW2KfkprU2aJVXl+OdosW068tNaWfpgmmKE
-# 0oiALWq+0pTLB6HfDK84wRvfpADrDqiVgXp7UkGb8nkN8qYA2Ef7cYcqfwPi164o
-# w398zjmPFMWk3ILWMqxnfb3XIPPColJCBdl/MbRUErtyrH+hPe7NPYaEZzHUVwXu
-# oRMGK6BxVOkhFhl1Ml7D5jTek25w+9u1pu1CTmwuOnMzhVMePBYMLG+3N4IdVC5r
-# ka8Qvb3qIkJPb2GbFc2+c/7+t4DfB1r417qhghNOMIITSgYKKwYBBAGCNwMDATGC
+# AYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAvBgkqhkiG9w0BCQQxIgQgufa47dlmMX/l
+# dvoYBZJ6R0B4q+DalNaDgzGEb0P24TgwDQYJKoZIhvcNAQEBBQAEggIAH0lDnw9+
+# U0dPFWSfxEDEhLljZTKpL0lJHB2VkKFGr8+bw7pErexoNslNYK+1JsRVzF0lboi+
+# nTpK3sWpVqKOyT1lhoCtFx6UHsglF/uVNfd3gRxI4Z91CZptJaP2ouYT3rXWGgY3
+# aisB3pqbNqfOEXeqgpY3zgvR55bm3e3RuyoyBd/H0lwVX1cluIb0hL1HbVbklHDl
+# wZ054mJMdr4ivJowJ0RN5QoFc5ztbDaewpR0KW9cIgPI0NmV2FWqXoDxix4HRZ53
+# ZkpkBytxNt+1m1jmGC3dDeFwsUuF8ZkqRfZGeYxrszUYB+qMyMcaSdeLO6iGXhFt
+# FfD+ecZhU7Id0x34A4qkS8sUuW3Vnirl3UXv9GLJLQih8xFjO11UAaJL/bD0+nDH
+# lb9AK8KGjPDg8oXUSPlhfuy9wJhdURXc7rqlwGlz+7w39ZgyXpekaYx03hgCApII
+# iVQLT/AObn+8OfJqXD80j4dhaJ1Qj1kCFBhY/f5DPna2YVj09PikfJ3t5AYZbKSC
+# NxhO6NGQHZkSmyoplwIaTL8k+SQpRb7CkB6mK00gDGyZhMrYu+iASUU3/YWo7QXZ
+# J8bEMy0xmAOEzg2ooyF65woa2YGJwsJRr/9v6e1FS0wato3StLmVAn7qh/28d00o
+# nSBg8qgJKQ4SQDU5KplXor62xbgUjecckq+hghNOMIITSgYKKwYBBAGCNwMDATGC
 # EzowghM2BgkqhkiG9w0BBwKgghMnMIITIwIBAzEPMA0GCWCGSAFlAwQCAgUAMIHv
 # BgsqhkiG9w0BCRABBKCB3wSB3DCB2QIBAQYKKwYBBAGyMQIBATAxMA0GCWCGSAFl
-# AwQCAQUABCCplF+ZlycuQ7IQzzeNEXUbVe04lBBioSImAawF5xt43QIUX7mltez8
-# Gn+Nlh9iPU7OYJ8NmBQYDzIwMjMwNjEyMTYwODM3WqBupGwwajELMAkGA1UEBhMC
+# AwQCAQUABCDaOQS8S74VajyTsfHm7CPUuUNXuW9S2CdB/o7uZTK2fgIUWia9E1pE
+# EqGyAqArscJue3oknY4YDzIwMjMwNjEzMDUwODEwWqBupGwwajELMAkGA1UEBhMC
 # R0IxEzARBgNVBAgTCk1hbmNoZXN0ZXIxGDAWBgNVBAoTD1NlY3RpZ28gTGltaXRl
 # ZDEsMCoGA1UEAwwjU2VjdGlnbyBSU0EgVGltZSBTdGFtcGluZyBTaWduZXIgIzSg
 # gg3pMIIG9TCCBN2gAwIBAgIQOUwl4XygbSeoZeI72R0i1DANBgkqhkiG9w0BAQwF
@@ -16096,22 +16096,22 @@ function Test-ValidateUrl {
 # ChMPU2VjdGlnbyBMaW1pdGVkMSUwIwYDVQQDExxTZWN0aWdvIFJTQSBUaW1lIFN0
 # YW1waW5nIENBAhA5TCXhfKBtJ6hl4jvZHSLUMA0GCWCGSAFlAwQCAgUAoIIBazAa
 # BgkqhkiG9w0BCQMxDQYLKoZIhvcNAQkQAQQwHAYJKoZIhvcNAQkFMQ8XDTIzMDYx
-# MjE2MDgzN1owPwYJKoZIhvcNAQkEMTIEMKDPdLyneh6XzZZIgQ1Lqq9D3trcwScl
-# LOsFF+UZgr/Dbq2nKYKGtR3CCtWM4BK3QDCB7QYLKoZIhvcNAQkQAgwxgd0wgdow
+# MzA1MDgxMFowPwYJKoZIhvcNAQkEMTIEMEB7HZvanH6/9iVcb6Ap8ZCVohn+qvoL
+# FVLW9zRd6AMIL779tPFIoQEmOCX8COLj+TCB7QYLKoZIhvcNAQkQAgwxgd0wgdow
 # gdcwFgQUrmKvdQoMvUfWRh91aOK8jOfKT5QwgbwEFALWW5Xig3DBVwCV+oj5I92T
 # f62PMIGjMIGOpIGLMIGIMQswCQYDVQQGEwJVUzETMBEGA1UECBMKTmV3IEplcnNl
 # eTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoTFVRoZSBVU0VSVFJVU1Qg
 # TmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0aW9uIEF1
-# dGhvcml0eQIQMA9vrN1mmHR8qUY2p3gtuTANBgkqhkiG9w0BAQEFAASCAgBmSGpI
-# ZV77j33wXvQhQI/E6Hy///+18LjKh+gmHZZOKYAhRLFag+MBhyRi8tWA7GyfzXOf
-# jmc2Da09jE5SCVu3bVOZoDlS5jbtDUETArwVg9Cpvc/puGmvQJu7042aiMkctzJu
-# jJOdRCi9XjDB4oTXXFG197JzcqEAmTovJwfLo+0WwExrMJfmfD2fH/aXqZrFuNjF
-# ByaIFeis1VE2Oshwv18QYQ9PnRxhSOfZXOuljDXLMHLEZg8InMlCAPUGK/qYSZj0
-# eCjIUmG/Lkr+8aRWTb7ANH9GGhEq1fXgCSF4KcbteHMEzjUA967r+4FIjkk86WYR
-# mQOY1DbMWMGb2CvwfcRzrPGgzSzFMnLAzU9GzMVew5IWFQufSiAJpzeZI5cZk5iF
-# v/rplVkDOc0Gp6a3BgyThB6fXa+R93bfq4849fqvNLaDCa6WCxKeAWwIBm9GlBhD
-# uY2gdFdDxOsisvQ3P2ewHUpWgiyLCJJRC3fQBPpMrH7iL3d3NFCAP8lnkPrStNNd
-# fBdfUJ4N96cnjDnaEEBLycFNU2ms5Br0osg3HFJjq7F1/Wa/UOIN0LZQ/SJoEsgH
-# 1X4jwJLhSxUu5eZrEbLmx6oobBpplSMAfiwRjKUaO0jlKnBAMtHF4Q3n/OlgKptz
-# 4UI+SovZD40o/WozUISmYuOTpnFL59u+B5OrrQ==
+# dGhvcml0eQIQMA9vrN1mmHR8qUY2p3gtuTANBgkqhkiG9w0BAQEFAASCAgBfJIw7
+# 5gerEBiFAmgCmHf5fRyRkWeq4b/E7cJTW6szu7A1hJoAcyvXnLS5vvTHqTdDQJiF
+# IA/XJK9a+CuBEpFzqoEQd8ufURKxLECMLTcWSNjKwp5s0yonjhQAZ4GGUIRWl6Et
+# 5siEnHdgOb9Ddk2d9rQsn2/Wqq80HeIa5DXQiRDqrhQR0EOBPbixklOVtX9AZMsn
+# V0ocyZvub8QAtKtqtQtqj1VNbrL2hEq0hxUtmH/ZHsF2J40SW+VvU0bkoA6L/pAT
+# lqSd2uz5ZC0VR30vCa81+70QMJnRNFJP4ATiqutaeVGNy6LPNk4Dc57fJkPP2UCM
+# /Y/N0rrik/S0r9gty1shrYDwGUx1N7rgl7rInJT2X671PTiK7OrnHzQ76RE4M/XQ
+# HrZ+wS2U+RdpKiZ5X/tyWXp+JjclgXtTrywGfDFajzLEb9683EP+4m47uEuL6bYE
+# MwL5SSDGmyVgyoJgKxWNUIJso2zSZKFxwQeSMCxl5Y6anJ07dV4NRClp+CMSk5KO
+# 6TR7izQAtVxGXV2Dydhoq4wMgqqzT4/jnNWTbCX/34Qwnf/niSV7N56pPi2f+SkH
+# vqUAmVwrR66f2pUj+fUn+gSJ2rpvn3niLuugx8UyOJ88VYg0Izt8CDJ7WcewAU2w
+# AWWrxpmuhyJdVU6eqyT0vVmW8WiSsXiZwfSl+A==
 # SIG # End signature block
