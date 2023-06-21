@@ -61,12 +61,12 @@ function Import-TieredPrice {
                         Import-Module ImportExcel
                         $data = Import-Excel -Path $path
                     } else {
-                        Throw "Module ImportExcel not availble, install it with 'INSTALL-MODULE ImportExcel'"
+                        Throw ((Get-ResStr 'IMPORTEXCEL_NOTFOUND') -f $myInvocation.Mycommand)
                     }
                 }
 
                 default {
-                    Throw "File extension is not supported, only .csv and .xlsx are supported!"
+                    Throw ((Get-ResStr 'ONLY_CSV_AND_XSLX_SUPPORTED') -f $myInvocation.Mycommand)
                 }
 
             }
@@ -80,7 +80,7 @@ function Import-TieredPrice {
                 if ($artId) {
                     for ($i = 1; $i -le 5; $i++) {
                         $pair = $priceQtyPairs["$i"]
-                        if (![string]::IsNullOrEmpty($pair['price']))  { # -and ![string]::IsNullOrEmpty($pair.Value.qty))
+                        if (![string]::IsNullOrEmpty($pair['price']))  {
                             $price = $row.$($pair['price'])
                             if ([string]::IsNullOrEmpty($pair['qty'])) {
                                 $qty = [string]"1"

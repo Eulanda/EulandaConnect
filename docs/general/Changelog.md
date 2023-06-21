@@ -8,7 +8,8 @@ The most important changes to EulandaConnect can be found listed chronologically
 
 | Version | Date        | Description                                                  |
 | ------- | ----------- | ------------------------------------------------------------ |
-| 3.1.7 | Coming soon | The Hugo public folder is now cleaned up each time a new documentation is built |
+| 3.1.7 | 06/21/2023 | `New`: Import-TieredPrice to add tiered prices to the article table. |
+| 3.1.7 | 06/21/2023 | The Hugo public folder is now cleaned up each time a new documentation is built |
 | 3.1.6 | 06/13/2023 | Conflict with Send-TelegramLocation, renamed to [Send-TelegramMap](./docs/Send-TelegramMap.md). One user already had a module that used this function name. Since the function is very new, I decided to change the name. |
 | 3.1.6 | 06/13/2023 | Typo in Get-AddressId WWrite-Verbose instead of Write-Verbose. |
 | 3.1.5 | 06/12/2023 | Confusion, the beta flag was set incorrectly in the manifest. |
