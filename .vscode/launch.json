@@ -9,7 +9,7 @@
             "type": "PowerShell",
             "request": "launch",
             "script": "${file}",
-            "args": ["-verbose"]
+            "args": [""]
         },
         {
             "name": "[DBG]:1 Update Manifest",

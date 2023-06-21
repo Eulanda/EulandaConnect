@@ -7938,41 +7938,100 @@ function Hide-Extensions {
     # Test:  Hide-Extensions
 }
 
-function Import-TieredPrice {
+function Import-TieredPrices {
     [CmdletBinding()]
     param(
+        [Parameter(Mandatory = $false)]
+        [Alias('barcode')]
+        [string]$barcodeName
+        ,
+        [Parameter(Mandatory = $false)]
+        [Alias('articleNo')]
         [string]$articleNoName
         ,
+        [Parameter(Mandatory = $false)]
+        [Alias('articleId')]
+        [string]$articleIdName
+        ,
+        [Parameter(Mandatory = $false)]
+        [Alias('articleUid')]
+        [string]$articleUidName
+        ,
+        [Alias('price1')]
         [string]$price1Name
         ,
+        [Alias('qty1')]
         [string]$qty1Name
         ,
+        [Alias('price2')]
         [string]$price2Name
         ,
+        [Alias('qty2')]
         [string]$qty2Name
         ,
+        [Alias('price3')]
         [string]$price3Name
         ,
+        [Alias('qty3')]
         [string]$qty3Name
         ,
+        [Alias('price4')]
         [string]$price4Name
         ,
+        [Alias('qty4')]
         [string]$qty4Name
         ,
+        [Alias('price5')]
         [string]$price5Name
         ,
+        [Alias('qty5')]
         [string]$qty5Name
         ,
-        [string]$tierListName
+        [string]$priceList
+        ,
+        [int]$priceListId
+        ,
+        [Alias('delim')]
+        [string]$csvDelimiter = ';'
+        ,
+        [Alias('decimal')]
+        [string]$decimalSeparator = [System.Globalization.CultureInfo]::CurrentCulture.NumberFormat.NumberDecimalSeparator
         ,
         [string]$path
         ,
+        [Parameter(Mandatory = $false)]
+        [ValidateScript({ Test-ValidateConn -conn $_  })]
+        $conn
+        ,
+        [Parameter(Mandatory = $false)]
+        [ValidateScript({ Test-ValidatePathUDL -path $_  })]
         [string]$udl
+        ,
+        [Parameter(Mandatory = $false)]
+        [ValidateScript({ Test-ValidateConnStr -connStr $_ })]
+        [string]$connStr
     )
 
     Begin {
         Write-Verbose -Message ((Get-ResStr 'STARTING_FUNCTION') -f $myInvocation.Mycommand)
-
+        Test-ValidateSingle -validParams 'articleNoName','articleIdName','Barcode','articleUid' @PSBoundParameters
+        Test-ValidateSingle -validParams (Get-SingleConnection) @PSBoundParameters
+        New-Variable -Name 'rs' -Scope 'Private' -Value ($null)
+        New-Variable -Name 'row' -Scope 'Private' -Value ($null)
+        New-Variable -Name 'qty' -Scope 'Private' -Value ([string]'')
+        New-Variable -Name 'priceQtyPairs' -Scope 'Private' -Value ([System.Collections.Hashtable]@{})
+        New-Variable -Name 'price' -Scope 'Private' -Value ([double]0.0)
+        New-Variable -Name 'pair' -Scope 'Private' -Value ([System.Collections.Hashtable]@{})
+        New-Variable -Name 'sql' -Scope 'Private' -Value ([string]'')
+        New-Variable -Name 'myConn' -Scope 'Private' -Value ($null)
+        New-Variable -Name 'fileExtension' -Scope 'Private' -Value ([string]'')
+        New-Variable -Name 'data' -Scope 'Private' -Value ([System.Object[]]@())
+        New-Variable -Name 'barcode' -Scope 'Private' -Value ([string]'')
+        New-Variable -Name 'artId' -Scope 'Private' -Value ([int32]0)
+        New-Variable -Name 'articleUid' -Scope 'Private' -Value ([string]'')
+        New-Variable -Name 'articleNo' -Scope 'Private' -Value ([string]'')
+        New-Variable -Name 'articleId' -Scope 'Private' -Value ([int32]0)
+        New-Variable -Name 'i' -Scope 'Private' -Value ([int32]0)
         $initialVariables = Get-CurrentVariables -Debug:$DebugPreference
     }
 
@@ -7986,15 +8045,17 @@ function Import-TieredPrice {
             "5" = @{ "price" = $price5Name; "qty" = $qty5Name }
         }
 
-        $myConn = Get-Conn -udl $udl
-        $rs = $myConn.execute("SELECT ID FROM Preisliste where [Name] = '$tierListname'")
-        [int]$tierId = $rs.fields('ID').Value
+        $myConn = Get-Conn -udl $udl -connStr $connStr -conn $conn
+        if ($priceList) {
+            $rs = $myConn.execute("SELECT ID FROM Preisliste where [Name] = '$priceList'")
+            [int]$priceListId = $rs.fields('ID').Value
+        }
 
-        if ($tierId) {
+        if ($priceListId) {
             $fileExtension = [System.IO.Path]::GetExtension($path)
             switch ($fileExtension) {
                 ".csv" {
-                    $data = Import-Csv -Path $path -Delimiter ';'
+                    $data = Import-Csv -Path $path -Delimiter $csvDelimiter
                 }
 
                 ".xlsx" {
@@ -8011,14 +8072,34 @@ function Import-TieredPrice {
                 }
             }
 
-            $decimalSeparator = [System.Globalization.CultureInfo]::CurrentCulture.NumberFormat.NumberDecimalSeparator
             if (! $decimalSeparator) {
                 $decimalSeparator = ','
             }
 
             foreach ($row in $data) {
-                $articleNo = [string]$row.$($articleNoName)
-                $artId = Get-ArticleId -articleNo $articleNo -conn $myConn
+                $articleNo = [string]""
+                $articleId = [int]0
+                $barcode = [string]""
+                $articleUid = [string]""
+
+                $params = @{}
+                if ($articleNoName) {
+                    $articleNo = [string]$row.$($articleNoName)
+                    $params.Add('articleNo', $articleNo)
+                } elseif ($articleIdName) {
+                    $articleId = [int]$row.$($articleIdName)
+                    $params.Add('articleId', $articleId)
+                } elseif ($BarcodeName) {
+                    $barcode = [string]$row.$($barcodeName)
+                    $params.Add('Barcode', $Barcode)
+                } elseif ($articleUidName) {
+                        $articleUid = [string]$row.$($articleUidName)
+                        $params.Add('articleUid', $articleUid)
+                } else {
+                    Throw ((Get-ResStr 'PARAMS_AT_LEAST_ONE') -f 'articleNoName, articleIdName, BarcodeName, articleUidName', $myInvocation.Mycommand)
+                }
+
+                $artId = Get-ArticleId @params -conn $myConn
                 if ($artId) {
                     for ($i = 1; $i -le 5; $i++) {
                         $pair = $priceQtyPairs["$i"]
@@ -8030,6 +8111,7 @@ function Import-TieredPrice {
                                 $qty = [string]$row.$($pair['qty'])
                             }
 
+                            # csv is string based excel normally double
                             if ($decimalSeparator -eq ".") {
                                 if ($price.GetType.Name -eq 'String') {
                                     $price = [double]::Parse($price.Replace(',', '.'))
@@ -8049,10 +8131,10 @@ function Import-TieredPrice {
                             }
 
                             try {
-                                Write-Verbose "ArticleNo: $artcicleNo"
+                                Write-Verbose "ArticleNo: $articleNo"
                                 $rs = New-Object -comobject ADODB.Recordset
                                 $sql = "SELECT p.Id, p.Preisliste, p.Staffel, p.MengeAb, p.ArtikelId, p.Vk FROM Preis p " + `
-                                "JOIN Artikel art ON art.Id = p.ArtikelId AND PreisListe = $tierId AND art.ID = $artId " + `
+                                "JOIN Artikel art ON art.Id = p.ArtikelId AND PreisListe = $priceListId AND art.ID = $artId " + `
                                 "AND Staffel = $i"
                                 $rs.Open($sql, $myConn, 3, 3)
                                 if (! $rs.eof) {
@@ -8061,7 +8143,7 @@ function Import-TieredPrice {
                                     $rs.update()
                                 } else {
                                     $rs.AddNew()
-                                    $rs.fields('Preisliste').value = $tierId
+                                    $rs.fields('Preisliste').value = $priceListId
                                     $rs.fields('Staffel').value = $i
                                     $rs.fields('ArtikelId').value = $artId
                                     $rs.fields('Vk').value = [double]$price
@@ -8073,21 +8155,21 @@ function Import-TieredPrice {
                             catch {
                                 Write-Error -Message $_.Exception -ErrorAction Continue
                             }
-
-                        } # if price found
-                    } # for each tired price
-                } # if article found
-            }  # for each row
-        }  # tiered list found
+                        } # if actual price
+                    } # for each 1-5 tired price
+                } # if article
+            }  # for each row im import file
+        }  else {
+            Throw ((Get-ResStr 'PARAMS_AT_LEAST_ONE') -f 'priceList, priceListId', $myInvocation.Mycommand)
+        }
     }
 
     end {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
         Return
     }
-    # Test: Import-TieredPrice -path 'C:\temp\test.xslx' -articleNoName 'ArticleNo' -price1Name 'SalesPrice' -tierListName 'Retail' -udl 'C:\temp\Eulanda_1 JohnDoe.udl'
+    # Test: Import-TieredPrices -path 'C:\temp\test.xslx' -articleNo 'ArticleNo' -price1 'SalesPrice' -priceList 'Retail' -udl 'C:\temp\Eulanda_1 JohnDoe.udl'
 }
-
 
 Function Install-SignTool {
     [CmdletBinding()]
@@ -16043,10 +16125,10 @@ function Test-ValidateUrl {
 
 
 # SIG # Begin signature block
-# MIIpiQYJKoZIhvcNAQcCoIIpejCCKXYCAQExDzANBglghkgBZQMEAgEFADB5Bgor
+# MIIpiAYJKoZIhvcNAQcCoIIpeTCCKXUCAQExDzANBglghkgBZQMEAgEFADB5Bgor
 # BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
-# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCDd+lw8thzAjFlc
-# Naj6oqifoWrKdg9CXDc2pC+wT+PsiKCCEngwggVvMIIEV6ADAgECAhBI/JO0YFWU
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCA5rJR09o/nuDzK
+# Yx9oqI3vQ2+mGJ7UDPFvY3I+j5FWpaCCEngwggVvMIIEV6ADAgECAhBI/JO0YFWU
 # jTanyYqJ1pQWMA0GCSqGSIb3DQEBDAUAMHsxCzAJBgNVBAYTAkdCMRswGQYDVQQI
 # DBJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcMB1NhbGZvcmQxGjAYBgNVBAoM
 # EUNvbW9kbyBDQSBMaW1pdGVkMSEwHwYDVQQDDBhBQUEgQ2VydGlmaWNhdGUgU2Vy
@@ -16145,124 +16227,124 @@ function Test-ValidateUrl {
 # KNX5jSiwwUBrA8vNyCh6d8ZCorwimYkDyGtstF0D9UoU9dX66QrfTsK+zxO7/0QF
 # 1qIc5CTZe6Kcsuxe99p5UbPU665d5BvOwq0lJKg59k+6exo1Cc5awip+d4krfyWl
 # D1sMkS0eiRSN1UNVs3Hg5gbaEEBx98sQMBF45vv0DFgY/SQVRp9yaFayTyfbb/qk
-# jc8xghZnMIIWYwIBATBrMFcxCzAJBgNVBAYTAkdCMRgwFgYDVQQKEw9TZWN0aWdv
+# jc8xghZmMIIWYgIBATBrMFcxCzAJBgNVBAYTAkdCMRgwFgYDVQQKEw9TZWN0aWdv
 # IExpbWl0ZWQxLjAsBgNVBAMTJVNlY3RpZ28gUHVibGljIENvZGUgU2lnbmluZyBD
 # QSBFViBSMzYCEGilgQZhq4aQSRu7qELTizkwDQYJYIZIAWUDBAIBBQCgfDAQBgor
 # BgEEAYI3AgEMMQIwADAZBgkqhkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEE
-# AYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAvBgkqhkiG9w0BCQQxIgQgjnmVUQYixH9v
-# Lpu90gLsVd4FUfHkXd4Uu91dGU9eYt0wDQYJKoZIhvcNAQEBBQAEggIADetG4WFx
-# CUnMbBKXp1TqMbSfVYrD1lqoo0j+vNhyB0WoMVsheimXnv6cwi+ClQUQrzgOn84p
-# tni3LrxLL5TUOJlPKlPrXiK1X+t7M/D413Fy2NM8wijywl/o21wxAzhjQzP7Agrm
-# QzKfUcdAW7TZTPIl7vD9aB3OdrDs1EHaxS6h2rK0URd6CgNVqT8w4jzFSPgxJYBy
-# 32ZN9AQpnXwRStToFCG82oyzkMgERy99xzoOZMNNVJWnotRTPrCDE6vicEZ3svEl
-# NDGRkh8LMcXbOrO7AHn8yRw0ZpSwRMYAqZmiItxF2hLpVHXnVk990zLjeMsqCHyO
-# Gz7zAfkkmINVJhUQ9RjmAHqaoz/GiMGdVo/Y6jZ2Am+CzTlBWg3YRnP0uawYMv+h
-# GJwzzZonwJddNYfnwSycnwmcUTPEqa4QpHeIbIuUuidmtgpN1kPvqlPRDrd1Lht8
-# WhdI0nFb39gX9XXcu2uppTEhlrtP4VF9c3OVGcvRqPrARqQYmOuY/lkwxwsMlHNF
-# B1/O3AKX6Tv/Fqu7Hj7xY83GIzy2W9maCrSOCfSKL+S4HDtrUHSL7mCJ3mRzptFx
-# uFQ7N2DjWq4HC1wwjP2kWLIXi/ePgernEL6FlMH5W6MVlXYzhW6vvBheRmFmrPV3
-# VA2LTA+d2D4vq1QVakuVHktBR6megx5dS+qhghNPMIITSwYKKwYBBAGCNwMDATGC
-# EzswghM3BgkqhkiG9w0BBwKgghMoMIITJAIBAzEPMA0GCWCGSAFlAwQCAgUAMIHw
-# BgsqhkiG9w0BCRABBKCB4ASB3TCB2gIBAQYKKwYBBAGyMQIBATAxMA0GCWCGSAFl
-# AwQCAQUABCBScZzaRcOCF9nqc9XOCwA0TzerP7nK/XxAMnom0JkzSgIVAJZbRewu
-# dnUwH+L6XPPzKAatw4qEGA8yMDIzMDYyMTA3MjY0N1qgbqRsMGoxCzAJBgNVBAYT
-# AkdCMRMwEQYDVQQIEwpNYW5jaGVzdGVyMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
-# ZWQxLDAqBgNVBAMMI1NlY3RpZ28gUlNBIFRpbWUgU3RhbXBpbmcgU2lnbmVyICM0
-# oIIN6TCCBvUwggTdoAMCAQICEDlMJeF8oG0nqGXiO9kdItQwDQYJKoZIhvcNAQEM
-# BQAwfTELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQ
-# MA4GA1UEBxMHU2FsZm9yZDEYMBYGA1UEChMPU2VjdGlnbyBMaW1pdGVkMSUwIwYD
-# VQQDExxTZWN0aWdvIFJTQSBUaW1lIFN0YW1waW5nIENBMB4XDTIzMDUwMzAwMDAw
-# MFoXDTM0MDgwMjIzNTk1OVowajELMAkGA1UEBhMCR0IxEzARBgNVBAgTCk1hbmNo
-# ZXN0ZXIxGDAWBgNVBAoTD1NlY3RpZ28gTGltaXRlZDEsMCoGA1UEAwwjU2VjdGln
-# byBSU0EgVGltZSBTdGFtcGluZyBTaWduZXIgIzQwggIiMA0GCSqGSIb3DQEBAQUA
-# A4ICDwAwggIKAoICAQCkkyhSS88nh3akKRyZOMDnDtTRHOxoywFk5IrNd7BxZYK8
-# n/yLu7uVmPslEY5aiAlmERRYsroiW+b2MvFdLcB6og7g4FZk7aHlgSByIGRBbMfD
-# CPrzfV3vIZrCftcsw7oRmB780yAIQrNfv3+IWDKrMLPYjHqWShkTXKz856vpHBYu
-# sLA4lUrPhVCrZwMlobs46Q9vqVqakSgTNbkf8z3hJMhrsZnoDe+7TeU9jFQDkdD8
-# Lc9VMzh6CRwH0SLgY4anvv3Sg3MSFJuaTAlGvTS84UtQe3LgW/0Zux88ahl7brst
-# RCq+PEzMrIoEk8ZXhqBzNiuBl/obm36Ih9hSeYn+bnc317tQn/oYJU8T8l58qbEg
-# Wimro0KHd+D0TAJI3VilU6ajoO0ZlmUVKcXtMzAl5paDgZr2YGaQWAeAzUJ1rPu0
-# kdDF3QFAaraoEO72jXq3nnWv06VLGKEMn1ewXiVHkXTNdRLRnG/kXg2b7HUm7v7T
-# 9ZIvUoXo2kRRKqLMAMqHZkOjGwDvorWWnWKtJwvyG0rJw5RCN4gghKiHrsO6I3J7
-# +FTv+GsnsIX1p0OF2Cs5dNtadwLRpPr1zZw9zB+uUdB7bNgdLRFCU3F0wuU1qi1S
-# Etklz/DT0JFDEtcyfZhs43dByP8fJFTvbq3GPlV78VyHOmTxYEsFT++5L+wJEwID
-# AQABo4IBgjCCAX4wHwYDVR0jBBgwFoAUGqH4YRkgD8NBd0UojtE1XwYSBFUwHQYD
-# VR0OBBYEFAMPMciRKpO9Y/PRXU2kNA/SlQEYMA4GA1UdDwEB/wQEAwIGwDAMBgNV
-# HRMBAf8EAjAAMBYGA1UdJQEB/wQMMAoGCCsGAQUFBwMIMEoGA1UdIARDMEEwNQYM
-# KwYBBAGyMQECAQMIMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20v
-# Q1BTMAgGBmeBDAEEAjBEBgNVHR8EPTA7MDmgN6A1hjNodHRwOi8vY3JsLnNlY3Rp
-# Z28uY29tL1NlY3RpZ29SU0FUaW1lU3RhbXBpbmdDQS5jcmwwdAYIKwYBBQUHAQEE
-# aDBmMD8GCCsGAQUFBzAChjNodHRwOi8vY3J0LnNlY3RpZ28uY29tL1NlY3RpZ29S
-# U0FUaW1lU3RhbXBpbmdDQS5jcnQwIwYIKwYBBQUHMAGGF2h0dHA6Ly9vY3NwLnNl
-# Y3RpZ28uY29tMA0GCSqGSIb3DQEBDAUAA4ICAQBMm2VY+uB5z+8VwzJt3jOR63dY
-# 4uu9y0o8dd5+lG3DIscEld9laWETDPYMnvWJIF7Bh8cDJMrHpfAm3/j4MWUN4Ott
-# UVemjIRSCEYcKsLe8tqKRfO+9/YuxH7t+O1ov3pWSOlh5Zo5d7y+upFkiHX/XYUW
-# NCfSKcv/7S3a/76TDOxtog3Mw/FuvSGRGiMAUq2X1GJ4KoR5qNc9rCGPcMMkeTqX
-# 8Q2jo1tT2KsAulj7NYBPXyhxbBlewoNykK7gxtjymfvqtJJlfAd8NUQdrVgYa2L7
-# 3mzECqls0yFGcNwvjXVMI8JB0HqWO8NL3c2SJnR2XDegmiSeTl9O048P5RNPWURl
-# S0Nkz0j4Z2e5Tb/MDbE6MNChPUitemXk7N/gAfCzKko5rMGk+al9NdAyQKCxGSoY
-# IbLIfQVxGksnNqrgmByDdefHfkuEQ81D+5CXdioSrEDBcFuZCkD6gG2UYXvIbrnI
-# Z2ckXFCNASDeB/cB1PguEc2dg+X4yiUcRD0n5bCGRyoLG4R2fXtoT4239xO07aAt
-# 7nMP2RC6nZksfNd1H48QxJTmfiTllUqIjCfWhWYd+a5kdpHoSP7IVQrtKcMf3jim
-# wBT7Mj34qYNiNsjDvgCHHKv6SkIciQPc9Vx8cNldeE7un14g5glqfCsIo0j1FfwE
-# T9/NIRx65fWOGtS5QDCCBuwwggTUoAMCAQICEDAPb6zdZph0fKlGNqd4LbkwDQYJ
-# KoZIhvcNAQEMBQAwgYgxCzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpOZXcgSmVyc2V5
-# MRQwEgYDVQQHEwtKZXJzZXkgQ2l0eTEeMBwGA1UEChMVVGhlIFVTRVJUUlVTVCBO
-# ZXR3b3JrMS4wLAYDVQQDEyVVU0VSVHJ1c3QgUlNBIENlcnRpZmljYXRpb24gQXV0
-# aG9yaXR5MB4XDTE5MDUwMjAwMDAwMFoXDTM4MDExODIzNTk1OVowfTELMAkGA1UE
-# BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2Fs
-# Zm9yZDEYMBYGA1UEChMPU2VjdGlnbyBMaW1pdGVkMSUwIwYDVQQDExxTZWN0aWdv
-# IFJTQSBUaW1lIFN0YW1waW5nIENBMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIIC
-# CgKCAgEAyBsBr9ksfoiZfQGYPyCQvZyAIVSTuc+gPlPvs1rAdtYaBKXOR4O168TM
-# STTL80VlufmnZBYmCfvVMlJ5LsljwhObtoY/AQWSZm8hq9VxEHmH9EYqzcRaydvX
-# XUlNclYP3MnjU5g6Kh78zlhJ07/zObu5pCNCrNAVw3+eolzXOPEWsnDTo8Tfs8Vy
-# rC4Kd/wNlFK3/B+VcyQ9ASi8Dw1Ps5EBjm6dJ3VV0Rc7NCF7lwGUr3+Az9ERCleE
-# yX9W4L1GnIK+lJ2/tCCwYH64TfUNP9vQ6oWMilZx0S2UTMiMPNMUopy9Jv/TUyDH
-# YGmbWApU9AXn/TGs+ciFF8e4KRmkKS9G493bkV+fPzY+DjBnK0a3Na+WvtpMYMyo
-# u58NFNQYxDCYdIIhz2JWtSFzEh79qsoIWId3pBXrGVX/0DlULSbuRRo6b83XhPDX
-# 8CjFT2SDAtT74t7xvAIo9G3aJ4oG0paH3uhrDvBbfel2aZMgHEqXLHcZK5OVmJyX
-# nuuOwXhWxkQl3wYSmgYtnwNe/YOiU2fKsfqNoWTJiJJZy6hGwMnypv99V9sSdvqK
-# QSTUG/xypRSi1K1DHKRJi0E5FAMeKfobpSKupcNNgtCN2mu32/cYQFdz8HGj+0p9
-# RTbB942C+rnJDVOAffq2OVgy728YUInXT50zvRq1naHelUF6p4MCAwEAAaOCAVow
-# ggFWMB8GA1UdIwQYMBaAFFN5v1qqK0rPVIDh2JvAnfKyA2bLMB0GA1UdDgQWBBQa
-# ofhhGSAPw0F3RSiO0TVfBhIEVTAOBgNVHQ8BAf8EBAMCAYYwEgYDVR0TAQH/BAgw
-# BgEB/wIBADATBgNVHSUEDDAKBggrBgEFBQcDCDARBgNVHSAECjAIMAYGBFUdIAAw
-# UAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2VydHJ1c3QuY29tL1VTRVJU
-# cnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUFBwEBBGow
-# aDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVz
-# dFJTQUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2Vy
-# dHJ1c3QuY29tMA0GCSqGSIb3DQEBDAUAA4ICAQBtVIGlM10W4bVTgZF13wN6Mgst
-# JYQRsrDbKn0qBfW8Oyf0WqC5SVmQKWxhy7VQ2+J9+Z8A70DDrdPi5Fb5WEHP8ULl
-# EH3/sHQfj8ZcCfkzXuqgHCZYXPO0EQ/V1cPivNVYeL9IduFEZ22PsEMQD43k+Thi
-# vxMBxYWjTMXMslMwlaTW9JZWCLjNXH8Blr5yUmo7Qjd8Fng5k5OUm7Hcsm1BbWfN
-# yW+QPX9FcsEbI9bCVYRm5LPFZgb289ZLXq2jK0KKIZL+qG9aJXBigXNjXqC72NzX
-# StM9r4MGOBIdJIct5PwC1j53BLwENrXnd8ucLo0jGLmjwkcd8F3WoXNXBWiap8k3
-# ZR2+6rzYQoNDBaWLpgn/0aGUpk6qPQn1BWy30mRa2Coiwkud8TleTN5IPZs0lpoJ
-# X47997FSkc4/ifYcobWpdR9xv1tDXWU9UIFuq/DQ0/yysx+2mZYm9Dx5i1xkzM3u
-# J5rloMAMcofBbk1a0x7q8ETmMm8c6xdOlMN4ZSA7D0GqH+mhQZ3+sbigZSo04N6o
-# +TzmwTC7wKBjLPxcFgCo0MR/6hGdHgbGpm0yXbQ4CStJB6r97DDa8acvz7f9+tCj
-# hNknnvsBZne5VhDhIG7GrrH5trrINV0zdo7xfCAMKneutaIChrop7rRaALGMq+P5
-# CslUXdS5anSevUiumDGCBCwwggQoAgEBMIGRMH0xCzAJBgNVBAYTAkdCMRswGQYD
-# VQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGDAWBgNV
-# BAoTD1NlY3RpZ28gTGltaXRlZDElMCMGA1UEAxMcU2VjdGlnbyBSU0EgVGltZSBT
-# dGFtcGluZyBDQQIQOUwl4XygbSeoZeI72R0i1DANBglghkgBZQMEAgIFAKCCAWsw
-# GgYJKoZIhvcNAQkDMQ0GCyqGSIb3DQEJEAEEMBwGCSqGSIb3DQEJBTEPFw0yMzA2
-# MjEwNzI2NDdaMD8GCSqGSIb3DQEJBDEyBDBXy7Y6YFdP7enseL0XuLcUbhU04FsT
-# Kk3yx0N6Id99XxngD0u8YfTI/q0Yiy8tG0cwge0GCyqGSIb3DQEJEAIMMYHdMIHa
-# MIHXMBYEFK5ir3UKDL1H1kYfdWjivIznyk+UMIG8BBQC1luV4oNwwVcAlfqI+SPd
-# k3+tjzCBozCBjqSBizCBiDELMAkGA1UEBhMCVVMxEzARBgNVBAgTCk5ldyBKZXJz
-# ZXkxFDASBgNVBAcTC0plcnNleSBDaXR5MR4wHAYDVQQKExVUaGUgVVNFUlRSVVNU
-# IE5ldHdvcmsxLjAsBgNVBAMTJVVTRVJUcnVzdCBSU0EgQ2VydGlmaWNhdGlvbiBB
-# dXRob3JpdHkCEDAPb6zdZph0fKlGNqd4LbkwDQYJKoZIhvcNAQEBBQAEggIAAtrA
-# 8JXBN2ZSny30zsMiUmTtqCu/J6xhKBlISTKAuhyX7ANPebV1MDTYnkxcTPg5D23t
-# Pp5RY9Ht2N/3J83SGE58K1v7vFIM009E1m/8vPrlnOYiNVpwnMHBy4M4Lf9S3DDw
-# KsQGB53StOVgMf1xvPdJ8NUDtEq0I/9aWaIEb/IEo5QQoVSXJk+0tVg2BRR+gyAw
-# eaJKTkSWlB+UbHTH4pzVacfysGn3kdqbzBmrILGgHvNBke1qLWOReVu+3f5Zcm2X
-# YYgsH4gwPXysqZItkUsF1h2XMF2flGQMON/Of4v7HbfOMdcP+erhwluiAZ6R8d5L
-# vChZE99FplRlqziVC8djWbd4DpoxizB0lGY7XCbp40610WANnpFdt7+u9e31200D
-# WGQrmgH950kxYmKKZbubhkeJY9FuKYvvDn6Fmd8XUY/1DdMb8dmODpoFcMIfBQ7q
-# EyXu90kwwmZrP4oqs61VJLV3T5jEIe4azUqxbfVIEUSUgcI2R2gm8VeOJB7+ElkO
-# zxHSu1XZHSAbsla2O2WxsyHoX4vc5iRTCkIF9m3PuOWoO6KKqkQNtrDTa0slTe/2
-# KNj+/NP0LOfidSANrlbkVZhfEAsVuDIl+O0UC2SAK9AjI7bRKhW7SM25yGtZOpow
-# bAr3wHAcGlpqOIjG0yA6DjrGIAB9it6JwUPBFls=
+# AYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAvBgkqhkiG9w0BCQQxIgQgSXZZ1sm3jGce
+# IvGEiMGoPw8rOp0GUKEhtbAkW1r5crQwDQYJKoZIhvcNAQEBBQAEggIAUceYVz/O
+# v8n/wQx0GNgqtek/n1PJegjSO+UQdtEih55PjQBjGCV7dQOb7vZsTphEc/bqzytJ
+# 3FlQPJPPig0ggBtr5dUGCwK076MMKE25FM7Fs5HsaybJUhju4C6oXNaEEa8mrqL6
+# RQbyc5OCmmgrgehXaIaAlaXuCXrr83JtTcm9aucHqXZgYBD+i34lMOKJn/2y5fXH
+# wpyvOJ2qdNdepCNDTrQltJY/8pgtoceDUaodT8cL+OB8r6wPV9j3OIW8coTcvEBc
+# lLnEm9AsupwlZuDEfVva5m4YB+VPmpi9a6fPzdh9UOLbxlewHaCoQNKRLLdBQbHy
+# RkLh7ZQfh+iGj8wprkKBV+tGpW4kZ8QEwxqJRuC8npq2yXYnBFKkmiC/rm4c7GMT
+# pWZfMQ70pIRw88wIB6f6LUMr/RpxBMlH0xITWwAM2roN2cwKuPZ/k97tIBZ0XcK8
+# xBnrt33fP/5HlQS1dMsKfRU7PIt1Bifsd35hGYQCIfSLyTejJwDqSamFgK5ny3QU
+# h96kHEZcdxueNdubCBicTmcTTQE8c+BjeR/9ROY6jHoUM/F/v53IRavrZHpka22q
+# ZjoA7hf3KTk77D83ik9jdafJRry0yEi4xQUxffYOKjbVefLavk6sBkB7bZJuBOry
+# XweU+tqXbuqx/vaXgbDwZUTngDzIiwriE7WhghNOMIITSgYKKwYBBAGCNwMDATGC
+# EzowghM2BgkqhkiG9w0BBwKgghMnMIITIwIBAzEPMA0GCWCGSAFlAwQCAgUAMIHv
+# BgsqhkiG9w0BCRABBKCB3wSB3DCB2QIBAQYKKwYBBAGyMQIBATAxMA0GCWCGSAFl
+# AwQCAQUABCBxv+6t7lpNv5rdSUm02n8sS1FNrCJzTUYS9WopvRRsrgIUDwpdyBsi
+# 5bMrXZQBDNvIAIRQpz8YDzIwMjMwNjIxMTQyNTQ2WqBupGwwajELMAkGA1UEBhMC
+# R0IxEzARBgNVBAgTCk1hbmNoZXN0ZXIxGDAWBgNVBAoTD1NlY3RpZ28gTGltaXRl
+# ZDEsMCoGA1UEAwwjU2VjdGlnbyBSU0EgVGltZSBTdGFtcGluZyBTaWduZXIgIzSg
+# gg3pMIIG9TCCBN2gAwIBAgIQOUwl4XygbSeoZeI72R0i1DANBgkqhkiG9w0BAQwF
+# ADB9MQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAw
+# DgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxJTAjBgNV
+# BAMTHFNlY3RpZ28gUlNBIFRpbWUgU3RhbXBpbmcgQ0EwHhcNMjMwNTAzMDAwMDAw
+# WhcNMzQwODAyMjM1OTU5WjBqMQswCQYDVQQGEwJHQjETMBEGA1UECBMKTWFuY2hl
+# c3RlcjEYMBYGA1UEChMPU2VjdGlnbyBMaW1pdGVkMSwwKgYDVQQDDCNTZWN0aWdv
+# IFJTQSBUaW1lIFN0YW1waW5nIFNpZ25lciAjNDCCAiIwDQYJKoZIhvcNAQEBBQAD
+# ggIPADCCAgoCggIBAKSTKFJLzyeHdqQpHJk4wOcO1NEc7GjLAWTkis13sHFlgryf
+# /Iu7u5WY+yURjlqICWYRFFiyuiJb5vYy8V0twHqiDuDgVmTtoeWBIHIgZEFsx8MI
+# +vN9Xe8hmsJ+1yzDuhGYHvzTIAhCs1+/f4hYMqsws9iMepZKGRNcrPznq+kcFi6w
+# sDiVSs+FUKtnAyWhuzjpD2+pWpqRKBM1uR/zPeEkyGuxmegN77tN5T2MVAOR0Pwt
+# z1UzOHoJHAfRIuBjhqe+/dKDcxIUm5pMCUa9NLzhS1B7cuBb/Rm7HzxqGXtuuy1E
+# Kr48TMysigSTxleGoHM2K4GX+hubfoiH2FJ5if5udzfXu1Cf+hglTxPyXnypsSBa
+# KaujQod34PRMAkjdWKVTpqOg7RmWZRUpxe0zMCXmloOBmvZgZpBYB4DNQnWs+7SR
+# 0MXdAUBqtqgQ7vaNereeda/TpUsYoQyfV7BeJUeRdM11EtGcb+ReDZvsdSbu/tP1
+# ki9ShejaRFEqoswAyodmQ6MbAO+itZadYq0nC/IbSsnDlEI3iCCEqIeuw7ojcnv4
+# VO/4ayewhfWnQ4XYKzl021p3AtGk+vXNnD3MH65R0Hts2B0tEUJTcXTC5TWqLVIS
+# 2SXP8NPQkUMS1zJ9mGzjd0HI/x8kVO9urcY+VXvxXIc6ZPFgSwVP77kv7AkTAgMB
+# AAGjggGCMIIBfjAfBgNVHSMEGDAWgBQaofhhGSAPw0F3RSiO0TVfBhIEVTAdBgNV
+# HQ4EFgQUAw8xyJEqk71j89FdTaQ0D9KVARgwDgYDVR0PAQH/BAQDAgbAMAwGA1Ud
+# EwEB/wQCMAAwFgYDVR0lAQH/BAwwCgYIKwYBBQUHAwgwSgYDVR0gBEMwQTA1Bgwr
+# BgEEAbIxAQIBAwgwJTAjBggrBgEFBQcCARYXaHR0cHM6Ly9zZWN0aWdvLmNvbS9D
+# UFMwCAYGZ4EMAQQCMEQGA1UdHwQ9MDswOaA3oDWGM2h0dHA6Ly9jcmwuc2VjdGln
+# by5jb20vU2VjdGlnb1JTQVRpbWVTdGFtcGluZ0NBLmNybDB0BggrBgEFBQcBAQRo
+# MGYwPwYIKwYBBQUHMAKGM2h0dHA6Ly9jcnQuc2VjdGlnby5jb20vU2VjdGlnb1JT
+# QVRpbWVTdGFtcGluZ0NBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2Vj
+# dGlnby5jb20wDQYJKoZIhvcNAQEMBQADggIBAEybZVj64HnP7xXDMm3eM5Hrd1ji
+# 673LSjx13n6UbcMixwSV32VpYRMM9gye9YkgXsGHxwMkysel8Cbf+PgxZQ3g621R
+# V6aMhFIIRhwqwt7y2opF87739i7Efu347Wi/elZI6WHlmjl3vL66kWSIdf9dhRY0
+# J9Ipy//tLdr/vpMM7G2iDczD8W69IZEaIwBSrZfUYngqhHmo1z2sIY9wwyR5Opfx
+# DaOjW1PYqwC6WPs1gE9fKHFsGV7Cg3KQruDG2PKZ++q0kmV8B3w1RB2tWBhrYvve
+# bMQKqWzTIUZw3C+NdUwjwkHQepY7w0vdzZImdHZcN6CaJJ5OX07Tjw/lE09ZRGVL
+# Q2TPSPhnZ7lNv8wNsTow0KE9SK16ZeTs3+AB8LMqSjmswaT5qX010DJAoLEZKhgh
+# ssh9BXEaSyc2quCYHIN158d+S4RDzUP7kJd2KhKsQMFwW5kKQPqAbZRhe8huuchn
+# ZyRcUI0BIN4H9wHU+C4RzZ2D5fjKJRxEPSflsIZHKgsbhHZ9e2hPjbf3E7TtoC3u
+# cw/ZELqdmSx813UfjxDElOZ+JOWVSoiMJ9aFZh35rmR2kehI/shVCu0pwx/eOKbA
+# FPsyPfipg2I2yMO+AIccq/pKQhyJA9z1XHxw2V14Tu6fXiDmCWp8KwijSPUV/ARP
+# 380hHHrl9Y4a1LlAMIIG7DCCBNSgAwIBAgIQMA9vrN1mmHR8qUY2p3gtuTANBgkq
+# hkiG9w0BAQwFADCBiDELMAkGA1UEBhMCVVMxEzARBgNVBAgTCk5ldyBKZXJzZXkx
+# FDASBgNVBAcTC0plcnNleSBDaXR5MR4wHAYDVQQKExVUaGUgVVNFUlRSVVNUIE5l
+# dHdvcmsxLjAsBgNVBAMTJVVTRVJUcnVzdCBSU0EgQ2VydGlmaWNhdGlvbiBBdXRo
+# b3JpdHkwHhcNMTkwNTAyMDAwMDAwWhcNMzgwMTE4MjM1OTU5WjB9MQswCQYDVQQG
+# EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxm
+# b3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxJTAjBgNVBAMTHFNlY3RpZ28g
+# UlNBIFRpbWUgU3RhbXBpbmcgQ0EwggIiMA0GCSqGSIb3DQEBAQUAA4ICDwAwggIK
+# AoICAQDIGwGv2Sx+iJl9AZg/IJC9nIAhVJO5z6A+U++zWsB21hoEpc5Hg7XrxMxJ
+# NMvzRWW5+adkFiYJ+9UyUnkuyWPCE5u2hj8BBZJmbyGr1XEQeYf0RirNxFrJ29dd
+# SU1yVg/cyeNTmDoqHvzOWEnTv/M5u7mkI0Ks0BXDf56iXNc48RaycNOjxN+zxXKs
+# Lgp3/A2UUrf8H5VzJD0BKLwPDU+zkQGObp0ndVXRFzs0IXuXAZSvf4DP0REKV4TJ
+# f1bgvUacgr6Unb+0ILBgfrhN9Q0/29DqhYyKVnHRLZRMyIw80xSinL0m/9NTIMdg
+# aZtYClT0Bef9Maz5yIUXx7gpGaQpL0bj3duRX58/Nj4OMGcrRrc1r5a+2kxgzKi7
+# nw0U1BjEMJh0giHPYla1IXMSHv2qyghYh3ekFesZVf/QOVQtJu5FGjpvzdeE8Nfw
+# KMVPZIMC1Pvi3vG8Aij0bdonigbSlofe6GsO8Ft96XZpkyAcSpcsdxkrk5WYnJee
+# 647BeFbGRCXfBhKaBi2fA179g6JTZ8qx+o2hZMmIklnLqEbAyfKm/31X2xJ2+opB
+# JNQb/HKlFKLUrUMcpEmLQTkUAx4p+hulIq6lw02C0I3aa7fb9xhAV3PwcaP7Sn1F
+# NsH3jYL6uckNU4B9+rY5WDLvbxhQiddPnTO9GrWdod6VQXqngwIDAQABo4IBWjCC
+# AVYwHwYDVR0jBBgwFoAUU3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFBqh
+# +GEZIA/DQXdFKI7RNV8GEgRVMA4GA1UdDwEB/wQEAwIBhjASBgNVHRMBAf8ECDAG
+# AQH/AgEAMBMGA1UdJQQMMAoGCCsGAQUFBwMIMBEGA1UdIAQKMAgwBgYEVR0gADBQ
+# BgNVHR8ESTBHMEWgQ6BBhj9odHRwOi8vY3JsLnVzZXJ0cnVzdC5jb20vVVNFUlRy
+# dXN0UlNBQ2VydGlmaWNhdGlvbkF1dGhvcml0eS5jcmwwdgYIKwYBBQUHAQEEajBo
+# MD8GCCsGAQUFBzAChjNodHRwOi8vY3J0LnVzZXJ0cnVzdC5jb20vVVNFUlRydXN0
+# UlNBQWRkVHJ1c3RDQS5jcnQwJQYIKwYBBQUHMAGGGWh0dHA6Ly9vY3NwLnVzZXJ0
+# cnVzdC5jb20wDQYJKoZIhvcNAQEMBQADggIBAG1UgaUzXRbhtVOBkXXfA3oyCy0l
+# hBGysNsqfSoF9bw7J/RaoLlJWZApbGHLtVDb4n35nwDvQMOt0+LkVvlYQc/xQuUQ
+# ff+wdB+PxlwJ+TNe6qAcJlhc87QRD9XVw+K81Vh4v0h24URnbY+wQxAPjeT5OGK/
+# EwHFhaNMxcyyUzCVpNb0llYIuM1cfwGWvnJSajtCN3wWeDmTk5SbsdyybUFtZ83J
+# b5A9f0VywRsj1sJVhGbks8VmBvbz1kteraMrQoohkv6ob1olcGKBc2NeoLvY3NdK
+# 0z2vgwY4Eh0khy3k/ALWPncEvAQ2ted3y5wujSMYuaPCRx3wXdahc1cFaJqnyTdl
+# Hb7qvNhCg0MFpYumCf/RoZSmTqo9CfUFbLfSZFrYKiLCS53xOV5M3kg9mzSWmglf
+# jv33sVKRzj+J9hyhtal1H3G/W0NdZT1QgW6r8NDT/LKzH7aZlib0PHmLXGTMze4n
+# muWgwAxyh8FuTVrTHurwROYybxzrF06Uw3hlIDsPQaof6aFBnf6xuKBlKjTg3qj5
+# PObBMLvAoGMs/FwWAKjQxH/qEZ0eBsambTJdtDgJK0kHqv3sMNrxpy/Pt/360KOE
+# 2See+wFmd7lWEOEgbsausfm2usg1XTN2jvF8IAwqd661ogKGuinutFoAsYyr4/kK
+# yVRd1LlqdJ69SK6YMYIELDCCBCgCAQEwgZEwfTELMAkGA1UEBhMCR0IxGzAZBgNV
+# BAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYGA1UE
+# ChMPU2VjdGlnbyBMaW1pdGVkMSUwIwYDVQQDExxTZWN0aWdvIFJTQSBUaW1lIFN0
+# YW1waW5nIENBAhA5TCXhfKBtJ6hl4jvZHSLUMA0GCWCGSAFlAwQCAgUAoIIBazAa
+# BgkqhkiG9w0BCQMxDQYLKoZIhvcNAQkQAQQwHAYJKoZIhvcNAQkFMQ8XDTIzMDYy
+# MTE0MjU0NlowPwYJKoZIhvcNAQkEMTIEMOOxwV8CJwk1hRtP3sfoW7+cvSObYbyS
+# 0ThtEhROgUaS/6FVLUA+LCPBbKlVfJitTDCB7QYLKoZIhvcNAQkQAgwxgd0wgdow
+# gdcwFgQUrmKvdQoMvUfWRh91aOK8jOfKT5QwgbwEFALWW5Xig3DBVwCV+oj5I92T
+# f62PMIGjMIGOpIGLMIGIMQswCQYDVQQGEwJVUzETMBEGA1UECBMKTmV3IEplcnNl
+# eTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoTFVRoZSBVU0VSVFJVU1Qg
+# TmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0aW9uIEF1
+# dGhvcml0eQIQMA9vrN1mmHR8qUY2p3gtuTANBgkqhkiG9w0BAQEFAASCAgAqRxQL
+# 9nslwhVO9szRK1KnmkL6BzVci3bNyUv2xPxV0IlfBUc6ssxy8maPClLoH068v4dy
+# nxnVtgurFN6YE4GuYgJsKQo3mymmLru5Vd/KkzLRvmnZQNgwsWYKWt8/0QZR4Hf2
+# hhuTS+AQ16pZscOJof/fMnHyGAIfspQMUKbV2OCGAtVjDZmA2a9Qkvtiwzlfo11P
+# DeYk4eIQ+lavJMM5caIwE6wckduBwgKDwZ9rz4cB6pQY8wUaIYRt/iOvImTFZm9K
+# 4VWC9RmjT2Nu4Fgoxf6GMhSCkmkc7ivuINfaAeNx6WEM0P8dQwMfadAUFIeR/CZ+
+# Hk2VVjvbwTFGoW9x3rcR1ruTVg8A18tkng/pkY6Q1obGZH/XcyiyUdNt5FgC/Ayn
+# xzTYU8qhFAkf5F9p0R6/7hyqnJTLuSXdL/ug6aszzyaHZGdBEQ4F1JW+gQhcwHkR
+# MRnCaspQCY+C02hs4Ebgzj/3y3OmyzFsb7UkgVZ4SeOyZm4yNCmKtEaiEkyNKP+h
+# dhroHDwkFROFbJO3BYE2EH3zfA/5MGAbT4KFR0geU6tDT9DudLPr+ZeyC505hXEz
+# k4s5S8z4zCCitF7n6bLJjHZG/PilYQUd9uIk/X15qvaxgFaTCzXCKOtM7sUcHapH
+# oQK0XSzu9luhxPaEf2giUMytxaAsqs2zl8tW2A==
 # SIG # End signature block

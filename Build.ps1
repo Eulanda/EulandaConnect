@@ -807,4 +807,4 @@ function Invoke-Main {
 
 # https://www.powershellgallery.com/api/v2/package/EulandaConnect
 # http://www.google.com/ping?sitemap=https://eulandaconnect.eulanda.eu/sitemap.xml
-Invoke-Main -version '3.1.8'
+Invoke-Main -version '3.1.9'

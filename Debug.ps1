@@ -28,8 +28,7 @@ try {
     # Remove-SymbolicLink
     # Confirm-System -network
 
-    Import-TieredPrice -path 'C:\temp\test.xlsx' -articleNoName 'ARTNUMMER' -price1Name 'Vk' -tierListName 'BBY Retail' -udl 'C:\temp\Eulanda_1 JohnDoe.udl'
-
+    Import-TieredPrices  -path 'C:\temp\test.xlsx' -articleNo 'ARTNUMMER' -price1 'Vk' -pricelist 'BBY Retail' -udl 'C:\temp\Eulanda_1 JohnDoe.udl' -verbose -debug
 
 } catch {
     $errorMessage = $Error[0].ToString()

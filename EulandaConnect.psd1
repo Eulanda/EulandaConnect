@@ -12,7 +12,7 @@
 RootModule = 'EulandaConnect.psm1'
 
 # Version number of this module.
-ModuleVersion = '3.1.8'
+ModuleVersion = '3.1.9'
 
 # Supported PSEditions
 CompatiblePSEditions = @('Desktop', 'Core')
@@ -171,7 +171,7 @@ FunctionsToExport = @(
     'Get-XmlEulandaStock',
     'Get-XmlEulandaTierPrice',
     'Hide-Extensions',
-    'Import-TieredPrice',
+    'Import-TieredPrices',
     'Install-SignTool',
     'Merge-IpGeoInfo',
     'New-ConnStr',

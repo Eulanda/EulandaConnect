@@ -17337,25 +17337,42 @@ No technical information available</dev:code>
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
-      <command:name>Import-TieredPrice</command:name>
+      <command:name>Import-TieredPrices</command:name>
       <command:verb>Import</command:verb>
-      <command:noun>TieredPrice</command:noun>
+      <command:noun>TieredPrices</command:noun>
       <maml:description>
-        <maml:para>This function imports tiered prices from a CSV or Excel file into a specified price list of EULANDA ERP system.</maml:para>
+        <maml:para>This function imports tiered prices from a CSV or Excel file into a specified price list of the EULANDA ERP system.</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The Import-TieredPrice function uses ADO connection to connect to a database. It imports the tiered prices from a specified CSV or Excel file, and updates the database with the imported prices. The file should contain specific columns for the article number and the prices. The quantities can be optionally specified. If a quantity is not provided for a certain price, a default value of "1" will be used.</maml:para>
-      <maml:para>The function allows selective updates, meaning you can specify only the price columns you want to update in the target table. If a price column is provided and its associated quantity column is not, the function will update the price for that tier and set the quantity to "1". If a price column is not provided, that tier will not be updated in the database.</maml:para>
-      <maml:para>The price list name, file path and ADO connection string (UDL file path) are needed as parameters. The function will update the specified price list in the database with the imported prices, matching the articles by the article number.</maml:para>
+      <maml:para>The Import-TieredPrice function uses an ADO connection to connect to the EULANDA database. It imports tiered prices from a specified CSV or Excel file and updates the database's tiered price table.</maml:para>
+      <maml:para>If Excel files should be applied, the XSLX format must be used. Also, the ImportExcel PowerShell module must be installed. This can be done at the PowerShell prompt with 'Install-Module ImportExcel'. No installed Office is required to import Excel files.</maml:para>
+      <maml:para>For CSV files, however, field separation with semicolons is expected. The price and quantity fields are expected as from the country setting of the PC. So in Germany for example the comma to separate the cents.</maml:para>
+      <maml:para>The file to be imported must contain a column with the article number and at least one price field. The column names are freely selectable, as already mentioned. If no corresponding quantity is specified, 1 is used as default value. This means that the price is used from quantity 1.</maml:para>
+      <maml:para>The parameters 'Price1Name' to 'Price5Name' are the field names from the file to be imported. The number in the parameter is used to specify the scale in the price list.</maml:para>
+      <maml:para>'Price1Name' contains the field name for the first scale and so on. It is not mandatory to start with the first price, in this way every scale from 1 to 5 can be addressed in the ERP system.</maml:para>
+      <maml:para>EULANDA supports any number of price lists. By specification of the PriceListName the price list to be used is selected.</maml:para>
+      <maml:para>As a further parameter the file path to the UDL file is needed.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
-        <maml:name>Import-TieredPrice</maml:name>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>Import-TieredPrices</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="barcode">
+          <maml:name>barcodeName</maml:name>
+          <maml:description>
+            <maml:para>The name of the column that contains the article barcode in the CSV or Excel file. Only one field name from the selection -articleNoName, -articleIdName, -barcodeName, -articleUidName may be specified.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="articleNo">
           <maml:name>articleNoName</maml:name>
           <maml:description>
-            <maml:para>The name of the column that contains the article number in the CSV or Excel file.</maml:para>
+            <maml:para>The name of the column that contains the article number in the CSV or Excel file. Only one field name from the selection -articleNoName, -articleIdName, -barcodeName, -articleUidName may be specified.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -17364,127 +17381,7 @@ No technical information available</dev:code>
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
-          <maml:name>price1Name</maml:name>
-          <maml:description>
-            <maml:para>The name of the column that contain the first price in the CSV or Excel file.</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-          <dev:type>
-            <maml:name>String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="10" aliases="none">
-          <maml:name>qty5Name</maml:name>
-          <maml:description>
-            <maml:para>The name of the column that contain the fifth quantity in the CSV or Excel file.</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-          <dev:type>
-            <maml:name>String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="11" aliases="none">
-          <maml:name>tierListName</maml:name>
-          <maml:description>
-            <maml:para>The name of the price list in the database where the prices will be imported.</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-          <dev:type>
-            <maml:name>String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="12" aliases="none">
-          <maml:name>path</maml:name>
-          <maml:description>
-            <maml:para>The path to the CSV or Excel file that contains the tiered prices.</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-          <dev:type>
-            <maml:name>String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="13" aliases="none">
-          <maml:name>udl</maml:name>
-          <maml:description>
-            <maml:para>The path to the ADO connection string file (.UDL) for the database.</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-          <dev:type>
-            <maml:name>String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
-          <maml:name>qty1Name</maml:name>
-          <maml:description>
-            <maml:para>The name of the column that contain the first quantity in the CSV or Excel file.</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-          <dev:type>
-            <maml:name>String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
-          <maml:name>price2Name</maml:name>
-          <maml:description>
-            <maml:para>The name of the column that contain the second price in the CSV or Excel file.</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-          <dev:type>
-            <maml:name>String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="4" aliases="none">
-          <maml:name>qty2Name</maml:name>
-          <maml:description>
-            <maml:para>The name of the column that contain the second quantity in the CSV or Excel file.</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-          <dev:type>
-            <maml:name>String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="5" aliases="none">
-          <maml:name>price3Name</maml:name>
-          <maml:description>
-            <maml:para>The name of the column that contain the third price in the CSV or Excel file.</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-          <dev:type>
-            <maml:name>String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="6" aliases="none">
-          <maml:name>qty3Name</maml:name>
-          <maml:description>
-            <maml:para>The name of the column that contain the third quantity in the CSV or Excel file.</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-          <dev:type>
-            <maml:name>String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="7" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="10" aliases="price4">
           <maml:name>price4Name</maml:name>
           <maml:description>
             <maml:para>The name of the column that contain the fourth price in the CSV or Excel file.</maml:para>
@@ -17496,7 +17393,7 @@ No technical information available</dev:code>
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="8" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="11" aliases="qty4">
           <maml:name>qty4Name</maml:name>
           <maml:description>
             <maml:para>The name of the column that contain the fourth quantity in the CSV or Excel file.</maml:para>
@@ -17508,7 +17405,7 @@ No technical information available</dev:code>
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="9" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="12" aliases="price5">
           <maml:name>price5Name</maml:name>
           <maml:description>
             <maml:para>The name of the column that contain the fifth price in the CSV or Excel file.</maml:para>
@@ -17520,13 +17417,229 @@ No technical information available</dev:code>
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="13" aliases="qty5">
+          <maml:name>qty5Name</maml:name>
+          <maml:description>
+            <maml:para>The name of the column that contain the fifth quantity in the CSV or Excel file.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="14" aliases="none">
+          <maml:name>priceList</maml:name>
+          <maml:description>
+            <maml:para>The name of the price list into which the scale prices are to be imported. The price list can be specified with either -priceList or -priceListId.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="15" aliases="none">
+          <maml:name>priceListId</maml:name>
+          <maml:description>
+            <maml:para>The Id of the price list into which the scale prices are to be imported. The price list can be specified with either -priceList or -priceListId.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+          <dev:type>
+            <maml:name>Int32</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="16" aliases="delim">
+          <maml:name>csvDelimiter</maml:name>
+          <maml:description>
+            <maml:para>The CSV delimiter is used with CSV files. The semicolon is used as default. It can be changed via this parameter.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="17" aliases="decimal">
+          <maml:name>decimalSeparator</maml:name>
+          <maml:description>
+            <maml:para>The decimal separator for floating point numbers such as prices or quantities. The value from the operating system is used by default. In Germany, for example, this would be the comma. With this parameter the value can be changed. Especially with CSV files this can be necessary if they use the point like in international files.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="18" aliases="none">
+          <maml:name>path</maml:name>
+          <maml:description>
+            <maml:para>The path to the CSV or Excel file containing the tiered prices. Only .csv and .xlsx are accepted as file extension. Note that for Excel files, the PowerShell module ImportExcel from the PowerShell Gallery must be installed.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="19" aliases="none">
+          <maml:name>conn</maml:name>
+          <maml:description>
+            <maml:para>The connection can be established via an existing ADO object of the type 'ADODB.Connection'. If the connection is already open, it remains open even after the function has been executed. If it was closed, it will be closed again after the function has been executed.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Object</command:parameterValue>
+          <dev:type>
+            <maml:name>Object</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="articleId">
+          <maml:name>articleIdName</maml:name>
+          <maml:description>
+            <maml:para>The name of the column that contains the article Id in the CSV or Excel file. Only one field name from the selection -articleNoName, -articleIdName, -barcodeName, -articleUidName may be specified.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="20" aliases="none">
+          <maml:name>udl</maml:name>
+          <maml:description>
+            <maml:para>Alternatively to a connection, a string to a UDL file can be specified. In this case an ADO object is created and closed again at the end of the function.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="21" aliases="none">
+          <maml:name>connStr</maml:name>
+          <maml:description>
+            <maml:para>A `ConnectionString` can be specified here, with which a database can be opened.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="articleUid">
+          <maml:name>articleUidName</maml:name>
+          <maml:description>
+            <maml:para>The name of the column that contains the article uid in the CSV or Excel file. Only one field name from the selection -articleNoName, -articleIdName, -barcodeName, -articleUidName may be specified.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="4" aliases="price1">
+          <maml:name>price1Name</maml:name>
+          <maml:description>
+            <maml:para>The name of the column that contain the first price in the CSV or Excel file.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="5" aliases="qty1">
+          <maml:name>qty1Name</maml:name>
+          <maml:description>
+            <maml:para>The name of the column that contain the first quantity in the CSV or Excel file.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="6" aliases="price2">
+          <maml:name>price2Name</maml:name>
+          <maml:description>
+            <maml:para>The name of the column that contain the second price in the CSV or Excel file.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="7" aliases="qty2">
+          <maml:name>qty2Name</maml:name>
+          <maml:description>
+            <maml:para>The name of the column that contain the second quantity in the CSV or Excel file.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="8" aliases="price3">
+          <maml:name>price3Name</maml:name>
+          <maml:description>
+            <maml:para>The name of the column that contain the third price in the CSV or Excel file.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="9" aliases="qty3">
+          <maml:name>qty3Name</maml:name>
+          <maml:description>
+            <maml:para>The name of the column that contain the third quantity in the CSV or Excel file.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="articleId">
+        <maml:name>articleIdName</maml:name>
+        <maml:description>
+          <maml:para>The name of the column that contains the article Id in the CSV or Excel file. Only one field name from the selection -articleNoName, -articleIdName, -barcodeName, -articleUidName may be specified.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="articleNo">
         <maml:name>articleNoName</maml:name>
         <maml:description>
-          <maml:para>The name of the column that contains the article number in the CSV or Excel file.</maml:para>
+          <maml:para>The name of the column that contains the article number in the CSV or Excel file. Only one field name from the selection -articleNoName, -articleIdName, -barcodeName, -articleUidName may be specified.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -17535,10 +17648,82 @@ No technical information available</dev:code>
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="12" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="articleUid">
+        <maml:name>articleUidName</maml:name>
+        <maml:description>
+          <maml:para>The name of the column that contains the article uid in the CSV or Excel file. Only one field name from the selection -articleNoName, -articleIdName, -barcodeName, -articleUidName may be specified.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="barcode">
+        <maml:name>barcodeName</maml:name>
+        <maml:description>
+          <maml:para>The name of the column that contains the article barcode in the CSV or Excel file. Only one field name from the selection -articleNoName, -articleIdName, -barcodeName, -articleUidName may be specified.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="19" aliases="none">
+        <maml:name>conn</maml:name>
+        <maml:description>
+          <maml:para>The connection can be established via an existing ADO object of the type 'ADODB.Connection'. If the connection is already open, it remains open even after the function has been executed. If it was closed, it will be closed again after the function has been executed.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Object</command:parameterValue>
+        <dev:type>
+          <maml:name>Object</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="21" aliases="none">
+        <maml:name>connStr</maml:name>
+        <maml:description>
+          <maml:para>A `ConnectionString` can be specified here, with which a database can be opened.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="16" aliases="delim">
+        <maml:name>csvDelimiter</maml:name>
+        <maml:description>
+          <maml:para>The CSV delimiter is used with CSV files. The semicolon is used as default. It can be changed via this parameter.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="17" aliases="decimal">
+        <maml:name>decimalSeparator</maml:name>
+        <maml:description>
+          <maml:para>The decimal separator for floating point numbers such as prices or quantities. The value from the operating system is used by default. In Germany, for example, this would be the comma. With this parameter the value can be changed. Especially with CSV files this can be necessary if they use the point like in international files.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="18" aliases="none">
         <maml:name>path</maml:name>
         <maml:description>
-          <maml:para>The path to the CSV or Excel file that contains the tiered prices.</maml:para>
+          <maml:para>The path to the CSV or Excel file containing the tiered prices. Only .csv and .xlsx are accepted as file extension. Note that for Excel files, the PowerShell module ImportExcel from the PowerShell Gallery must be installed.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -17547,7 +17732,7 @@ No technical information available</dev:code>
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="4" aliases="price1">
         <maml:name>price1Name</maml:name>
         <maml:description>
           <maml:para>The name of the column that contain the first price in the CSV or Excel file.</maml:para>
@@ -17559,7 +17744,7 @@ No technical information available</dev:code>
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="6" aliases="price2">
         <maml:name>price2Name</maml:name>
         <maml:description>
           <maml:para>The name of the column that contain the second price in the CSV or Excel file.</maml:para>
@@ -17571,7 +17756,7 @@ No technical information available</dev:code>
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="5" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="8" aliases="price3">
         <maml:name>price3Name</maml:name>
         <maml:description>
           <maml:para>The name of the column that contain the third price in the CSV or Excel file.</maml:para>
@@ -17583,7 +17768,7 @@ No technical information available</dev:code>
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="7" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="10" aliases="price4">
         <maml:name>price4Name</maml:name>
         <maml:description>
           <maml:para>The name of the column that contain the fourth price in the CSV or Excel file.</maml:para>
@@ -17595,7 +17780,7 @@ No technical information available</dev:code>
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="9" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="12" aliases="price5">
         <maml:name>price5Name</maml:name>
         <maml:description>
           <maml:para>The name of the column that contain the fifth price in the CSV or Excel file.</maml:para>
@@ -17607,7 +17792,31 @@ No technical information available</dev:code>
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="14" aliases="none">
+        <maml:name>priceList</maml:name>
+        <maml:description>
+          <maml:para>The name of the price list into which the scale prices are to be imported. The price list can be specified with either -priceList or -priceListId.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="15" aliases="none">
+        <maml:name>priceListId</maml:name>
+        <maml:description>
+          <maml:para>The Id of the price list into which the scale prices are to be imported. The price list can be specified with either -priceList or -priceListId.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+        <dev:type>
+          <maml:name>Int32</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="5" aliases="qty1">
         <maml:name>qty1Name</maml:name>
         <maml:description>
           <maml:para>The name of the column that contain the first quantity in the CSV or Excel file.</maml:para>
@@ -17619,7 +17828,7 @@ No technical information available</dev:code>
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="4" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="7" aliases="qty2">
         <maml:name>qty2Name</maml:name>
         <maml:description>
           <maml:para>The name of the column that contain the second quantity in the CSV or Excel file.</maml:para>
@@ -17631,7 +17840,7 @@ No technical information available</dev:code>
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="6" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="9" aliases="qty3">
         <maml:name>qty3Name</maml:name>
         <maml:description>
           <maml:para>The name of the column that contain the third quantity in the CSV or Excel file.</maml:para>
@@ -17643,7 +17852,7 @@ No technical information available</dev:code>
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="8" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="11" aliases="qty4">
         <maml:name>qty4Name</maml:name>
         <maml:description>
           <maml:para>The name of the column that contain the fourth quantity in the CSV or Excel file.</maml:para>
@@ -17655,7 +17864,7 @@ No technical information available</dev:code>
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="10" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="13" aliases="qty5">
         <maml:name>qty5Name</maml:name>
         <maml:description>
           <maml:para>The name of the column that contain the fifth quantity in the CSV or Excel file.</maml:para>
@@ -17667,22 +17876,10 @@ No technical information available</dev:code>
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="11" aliases="none">
-        <maml:name>tierListName</maml:name>
-        <maml:description>
-          <maml:para>The name of the price list in the database where the prices will be imported.</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-        <dev:type>
-          <maml:name>String</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="13" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="20" aliases="none">
         <maml:name>udl</maml:name>
         <maml:description>
-          <maml:para>The path to the ADO connection string file (.UDL) for the database.</maml:para>
+          <maml:para>Alternatively to a connection, a string to a UDL file can be specified. In this case an ADO object is created and closed again at the end of the function.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -17720,16 +17917,17 @@ No technical information available</dev:code>
     <command:examples>
       <command:example>
         <maml:title>------- Example 1: Import tiered prices from a csv file -------</maml:title>
-        <dev:code>PS C:\&gt; Import-TieredPrice -path 'C:\temp\test.csv' -articleNoName 'ArticleNo' -price1Name 'SalesPrice' -tierListName 'Retail' -udl 'C:\temp\Eulanda_1 JohnDoe.udl'</dev:code>
+        <dev:code>PS C:\&gt; Import-TieredPrice -path 'C:\temp\test.csv' -articleNo 'ArticleNo' -price1 'SalesPrice' -priceList 'Retail' -udl 'C:\temp\Eulanda_1 JohnDoe.udl'</dev:code>
         <dev:remarks>
-          <maml:para>This command will import the prices from the 'SalesPrice' column of the 'test.csv' file into the 'Retail' price list of the database specified by the 'Eulanda_1 JohnDoe.udl' connection string. The 'ArticleNo' column is used to match the articles in the database.</maml:para>
+          <maml:para>This command will import the prices from the 'SalesPrice' column of the 'test.csv' file into the 'Retail' price list of the database specified by the 'Eulanda_1 JohnDoe.udl' connection string. The 'ArticleNo' column is used to match the articles in the database. </maml:para>
+          <maml:para>The semicolon is used as field delimiter. This value can be changed via the -csvDelimiter parameter. The separation to the cents is specified via the decimal separator, which is read by the operating system. However, one can override this value with -decimalSeparator.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
     <command:relatedLinks>
       <maml:navigationLink>
         <maml:linkText>Online Version:</maml:linkText>
-        <maml:uri>https://github.com/Eulanda/EulandaConnect/blob/master/docs/Import-TieredPrice.md</maml:uri>
+        <maml:uri>https://github.com/Eulanda/EulandaConnect/blob/master/docs/Import-TieredPrices.md</maml:uri>
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
