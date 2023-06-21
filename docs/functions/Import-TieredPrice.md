@@ -16,7 +16,7 @@ This function imports tiered prices from a CSV or Excel file into a specified pr
 Import-TieredPrice [[-articleNoName] <String>] [[-price1Name] <String>] [[-qty1Name] <String>]
  [[-price2Name] <String>] [[-qty2Name] <String>] [[-price3Name] <String>] [[-qty3Name] <String>]
  [[-price4Name] <String>] [[-qty4Name] <String>] [[-price5Name] <String>] [[-qty5Name] <String>]
- [[-tierListName] <String>] [[-path] <String>] [[-udl] <String>]
+ [[-tierListName] <String>] [[-path] <String>] [[-udl] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -28,7 +28,7 @@ The price list name, file path and ADO connection string (UDL file path) are nee
 
 ## EXAMPLES
 
-### Example 1: Import tiered prices from a csv file 
+### Example 1: Import tiered prices from a csv file
 ```powershell
 PS C:\> Import-TieredPrice -path 'C:\temp\test.csv' -articleNoName 'ArticleNo' -price1Name 'SalesPrice' -tierListName 'Retail' -udl 'C:\temp\Eulanda_1 JohnDoe.udl'
 ```
@@ -246,6 +246,9 @@ Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
+
+### CommonParameters
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 

@@ -561,4 +561,10 @@
   <data name="TELEGRAM_SEND_MESSAGE_ERROR" xml:space="preserve">
     <value>Die Nachricht konnte nicht über die Telegram API gesendet werden. Grund: {0}.</value>
   </data>
+  <data name="IMPORTEXCEL_NOTFOUND" xml:space="preserve">
+    <value>Um EXCEL-Dateibefehle ausführen zu können, muss das IMPORTEXCEL-Modul aus der PsGallery installiert werden. Bitte verwenden Sie den Befehl: 'Install-Module -Name IMPORTEXCEL -Repository PsGallery'. Funktion: {0}</value>
+  </data>
+  <data name="ONLY_CSV_AND_XSLX_SUPPORTED" xml:space="preserve">
+    <value>Es werden nur .csv oder .xlsx Dateien unterstützt. Funktion: {0}</value>
+  </data>
 </root>
