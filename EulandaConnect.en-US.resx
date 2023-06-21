@@ -709,4 +709,12 @@
     <value>Failed to send the message via Telegram API. Reason: {0}.</value>
     <comment/>
   </data>
+  <data name="IMPORTEXCEL_NOTFOUND" xml:space="preserve">
+    <value>To be able to execute EXCEL file commands, the IMPORTEXCEL module needs to be installed from the PsGallery. Please use the command: 'Install-Module -Name IMPORTEXCEL -Repository PsGallery'. Function: {0}</value>
+    <comment/>
+  </data>
+  <data name="ONLY_CSV_AND_XSLX_SUPPORTED" xml:space="preserve">
+    <value>Only .csv or .xlsx files are supported. Function: {0}</value>
+    <comment/>
+  </data>
 </root>

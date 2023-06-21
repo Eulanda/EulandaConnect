@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<document created="20230218074329" version="4.0.374" date="20230528203940" scan="53" scanned="20230528203922">
+<document created="20230218074329" version="4.0.374" date="20230621071134" scan="54" scanned="20230621071056">
   <lang id="de-DE"/>
-  <source class="TNetResourceSource" name=".\EulandaConnect.en-US.resx" original="en-US" date="20230528181134" usebom="1" options="[]" righttoleft="nrlNone">
+  <source class="TNetResourceSource" name=".\EulandaConnect.en-US.resx" original="en-US" date="20230621051030" usebom="1" options="[]" righttoleft="nrlNone">
     <outputfile dir="." localized="EulandaConnect.&lt;net&gt;.&lt;ext&gt;"/>
     <excludeddatatypes>
       <class>TBinaryData</class>
@@ -614,6 +614,14 @@
     <row id="TELEGRAM_SEND_MESSAGE_ERROR" state="0" created="20230528203922">
       <native>Failed to send the message via Telegram API. Reason: {0}.</native>
       <lang id="de-DE" date="20230528203938" status="3">Die Nachricht konnte nicht über die Telegram API gesendet werden. Grund: {0}.</lang>
+    </row>
+    <row id="IMPORTEXCEL_NOTFOUND" state="0" created="20230621071056">
+      <native>To be able to execute EXCEL file commands, the IMPORTEXCEL module needs to be installed from the PsGallery. Please use the command: 'Install-Module -Name IMPORTEXCEL -Repository PsGallery'. Function: {0}</native>
+      <lang id="de-DE" date="20230621071124" status="3">Um EXCEL-Dateibefehle ausführen zu können, muss das IMPORTEXCEL-Modul aus der PsGallery installiert werden. Bitte verwenden Sie den Befehl: 'Install-Module -Name IMPORTEXCEL -Repository PsGallery'. Funktion: {0}</lang>
+    </row>
+    <row id="ONLY_CSV_AND_XSLX_SUPPORTED" state="0" created="20230621071056">
+      <native>Only .csv or .xlsx files are supported. Function: {0}</native>
+      <lang id="de-DE" date="20230621071132" status="3">Es werden nur .csv oder .xlsx Dateien unterstützt. Funktion: {0}</lang>
     </row>
   </source>
 </document>
