@@ -13,7 +13,7 @@ Rename any MSSQL database including the logical, physical as well as the file na
 ## SYNTAX
 
 ```
-Rename-MssqlDatabase [-oldName <String>] [[-newName] <String>] [[-server] <String>] [[-user] <String>]
+Rename-MssqlDatabase [[-oldName] <String>] [[-newName] <String>] [[-server] <String>] [[-user] <String>]
  [[-password] <String>] [<CommonParameters>]
 ```
 
@@ -50,6 +50,21 @@ Aliases:
 
 Required: False
 Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -oldName
+The existing name of the database to be changed in the name.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 0
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -95,21 +110,6 @@ Aliases:
 
 Required: False
 Position: 3
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -oldName
-The existing name of the database to be changed in the name.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

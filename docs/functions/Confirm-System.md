@@ -74,6 +74,21 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -all
+All optiones are used.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -controlledFolderAccess
 This function checks if the Microsoft ransomware protection for monitored folders is active. This protection prevents, for example, the creation of folders in 'My Documents' in the command prompt. Similarly, PowerShell modules cannot be installed as the current user, only as an administrator for all users.
 
@@ -121,21 +136,6 @@ Accept wildcard characters: False
 
 ### -network
 This function checks the network settings and tests name resolution. It pings the default gateway and then performs a DNS lookup of the local host name and compares the results. If they match, it checks if the DNS server is reachable. The output is a `PsCustomObject` that can be piped to `Out-GridView` or `Format-Table`.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -all
-All optiones are used.
 
 ```yaml
 Type: SwitchParameter

@@ -13,7 +13,7 @@ Converts a string so that only letters from a-z, underscores and digits are outp
 ## SYNTAX
 
 ```
-Convert-Slugify [[-value] <String>] [[-strCase] <String>] [-delimiter <String>] [<CommonParameters>]
+Convert-Slugify [[-value] <String>] [[-strCase] <String>] [[-delimiter] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -40,6 +40,22 @@ The function converts the text into a slugy text. All special characters are rem
 
 ## PARAMETERS
 
+### -delimiter
+The delimiter connects the words to each other. The default delimiter is the underscore character. Alternatively, the hyphen can be specified as the delimiter.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+Accepted values: -, _
+
+Required: False
+Position: 2
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -strCase
 By setting the parameter `strCase` you can influence the output. If the parameter is omitted or set to `none`, no further conversion is performed. With `lower` the output is converted to lowercase, with `upper` to uppercase and with `capitalize` the first letter of a word is output in uppercase.
 
@@ -47,7 +63,6 @@ By setting the parameter `strCase` you can influence the output. If the paramete
 Type: String
 Parameter Sets: (All)
 Aliases:
-Accepted values: none, upper, lower, capital
 
 Required: False
 Position: 1
@@ -66,21 +81,6 @@ Aliases:
 
 Required: False
 Position: 0
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -delimiter
-The delimiter connects the words to each other. The default delimiter is the underscore character. Alternatively, the hyphen can be specified as the delimiter.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

@@ -13,7 +13,7 @@ Compares the SSH key of a server with the one stored in the local cache (Trusted
 ## SYNTAX
 
 ```
-Deny-RemoteFingerprint [[-server] <String>] [[-protocol] <String>] [-port <Int32>] [<CommonParameters>]
+Deny-RemoteFingerprint [[-server] <String>] [[-protocol] <String>] [[-port] <Int32>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -32,6 +32,21 @@ Checks the SSH key of the server `myftp.example.com` against the one stored in t
 
 ## PARAMETERS
 
+### -port
+The port number to connect to on the remote server. This typically defaults to 21 for FTP and FTPS, or 22 for SFTP if not specified.
+
+```yaml
+Type: Int32
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 2
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -protocol
 Specifies the protocol to use for connecting to the server. The default value is `sftp`. In future also `ftps` would be supported.
 
@@ -39,7 +54,7 @@ Specifies the protocol to use for connecting to the server. The default value is
 Type: String
 Parameter Sets: (All)
 Aliases:
-Accepted values: sftp
+Accepted values: ftp, ftps, sftp
 
 Required: False
 Position: 1
@@ -58,21 +73,6 @@ Aliases:
 
 Required: False
 Position: 0
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -port
-The port number to connect to on the remote server. This typically defaults to 21 for FTP and FTPS, or 22 for SFTP if not specified.
-
-```yaml
-Type: Int32
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

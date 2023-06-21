@@ -14,7 +14,7 @@ Creates a SQL command to retrieve a articles
 
 ```
 Get-ArticleSql [[-select] <String>] [[-filter] <String[]>] [[-strCase] <String>] [[-alias] <String>]
- [[-order] <String>] [-noIdAlias] [-limit <Int32>] [-reorder] [-revers] [<CommonParameters>]
+ [[-order] <String>] [-noIdAlias] [[-limit] <Int32>] [-reorder] [-revers] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -53,10 +53,9 @@ In an XML output the node is always 'ID.ALIAS'. This alias is used to uniquely a
 Type: String
 Parameter Sets: (All)
 Aliases:
-Accepted values: Id, Uid, ArtNummer, Barcode
 
 Required: False
-Position: 4
+Position: 3
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -86,7 +85,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
+Position: 5
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -116,7 +115,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 2
+Position: 4
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -176,10 +175,9 @@ This specification refers to the field names.
 Type: String
 Parameter Sets: (All)
 Aliases:
-Accepted values: none, upper, lower, capital
 
 Required: False
-Position: 3
+Position: 2
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

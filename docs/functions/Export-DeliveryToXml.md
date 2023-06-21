@@ -13,7 +13,7 @@ Exports a delivery bill including its positions to an XML file
 ## SYNTAX
 
 ```
-Export-DeliveryToXml [[-deliveryId] <Int32>] [[-deliveryNo] <Int32>] [-includeEmpty] [-sql <String[]>]
+Export-DeliveryToXml [[-deliveryId] <Int32>] [[-deliveryNo] <Int32>] [-includeEmpty] [[-sql] <String[]>]
  [[-path] <String>] [[-conn] <Object>] [[-udl] <String>] [[-connStr] <String>] [<CommonParameters>]
 ```
 
@@ -40,7 +40,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 6
+Position: 4
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -55,7 +55,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 8
+Position: 6
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -91,11 +91,41 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -includeEmpty
+Normally, empty nodes or nodes with a value of null are not exported. This switch allows for exporting of these nodes as well.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -path
 A path is a combination of the drive letter, share, subfolders, and the filename of the resource, for example, a XML file.
 
 ```yaml
 Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 3
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -sql
+This string array is pre-populated by default with an SQL SELECT statement for the delivery note and the delivery note position, so it does not need to be specified. However, if you want to include a field selection or new fields, such as calculated or combined fields, in the XML, you can specify this SQL statement here as an array. The first element is the master, which is the delivery note header, and the second array element is the SELECT statement to select the corresponding positions. The positions are implicitly sorted by the first field of the position, which is normally the delivery note position. The field name is then ID.ALIAS.
+
+```yaml
+Type: String[]
 Parameter Sets: (All)
 Aliases:
 
@@ -115,37 +145,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 7
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -includeEmpty
-Normally, empty nodes or nodes with a value of null are not exported. This switch allows for exporting of these nodes as well.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -sql
-This string array is pre-populated by default with an SQL SELECT statement for the delivery note and the delivery note position, so it does not need to be specified. However, if you want to include a field selection or new fields, such as calculated or combined fields, in the XML, you can specify this SQL statement here as an array. The first element is the master, which is the delivery note header, and the second array element is the SELECT statement to select the corresponding positions. The positions are implicitly sorted by the first field of the position, which is normally the delivery note position. The field name is then ID.ALIAS.
-
-```yaml
-Type: String[]
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
+Position: 5
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

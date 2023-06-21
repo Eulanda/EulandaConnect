@@ -13,10 +13,10 @@ Backs up a Microsoft SQL Server database to a file, compresses it, and stores it
 ## SYNTAX
 
 ```
-Backup-MssqlDatabase [-server <String>] [-protocol <String>] [-port <Int32>] [-activeMode] [-resumeAge <Int32>]
- [-resumeRetries <Int32>] [-certificate <String>] [-user <String>] [-password <Object>]
- [-remoteFolder <String>] [[-storageFolder] <String>] [-removeBak] [[-history] <Int32>] [[-conn] <Object>]
- [[-udl] <String>] [[-connStr] <String>] [<CommonParameters>]
+Backup-MssqlDatabase [[-server] <String>] [[-protocol] <String>] [[-port] <Int32>] [-activeMode]
+ [[-resumeAge] <Int32>] [[-resumeRetries] <Int32>] [[-certificate] <String>] [[-user] <String>]
+ [[-password] <Object>] [[-remoteFolder] <String>] [[-storageFolder] <String>] [-removeBak]
+ [[-history] <Int32>] [[-conn] <Object>] [[-udl] <String>] [[-connStr] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -40,96 +40,6 @@ PS C:\> Backup-MssqlDatabase -udl 'C:\temp\Eulanda_1 JohnDoe.udl' -storageFolder
 This command backs up the database defined in the specified `.udl` file, compresses the backup file, and stores it in both the specified local folder  `-storageFolder` under `\\NAS1\store` and the specified FTP server. The command sorts the backup files by date and removes the oldest backup files, keeping only the specified number of recent backups, the default is 3.
 
 ## PARAMETERS
-
-### -conn
-The connection can be established via an existing ADO object of the type 'ADODB.Connection'. If the connection is already open, it remains open even after the function has been executed. If it was closed, it will be closed again after the function has been executed.
-
-```yaml
-Type: Object
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 6
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -connStr
-A `ConnectionString` can be specified here, with which a database can be opened.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 8
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -history
-Optional integer parameter. The number of backups to keep. Default value is 3.
-
-```yaml
-Type: Int32
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 0
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -removeBak
-Optional switch parameter. If specified, the backup file created during the process is deleted from the database server after compression and storage.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -storageFolder
-This is an optional string parameter that represents the path to the local folder where the backup files should be stored. If this parameter is provided, a folder with the name of the SQL instance is added to the folder name specified by the parameter. If this parameter is not specified, the backup files are not stored locally.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 1
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -udl
-Alternatively to a connection, a string to a UDL file can be specified. In this case an ADO object is created and closed again at the end of the function.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 7
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
 
 ### -activeMode
 If specified, this switch enables active mode for the FTP or FTPS connection. By default, passive mode is used.
@@ -155,7 +65,52 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
+Position: 5
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -conn
+The connection can be established via an existing ADO object of the type 'ADODB.Connection'. If the connection is already open, it remains open even after the function has been executed. If it was closed, it will be closed again after the function has been executed.
+
+```yaml
+Type: Object
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 11
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -connStr
+A `ConnectionString` can be specified here, with which a database can be opened.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 13
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -history
+Optional integer parameter. The number of backups to keep. Default value is 3.
+
+```yaml
+Type: Int32
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 10
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -170,7 +125,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
+Position: 7
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -185,7 +140,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
+Position: 2
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -198,9 +153,10 @@ The protocol to use for the connection, such as FTP, FTPS, or SFTP.
 Type: String
 Parameter Sets: (All)
 Aliases:
+Accepted values: ftp, ftps, sftp
 
 Required: False
-Position: Named
+Position: 1
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -211,6 +167,21 @@ Directory on the remote server.
 
 ```yaml
 Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 8
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -removeBak
+Optional switch parameter. If specified, the backup file created during the process is deleted from the database server after compression and storage.
+
+```yaml
+Type: SwitchParameter
 Parameter Sets: (All)
 Aliases:
 
@@ -230,7 +201,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
+Position: 3
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -245,7 +216,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
+Position: 4
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -260,7 +231,37 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
+Position: 0
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -storageFolder
+This is an optional string parameter that represents the path to the local folder where the backup files should be stored. If this parameter is provided, a folder with the name of the SQL instance is added to the folder name specified by the parameter. If this parameter is not specified, the backup files are not stored locally.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 9
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -udl
+Alternatively to a connection, a string to a UDL file can be specified. In this case an ADO object is created and closed again at the end of the function.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 12
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -275,7 +276,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
+Position: 6
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

@@ -45,7 +45,6 @@ By setting the parameter `strCase` you can influence the output. If the paramete
 Type: String
 Parameter Sets: (All)
 Aliases:
-Accepted values: none, upper, lower, capital
 
 Required: False
 Position: 1

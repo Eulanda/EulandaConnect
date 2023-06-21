@@ -13,7 +13,7 @@ Displays an opening output with start time
 ## SYNTAX
 
 ```
-Out-Welcome [-projectScript <String>] [-noBanner] [-noInfo] [-culture <String>] [<CommonParameters>]
+Out-Welcome [[-projectScript] <String>] [-noBanner] [-noInfo] [[-culture] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -48,6 +48,21 @@ Displays the welcome screen and some information like the start time and the scr
 
 ## PARAMETERS
 
+### -culture
+The culture can be changed here script-wide. This also has an immediate effect on the displayed strings if they are read from a resource file. This is for example the case with the information in Out-Welcome. Here English and German are delivered. The culture is specified with `-culture de-DE`, for example.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 3
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -noBanner
 Suppresses the banner output of the EULANDA logo.
 
@@ -57,7 +72,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
+Position: 1
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -72,7 +87,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
+Position: 2
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -87,22 +102,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -culture
-The culture can be changed here script-wide. This also has an immediate effect on the displayed strings if they are read from a resource file. This is for example the case with the information in Out-Welcome. Here English and German are delivered. The culture is specified with `-culture de-DE`, for example.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
+Position: 0
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

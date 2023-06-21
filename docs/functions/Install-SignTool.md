@@ -13,7 +13,7 @@ Download the Windows SDK, unzip the SignTool and install the SignTool.
 ## SYNTAX
 
 ```
-Install-SignTool [[-signToolBasePath] <String>] [[-isoBasePath] <String>] [-url <String>] [-leaveIso]
+Install-SignTool [[-signToolBasePath] <String>] [[-isoBasePath] <String>] [[-url] <String>] [-leaveIso]
  [-noBuild] [-noInstall] [<CommonParameters>]
 ```
 
@@ -126,7 +126,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
+Position: 2
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

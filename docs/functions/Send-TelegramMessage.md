@@ -13,8 +13,8 @@ Sends a message via Telegram API, without requiring a locally installed Telegram
 ## SYNTAX
 
 ```
-Send-TelegramMessage [[-token] <String>] [-encryptedToken <String>] [-secureToken <SecureString>]
- [-pathToToken <String>] [[-chatId] <String>] [[-message] <String>] [[-parseMode] <String>]
+Send-TelegramMessage [[-token] <String>] [[-encryptedToken] <String>] [[-secureToken] <SecureString>]
+ [[-pathToToken] <String>] [[-chatId] <String>] [[-message] <String>] [[-parseMode] <String>]
  [-disableNotification] [<CommonParameters>]
 ```
 
@@ -58,7 +58,7 @@ Parameter Sets: (All)
 Aliases: id
 
 Required: False
-Position: 1
+Position: 4
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -79,6 +79,23 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -encryptedToken
+This is an encrypted string created from your Telegram bot token. To create an encrypted token from your plaintext token, you can use the `ConvertTo-SecureString` and `ConvertFrom-SecureString` cmdlets in PowerShell 7.
+
+Creating an encrypted string in PowerShell 5 is considerably more complicated. A separate document will be provided with detailed information on this process, which will be available under the **related links** when it becomes available.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases: eToken
+
+Required: False
+Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -message
 Specifies the text of the message to be sent. You can include plain text or formatted text using HTML or Markdown syntax, depending on the specified parse mode.
 
@@ -88,7 +105,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 2
+Position: 5
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -101,42 +118,10 @@ Accept wildcard characters: False
 Type: String
 Parameter Sets: (All)
 Aliases: mode
-Accepted values: HTML, Markdown
+Accepted values: html, markdown
 
 Required: False
-Position: 3
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -token
-Specifies the Telegram bot token required for authentication. To obtain a token, you need to create a bot on Telegram by following the instructions provided in the Telegram Bot API documentation.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 0
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -encryptedToken
-This is an encrypted string created from your Telegram bot token. To create an encrypted token from your plaintext token, you can use the `ConvertTo-SecureString` and `ConvertFrom-SecureString` cmdlets in PowerShell 7.
-
-Creating an encrypted string in PowerShell 5 is considerably more complicated. A separate document will be provided with detailed information on this process, which will be available under the **related links** when it becomes available.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases: eToken
-
-Required: False
-Position: Named
+Position: 6
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -153,7 +138,7 @@ Parameter Sets: (All)
 Aliases: path
 
 Required: False
-Position: Named
+Position: 3
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -170,7 +155,22 @@ Parameter Sets: (All)
 Aliases: sToken
 
 Required: False
-Position: Named
+Position: 2
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -token
+Specifies the Telegram bot token required for authentication. To obtain a token, you need to create a bot on Telegram by following the instructions provided in the Telegram Bot API documentation.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 0
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

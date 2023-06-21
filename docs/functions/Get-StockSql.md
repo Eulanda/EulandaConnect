@@ -75,7 +75,6 @@ In an XML output the node is always 'ID.ALIAS'. This alias is used to uniquely a
 Type: String
 Parameter Sets: (All)
 Aliases:
-Accepted values: ID, UID, ARTNUMMER, BARCODE
 
 Required: False
 Position: 1

@@ -30,6 +30,21 @@ For example, if the `Match` field contains the content `John Doe` and it is to b
 
 ## PARAMETERS
 
+### -fieldname
+Field name of an ADO record set
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -maxLen
 Maximum length that the text field of the ADO record set may have.
 
@@ -55,21 +70,6 @@ Aliases:
 
 Required: False
 Position: 0
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -fieldname
-Field name of an ADO record set
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 1
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

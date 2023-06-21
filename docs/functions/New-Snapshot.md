@@ -13,7 +13,7 @@ This PowerShell function named `New-Snapshot` creates a Volume Shadow Copy (snap
 ## SYNTAX
 
 ```
-New-Snapshot [[-volume] <String>] [-symbolicLink <Object>] [<CommonParameters>]
+New-Snapshot [[-volume] <String>] [[-symbolicLink] <Object>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -39,6 +39,21 @@ Please note that you can add your own specific commands or operations between th
 
 ## PARAMETERS
 
+### -symbolicLink
+Path to the symbolic link that should provide access to the snapshot. Default: `$volume\ecSnapshot`.
+
+```yaml
+Type: Object
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -volume
 The drive where the snapshot is to be created. The parameter must be specified in the format 'Letter:', e.g., 'C:'. If not provided, the system drive is used. Default: `$ENV:SystemDrive`.
 
@@ -49,21 +64,6 @@ Aliases:
 
 Required: False
 Position: 0
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -symbolicLink
-Path to the symbolic link that should provide access to the snapshot. Default: `$volume\ecSnapshot`.
-
-```yaml
-Type: Object
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

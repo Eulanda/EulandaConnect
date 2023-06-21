@@ -13,7 +13,7 @@ Formats an XML string or file by applying indentation and encoding.
 ## SYNTAX
 
 ```
-Format-Xml [-xmlString <String>] [[-pathIn] <String>] [[-pathOut] <String>] [-removeDecoration]
+Format-Xml [[-xmlString] <String>] [[-pathIn] <String>] [[-pathOut] <String>] [-removeDecoration]
  [-setDecoration] [<CommonParameters>]
 ```
 
@@ -67,7 +67,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 0
+Position: 1
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -82,7 +82,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 1
+Position: 2
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -127,7 +127,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: Named
+Position: 0
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

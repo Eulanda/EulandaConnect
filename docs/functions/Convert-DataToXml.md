@@ -202,7 +202,6 @@ The default is `upper`, you can make the following settings:
 Type: String
 Parameter Sets: (All)
 Aliases:
-Accepted values: none, upper, lower, capital
 
 Required: False
 Position: 1

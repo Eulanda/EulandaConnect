@@ -52,7 +52,6 @@ The alias is historically the field 'Match' of the address table. In an XML outp
 Type: String
 Parameter Sets: (All)
 Aliases:
-Accepted values: Id, Uid, Match
 
 Required: False
 Position: 2

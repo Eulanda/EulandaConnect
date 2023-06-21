@@ -14,7 +14,7 @@ Finds the oldest file in a directory on a remote server that matches a specified
 
 ```
 Get-RemoteNextFilename [[-server] <String>] [[-protocol] <String>] [[-port] <Int32>] [-activeMode]
- [[-certificate] <String>] [[-user] <String>] [[-password] <Object>] [-mask <String>]
+ [[-certificate] <String>] [[-user] <String>] [[-password] <Object>] [[-mask] <String>]
  [[-remoteFolder] <String>] [<CommonParameters>]
 ```
 
@@ -59,6 +59,21 @@ Aliases:
 
 Required: False
 Position: 3
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -mask
+The 'mask' filters the directory for specific file names, for example, '*.xml'.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 6
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -150,21 +165,6 @@ Aliases:
 
 Required: False
 Position: 4
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -mask
-The 'mask' filters the directory for specific file names, for example, '*.xml'.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

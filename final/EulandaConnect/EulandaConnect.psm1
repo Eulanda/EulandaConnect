@@ -7939,6 +7939,7 @@ function Hide-Extensions {
 }
 
 function Import-TieredPrice {
+    [CmdletBinding()]
     param(
         [string]$articleNoName
         ,
@@ -8008,11 +8009,12 @@ function Import-TieredPrice {
                 default {
                     Throw ((Get-ResStr 'ONLY_CSV_AND_XSLX_SUPPORTED') -f $myInvocation.Mycommand)
                 }
-
             }
 
-            $data = Import-Csv -Path $path -Delimiter ';'
             $decimalSeparator = [System.Globalization.CultureInfo]::CurrentCulture.NumberFormat.NumberDecimalSeparator
+            if (! $decimalSeparator) {
+                $decimalSeparator = ','
+            }
 
             foreach ($row in $data) {
                 $articleNo = [string]$row.$($articleNoName)
@@ -8029,15 +8031,25 @@ function Import-TieredPrice {
                             }
 
                             if ($decimalSeparator -eq ".") {
-                                $price = [double]::Parse($price.Replace(',', '.'))
-                                $qty = [double]::Parse($qty.Replace(',', '.'))
+                                if ($price.GetType.Name -eq 'String') {
+                                    $price = [double]::Parse($price.Replace(',', '.'))
+                                }
+
+                                if ($qty.GetType.Name -eq 'String') {
+                                    $qty = [double]::Parse($qty.Replace(',', '.'))
+                                }
                             }
                             else {
-                                $price = [double]::Parse($price.Replace('.', ','))
-                                $qty = [double]::Parse($qty.Replace('.', ','))
+                                if ($price.GetType.Name -eq 'String') {
+                                    $price = [double]::Parse($price.Replace('.', ','))
+                                }
+                                if ($qty.GetType.Name -eq 'String') {
+                                    $qty = [double]::Parse($qty.Replace('.', ','))
+                                }
                             }
 
                             try {
+                                Write-Verbose "ArticleNo: $artcicleNo"
                                 $rs = New-Object -comobject ADODB.Recordset
                                 $sql = "SELECT p.Id, p.Preisliste, p.Staffel, p.MengeAb, p.ArtikelId, p.Vk FROM Preis p " + `
                                 "JOIN Artikel art ON art.Id = p.ArtikelId AND PreisListe = $tierId AND art.ID = $artId " + `
@@ -8045,7 +8057,7 @@ function Import-TieredPrice {
                                 $rs.Open($sql, $myConn, 3, 3)
                                 if (! $rs.eof) {
                                     $rs.fields('Vk').value = [double]$price
-                                    $rs.fields('MengeAb').value = $qty
+                                    $rs.fields('MengeAb').value = [double]$qty
                                     $rs.update()
                                 } else {
                                     $rs.AddNew()
@@ -8053,13 +8065,13 @@ function Import-TieredPrice {
                                     $rs.fields('Staffel').value = $i
                                     $rs.fields('ArtikelId').value = $artId
                                     $rs.fields('Vk').value = [double]$price
-                                    $rs.fields('MengeAb').value = $qty
+                                    $rs.fields('MengeAb').value = [double]$qty
                                     $rs.update()
                                 }
                             }
 
                             catch {
-                                Write-Error $_
+                                Write-Error -Message $_.Exception -ErrorAction Continue
                             }
 
                         } # if price found
@@ -8073,7 +8085,7 @@ function Import-TieredPrice {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
         Return
     }
-    # Test: Import-TieredPrice -path 'C:\temp\test.csv' -articleNoName 'ArticleNo' -price1Name 'SalesPrice' -tieredName 'Retail' -udl 'C:\temp\Eulanda_1 JohnDoe.udl'
+    # Test: Import-TieredPrice -path 'C:\temp\test.xslx' -articleNoName 'ArticleNo' -price1Name 'SalesPrice' -tierListName 'Retail' -udl 'C:\temp\Eulanda_1 JohnDoe.udl'
 }
 
 
@@ -16033,8 +16045,8 @@ function Test-ValidateUrl {
 # SIG # Begin signature block
 # MIIpiQYJKoZIhvcNAQcCoIIpejCCKXYCAQExDzANBglghkgBZQMEAgEFADB5Bgor
 # BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
-# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCCKVnkCzibKehWS
-# 4kQJDd+bHl+5FAT/Rwa7nlEcqtaAiqCCEngwggVvMIIEV6ADAgECAhBI/JO0YFWU
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCDd+lw8thzAjFlc
+# Naj6oqifoWrKdg9CXDc2pC+wT+PsiKCCEngwggVvMIIEV6ADAgECAhBI/JO0YFWU
 # jTanyYqJ1pQWMA0GCSqGSIb3DQEBDAUAMHsxCzAJBgNVBAYTAkdCMRswGQYDVQQI
 # DBJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcMB1NhbGZvcmQxGjAYBgNVBAoM
 # EUNvbW9kbyBDQSBMaW1pdGVkMSEwHwYDVQQDDBhBQUEgQ2VydGlmaWNhdGUgU2Vy
@@ -16137,23 +16149,23 @@ function Test-ValidateUrl {
 # IExpbWl0ZWQxLjAsBgNVBAMTJVNlY3RpZ28gUHVibGljIENvZGUgU2lnbmluZyBD
 # QSBFViBSMzYCEGilgQZhq4aQSRu7qELTizkwDQYJYIZIAWUDBAIBBQCgfDAQBgor
 # BgEEAYI3AgEMMQIwADAZBgkqhkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEE
-# AYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAvBgkqhkiG9w0BCQQxIgQgMaxn0PQl2y+Z
-# xq9oo7R08urvUJxebtPgrKTiEYyV/XAwDQYJKoZIhvcNAQEBBQAEggIAO0cyQQ2W
-# gjwG+kLH3Wggh0nBnIpbLXNyfUv90qv4FvBq59H9sITmkwSbv+SrB7v4ihZYJkGC
-# oIF2A1MFkzDKZa0XZ259fPFzjiMRkrzPMaTIMmv3kHRSpvJi9aR9FUticLl0aClW
-# ib5uaHBOwKASVfjVbJY85cnJEfJUWvbNd3wzF2EKYVRnF1BNI1vviHtIuATubNa6
-# +Sjw91wwjNugOpheg6YqfqJjxNpLFJCApuu9ghGOIvUDiBTiU5SL4wiIrFhiu/VR
-# +eyHOtMWF9R/5DACrJNsGJdbl+wEJU7N+c6pNUlh0PjmeiuxxNazd4eHp65bZ3pK
-# mqfWKETKo/QiWQW3Vq8lYhEQDIB/RKA2TeBXSy0GQjz7O3NKaIWQYm1JPwAmJAZp
-# 0GuNi/Bf6zF6+35KcNLQ/sjOinDI57JkHSEuCSWIUuCQAQ9pQQAmCM3B16uCP7J/
-# T9HYfypR2/oZnNgZb6aYn3MA+CyihYMExBBsFkr+IgR913gxP6ygQyG8WsZLZgUE
-# UEZh8sOAM5XAzwcPrjQe60KjEMYt0FBD9GBKgczIzAqUJuBIu9iNH6TYsynGRTYG
-# rmTDrJMjEoYqjABf1nQeE9FaLVEgVHhETdCPLaly6GAEz9kya1iNrj8wfRiAbpQN
-# nRn9zonyRVPCgAtD7tH02a/TghjDU8/+m4+hghNPMIITSwYKKwYBBAGCNwMDATGC
+# AYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAvBgkqhkiG9w0BCQQxIgQgjnmVUQYixH9v
+# Lpu90gLsVd4FUfHkXd4Uu91dGU9eYt0wDQYJKoZIhvcNAQEBBQAEggIADetG4WFx
+# CUnMbBKXp1TqMbSfVYrD1lqoo0j+vNhyB0WoMVsheimXnv6cwi+ClQUQrzgOn84p
+# tni3LrxLL5TUOJlPKlPrXiK1X+t7M/D413Fy2NM8wijywl/o21wxAzhjQzP7Agrm
+# QzKfUcdAW7TZTPIl7vD9aB3OdrDs1EHaxS6h2rK0URd6CgNVqT8w4jzFSPgxJYBy
+# 32ZN9AQpnXwRStToFCG82oyzkMgERy99xzoOZMNNVJWnotRTPrCDE6vicEZ3svEl
+# NDGRkh8LMcXbOrO7AHn8yRw0ZpSwRMYAqZmiItxF2hLpVHXnVk990zLjeMsqCHyO
+# Gz7zAfkkmINVJhUQ9RjmAHqaoz/GiMGdVo/Y6jZ2Am+CzTlBWg3YRnP0uawYMv+h
+# GJwzzZonwJddNYfnwSycnwmcUTPEqa4QpHeIbIuUuidmtgpN1kPvqlPRDrd1Lht8
+# WhdI0nFb39gX9XXcu2uppTEhlrtP4VF9c3OVGcvRqPrARqQYmOuY/lkwxwsMlHNF
+# B1/O3AKX6Tv/Fqu7Hj7xY83GIzy2W9maCrSOCfSKL+S4HDtrUHSL7mCJ3mRzptFx
+# uFQ7N2DjWq4HC1wwjP2kWLIXi/ePgernEL6FlMH5W6MVlXYzhW6vvBheRmFmrPV3
+# VA2LTA+d2D4vq1QVakuVHktBR6megx5dS+qhghNPMIITSwYKKwYBBAGCNwMDATGC
 # EzswghM3BgkqhkiG9w0BBwKgghMoMIITJAIBAzEPMA0GCWCGSAFlAwQCAgUAMIHw
 # BgsqhkiG9w0BCRABBKCB4ASB3TCB2gIBAQYKKwYBBAGyMQIBATAxMA0GCWCGSAFl
-# AwQCAQUABCDX46e3UjosKbg6ND+R3GEQ0ge57uAUPuwNtheVgre6qwIVAN2NxfHB
-# i7gZCLi4YoxTL4d4J2aFGA8yMDIzMDYyMTA1MzQxNFqgbqRsMGoxCzAJBgNVBAYT
+# AwQCAQUABCBScZzaRcOCF9nqc9XOCwA0TzerP7nK/XxAMnom0JkzSgIVAJZbRewu
+# dnUwH+L6XPPzKAatw4qEGA8yMDIzMDYyMTA3MjY0N1qgbqRsMGoxCzAJBgNVBAYT
 # AkdCMRMwEQYDVQQIEwpNYW5jaGVzdGVyMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
 # ZWQxLDAqBgNVBAMMI1NlY3RpZ28gUlNBIFRpbWUgU3RhbXBpbmcgU2lnbmVyICM0
 # oIIN6TCCBvUwggTdoAMCAQICEDlMJeF8oG0nqGXiO9kdItQwDQYJKoZIhvcNAQEM
@@ -16235,22 +16247,22 @@ function Test-ValidateUrl {
 # BAoTD1NlY3RpZ28gTGltaXRlZDElMCMGA1UEAxMcU2VjdGlnbyBSU0EgVGltZSBT
 # dGFtcGluZyBDQQIQOUwl4XygbSeoZeI72R0i1DANBglghkgBZQMEAgIFAKCCAWsw
 # GgYJKoZIhvcNAQkDMQ0GCyqGSIb3DQEJEAEEMBwGCSqGSIb3DQEJBTEPFw0yMzA2
-# MjEwNTM0MTRaMD8GCSqGSIb3DQEJBDEyBDAHVCrNi1wee/rDlvNLeEMypeqUK66J
-# cI/ZTkqlh/obmFWXnpSbI/Hwkd8BEGFG9r8wge0GCyqGSIb3DQEJEAIMMYHdMIHa
+# MjEwNzI2NDdaMD8GCSqGSIb3DQEJBDEyBDBXy7Y6YFdP7enseL0XuLcUbhU04FsT
+# Kk3yx0N6Id99XxngD0u8YfTI/q0Yiy8tG0cwge0GCyqGSIb3DQEJEAIMMYHdMIHa
 # MIHXMBYEFK5ir3UKDL1H1kYfdWjivIznyk+UMIG8BBQC1luV4oNwwVcAlfqI+SPd
 # k3+tjzCBozCBjqSBizCBiDELMAkGA1UEBhMCVVMxEzARBgNVBAgTCk5ldyBKZXJz
 # ZXkxFDASBgNVBAcTC0plcnNleSBDaXR5MR4wHAYDVQQKExVUaGUgVVNFUlRSVVNU
 # IE5ldHdvcmsxLjAsBgNVBAMTJVVTRVJUcnVzdCBSU0EgQ2VydGlmaWNhdGlvbiBB
-# dXRob3JpdHkCEDAPb6zdZph0fKlGNqd4LbkwDQYJKoZIhvcNAQEBBQAEggIAFhGB
-# f4qaOAl9UZ6W3+IBOWcby+clONFXWp/im7lvfq1ejXVQXDByTfghOGxFsCBbbf1x
-# aEjwmVAIcg/Xfw7Mi5vUuMCiefLLenYwEpRu7u9MlSfu+E2rum+1H8WkODbypdBm
-# lcE9ezhJPvnoVkWiQNf1HdXXCdoTb5Ldl8mhlp5EUR06UJ1u1PB4cMWOsqRUeFTf
-# e+U1cCJQXPDi01yct0+YqxcR1MCJdgBECUk+7wDR/6xLroNweqox5TklblQ+xqw2
-# xRyW0S5OOTfvzFaahALdpd3tU0BTYqCY11NqrNAS5Nvt6VxpuvKtUTYEIbe4zlMH
-# 4Ifc2WrUn4B/AYoRXbf8Ll54bWy85SuPAYD7QRNR9FWUv5duHflBZYTAyYBa1m3U
-# dMqqjNckjSk4YcsqOTujMObsX+X7LmeQXkzZgVxadV0SoDHdv8uj6bPDMYIIYVbc
-# ywLgi81N/2gBv86XEI+cEhjuxvinnwEugWq+XdKoe77LjqeFngfby/p4hKZaNWHK
-# KJZe6VIKUPnYPj2BwzMhYqwJ/+yx+S5K5g0wmHwi2bwE8ssuWWqMHj1JR6mciIQW
-# 3bWWBqMHMIB4MaJqKD1WGCVXgfLZ5YlX0iC9++c/8Qupg0XtYFFH0YrcwgD2AxZW
-# kKvCbtsz+1kpgkmZMo1DlK6LvTzcJZ0/TwG3nmg=
+# dXRob3JpdHkCEDAPb6zdZph0fKlGNqd4LbkwDQYJKoZIhvcNAQEBBQAEggIAAtrA
+# 8JXBN2ZSny30zsMiUmTtqCu/J6xhKBlISTKAuhyX7ANPebV1MDTYnkxcTPg5D23t
+# Pp5RY9Ht2N/3J83SGE58K1v7vFIM009E1m/8vPrlnOYiNVpwnMHBy4M4Lf9S3DDw
+# KsQGB53StOVgMf1xvPdJ8NUDtEq0I/9aWaIEb/IEo5QQoVSXJk+0tVg2BRR+gyAw
+# eaJKTkSWlB+UbHTH4pzVacfysGn3kdqbzBmrILGgHvNBke1qLWOReVu+3f5Zcm2X
+# YYgsH4gwPXysqZItkUsF1h2XMF2flGQMON/Of4v7HbfOMdcP+erhwluiAZ6R8d5L
+# vChZE99FplRlqziVC8djWbd4DpoxizB0lGY7XCbp40610WANnpFdt7+u9e31200D
+# WGQrmgH950kxYmKKZbubhkeJY9FuKYvvDn6Fmd8XUY/1DdMb8dmODpoFcMIfBQ7q
+# EyXu90kwwmZrP4oqs61VJLV3T5jEIe4azUqxbfVIEUSUgcI2R2gm8VeOJB7+ElkO
+# zxHSu1XZHSAbsla2O2WxsyHoX4vc5iRTCkIF9m3PuOWoO6KKqkQNtrDTa0slTe/2
+# KNj+/NP0LOfidSANrlbkVZhfEAsVuDIl+O0UC2SAK9AjI7bRKhW7SM25yGtZOpow
+# bAr3wHAcGlpqOIjG0yA6DjrGIAB9it6JwUPBFls=
 # SIG # End signature block
