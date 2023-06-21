@@ -28,8 +28,8 @@ try {
     # Remove-SymbolicLink
     # Confirm-System -network
 
-    $pathToToken = "$ecHomeFolder\secureTelegramToken.xml"
-    Send-TelegramPhoto -pathToToken $pathToToken -chatId "-713022389" -caption "My *simple* caption..." -uri 'c:\temp\logo.png' -parseMode 'Markdown'
+    Import-TieredPrice -path 'C:\temp\test.xlsx' -articleNoName 'ARTNUMMER' -price1Name 'Vk' -tierListName 'BBY Retail' -udl 'C:\temp\Eulanda_1 JohnDoe.udl'
+
 
 } catch {
     $errorMessage = $Error[0].ToString()

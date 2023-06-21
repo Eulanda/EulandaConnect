@@ -1,4 +1,5 @@
 function Import-TieredPrice {
+    [CmdletBinding()]
     param(
         [string]$articleNoName
         ,
@@ -68,11 +69,12 @@ function Import-TieredPrice {
                 default {
                     Throw ((Get-ResStr 'ONLY_CSV_AND_XSLX_SUPPORTED') -f $myInvocation.Mycommand)
                 }
-
             }
 
-            $data = Import-Csv -Path $path -Delimiter ';'
             $decimalSeparator = [System.Globalization.CultureInfo]::CurrentCulture.NumberFormat.NumberDecimalSeparator
+            if (! $decimalSeparator) {
+                $decimalSeparator = ','
+            }
 
             foreach ($row in $data) {
                 $articleNo = [string]$row.$($articleNoName)
@@ -89,15 +91,25 @@ function Import-TieredPrice {
                             }
 
                             if ($decimalSeparator -eq ".") {
-                                $price = [double]::Parse($price.Replace(',', '.'))
-                                $qty = [double]::Parse($qty.Replace(',', '.'))
+                                if ($price.GetType.Name -eq 'String') {
+                                    $price = [double]::Parse($price.Replace(',', '.'))
+                                }
+
+                                if ($qty.GetType.Name -eq 'String') {
+                                    $qty = [double]::Parse($qty.Replace(',', '.'))
+                                }
                             }
                             else {
-                                $price = [double]::Parse($price.Replace('.', ','))
-                                $qty = [double]::Parse($qty.Replace('.', ','))
+                                if ($price.GetType.Name -eq 'String') {
+                                    $price = [double]::Parse($price.Replace('.', ','))
+                                }
+                                if ($qty.GetType.Name -eq 'String') {
+                                    $qty = [double]::Parse($qty.Replace('.', ','))
+                                }
                             }
 
                             try {
+                                Write-Verbose "ArticleNo: $artcicleNo"
                                 $rs = New-Object -comobject ADODB.Recordset
                                 $sql = "SELECT p.Id, p.Preisliste, p.Staffel, p.MengeAb, p.ArtikelId, p.Vk FROM Preis p " + `
                                 "JOIN Artikel art ON art.Id = p.ArtikelId AND PreisListe = $tierId AND art.ID = $artId " + `
@@ -105,7 +117,7 @@ function Import-TieredPrice {
                                 $rs.Open($sql, $myConn, 3, 3)
                                 if (! $rs.eof) {
                                     $rs.fields('Vk').value = [double]$price
-                                    $rs.fields('MengeAb').value = $qty
+                                    $rs.fields('MengeAb').value = [double]$qty
                                     $rs.update()
                                 } else {
                                     $rs.AddNew()
@@ -113,13 +125,13 @@ function Import-TieredPrice {
                                     $rs.fields('Staffel').value = $i
                                     $rs.fields('ArtikelId').value = $artId
                                     $rs.fields('Vk').value = [double]$price
-                                    $rs.fields('MengeAb').value = $qty
+                                    $rs.fields('MengeAb').value = [double]$qty
                                     $rs.update()
                                 }
                             }
 
                             catch {
-                                Write-Error $_
+                                Write-Error -Message $_.Exception -ErrorAction Continue
                             }
 
                         } # if price found
@@ -133,6 +145,6 @@ function Import-TieredPrice {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
         Return
     }
-    # Test: Import-TieredPrice -path 'C:\temp\test.csv' -articleNoName 'ArticleNo' -price1Name 'SalesPrice' -tieredName 'Retail' -udl 'C:\temp\Eulanda_1 JohnDoe.udl'
+    # Test: Import-TieredPrice -path 'C:\temp\test.xslx' -articleNoName 'ArticleNo' -price1Name 'SalesPrice' -tierListName 'Retail' -udl 'C:\temp\Eulanda_1 JohnDoe.udl'
 }
 
