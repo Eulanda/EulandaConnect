@@ -8,13 +8,13 @@ The most important changes to EulandaConnect can be found listed chronologically
 
 | Version | Date        | Description                                                  |
 | ------- | ----------- | ------------------------------------------------------------ |
-| 3.2.1 | coming soon | `New`: Convert-DatanormToXml, Convert-FromDatanorm brings the datanorm standard to PowerShell. |
+| 3.2.1 | coming soon | `New`: [Convert-DatanormToXml](./docs/Convert-DatanormToXml.md), [Convert-FromDatanorm](./docs/Convert-FromDatanorm.md) and [Convert-OemToUtf8](./docs/Convert-OemToUtf8.md) brings the datanorm standard to PowerShell. |
 | 3.1.9 | 06/21/2023 | `Breaking Change`: Function Import-TieredPrices renamed, lot of new parameters and also alias exists.|
 | 3.1.8 | 06/21/2023 | `Bugfixes`: Some bugfixes, when it is an Excel file. |
 | 3.1.7 | 06/21/2023 | `New`: Import-TieredPrice to add tiered prices to the article table. |
 | 3.1.7 | 06/21/2023 | The Hugo public folder is now cleaned up each time a new documentation is built |
 | 3.1.6 | 06/13/2023 | Conflict with Send-TelegramLocation, renamed to [Send-TelegramMap](./docs/Send-TelegramMap.md). One user already had a module that used this function name. Since the function is very new, I decided to change the name. |
-| 3.1.6 | 06/13/2023 | Typo in Get-AddressId WWrite-Verbose instead of Write-Verbose. |
+| 3.1.6 | 06/13/2023 | Typo in Get-AddressId **WWrite**-Verbose instead of **Write**-Verbose. |
 | 3.1.5 | 06/12/2023 | Confusion, the beta flag was set incorrectly in the manifest. |
 | 3.1.4 | 06/12/2023 | Strange behavior of the delimiter function in New-Table, fixed by changeover. |
 | 3.1.3   | 06/12/2023  | Typo in EulLog, Get-RestStr instead of Get-ResStr.           |
