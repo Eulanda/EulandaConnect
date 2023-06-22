@@ -22,19 +22,19 @@ Import-TieredPrices [[-barcodeName] <String>] [[-articleNoName] <String>] [[-art
 ```
 
 ## DESCRIPTION
-The Import-TieredPrice function uses an ADO connection to connect to the EULANDA database. It imports tiered prices from a specified CSV or Excel file and updates the database's tiered price table.
+The **Import-TieredPrices** function uses an ADO connection to connect to the EULANDA database. It imports tiered prices from a specified CSV or Excel file and updates the database's tiered price table.
 
-If Excel files should be applied, the XSLX format must be used. Also, the ImportExcel PowerShell module must be installed. This can be done at the PowerShell prompt with 'Install-Module ImportExcel'. No installed Office is required to import Excel files.
+If Excel files should be applied, the `XSLX` format must be used. Also, the ImportExcel PowerShell module must be installed. This can be done at the PowerShell prompt with `Install-Module ImportExcel`. No installed Office is required to import Excel files.
 
-For CSV files, however, field separation with semicolons is expected. The price and quantity fields are expected as from the country setting of the PC. So in Germany for example the comma to separate the cents.
+For `CSV` files, however, field separation with semicolons is expected. The price and quantity fields are expected as from the country setting of the PC. So in Germany for example the comma to separate the cents.
 
-The file to be imported must contain a column with the article number and at least one price field. The column names are freely selectable, as already mentioned. If no corresponding quantity is specified, 1 is used as default value. This means that the price is used from quantity 1.
+The file to be imported must contain a column with the article number and at least one price field. The column names are freely selectable, as already mentioned. If no corresponding quantity is specified, `1` is used as default value. This means that the price is used from quantity `1`.
 
-The parameters 'Price1Name' to 'Price5Name' are the field names from the file to be imported. The number in the parameter is used to specify the scale in the price list.
+The parameters `Price1Name` to `Price5Name` are the field names from the file to be imported. The number in the parameter is used to specify the scale in the price list.
 
-'Price1Name' contains the field name for the first scale and so on. It is not mandatory to start with the first price, in this way every scale from 1 to 5 can be addressed in the ERP system.
+`-price1Name` contains the field name for the first scale and so on. It is not mandatory to start with the first price, in this way every scale from `1` to `5` can be addressed in the ERP system.
 
-EULANDA supports any number of price lists. By specification of the PriceListName the price list to be used is selected.
+EULANDA supports any number of price lists. By specification of the `-priceList` the price list to be used is selected.
 
 As a further parameter the file path to the UDL file is needed.
 
@@ -42,17 +42,37 @@ As a further parameter the file path to the UDL file is needed.
 
 ### Example 1: Import tiered prices from a csv file
 ```powershell
-PS C:\> Import-TieredPrice -path 'C:\temp\test.csv' -articleNo 'ArticleNo' -price1 'SalesPrice' -priceList 'Retail' -udl 'C:\temp\Eulanda_1 JohnDoe.udl'
+PS C:\> Import-TieredPrices -path 'C:\temp\test.csv' -articleNo 'ArticleNo' -price1 'SalesPrice' -priceList 'Retail' -udl 'C:\temp\Eulanda_1 JohnDoe.udl'
 ```
 
-This command will import the prices from the 'SalesPrice' column of the 'test.csv' file into the 'Retail' price list of the database specified by the 'Eulanda_1 JohnDoe.udl' connection string. The 'ArticleNo' column is used to match the articles in the database. 
+```
+ArticleNo;EAN;SalesPreis
+40509;4052398405093;31,5
+40511;4052398405116;52,5
+40510;4052398405109;31,5
+20002;4052398200025;231,85
+40487;4052398404874;378,57
+30305;4052398303054;5,25
+30306;4052398303061;13,65
+30308;4052398303085;10,5
+30309;4052398303092;18,9
+30310;4052398303108;25,2
+30307;4052398303078;21
+40504;4052398405048;550
+20096;4052398200964;66,33
+20066;4052398200667;66,33
+```
 
-The semicolon is used as field delimiter. This value can be changed via the -csvDelimiter parameter. The separation to the cents is specified via the decimal separator, which is read by the operating system. However, one can override this value with -decimalSeparator.
+This command will import the prices from the `-salesPrice` column of the `test.csv` file into the `Retail` price list of the database specified by the `Eulanda_1 JohnDoe.udl` connection string. The `-articleNo` column is used to match the articles in the database. 
+
+The semicolon is used as field delimiter. This value can be changed via the `-csvDelimiter` parameter. The separation to the cents is specified via the decimal separator, which is read by the operating system. However, one can override this value with `-decimalSeparator`.
+
+In this sample file, the field `EAN` is ignored. Only one price is inserted in the pricelist as price1.
 
 ## PARAMETERS
 
 ### -articleIdName
-The name of the column that contains the article Id in the CSV or Excel file. Only one field name from the selection -articleNoName, -articleIdName, -barcodeName, -articleUidName may be specified.
+The name of the column that contains the article Id in the CSV or Excel file. Only one field name from the selection `-articleNoName`, `-articleIdName`, `-barcodeName`, `-articleUidName` may be specified.
 
 ```yaml
 Type: String
@@ -67,7 +87,7 @@ Accept wildcard characters: False
 ```
 
 ### -articleNoName
-The name of the column that contains the article number in the CSV or Excel file. Only one field name from the selection -articleNoName, -articleIdName, -barcodeName, -articleUidName may be specified.
+The name of the column that contains the article number in the CSV or Excel file. Only one field name from the selection `-articleNoName`, `-articleIdName`, `-barcodeName`, `-articleUidName` may be specified.
 
 ```yaml
 Type: String
@@ -82,7 +102,7 @@ Accept wildcard characters: False
 ```
 
 ### -articleUidName
-The name of the column that contains the article uid in the CSV or Excel file. Only one field name from the selection -articleNoName, -articleIdName, -barcodeName, -articleUidName may be specified.
+The name of the column that contains the article uid in the CSV or Excel file. Only one field name from the selection `-articleNoName`, `-articleIdName`, `-barcodeName`, `-articleUidName` may be specified.
 
 ```yaml
 Type: String
@@ -97,7 +117,7 @@ Accept wildcard characters: False
 ```
 
 ### -barcodeName
-The name of the column that contains the article barcode in the CSV or Excel file. Only one field name from the selection -articleNoName, -articleIdName, -barcodeName, -articleUidName may be specified.
+The name of the column that contains the article barcode in the CSV or Excel file. Only one field name from the selection `-articleNoName`, `-articleIdName`, `-barcodeName`, `-articleUidName` may be specified.
 
 ```yaml
 Type: String
@@ -172,7 +192,7 @@ Accept wildcard characters: False
 ```
 
 ### -path
-The path to the CSV or Excel file containing the tiered prices. Only .csv and .xlsx are accepted as file extension. Note that for Excel files, the PowerShell module ImportExcel from the PowerShell Gallery must be installed.
+The path to the **CSV** or **Excel** file containing the tiered prices. Only .csv and .xlsx are accepted as file extension. Note that for Excel files, the PowerShell module `ImportExcel` from the PowerShell Gallery must be installed.
 
 ```yaml
 Type: String
@@ -262,7 +282,7 @@ Accept wildcard characters: False
 ```
 
 ### -priceList
-The name of the price list into which the scale prices are to be imported. The price list can be specified with either -priceList or -priceListId.
+The name of the price list into which the scale prices are to be imported. The price list can be specified with either `-priceList` or `-priceListId`.
 
 ```yaml
 Type: String
@@ -277,7 +297,7 @@ Accept wildcard characters: False
 ```
 
 ### -priceListId
-The Id of the price list into which the scale prices are to be imported. The price list can be specified with either -priceList or -priceListId.
+The Id of the price list into which the scale prices are to be imported. The price list can be specified with either `-priceList` or `-priceListId`.
 
 ```yaml
 Type: Int32
@@ -292,7 +312,7 @@ Accept wildcard characters: False
 ```
 
 ### -qty1Name
-The name of the column that contain the first quantity in the CSV or Excel file.
+The name of the column that contain the first quantity in the CSV or Excel file. If the parameter is not specified, the default `1` is used.
 
 ```yaml
 Type: String
@@ -307,7 +327,7 @@ Accept wildcard characters: False
 ```
 
 ### -qty2Name
-The name of the column that contain the second quantity in the CSV or Excel file.
+The name of the column that contain the second quantity in the CSV or Excel file. If the parameter is not specified, the default `1` is used.
 
 ```yaml
 Type: String
@@ -322,7 +342,7 @@ Accept wildcard characters: False
 ```
 
 ### -qty3Name
-The name of the column that contain the third quantity in the CSV or Excel file.
+The name of the column that contain the third quantity in the CSV or Excel file. If the parameter is not specified, the default `1` is used.
 
 ```yaml
 Type: String
@@ -337,7 +357,7 @@ Accept wildcard characters: False
 ```
 
 ### -qty4Name
-The name of the column that contain the fourth quantity in the CSV or Excel file.
+The name of the column that contain the fourth quantity in the CSV or Excel file. If the parameter is not specified, the default `1` is used.
 
 ```yaml
 Type: String
@@ -352,7 +372,7 @@ Accept wildcard characters: False
 ```
 
 ### -qty5Name
-The name of the column that contain the fifth quantity in the CSV or Excel file.
+The name of the column that contain the fifth quantity in the CSV or Excel file. If the parameter is not specified, the default `1` is used.
 
 ```yaml
 Type: String
