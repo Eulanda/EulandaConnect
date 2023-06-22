@@ -1854,7 +1854,8 @@ PS C:\&gt; $myDate
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The function `Convert-FromDatanorm` reads a Datanorm file and converts it into a collection of PowerShell objects arranged in a hierarchical data structure. Currently, it can process the following types of records:        1. Type V: Version Data - Carries version information, date, and additional text information.        2. Type A: Basic Article Data - Includes basic information such as article number, description, price, unit, etc.        3. Type B: Additional Article Data - Includes supplementary details like alternative article number, weight, packaging amount, etc.        4. Type P: Price and Condition Data - Handles various price and condition information for an article.</maml:para>
+      <maml:para>The function `Convert-FromDatanorm` reads a Datanorm file and converts it into a collection of PowerShell objects arranged in a hierarchical data structure. Currently, it can process the following types of records:</maml:para>
+      <maml:para>1. Type V: Version Data - Carries version information, date, and additional text information. 2. Type A: Basic Article Data - Includes basic information such as article number, description, price, unit, etc. 3. Type B: Additional Article Data - Includes supplementary details like alternative article number, weight, packaging amount, etc. 4. Type P: Price and Condition Data - Handles various price and condition information for an article.</maml:para>
       <maml:para>The function is still under development. Future enhancements include handling long texts with insertions, bill of materials (BOM), and material surcharges. These additions will make the function more comprehensive and beneficial for processing Datanorm files.</maml:para>
     </maml:description>
     <command:syntax>
@@ -1966,7 +1967,29 @@ PS C:\&gt; $myDate
         <maml:title>--- Example 1:  Convert Datanorm file to a PowerShell object ---</maml:title>
         <dev:code>PS C:\&gt; $datanorm = Convert-FromDatanorm -path "C:\Users\john\Desktop\datanorm\Test\datanorm.001"</dev:code>
         <dev:remarks>
-          <maml:para>This command converts a Datanorm file located at `C:\Users\john\Desktop\datanorm\Test\datanorm.001` into a PowerShell object `$datanorm`. The object represents the content of the Datanorm file and can be further processed or manipulated in PowerShell.</maml:para>
+          <maml:para>This command converts a Datanorm file located at `C:\Users\john\Desktop\datanorm\Test\datanorm.001` into a PowerShell object `$datanorm`. The object represents the content of the Datanorm file and can be further processed or manipulated in PowerShell. It has the four properties `v`, `a`, `b` and `p`.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>--- Example 2:  Shows the data for a specific article number ---</maml:title>
+        <dev:code>PS C:\&gt; $datanorm = Convert-FromDatanorm -path "C:\Users\john\Desktop\datanorm\Test\datanorm.001"
+PS C:\&gt; $datanorm.a["8241335"]
+
+SatzKennzeichen          : A
+VerarbeitungsKennzeichen : A
+ArtikelNummer            : 8241335
+TextKennzeichen          : 00
+Kurztext1                : ELTROPA Verdrahtungsbrücke 1ph 265mm sw
+Kurztext2                : EVB 10/265 A2 10qmm Stift isol
+PreisKennzeichen         : 1
+PreisEinheit             : 0
+MengenEinheit            : Stk
+Preis                    : 2,57
+RabattGruppe             : EM01
+WarenhauptGruppe         : 01
+LangtextSchluessel       :</dev:code>
+        <dev:remarks>
+          <maml:para>Via `$datanorm.a` the individual field values can be retrieved and also addressed directly by specifying the article number. The same applies to the other properties like `$datanorm.b` or `$datanorm.p`.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
