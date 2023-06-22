@@ -8,10 +8,10 @@
 
 This is where we unravel the power of our **open-source project**: a treasury of **Powershell** functions waiting to revolutionize your workflow. Our documentation has been neatly divided into these chapters:
 
-- [General](/docs/General)
-- [Functions](/docs/Functions)
-- [Examples](/docs/Examples)
-- [Appendix](/docs/Appendix)
+- [General](/docs/general)
+- [Functions](/docs/functions)
+- [Examples](/docs/examples)
+- [Appendix](/docs/appendix)
 
 Navigate through the main menu on your left, or skim through a summary on the right side of your screen. And if you're ever lost, the original project is just a click away at: http://www.github.com/eulanda/EulandaConnect.
 
