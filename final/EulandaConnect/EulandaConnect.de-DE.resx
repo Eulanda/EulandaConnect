@@ -567,4 +567,10 @@
   <data name="ONLY_CSV_AND_XSLX_SUPPORTED" xml:space="preserve">
     <value>Es werden nur .csv oder .xlsx Dateien unterstützt. Funktion: {0}</value>
   </data>
+  <data name="WRONG_DATANORM_DATE_FORMAT" xml:space="preserve">
+    <value>Die Datumszeichenfolge hat nicht das erwartete Format: TTMMJJ: Funktion {0}</value>
+  </data>
+  <data name="INVALID_DATANORM_INDICATOR" xml:space="preserve">
+    <value>Ungültiger Bedingungsindikator: {0}. Funktion {1}</value>
+  </data>
 </root>

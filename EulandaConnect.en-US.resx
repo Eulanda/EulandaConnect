@@ -717,4 +717,12 @@
     <value>Only .csv or .xlsx files are supported. Function: {0}</value>
     <comment/>
   </data>
+  <data name="WRONG_DATANORM_DATE_FORMAT" xml:space="preserve">
+    <value>Date string is not in the expected format: TTMMJJ: Function {0}</value>
+    <comment/>
+  </data>
+  <data name="INVALID_DATANORM_INDICATOR" xml:space="preserve">
+    <value>Invalid condition indicator: {0}. Function {1}</value>
+    <comment/>
+  </data>
 </root>

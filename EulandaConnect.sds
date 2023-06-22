@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<desktop scan="54" scanned="20230621071056" built="20230621071202" lang="de-DE" pane="TLogPane" col="3" row=".\EulandaConnect.en-US.resx.IMPORTEXCEL_NOTFOUND">
+<desktop scan="55" scanned="20230622195208" built="20230622195246" lang="de-DE" pane="TLogPane" col="2" row=".\EulandaConnect.en-US.resx.IMPORTEXCEL_NOTFOUND">
   <language id="de-DE" autoime="0" autokeyboard="0"/>
   <triggers>
     <item class="TValidateTrigger" position="6" enabled="0"/>

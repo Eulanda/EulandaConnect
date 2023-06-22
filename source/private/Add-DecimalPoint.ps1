@@ -8,40 +8,40 @@ function Add-DecimalPoint {
         [string]$decimalSeparator = [System.Globalization.CultureInfo]::CurrentCulture.NumberFormat.NumberDecimalSeparator
     )
 
-<#
-    .SYNOPSIS
-    Returns a number as a string with a specified number of decimal places.
+    <#
+        .SYNOPSIS
+        Returns a number as a string with a specified number of decimal places.
 
-    .DESCRIPTION
-    The function takes a string representation of a number,
-    and returns it with the specified number of decimal places.
-    If the input string is empty, it will return "0,00".
+        .DESCRIPTION
+        The function takes a string representation of a number,
+        and returns it with the specified number of decimal places.
+        If the input string is empty, it will return "0,00".
 
-    .PARAMETER number
-    A string representation of the number to which the decimal point is to be added.
+        .PARAMETER number
+        A string representation of the number to which the decimal point is to be added.
 
-    .PARAMETER decimalPlaces
-    The number of decimal places to be added to the number. Default is 2.
+        .PARAMETER decimalPlaces
+        The number of decimal places to be added to the number. Default is 2.
 
-    .PARAMETER decimalSeparator
-    The character to use as a decimal separator. The default is the current system's decimal separator.
+        .PARAMETER decimalSeparator
+        The character to use as a decimal separator. The default is the current system's decimal separator.
 
-    .EXAMPLE
-    PS C:\> Add-DecimalPoint -number '10000' -decimalPlaces 2
-    This command will return '100,00'.
+        .EXAMPLE
+        PS C:\> Add-DecimalPoint -number '10000' -decimalPlaces 2
+        This command will return '100,00'.
 
-    .EXAMPLE
-    PS C:\> Add-DecimalPoint -number '10000' -decimalPlaces 3
-    This command will return '10,000'.
+        .EXAMPLE
+        PS C:\> Add-DecimalPoint -number '10000' -decimalPlaces 3
+        This command will return '10,000'.
 
-    .EXAMPLE
-    PS C:\> Add-DecimalPoint -number '10000' -decimalPlaces 2 -decimalSeparator '.'
-    This command will return '100.00'.
+        .EXAMPLE
+        PS C:\> Add-DecimalPoint -number '10000' -decimalPlaces 2 -decimalSeparator '.'
+        This command will return '100.00'.
 
-    .NOTES
-    The function appends leading zeros to numbers that are shorter than the number of decimal places specified.
-    If a number starts with a decimal separator after the transformation, a '0' is prepended.
-#>
+        .NOTES
+        The function appends leading zeros to numbers that are shorter than the number of decimal places specified.
+        If a number starts with a decimal separator after the transformation, a '0' is prepended.
+    #>
 
 
     # If the string is empty, return "0,00" (with two decimal places)

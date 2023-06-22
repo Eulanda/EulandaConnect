@@ -12556,40 +12556,40 @@ function Add-DecimalPoint {
         [string]$decimalSeparator = [System.Globalization.CultureInfo]::CurrentCulture.NumberFormat.NumberDecimalSeparator
     )
 
-<#
-    .SYNOPSIS
-    Returns a number as a string with a specified number of decimal places.
+    <#
+        .SYNOPSIS
+        Returns a number as a string with a specified number of decimal places.
 
-    .DESCRIPTION
-    The function takes a string representation of a number,
-    and returns it with the specified number of decimal places.
-    If the input string is empty, it will return "0,00".
+        .DESCRIPTION
+        The function takes a string representation of a number,
+        and returns it with the specified number of decimal places.
+        If the input string is empty, it will return "0,00".
 
-    .PARAMETER number
-    A string representation of the number to which the decimal point is to be added.
+        .PARAMETER number
+        A string representation of the number to which the decimal point is to be added.
 
-    .PARAMETER decimalPlaces
-    The number of decimal places to be added to the number. Default is 2.
+        .PARAMETER decimalPlaces
+        The number of decimal places to be added to the number. Default is 2.
 
-    .PARAMETER decimalSeparator
-    The character to use as a decimal separator. The default is the current system's decimal separator.
+        .PARAMETER decimalSeparator
+        The character to use as a decimal separator. The default is the current system's decimal separator.
 
-    .EXAMPLE
-    PS C:\> Add-DecimalPoint -number '10000' -decimalPlaces 2
-    This command will return '100,00'.
+        .EXAMPLE
+        PS C:\> Add-DecimalPoint -number '10000' -decimalPlaces 2
+        This command will return '100,00'.
 
-    .EXAMPLE
-    PS C:\> Add-DecimalPoint -number '10000' -decimalPlaces 3
-    This command will return '10,000'.
+        .EXAMPLE
+        PS C:\> Add-DecimalPoint -number '10000' -decimalPlaces 3
+        This command will return '10,000'.
 
-    .EXAMPLE
-    PS C:\> Add-DecimalPoint -number '10000' -decimalPlaces 2 -decimalSeparator '.'
-    This command will return '100.00'.
+        .EXAMPLE
+        PS C:\> Add-DecimalPoint -number '10000' -decimalPlaces 2 -decimalSeparator '.'
+        This command will return '100.00'.
 
-    .NOTES
-    The function appends leading zeros to numbers that are shorter than the number of decimal places specified.
-    If a number starts with a decimal separator after the transformation, a '0' is prepended.
-#>
+        .NOTES
+        The function appends leading zeros to numbers that are shorter than the number of decimal places specified.
+        If a number starts with a decimal separator after the transformation, a '0' is prepended.
+    #>
 
 
     # If the string is empty, return "0,00" (with two decimal places)
@@ -12617,25 +12617,25 @@ function Convert-DatanormDateFormat {
     param(
         [string]$date
     )
-<#
-    .SYNOPSIS
-    Converts a date string from the Datanorm date format (TTMMJJ) to the ISO 8601 date format (YYYY-MM-DD).
+    <#
+        .SYNOPSIS
+        Converts a date string from the Datanorm date format (TTMMJJ) to the ISO 8601 date format (YYYY-MM-DD).
 
-    .DESCRIPTION
-    This function takes a date string formatted according to the Datanorm date standard (day, month, two-digit year) and converts it to the ISO 8601 date format.
-    The function assumes that the input year is in the 2000s.
+        .DESCRIPTION
+        This function takes a date string formatted according to the Datanorm date standard (day, month, two-digit year) and converts it to the ISO 8601 date format.
+        The function assumes that the input year is in the 2000s.
 
-    .PARAMETER date
-    The input date string to be converted from Datanorm format to ISO 8601 format.
+        .PARAMETER date
+        The input date string to be converted from Datanorm format to ISO 8601 format.
 
-    .EXAMPLE
-    PS C:\> Convert-DatanormDateFormat -date '310122'
-    This command converts the Datanorm date string '310122' (January 31, 2022) to the ISO 8601 date string '2022-01-31'.
+        .EXAMPLE
+        PS C:\> Convert-DatanormDateFormat -date '310122'
+        This command converts the Datanorm date string '310122' (January 31, 2022) to the ISO 8601 date string '2022-01-31'.
 
-    .NOTES
-    This function is useful for processing Datanorm files, which use a different date format (TTMMJJ) than the widely used ISO 8601 standard.
-    Invalid date strings that don't follow the expected format will trigger an exception.
-#>
+        .NOTES
+        This function is useful for processing Datanorm files, which use a different date format (TTMMJJ) than the widely used ISO 8601 standard.
+        Invalid date strings that don't follow the expected format will trigger an exception.
+    #>
 
     # Ensure the date string is in the expected format
     if ($date -match '^(\d{2})(\d{2})(\d{2})$') {
@@ -12650,7 +12650,7 @@ function Convert-DatanormDateFormat {
 
         return $newDate
     } else {
-        throw "Date string is not in the expected format: TTMMJJ"
+        Throw ((Get-ResStr 'WRONG_DATANORM_DATE_FORMAT') -f $myInvocation.Mycommand)
     }
 }
 
@@ -12935,49 +12935,48 @@ function Get-DatanormConditionDecimals {
         [string]$condition,
         [int]$indicator
     )
+    <#
+        .SYNOPSIS
+        Returns a Datanorm condition with decimal places based on the provided condition indicator.
 
-<#
-    .SYNOPSIS
-    Returns a Datanorm condition with decimal places based on the provided condition indicator.
+        .DESCRIPTION
+        In Datanorm files, there is a condition indicator in the type P record,
+        which determines the number of decimal places of another field.
+        This function returns the condition with the correct number of decimal
+        places based on the indicator.
 
-    .DESCRIPTION
-    In Datanorm files, there is a condition indicator in the type P record,
-    which determines the number of decimal places of another field.
-    This function returns the condition with the correct number of decimal
-    places based on the indicator.
+        .PARAMETER condition
+        A string representing the Datanorm condition.
 
-    .PARAMETER condition
-    A string representing the Datanorm condition.
+        .PARAMETER indicator
+        An integer representing the Datanorm condition indicator.
+        The number of decimal places is determined based on this indicator.
 
-    .PARAMETER indicator
-    An integer representing the Datanorm condition indicator.
-    The number of decimal places is determined based on this indicator.
+        .EXAMPLE
+        PS C:\> Get-DatanormConditionDecimals -condition '10000' -indicator 1
+        This command will return '100,00'.
 
-    .EXAMPLE
-    PS C:\> Get-DatanormConditionDecimals -condition '10000' -indicator 1
-    This command will return '100,00'.
+        .EXAMPLE
+        PS C:\> Get-DatanormConditionDecimals -condition '10000' -indicator 2
+        This command will return '10,000'.
 
-    .EXAMPLE
-    PS C:\> Get-DatanormConditionDecimals -condition '10000' -indicator 2
-    This command will return '10,000'.
+        .EXAMPLE
+        PS C:\> Get-DatanormConditionDecimals -condition '10000' -indicator 3
+        This command will return '100,00'.
 
-    .EXAMPLE
-    PS C:\> Get-DatanormConditionDecimals -condition '10000' -indicator 3
-    This command will return '100,00'.
-
-    .NOTES
-    The function throws an exception if an invalid condition indicator is passed.
-#>
-
+        .NOTES
+        The function throws an exception if an invalid condition indicator is passed.
+    #>
 
     switch ($indicator) {
         0 { return $condition }
         1 { return $condition.Insert($condition.Length - 2, ",") }
         2 { return $condition.Insert($condition.Length - 3, ",") }
         3 { return $condition.Insert($condition.Length - 2, ",") }
-        default { throw "Invalid condition indicator: $indicator" }
+        default { Throw ((Get-ResStr 'INVALID_DATANORM_INDICATOR') -f $indicator, $myInvocation.Mycommand) }
     }
 }
+
 function Get-DefaultSelectArticle {
     [CmdletBinding()]
     param()
@@ -16535,8 +16534,8 @@ function Test-ValidateUrl {
 # SIG # Begin signature block
 # MIIpiQYJKoZIhvcNAQcCoIIpejCCKXYCAQExDzANBglghkgBZQMEAgEFADB5Bgor
 # BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
-# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCCLaEMJrjV47frQ
-# F1TY0/BBLt6M8S6Xyvj8c8SaHO+GOaCCEngwggVvMIIEV6ADAgECAhBI/JO0YFWU
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCD7kep4by5HhldJ
+# o0s7PTcsZNX4I9BcdIibm9p83l48jqCCEngwggVvMIIEV6ADAgECAhBI/JO0YFWU
 # jTanyYqJ1pQWMA0GCSqGSIb3DQEBDAUAMHsxCzAJBgNVBAYTAkdCMRswGQYDVQQI
 # DBJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcMB1NhbGZvcmQxGjAYBgNVBAoM
 # EUNvbW9kbyBDQSBMaW1pdGVkMSEwHwYDVQQDDBhBQUEgQ2VydGlmaWNhdGUgU2Vy
@@ -16639,23 +16638,23 @@ function Test-ValidateUrl {
 # IExpbWl0ZWQxLjAsBgNVBAMTJVNlY3RpZ28gUHVibGljIENvZGUgU2lnbmluZyBD
 # QSBFViBSMzYCEGilgQZhq4aQSRu7qELTizkwDQYJYIZIAWUDBAIBBQCgfDAQBgor
 # BgEEAYI3AgEMMQIwADAZBgkqhkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEE
-# AYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAvBgkqhkiG9w0BCQQxIgQguJEj6h5jElb4
-# CIV5949c84kTYp7CQK6TWKRVexUZ8ckwDQYJKoZIhvcNAQEBBQAEggIAFVrq0jqo
-# 81DxpN0w3oNEUm0yjpO4ZXcE4qCywSJ5t0Zt/9cy24GJFbRFVqZ6z+QC4vNmJmV3
-# RCeBKldqRzuIffehD6oVtcWCsiNWK2KCaSZtBRv+mHe5RIVKytqregm4if1jH5tI
-# xFkk5sx2fLxyxOytTodsH9d1n4ICpUP/xwo4ou8xjYiE6dpuyq73m1kPwsYjzBq8
-# iggQa602aUxBaOHHctVq68vkKnCxC1MIM13NGgrVuwhOV9RCw1sOcr3LCDpmonGI
-# pTdkXjc9xo16dFw7toeTR61Rt2f1LMXTOeVPSgcTSUvqHo1fyrsNQ+df0fDKhZnS
-# tojjHGMvgv7BbVLVlRphTGruBEvJolHb/e+Jg5SEKBRFKw+KZQ3noErbVcH0Vum5
-# +6uPOBuMvze9lxwVSfY7BBB2D+QA3HeJcRViDk/O+LBhScFqB8VU5/CVJGWnCfis
-# AemSaBbIy6sTDGsXEcteOx5WDXuowmbI9b3f1NeZGecMQEF87g6wIM4ZP4jeXMM5
-# Fmkq6JwuYxHQ01hIaWfZDMJ68UgWCwXWBXrQg3Na02tUcfl4ZRI/Lx9BLF8QM+HN
-# sOkA2Fw4d/9PyEJPyFl4G+1R9Q4NJ0BdXP+mLkCf6XP3hmgU3ZEpKqNs2fB4dTkn
-# LxTtwyg7aXqQ06A1agHkekZnxJY4MOAj+hqhghNPMIITSwYKKwYBBAGCNwMDATGC
+# AYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAvBgkqhkiG9w0BCQQxIgQgMNOKpvLlgKGF
+# TAV0R2coSc2rx7AFOSu8ZD7/Qz1dgwMwDQYJKoZIhvcNAQEBBQAEggIAJLqO8EvC
+# EywIn14i4Abar/63ZB8NYiJujCehCQLZ8Su5Cr7dUDDdbFnJfncS0Z2vVqKDCADX
+# kac6sHR9U7IANPVIOfqViddKMTarLULYZJ3Q5Jxej8DIt668qiUpfb8FUADkbL3R
+# oCzkDsE4usdnjrgkvQtYR3AdZHeEmVfWwf79ujNnyN0oDXuMK/G1uXU8OrI1R/mC
+# tdBGAUaIutFoOrpnljeLqqi3f6F5VeVsqDeyt/2BuzCBRFOtTGa/c6XOM5WcBuxO
+# OakaiH3rFpMgKYJAOYDSnFPEvRp4YPZtxsfWkKrm0I86wayyZAex79ab8ODUufM5
+# FddEKyhrkwL5U30XJw10N2icadDGTlc4NdP4qlRZw5IFp+5NzAmTilk1mjSW3Vc8
+# A4CYRkctnab1bCq6VJ8NWuUi0vKsQU/vZ9A5+c/ALZzKyqy/jl2IwSBecaIzCnkc
+# tOP2DNn6yKrzjdnt7Yw4ljn2dZlolDr8RHs/Tp5oyuuxld1Iq0iyGMUkL09/M2T8
+# WOqqdAJ+68oQcX+Y0lN8QaIpXub6IzkvuWlhy5BSWEwisUhMrHgFYcMmKblpONa4
+# kFmxEVcVnujw6NWsW0nQ5PRZX+4crgK+kD4jSsrRkGY+8xrzA9U7bDpASVO4tZ9a
+# w8cMHqZ2iK7TG2uVWYkU51gBPRJmbsfUfkChghNPMIITSwYKKwYBBAGCNwMDATGC
 # EzswghM3BgkqhkiG9w0BBwKgghMoMIITJAIBAzEPMA0GCWCGSAFlAwQCAgUAMIHw
 # BgsqhkiG9w0BCRABBKCB4ASB3TCB2gIBAQYKKwYBBAGyMQIBATAxMA0GCWCGSAFl
-# AwQCAQUABCCRKv8fdOWQc3d4Ta8/NQYjyxXZ92joeuoqeFKJJmKJBAIVAIjmnCIz
-# UAsSLdgQ1ZZqg2KWyF2aGA8yMDIzMDYyMjE3MzU0M1qgbqRsMGoxCzAJBgNVBAYT
+# AwQCAQUABCDJXXHifjmZGiBHDc6AJe/uLQ+jM4Lz2YT/pP8EyNFFxQIVAPYHHltI
+# 8IA/dzeXHAYp7Qz5ujo8GA8yMDIzMDYyMjE3NTUyMVqgbqRsMGoxCzAJBgNVBAYT
 # AkdCMRMwEQYDVQQIEwpNYW5jaGVzdGVyMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
 # ZWQxLDAqBgNVBAMMI1NlY3RpZ28gUlNBIFRpbWUgU3RhbXBpbmcgU2lnbmVyICM0
 # oIIN6TCCBvUwggTdoAMCAQICEDlMJeF8oG0nqGXiO9kdItQwDQYJKoZIhvcNAQEM
@@ -16737,22 +16736,22 @@ function Test-ValidateUrl {
 # BAoTD1NlY3RpZ28gTGltaXRlZDElMCMGA1UEAxMcU2VjdGlnbyBSU0EgVGltZSBT
 # dGFtcGluZyBDQQIQOUwl4XygbSeoZeI72R0i1DANBglghkgBZQMEAgIFAKCCAWsw
 # GgYJKoZIhvcNAQkDMQ0GCyqGSIb3DQEJEAEEMBwGCSqGSIb3DQEJBTEPFw0yMzA2
-# MjIxNzM1NDNaMD8GCSqGSIb3DQEJBDEyBDDo6DR1R9MZalvIR3r7alucPBTjkLIp
-# rfxVttHiofa5IxFFhwcIm9hNR6znGrXTsg8wge0GCyqGSIb3DQEJEAIMMYHdMIHa
+# MjIxNzU1MjFaMD8GCSqGSIb3DQEJBDEyBDDJbhV/QGz4ogjD6j1bp3r6L/R0s+d1
+# vQM9WLaU9EQ7LxehnpR+AVvCARdbsJoKURkwge0GCyqGSIb3DQEJEAIMMYHdMIHa
 # MIHXMBYEFK5ir3UKDL1H1kYfdWjivIznyk+UMIG8BBQC1luV4oNwwVcAlfqI+SPd
 # k3+tjzCBozCBjqSBizCBiDELMAkGA1UEBhMCVVMxEzARBgNVBAgTCk5ldyBKZXJz
 # ZXkxFDASBgNVBAcTC0plcnNleSBDaXR5MR4wHAYDVQQKExVUaGUgVVNFUlRSVVNU
 # IE5ldHdvcmsxLjAsBgNVBAMTJVVTRVJUcnVzdCBSU0EgQ2VydGlmaWNhdGlvbiBB
-# dXRob3JpdHkCEDAPb6zdZph0fKlGNqd4LbkwDQYJKoZIhvcNAQEBBQAEggIAJyny
-# Js/sK4p+w+yxp+uwUqEJNzmlzf/lET2fccnyjVWvdo/6D5PJ1jOyWz6Sq5BMcH2K
-# UVsJtRznR7+KN0Rj1lXlAQMqhY6h4IofaCNv3RMcHwojo3bAXutWAEiavfNaWs9q
-# 1EQsHT65afRtyZCTBvnaQbMpQ7eSvzHav8/qU4hCcVqye39G1R3MqnhXObdDZpUv
-# PJfwvKY5cQIrCK63P1ayvOAhLp4fcn0VU0SGFAaGk1T9OnWH1TfxW3lHN+G8BLiT
-# GyZr1alyBQIHcsqeu9QootgEq/Ma1bBSIAIszfGyjgQCd6QS4iv+qsKPOLkpqar3
-# TKic1leyTi1hyL7M67s4Rn95xf6WiyltNcpUTv9HZhPYGJ7p9QFztMyM4cjupT4f
-# /DH0SMVJWYmcluvBq7cFvN2bc5x4VnIIEpB8hKYlOiAmry5kgt+IDsFsadLQV4sg
-# nf8soXrEvHseUUt9TNXHjESiwyvmJ58Jz9MFNDniPMKoEmPe5jigUp81YPv8yeVN
-# VF15yrsSQJ3zQWnf4KwlkNJwct/GWPjzgpAijDxbBi43BkpoKvngNHdjbKOZWM9m
-# ZpOZpYr4E6/jIpuvOisFeC2JO156obOOPwIlQYwxvMdK8n9fG2WFUNBOLd83wfj1
-# gh0HFf2snlYoDn5QXsM2MA0na51+3ZWzJ9aVFP4=
+# dXRob3JpdHkCEDAPb6zdZph0fKlGNqd4LbkwDQYJKoZIhvcNAQEBBQAEggIAI5sx
+# yvLbIN5hVKmTSVnjy3QY3B8dgTq45d2wyskxGxSF2cfEMiDHiYBQJl3IC7NtwSRs
+# +i0Rma5J2S7kYMMK9KW+nJ6UOqpZGnEDxMMZEIsFhX9CjhasVfvwi7vqnchYoKiH
+# +8ozK4Eu7hjiRf5dRWVQGWCmrwJQckW77m3qsrupPFRin94u8LST7+Hl70sgtKXp
+# SXHUVV9/a86MLAsR2jBBz7ecWKLIrF+xa6f0GfDFOx6UnRpYdqMBZz+hU3xf7kBn
+# Y6RjhU3e/JOOA2yGt6Xgwb4a6AYZyqRCmrN6mOJ52o3LXWgatwssbR8ggVSQJx6t
+# HysGi9kYRxE7ljTuzsTYe52WS9vhI4wXaTJArD47uBGQ/goNW5jXkaopfW/x/TfF
+# PdsCiXu+1NOsPrZSyWx53ny362I7L5U3Qor0Ybsl/IHaNyBhjyaIhmtdlopH2fds
+# usflqBtIVraPVToKxauMxYpC72CjOnbEN6cszzLEayAZrQt1THHXsOFErbouTN5a
+# tWafqfq8xJ/nEADhn/ULDyw8fbg98AxIhk597anPwXjLa1kf2Q3BpN0ydentAugP
+# EMaBXdQVd9yG83vlUmfO3syosjj6vW+mofo9bJXt7BoNLfaUR/v+ZtcpyA8R+cs2
+# E7kBCijIPxH7NRGiXqg2hDIzj7FiCLoc+fBXENg=
 # SIG # End signature block

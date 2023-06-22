@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<document created="20230218074329" version="4.0.374" date="20230621071134" scan="54" scanned="20230621071056">
+<document created="20230218074329" version="4.0.374" date="20230622195237" scan="55" scanned="20230622195208">
   <lang id="de-DE"/>
-  <source class="TNetResourceSource" name=".\EulandaConnect.en-US.resx" original="en-US" date="20230621051030" usebom="1" options="[]" righttoleft="nrlNone">
+  <source class="TNetResourceSource" name=".\EulandaConnect.en-US.resx" original="en-US" date="20230622174842" usebom="1" options="[]" righttoleft="nrlNone">
     <outputfile dir="." localized="EulandaConnect.&lt;net&gt;.&lt;ext&gt;"/>
     <excludeddatatypes>
       <class>TBinaryData</class>
@@ -622,6 +622,14 @@
     <row id="ONLY_CSV_AND_XSLX_SUPPORTED" state="0" created="20230621071056">
       <native>Only .csv or .xlsx files are supported. Function: {0}</native>
       <lang id="de-DE" date="20230621071132" status="3">Es werden nur .csv oder .xlsx Dateien unterstützt. Funktion: {0}</lang>
+    </row>
+    <row id="WRONG_DATANORM_DATE_FORMAT" state="0" created="20230622195208">
+      <native>Date string is not in the expected format: TTMMJJ: Function {0}</native>
+      <lang id="de-DE" date="20230622195225" status="3">Die Datumszeichenfolge hat nicht das erwartete Format: TTMMJJ: Funktion {0}</lang>
+    </row>
+    <row id="INVALID_DATANORM_INDICATOR" state="0" created="20230622195208">
+      <native>Invalid condition indicator: {0}. Function {1}</native>
+      <lang id="de-DE" date="20230622195235" status="3">Ungültiger Bedingungsindikator: {0}. Funktion {1}</lang>
     </row>
   </source>
 </document>
