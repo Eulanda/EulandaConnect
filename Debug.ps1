@@ -23,12 +23,18 @@ Write-Host "*******************************************************************"
 try {
     # YOUR TEST CODE HERE
 
-    # Test-IpAddress -ip 260.1.2.3 -verbose -debug
-    # Get-IpGeoInfo -ip 79.42.55.123
-    # Remove-SymbolicLink
-    # Confirm-System -network
+    $datanorm = Convert-FromDatanorm -path "C:\Users\cn\Desktop\datanorm\Test\datanorm.001"
+    $xml = Convert-DatanormToXml -datanorm $datanorm
+    $xml
 
-    Import-TieredPrices  -path 'C:\temp\test.xlsx' -articleNo 'ARTNUMMER' -price1 'Vk' -pricelist 'BBY Retail' -udl 'C:\temp\Eulanda_1 JohnDoe.udl' -verbose -debug
+
+    $datanorm.v
+    Write-Host "A-Record" -ForegroundColor Yellow
+    $datanorm.a
+    Write-Host "B-Record" -ForegroundColor Yellow
+    $datanorm.b
+    Write-Host "P-Record" -ForegroundColor Yellow
+    $datanorm.p
 
 } catch {
     $errorMessage = $Error[0].ToString()

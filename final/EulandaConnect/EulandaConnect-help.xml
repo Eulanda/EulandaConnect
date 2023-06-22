@@ -1254,6 +1254,90 @@ Haeuser stehen in Zuerich</dev:code>
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
+      <command:name>Convert-DatanormToXml</command:name>
+      <command:verb>Convert</command:verb>
+      <command:noun>DatanormToXml</command:noun>
+      <maml:description>
+        <maml:para>Converts a Datanorm PowerShell object into an XML string that's compatible with the EULANDA merchandise management system.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>The Convert-DatanormToXml function accepts a Datanorm object as input, which represents the content of a Datanorm file, and converts it into an XML string that is compatible with the EULANDA merchandise management system. The resulting XML can be directly read by the EULANDA system.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Convert-DatanormToXml</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>datanorm</maml:name>
+          <maml:description>
+            <maml:para>The Datanorm object to be converted. This should represent a Datanorm file that was previously converted using the Convert-FromDatanorm function.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Object</command:parameterValue>
+          <dev:type>
+            <maml:name>Object</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>datanorm</maml:name>
+        <maml:description>
+          <maml:para>The Datanorm object to be converted. This should represent a Datanorm file that was previously converted using the Convert-FromDatanorm function.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Object</command:parameterValue>
+        <dev:type>
+          <maml:name>Object</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>The EULANDA merchandise management system requires a specific XML format for data import. This function is designed to create an XML string that complies with this format based on the provided Datanorm object.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>Example 1: Converts PowerShell Datanorm object to an EULANDA specific XML</maml:title>
+        <dev:code>PS C:\&gt; $xml = Convert-DatanormToXml -datanorm $datanorm</dev:code>
+        <dev:remarks>
+          <maml:para>This command converts a Datanorm PowerShell object into an XML string that's compatible with the EULANDA merchandise management system.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version:</maml:linkText>
+        <maml:uri>https://github.com/Eulanda/EulandaConnect/blob/master/docs/Convert-DatanormToXml.md</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
       <command:name>Convert-DataToXml</command:name>
       <command:verb>Convert</command:verb>
       <command:noun>DataToXml</command:noun>
@@ -1762,6 +1846,139 @@ PS C:\&gt; $myDate
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
+      <command:name>Convert-FromDatanorm</command:name>
+      <command:verb>Convert</command:verb>
+      <command:noun>FromDatanorm</command:noun>
+      <maml:description>
+        <maml:para>Converts a Datanorm 4.0 file into a structured PowerShell object.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>The function `Convert-FromDatanorm` reads a Datanorm file and converts it into a collection of PowerShell objects arranged in a hierarchical data structure. Currently, it can process the following types of records:        1. Type V: Version Data - Carries version information, date, and additional text information.        2. Type A: Basic Article Data - Includes basic information such as article number, description, price, unit, etc.        3. Type B: Additional Article Data - Includes supplementary details like alternative article number, weight, packaging amount, etc.        4. Type P: Price and Condition Data - Handles various price and condition information for an article.</maml:para>
+      <maml:para>The function is still under development. Future enhancements include handling long texts with insertions, bill of materials (BOM), and material surcharges. These additions will make the function more comprehensive and beneficial for processing Datanorm files.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Convert-FromDatanorm</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>path</maml:name>
+          <maml:description>
+            <maml:para>The path of the Datanorm file to be converted.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+          <maml:name>mwSt</maml:name>
+          <maml:description>
+            <maml:para>The value-added tax rate. The default value is 19.0.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Double</command:parameterValue>
+          <dev:type>
+            <maml:name>Double</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="decimal">
+          <maml:name>decimalSeparator</maml:name>
+          <maml:description>
+            <maml:para>The decimal separator used in the Datanorm file. The default value is the current culture's number decimal separator.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="decimal">
+        <maml:name>decimalSeparator</maml:name>
+        <maml:description>
+          <maml:para>The decimal separator used in the Datanorm file. The default value is the current culture's number decimal separator.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+        <maml:name>mwSt</maml:name>
+        <maml:description>
+          <maml:para>The value-added tax rate. The default value is 19.0.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Double</command:parameterValue>
+        <dev:type>
+          <maml:name>Double</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>path</maml:name>
+        <maml:description>
+          <maml:para>The path of the Datanorm file to be converted.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para></maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>--- Example 1:  Convert Datanorm file to a PowerShell object ---</maml:title>
+        <dev:code>PS C:\&gt; $datanorm = Convert-FromDatanorm -path "C:\Users\john\Desktop\datanorm\Test\datanorm.001"</dev:code>
+        <dev:remarks>
+          <maml:para>This command converts a Datanorm file located at `C:\Users\john\Desktop\datanorm\Test\datanorm.001` into a PowerShell object `$datanorm`. The object represents the content of the Datanorm file and can be further processed or manipulated in PowerShell.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version:</maml:linkText>
+        <maml:uri>https://github.com/Eulanda/EulandaConnect/blob/master/docs/Convert-FromDatanorm.md</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
       <command:name>Convert-ImageToBase64</command:name>
       <command:verb>Convert</command:verb>
       <command:noun>ImageToBase64</command:noun>
@@ -1845,6 +2062,90 @@ data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAwADAAAD/4cNoRXhpZgAATU0AKgAAAAgACwEPA
       <maml:navigationLink>
         <maml:linkText>Online Version:</maml:linkText>
         <maml:uri>https://github.com/Eulanda/EulandaConnect/blob/master/docs/Convert-ImageToBase64.md</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Convert-OemToUtf8</command:name>
+      <command:verb>Convert</command:verb>
+      <command:noun>OemToUtf8</command:noun>
+      <maml:description>
+        <maml:para>Converts an input string from OEM (Original Equipment Manufacturer) encoding to UTF-8 encoding, with specific mappings for German special characters.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>The function takes a string encoded in OEM and converts it to UTF-8, using mappings for specific German special characters.  The function loops through each character in the input string, checks if it corresponds to one of the specified OEM encoded characters,  and replaces it with the corresponding UTF-8 character.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Convert-OemToUtf8</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>inputString</maml:name>
+          <maml:description>
+            <maml:para>The input string to be converted from OEM to UTF-8 encoding. This parameter is mandatory.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>inputString</maml:name>
+        <maml:description>
+          <maml:para>The input string to be converted from OEM to UTF-8 encoding. This parameter is mandatory.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>The function was created to support legacy data formats, particularly the Datanorm standard, which still requires this type of conversion.  Datanorm is a German data format standard used in the commercial sector, especially in the building and electrical trades.  Despite its age, it is still in widespread use today.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- Example 1 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Convert-OemToUtf8 -inputString 'Rckfahrt'</dev:code>
+        <dev:remarks>
+          <maml:para>This command converts the input string 'Rckfahrt' from OEM to UTF-8, and returns 'Rückfahrt'.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version:</maml:linkText>
+        <maml:uri>https://github.com/Eulanda/EulandaConnect/blob/master/docs/Convert-OemToUtf8.md</maml:uri>
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
@@ -17345,13 +17646,13 @@ No technical information available</dev:code>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The Import-TieredPrice function uses an ADO connection to connect to the EULANDA database. It imports tiered prices from a specified CSV or Excel file and updates the database's tiered price table.</maml:para>
-      <maml:para>If Excel files should be applied, the XSLX format must be used. Also, the ImportExcel PowerShell module must be installed. This can be done at the PowerShell prompt with 'Install-Module ImportExcel'. No installed Office is required to import Excel files.</maml:para>
-      <maml:para>For CSV files, however, field separation with semicolons is expected. The price and quantity fields are expected as from the country setting of the PC. So in Germany for example the comma to separate the cents.</maml:para>
-      <maml:para>The file to be imported must contain a column with the article number and at least one price field. The column names are freely selectable, as already mentioned. If no corresponding quantity is specified, 1 is used as default value. This means that the price is used from quantity 1.</maml:para>
-      <maml:para>The parameters 'Price1Name' to 'Price5Name' are the field names from the file to be imported. The number in the parameter is used to specify the scale in the price list.</maml:para>
-      <maml:para>'Price1Name' contains the field name for the first scale and so on. It is not mandatory to start with the first price, in this way every scale from 1 to 5 can be addressed in the ERP system.</maml:para>
-      <maml:para>EULANDA supports any number of price lists. By specification of the PriceListName the price list to be used is selected.</maml:para>
+      <maml:para>The Import-TieredPrices function uses an ADO connection to connect to the EULANDA database. It imports tiered prices from a specified CSV or Excel file and updates the database's tiered price table.</maml:para>
+      <maml:para>If Excel files should be applied, the `XSLX` format must be used. Also, the ImportExcel PowerShell module must be installed. This can be done at the PowerShell prompt with `Install-Module ImportExcel`. No installed Office is required to import Excel files.</maml:para>
+      <maml:para>For `CSV` files, however, field separation with semicolons is expected. The price and quantity fields are expected as from the country setting of the PC. So in Germany for example the comma to separate the cents.</maml:para>
+      <maml:para>The file to be imported must contain a column with the article number and at least one price field. The column names are freely selectable, as already mentioned. If no corresponding quantity is specified, `1` is used as default value. This means that the price is used from quantity `1`.</maml:para>
+      <maml:para>The parameters `Price1Name` to `Price5Name` are the field names from the file to be imported. The number in the parameter is used to specify the scale in the price list.</maml:para>
+      <maml:para>`-price1Name` contains the field name for the first scale and so on. It is not mandatory to start with the first price, in this way every scale from `1` to `5` can be addressed in the ERP system.</maml:para>
+      <maml:para>EULANDA supports any number of price lists. By specification of the `-priceList` the price list to be used is selected.</maml:para>
       <maml:para>As a further parameter the file path to the UDL file is needed.</maml:para>
     </maml:description>
     <command:syntax>
@@ -17360,7 +17661,7 @@ No technical information available</dev:code>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="barcode">
           <maml:name>barcodeName</maml:name>
           <maml:description>
-            <maml:para>The name of the column that contains the article barcode in the CSV or Excel file. Only one field name from the selection -articleNoName, -articleIdName, -barcodeName, -articleUidName may be specified.</maml:para>
+            <maml:para>The name of the column that contains the article barcode in the CSV or Excel file. Only one field name from the selection `-articleNoName`, `-articleIdName`, `-barcodeName`, `-articleUidName` may be specified.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -17372,7 +17673,7 @@ No technical information available</dev:code>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="articleNo">
           <maml:name>articleNoName</maml:name>
           <maml:description>
-            <maml:para>The name of the column that contains the article number in the CSV or Excel file. Only one field name from the selection -articleNoName, -articleIdName, -barcodeName, -articleUidName may be specified.</maml:para>
+            <maml:para>The name of the column that contains the article number in the CSV or Excel file. Only one field name from the selection `-articleNoName`, `-articleIdName`, `-barcodeName`, `-articleUidName` may be specified.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -17396,7 +17697,7 @@ No technical information available</dev:code>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="11" aliases="qty4">
           <maml:name>qty4Name</maml:name>
           <maml:description>
-            <maml:para>The name of the column that contain the fourth quantity in the CSV or Excel file.</maml:para>
+            <maml:para>The name of the column that contain the fourth quantity in the CSV or Excel file. If the parameter is not specified, the default `1` is used.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -17420,7 +17721,7 @@ No technical information available</dev:code>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="13" aliases="qty5">
           <maml:name>qty5Name</maml:name>
           <maml:description>
-            <maml:para>The name of the column that contain the fifth quantity in the CSV or Excel file.</maml:para>
+            <maml:para>The name of the column that contain the fifth quantity in the CSV or Excel file. If the parameter is not specified, the default `1` is used.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -17432,7 +17733,7 @@ No technical information available</dev:code>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="14" aliases="none">
           <maml:name>priceList</maml:name>
           <maml:description>
-            <maml:para>The name of the price list into which the scale prices are to be imported. The price list can be specified with either -priceList or -priceListId.</maml:para>
+            <maml:para>The name of the price list into which the scale prices are to be imported. The price list can be specified with either `-priceList` or `-priceListId`.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -17444,7 +17745,7 @@ No technical information available</dev:code>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="15" aliases="none">
           <maml:name>priceListId</maml:name>
           <maml:description>
-            <maml:para>The Id of the price list into which the scale prices are to be imported. The price list can be specified with either -priceList or -priceListId.</maml:para>
+            <maml:para>The Id of the price list into which the scale prices are to be imported. The price list can be specified with either `-priceList` or `-priceListId`.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
           <dev:type>
@@ -17480,7 +17781,7 @@ No technical information available</dev:code>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="18" aliases="none">
           <maml:name>path</maml:name>
           <maml:description>
-            <maml:para>The path to the CSV or Excel file containing the tiered prices. Only .csv and .xlsx are accepted as file extension. Note that for Excel files, the PowerShell module ImportExcel from the PowerShell Gallery must be installed.</maml:para>
+            <maml:para>The path to the CSV or Excel file containing the tiered prices. Only .csv and .xlsx are accepted as file extension. Note that for Excel files, the PowerShell module `ImportExcel` from the PowerShell Gallery must be installed.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -17504,7 +17805,7 @@ No technical information available</dev:code>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="articleId">
           <maml:name>articleIdName</maml:name>
           <maml:description>
-            <maml:para>The name of the column that contains the article Id in the CSV or Excel file. Only one field name from the selection -articleNoName, -articleIdName, -barcodeName, -articleUidName may be specified.</maml:para>
+            <maml:para>The name of the column that contains the article Id in the CSV or Excel file. Only one field name from the selection `-articleNoName`, `-articleIdName`, `-barcodeName`, `-articleUidName` may be specified.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -17540,7 +17841,7 @@ No technical information available</dev:code>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="articleUid">
           <maml:name>articleUidName</maml:name>
           <maml:description>
-            <maml:para>The name of the column that contains the article uid in the CSV or Excel file. Only one field name from the selection -articleNoName, -articleIdName, -barcodeName, -articleUidName may be specified.</maml:para>
+            <maml:para>The name of the column that contains the article uid in the CSV or Excel file. Only one field name from the selection `-articleNoName`, `-articleIdName`, `-barcodeName`, `-articleUidName` may be specified.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -17564,7 +17865,7 @@ No technical information available</dev:code>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="5" aliases="qty1">
           <maml:name>qty1Name</maml:name>
           <maml:description>
-            <maml:para>The name of the column that contain the first quantity in the CSV or Excel file.</maml:para>
+            <maml:para>The name of the column that contain the first quantity in the CSV or Excel file. If the parameter is not specified, the default `1` is used.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -17588,7 +17889,7 @@ No technical information available</dev:code>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="7" aliases="qty2">
           <maml:name>qty2Name</maml:name>
           <maml:description>
-            <maml:para>The name of the column that contain the second quantity in the CSV or Excel file.</maml:para>
+            <maml:para>The name of the column that contain the second quantity in the CSV or Excel file. If the parameter is not specified, the default `1` is used.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -17612,7 +17913,7 @@ No technical information available</dev:code>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="9" aliases="qty3">
           <maml:name>qty3Name</maml:name>
           <maml:description>
-            <maml:para>The name of the column that contain the third quantity in the CSV or Excel file.</maml:para>
+            <maml:para>The name of the column that contain the third quantity in the CSV or Excel file. If the parameter is not specified, the default `1` is used.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
@@ -17627,7 +17928,7 @@ No technical information available</dev:code>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="articleId">
         <maml:name>articleIdName</maml:name>
         <maml:description>
-          <maml:para>The name of the column that contains the article Id in the CSV or Excel file. Only one field name from the selection -articleNoName, -articleIdName, -barcodeName, -articleUidName may be specified.</maml:para>
+          <maml:para>The name of the column that contains the article Id in the CSV or Excel file. Only one field name from the selection `-articleNoName`, `-articleIdName`, `-barcodeName`, `-articleUidName` may be specified.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -17639,7 +17940,7 @@ No technical information available</dev:code>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="articleNo">
         <maml:name>articleNoName</maml:name>
         <maml:description>
-          <maml:para>The name of the column that contains the article number in the CSV or Excel file. Only one field name from the selection -articleNoName, -articleIdName, -barcodeName, -articleUidName may be specified.</maml:para>
+          <maml:para>The name of the column that contains the article number in the CSV or Excel file. Only one field name from the selection `-articleNoName`, `-articleIdName`, `-barcodeName`, `-articleUidName` may be specified.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -17651,7 +17952,7 @@ No technical information available</dev:code>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="articleUid">
         <maml:name>articleUidName</maml:name>
         <maml:description>
-          <maml:para>The name of the column that contains the article uid in the CSV or Excel file. Only one field name from the selection -articleNoName, -articleIdName, -barcodeName, -articleUidName may be specified.</maml:para>
+          <maml:para>The name of the column that contains the article uid in the CSV or Excel file. Only one field name from the selection `-articleNoName`, `-articleIdName`, `-barcodeName`, `-articleUidName` may be specified.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -17663,7 +17964,7 @@ No technical information available</dev:code>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="barcode">
         <maml:name>barcodeName</maml:name>
         <maml:description>
-          <maml:para>The name of the column that contains the article barcode in the CSV or Excel file. Only one field name from the selection -articleNoName, -articleIdName, -barcodeName, -articleUidName may be specified.</maml:para>
+          <maml:para>The name of the column that contains the article barcode in the CSV or Excel file. Only one field name from the selection `-articleNoName`, `-articleIdName`, `-barcodeName`, `-articleUidName` may be specified.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -17723,7 +18024,7 @@ No technical information available</dev:code>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="18" aliases="none">
         <maml:name>path</maml:name>
         <maml:description>
-          <maml:para>The path to the CSV or Excel file containing the tiered prices. Only .csv and .xlsx are accepted as file extension. Note that for Excel files, the PowerShell module ImportExcel from the PowerShell Gallery must be installed.</maml:para>
+          <maml:para>The path to the CSV or Excel file containing the tiered prices. Only .csv and .xlsx are accepted as file extension. Note that for Excel files, the PowerShell module `ImportExcel` from the PowerShell Gallery must be installed.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -17795,7 +18096,7 @@ No technical information available</dev:code>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="14" aliases="none">
         <maml:name>priceList</maml:name>
         <maml:description>
-          <maml:para>The name of the price list into which the scale prices are to be imported. The price list can be specified with either -priceList or -priceListId.</maml:para>
+          <maml:para>The name of the price list into which the scale prices are to be imported. The price list can be specified with either `-priceList` or `-priceListId`.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -17807,7 +18108,7 @@ No technical information available</dev:code>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="15" aliases="none">
         <maml:name>priceListId</maml:name>
         <maml:description>
-          <maml:para>The Id of the price list into which the scale prices are to be imported. The price list can be specified with either -priceList or -priceListId.</maml:para>
+          <maml:para>The Id of the price list into which the scale prices are to be imported. The price list can be specified with either `-priceList` or `-priceListId`.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
         <dev:type>
@@ -17819,7 +18120,7 @@ No technical information available</dev:code>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="5" aliases="qty1">
         <maml:name>qty1Name</maml:name>
         <maml:description>
-          <maml:para>The name of the column that contain the first quantity in the CSV or Excel file.</maml:para>
+          <maml:para>The name of the column that contain the first quantity in the CSV or Excel file. If the parameter is not specified, the default `1` is used.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -17831,7 +18132,7 @@ No technical information available</dev:code>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="7" aliases="qty2">
         <maml:name>qty2Name</maml:name>
         <maml:description>
-          <maml:para>The name of the column that contain the second quantity in the CSV or Excel file.</maml:para>
+          <maml:para>The name of the column that contain the second quantity in the CSV or Excel file. If the parameter is not specified, the default `1` is used.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -17843,7 +18144,7 @@ No technical information available</dev:code>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="9" aliases="qty3">
         <maml:name>qty3Name</maml:name>
         <maml:description>
-          <maml:para>The name of the column that contain the third quantity in the CSV or Excel file.</maml:para>
+          <maml:para>The name of the column that contain the third quantity in the CSV or Excel file. If the parameter is not specified, the default `1` is used.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -17855,7 +18156,7 @@ No technical information available</dev:code>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="11" aliases="qty4">
         <maml:name>qty4Name</maml:name>
         <maml:description>
-          <maml:para>The name of the column that contain the fourth quantity in the CSV or Excel file.</maml:para>
+          <maml:para>The name of the column that contain the fourth quantity in the CSV or Excel file. If the parameter is not specified, the default `1` is used.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -17867,7 +18168,7 @@ No technical information available</dev:code>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="13" aliases="qty5">
         <maml:name>qty5Name</maml:name>
         <maml:description>
-          <maml:para>The name of the column that contain the fifth quantity in the CSV or Excel file.</maml:para>
+          <maml:para>The name of the column that contain the fifth quantity in the CSV or Excel file. If the parameter is not specified, the default `1` is used.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -17917,10 +18218,27 @@ No technical information available</dev:code>
     <command:examples>
       <command:example>
         <maml:title>------- Example 1: Import tiered prices from a csv file -------</maml:title>
-        <dev:code>PS C:\&gt; Import-TieredPrice -path 'C:\temp\test.csv' -articleNo 'ArticleNo' -price1 'SalesPrice' -priceList 'Retail' -udl 'C:\temp\Eulanda_1 JohnDoe.udl'</dev:code>
+        <dev:code>PS C:\&gt; Import-TieredPrices -path 'C:\temp\test.csv' -articleNo 'ArticleNo' -price1 'SalesPrice' -priceList 'Retail' -udl 'C:\temp\Eulanda_1 JohnDoe.udl'
+
+ArticleNo;EAN;SalesPreis
+40509;4052398405093;31,5
+40511;4052398405116;52,5
+40510;4052398405109;31,5
+20002;4052398200025;231,85
+40487;4052398404874;378,57
+30305;4052398303054;5,25
+30306;4052398303061;13,65
+30308;4052398303085;10,5
+30309;4052398303092;18,9
+30310;4052398303108;25,2
+30307;4052398303078;21
+40504;4052398405048;550
+20096;4052398200964;66,33
+20066;4052398200667;66,33</dev:code>
         <dev:remarks>
-          <maml:para>This command will import the prices from the 'SalesPrice' column of the 'test.csv' file into the 'Retail' price list of the database specified by the 'Eulanda_1 JohnDoe.udl' connection string. The 'ArticleNo' column is used to match the articles in the database. </maml:para>
-          <maml:para>The semicolon is used as field delimiter. This value can be changed via the -csvDelimiter parameter. The separation to the cents is specified via the decimal separator, which is read by the operating system. However, one can override this value with -decimalSeparator.</maml:para>
+          <maml:para>This command will import the prices from the `-salesPrice` column of the `test.csv` file into the `Retail` price list of the database specified by the `Eulanda_1 JohnDoe.udl` connection string. The `-articleNo` column is used to match the articles in the database. </maml:para>
+          <maml:para>The semicolon is used as field delimiter. This value can be changed via the `-csvDelimiter` parameter. The separation to the cents is specified via the decimal separator, which is read by the operating system. However, one can override this value with `-decimalSeparator`.</maml:para>
+          <maml:para>In this sample file, the field `EAN` is ignored. Only one price is inserted in the pricelist as price1.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
