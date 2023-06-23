@@ -2,7 +2,7 @@
 # It can make harm to an existing project source. Read explanations below.
 #
 
-
+/.ignore
 
 # OS generated files
 *.~*
