@@ -725,4 +725,8 @@
     <value>Invalid condition indicator: {0}. Function {1}</value>
     <comment/>
   </data>
+  <data name="USFLOAT_ERROR" xml:space="preserve">
+    <value>Cannot convert input {0} to US float. Function {1}</value>
+    <comment/>
+  </data>
 </root>

@@ -573,4 +573,7 @@
   <data name="INVALID_DATANORM_INDICATOR" xml:space="preserve">
     <value>Ungültiger Bedingungsindikator: {0}. Funktion {1}</value>
   </data>
+  <data name="USFLOAT_ERROR" xml:space="preserve">
+    <value>Kann Eingangswert {0} nicht in US-Gleitkomma-Wert konvertieren. Funktion {1}</value>
+  </data>
 </root>

@@ -24,8 +24,11 @@ try {
     # YOUR TEST CODE HERE
 
     $datanorm = Convert-FromDatanorm -path "$PSScriptRoot\.ignore\data\test\cu\datanorm.001"
+    Out-Goodbye
+    Out-Welcome
     $xml = Convert-DatanormToXml -datanorm $datanorm
-    $xml
+    Out-Goodbye
+    # $xml
 
 
     $datanorm.v
