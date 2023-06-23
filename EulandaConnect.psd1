@@ -175,6 +175,7 @@ FunctionsToExport = @(
     'Get-XmlEulandaStock',
     'Get-XmlEulandaTierPrice',
     'Hide-Extensions',
+    'Import-ArticleFromXml',
     'Import-TieredPrices',
     'Install-SignTool',
     'Merge-IpGeoInfo',

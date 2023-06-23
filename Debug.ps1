@@ -10,6 +10,8 @@
 [cmdletbinding()]
 Param()
 
+
+
 Set-StrictMode -version latest
 Remove-Module EulandaConnect -force -ErrorAction SilentlyContinue
 Import-Module .\EulandaConnect.psd1 -force
@@ -24,13 +26,11 @@ try {
     # YOUR TEST CODE HERE
 
     $datanorm = Convert-FromDatanorm -path "$PSScriptRoot\.ignore\data\test\cu\datanorm.001"
-    Out-Goodbye
-    Out-Welcome
     $xml = Convert-DatanormToXml -datanorm $datanorm
-    Out-Goodbye
+    Import-ArticleFromXml -xml $xml -udl 'C:\temp\Eulanda_1 MeineFirma.udl'
     # $xml
 
-
+<#
     $datanorm.v
     Write-Host "A-Record" -ForegroundColor Yellow
     $datanorm.a
@@ -38,6 +38,7 @@ try {
     $datanorm.b
     Write-Host "P-Record" -ForegroundColor Yellow
     $datanorm.p
+#>
 
 } catch {
     $errorMessage = $Error[0].ToString()

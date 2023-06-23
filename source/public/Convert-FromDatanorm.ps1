@@ -11,8 +11,28 @@ function Convert-FromDatanorm {
         [string]$decimalSeparator = [System.Globalization.CultureInfo]::CurrentCulture.NumberFormat.NumberDecimalSeparator
     )
 
-    $encoding = [System.Text.Encoding]::GetEncoding("IBM850")  # IBM850 corresponds to CP850
+    if ((Get-Item $path).Length -eq 0) {
+        throw "File $path is empty."
+    }
+
+    # First test utf-8, this is uncommon and also not according to the standard, but a good way to support both encodings
+    $encoding = [System.Text.Encoding]::GetEncoding("UTF-8")
     $allLines = [System.IO.File]::ReadAllLines($path, $encoding)
+
+    $hasInvalidChars = $false
+    foreach($line in $allLines) {
+        if ($line -match '�') {  # illegal char '�' found
+            $hasInvalidChars = $true
+            break
+        }
+    }
+
+    if ($hasInvalidChars) {
+        # This is the allowed method for datanorm
+        $encoding = [System.Text.Encoding]::GetEncoding("IBM850")  # IBM850 corresponds to CP850
+        $allLines = [System.IO.File]::ReadAllLines($path, $encoding)
+    }
+
 
     # Create empty lists for each record type
     $a = @{}
@@ -22,6 +42,10 @@ function Convert-FromDatanorm {
 
     foreach ($line in $allLines) {
         # Check which record type is present and process accordingly
+
+        # ------------------------------
+        # TYPE A
+        # ------------------------------
         if ($line[0] -eq "A") {
             # Separate individual fields
             $fields = $line.Split(";")
@@ -48,6 +72,9 @@ function Convert-FromDatanorm {
             $a[$rec.ArtikelNummer] = $rec
         }
 
+        # ------------------------------
+        # TYPE B
+        # ------------------------------
         elseif ($line[0] -eq "B") {
             # Separate individual fields
             $fields = $line.Split(";")
@@ -83,6 +110,10 @@ function Convert-FromDatanorm {
             $b[$rec.ArtikelNummer] = $rec
         }
 
+
+        # ------------------------------
+        # TYPE V
+        # ------------------------------
         elseif ($line[0] -eq "V") {
             $rec = New-Object PSObject -Property ([ordered]@{
                 SatzKennzeichen       = $line.Substring(0,1)
@@ -97,6 +128,10 @@ function Convert-FromDatanorm {
             $v['V'] = $rec
         }
 
+
+        # ------------------------------
+        # TYPE P
+        # ------------------------------
         elseif ($line[0] -eq "P") {
             $fields = $line.Split(";")
 

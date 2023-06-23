@@ -25,21 +25,20 @@ function Convert-DatanormToXml {
 
         $articleB = $datanorm.b[$articleA.ArtikelNummer]
 
-        $cuSurchargePerUnit = [double](ConvertTo-USFloat($articleB.EUL_CuAufschlagProStueck))
-        $pricePerUnit = [double](ConvertTo-USFloat -inputString ($articleA.EUL_PreisProStueck))
-        $price = [math]::Round($pricePerUnit + $cuSurchargePerUnit, 2)
-        $price = (ConvertTo-USFloat -inputString $price.ToString())
-
         $writer.WriteElementString('ARTNUMMER', $articleA.ArtikelNummer)
         $writer.WriteElementString('ARTMATCH', $articleB.Matchcode)
         $writer.WriteElementString('BARCODE', $articleB.EuroArtikelNummer)
-
         $writer.WriteElementString('ARTNUMMERERSATZ', $articleB.AlternativArtikelNummer)
+
+
+        $price = (ConvertTo-USFloat -inputString $articleA.Preis)
         if ($articleA.PreisKennzeichen -eq '1') {
             $writer.WriteElementString('VKNETTO', $price)
         } else {
             $writer.WriteElementString('EKNETTO', $price)
         }
+
+        $writer.WriteElementString('PREISEH', (Get-DatanormPriceUnit -priceUnitCode $articleA.PreisEinheit ))
         $writer.WriteElementString('MENGENEH', $articleA.MengenEinheit)
         $writer.WriteElementString('VERPACKEH', $articleB.VerpackungsMenge)
         $writer.WriteElementString('RABATTGR', $articleA.RabattGruppe)
@@ -50,9 +49,34 @@ function Convert-DatanormToXml {
         $writer.WriteElementString('ULTRAKURZTEXT', $articleA.Kurztext1)
         $writer.WriteElementString('LANGTEXT', "$($articleA.Kurztext1)`r`n$($articleA.Kurztext2)"  )
 
+        $writer.WriteElementString('USERN3',  (ConvertTo-USFloat -inputString $articleB.EUL_CuAufschlagProStueck))
+
         # End ARTIKEL
         $writer.WriteEndElement()
     }
+
+    foreach ($price in $datanorm.p.values) {
+        # Start ARTIKEL
+        $writer.WriteStartElement('ARTIKEL')
+
+        $artNoSet = $false
+        if ($price['1']) {
+            $writer.WriteElementString('ARTNUMMER', $price['1'].ArtikelNummer)
+            $artNoSet = $true
+            $writer.WriteElementString('VKNETTO', (ConvertTo-USFloat -inputString $price['1'].Preis))
+        }
+
+        if ($price['2']) {
+            if (! $artNoSet) {
+                $writer.WriteElementString('ARTNUMMER', $price['2'].ArtikelNummer)
+            }
+            $writer.WriteElementString('EKNETTO', (ConvertTo-USFloat -inputString $price['2'].Preis))
+        }
+
+        # End ARTIKEL
+        $writer.WriteEndElement()
+    }
+
 
     # End ARTIKELLISTE
     $writer.WriteEndElement()

@@ -888,21 +888,20 @@ function Convert-DatanormToXml {
 
         $articleB = $datanorm.b[$articleA.ArtikelNummer]
 
-        $cuSurchargePerUnit = [double](ConvertTo-USFloat($articleB.EUL_CuAufschlagProStueck))
-        $pricePerUnit = [double](ConvertTo-USFloat -inputString ($articleA.EUL_PreisProStueck))
-        $price = [math]::Round($pricePerUnit + $cuSurchargePerUnit, 2)
-        $price = (ConvertTo-USFloat -inputString $price.ToString())
-
         $writer.WriteElementString('ARTNUMMER', $articleA.ArtikelNummer)
         $writer.WriteElementString('ARTMATCH', $articleB.Matchcode)
         $writer.WriteElementString('BARCODE', $articleB.EuroArtikelNummer)
-
         $writer.WriteElementString('ARTNUMMERERSATZ', $articleB.AlternativArtikelNummer)
+
+
+        $price = (ConvertTo-USFloat -inputString $articleA.Preis)
         if ($articleA.PreisKennzeichen -eq '1') {
             $writer.WriteElementString('VKNETTO', $price)
         } else {
             $writer.WriteElementString('EKNETTO', $price)
         }
+
+        $writer.WriteElementString('PREISEH', (Get-DatanormPriceUnit -priceUnitCode $articleA.PreisEinheit ))
         $writer.WriteElementString('MENGENEH', $articleA.MengenEinheit)
         $writer.WriteElementString('VERPACKEH', $articleB.VerpackungsMenge)
         $writer.WriteElementString('RABATTGR', $articleA.RabattGruppe)
@@ -913,9 +912,34 @@ function Convert-DatanormToXml {
         $writer.WriteElementString('ULTRAKURZTEXT', $articleA.Kurztext1)
         $writer.WriteElementString('LANGTEXT', "$($articleA.Kurztext1)`r`n$($articleA.Kurztext2)"  )
 
+        $writer.WriteElementString('USERN3',  (ConvertTo-USFloat -inputString $articleB.EUL_CuAufschlagProStueck))
+
         # End ARTIKEL
         $writer.WriteEndElement()
     }
+
+    foreach ($price in $datanorm.p.values) {
+        # Start ARTIKEL
+        $writer.WriteStartElement('ARTIKEL')
+
+        $artNoSet = $false
+        if ($price['1']) {
+            $writer.WriteElementString('ARTNUMMER', $price['1'].ArtikelNummer)
+            $artNoSet = $true
+            $writer.WriteElementString('VKNETTO', (ConvertTo-USFloat -inputString $price['1'].Preis))
+        }
+
+        if ($price['2']) {
+            if (! $artNoSet) {
+                $writer.WriteElementString('ARTNUMMER', $price['2'].ArtikelNummer)
+            }
+            $writer.WriteElementString('EKNETTO', (ConvertTo-USFloat -inputString $price['2'].Preis))
+        }
+
+        # End ARTIKEL
+        $writer.WriteEndElement()
+    }
+
 
     # End ARTIKELLISTE
     $writer.WriteEndElement()
@@ -1261,8 +1285,28 @@ function Convert-FromDatanorm {
         [string]$decimalSeparator = [System.Globalization.CultureInfo]::CurrentCulture.NumberFormat.NumberDecimalSeparator
     )
 
-    $encoding = [System.Text.Encoding]::GetEncoding("IBM850")  # IBM850 corresponds to CP850
+    if ((Get-Item $path).Length -eq 0) {
+        throw "File $path is empty."
+    }
+
+    # First test utf-8, this is uncommon and also not according to the standard, but a good way to support both encodings
+    $encoding = [System.Text.Encoding]::GetEncoding("UTF-8")
     $allLines = [System.IO.File]::ReadAllLines($path, $encoding)
+
+    $hasInvalidChars = $false
+    foreach($line in $allLines) {
+        if ($line -match '�') {  # illegal char '�' found
+            $hasInvalidChars = $true
+            break
+        }
+    }
+
+    if ($hasInvalidChars) {
+        # This is the allowed method for datanorm
+        $encoding = [System.Text.Encoding]::GetEncoding("IBM850")  # IBM850 corresponds to CP850
+        $allLines = [System.IO.File]::ReadAllLines($path, $encoding)
+    }
+
 
     # Create empty lists for each record type
     $a = @{}
@@ -1272,6 +1316,10 @@ function Convert-FromDatanorm {
 
     foreach ($line in $allLines) {
         # Check which record type is present and process accordingly
+
+        # ------------------------------
+        # TYPE A
+        # ------------------------------
         if ($line[0] -eq "A") {
             # Separate individual fields
             $fields = $line.Split(";")
@@ -1298,6 +1346,9 @@ function Convert-FromDatanorm {
             $a[$rec.ArtikelNummer] = $rec
         }
 
+        # ------------------------------
+        # TYPE B
+        # ------------------------------
         elseif ($line[0] -eq "B") {
             # Separate individual fields
             $fields = $line.Split(";")
@@ -1333,6 +1384,10 @@ function Convert-FromDatanorm {
             $b[$rec.ArtikelNummer] = $rec
         }
 
+
+        # ------------------------------
+        # TYPE V
+        # ------------------------------
         elseif ($line[0] -eq "V") {
             $rec = New-Object PSObject -Property ([ordered]@{
                 SatzKennzeichen       = $line.Substring(0,1)
@@ -1347,6 +1402,10 @@ function Convert-FromDatanorm {
             $v['V'] = $rec
         }
 
+
+        # ------------------------------
+        # TYPE P
+        # ------------------------------
         elseif ($line[0] -eq "P") {
             $fields = $line.Split(";")
 
@@ -8274,6 +8333,142 @@ function Hide-Extensions {
     # Test:  Hide-Extensions
 }
 
+function Import-ArticleFromXml {
+    param(
+        [string]$xml
+        ,
+        [Parameter(Mandatory = $false)]
+        [ValidateScript({ Test-ValidatePathXML -path $_  })]
+        [string]$path
+        ,
+        [Parameter(Mandatory = $false)]
+        [ValidateScript({ Test-ValidateConn -conn $_  })]
+        $conn
+        ,
+        [Parameter(Mandatory = $false)]
+        [ValidateScript({ Test-ValidatePathUDL -path $_  })]
+        [string]$udl
+        ,
+        [Parameter(Mandatory = $false)]
+        [ValidateScript({ Test-ValidateConnStr -connStr $_ })]
+        [string]$connStr
+    )
+
+    Begin {
+        Write-Verbose -Message ((Get-ResStr 'STARTING_FUNCTION') -f $myInvocation.Mycommand)
+        Test-ValidateSingle -validParams (Get-SingleConnection) @PSBoundParameters
+        $initialVariables = Get-CurrentVariables -Debug:$DebugPreference
+    }
+
+    process {
+        $myConn = Get-Conn -conn $conn -udl $udl -connStr $connStr
+        if ($path) {
+            [xml]$xml = Get-Content -Path $path
+        } else {
+            [xml]$xml = $xml
+        }
+
+        $rs = new-object -comObject ADODB.Recordset
+        $rs.CursorLocation = $adUseClient
+        $allowedProperties = @("ARTNUMMER", "EKNETTO", "VKNETTO", "VKBRUTTO", "BRUTTOFLG", "VK", "EK2NETTO")
+        foreach($article in $xml.EULANDA.ARTIKELLISTE.ARTIKEL) {
+
+            if ($article.PSObject.Properties.Name -contains "ARTNUMMER") {
+                $articleNo = $article.ARTNUMMER
+                $id = Get-ArticleId -articleNo $articleNo -conn $myConn
+            } else {
+                Write-Error "ArticleNo not present in xml!" -ErrorAction Continue
+            }
+
+            $articleChildNodes = $article.ChildNodes | Select-Object -ExpandProperty Name
+            # Check if there are any properties that are not in the allowed list
+            if ((@($articleChildNodes | Where-Object {$_ -notin $allowedProperties})).Count -gt 0) {
+                $priceUpdate = $false
+            } else {
+                $priceUpdate = $true
+            }
+
+            if ($id) {
+                # if we found an article we wont to update prices or an article
+                $rs.Open("SELECT TOP 1 * FROM Artikel WHERE ID = $id", $myConn, $adOpenKeyset, $adLockOptimistic, $adCmdText)
+            } else  {
+                if (! $priceUpdate) {
+                    $rs.Open("SELECT TOP 0 * FROM Artikel", $myConn, $adOpenKeyset, $adLockOptimistic, $adCmdText)
+                    $rs.AddNew()
+                    $rs.fields('ARTNUMMER').value = $articleNo
+                } else {
+                    # A price was found, but the article does not exist
+                    # We do not want to insert an article with only one price
+                    continue
+                }
+            }
+
+            if ($article.PSObject.Properties.Name -contains 'ARTMATCH') {
+                $rs.fields('ARTMATCH').value = $article.ARTMATCH
+            }
+
+            if ($article.PSObject.Properties.Name -contains 'LANGTEXT') {
+                $rs.fields('LANGTEXT').value = $article.LANGTEXT
+            }
+
+            if ($article.PSObject.Properties.Name -contains 'KURZTEXT1') {
+                $rs.fields('KURZTEXT1').value = $article.KURZTEXT1
+            }
+
+            if ($article.PSObject.Properties.Name -contains 'KURZTEXT2') {
+                $rs.fields('KURZTEXT2').value = $article.KURZTEXT2
+            }
+
+            if ($article.PSObject.Properties.Name -contains 'ULTRAKURZTEXT') {
+                $rs.fields('ULTRAKURZTEXT').value = $article.ULTRAKURZTEXT
+            }
+
+            if ($article.PSObject.Properties.Name -contains 'USERN3') {
+                # used for copper surcharge
+                $rs.fields('USERN3').value = $article.USERN3
+            }
+
+            if ($article.PSObject.Properties.Name -contains 'EKNETTO') {
+                $rs.fields('EKNETTO').value = $article.EKNETTO
+            }
+
+            if ($article.PSObject.Properties.Name -contains 'EK2NETTO') {
+                $rs.fields('EK2NETTO').value = $article.EK2NETTO
+            }
+
+            if (($article.PSObject.Properties.Name -contains 'VK') -and
+                ($article.PSObject.Properties.Name -contains 'BRUTTOFLG')) {
+                    $rs.fields('VK').value = $article.VK
+                    $rs.fields('BruttoFlg').value = $article.BRUTTOFLG
+            } elseif ($article.PSObject.Properties.Name -contains 'VKNETTO') {
+
+                if ($rs.fields('EKNETTO').value -gt 0) {
+                    # Only Datanorm uses UserNr3 für the copper surcharge per one unit
+                    # If there is a PriceUnit higher then 1, then the copper surcharge must be multiplied with price units
+                    $cuSurcharge = [float]($rs.fields('PREISEH').value * $rs.fields('USERN3').value)
+                    $price = [float][math]::Round(([float]$article.VKNETTO + $cuSurcharge), 2)
+                    $rs.fields('VK').value = [float]$price
+                } else {
+                    $rs.fields('VK').value = $article.VKNETTO
+                }
+                $rs.fields('BruttoFlg').value = 0
+            } elseif ($article.PSObject.Properties.Name -contains 'VKBRUTTO') {
+                $rs.fields('VK').value = $article.VKBRUTTO
+                $rs.fields('BruttoFlg').value = 1
+            }
+
+            $rs.Update()
+            $rs.Close()
+        }
+        $myConn.Close()
+    }
+
+    End {
+        Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
+        Return
+    }
+}
+
 function Import-TieredPrices {
     [CmdletBinding()]
     param(
@@ -13209,16 +13404,31 @@ Function Get-DatanormPricePerUnit {
         [int]$priceUnitCode
     )
 
+    $priceUnit = Get-DatanormPriceUnit -priceUnitCode $priceUnitCode
+    if ($priceUnit -gt 1) {
+        $result = $price / $priceUnit
+    } else {
+        $result = $price
+    }
+
+    Return $result
+}
+Function Get-DatanormPriceUnit {
+    param(
+        [int]$priceUnitCode
+    )
+
     switch ($priceUnitCode) {
-        0 { $pricePerUnit = $price }
-        1 { $pricePerUnit = $price / 10 }
-        2 { $pricePerUnit = $price / 100 }
-        3 { $pricePerUnit = $price / 1000 }
+        0 { $priceUnit = [int]1 }
+        1 { $priceUnit = [int]10 }
+        2 { $priceUnit = [int]100 }
+        3 { $priceUnit = [int]1000 }
         default { throw (Get-ResStr 'DATANORM_PRICEUNITCODE_ERROR') -f $priceUnitCode, $myInvocation.Mycommand }
     }
 
-    Return $pricePerUnit
+    Return $priceUnit
 }
+
 function Get-DefaultSelectArticle {
     [CmdletBinding()]
     param()
@@ -16776,8 +16986,8 @@ function Test-ValidateUrl {
 # SIG # Begin signature block
 # MIIpiQYJKoZIhvcNAQcCoIIpejCCKXYCAQExDzANBglghkgBZQMEAgEFADB5Bgor
 # BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
-# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCDphrf1gQMuAu5i
-# LMGoXyC9+c8WlQFW5aB0uLrgKpEwj6CCEngwggVvMIIEV6ADAgECAhBI/JO0YFWU
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCDHiyD+00/qTi5I
+# k+jPR8dplr2qLYthDK9AjkjW8RaRQ6CCEngwggVvMIIEV6ADAgECAhBI/JO0YFWU
 # jTanyYqJ1pQWMA0GCSqGSIb3DQEBDAUAMHsxCzAJBgNVBAYTAkdCMRswGQYDVQQI
 # DBJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcMB1NhbGZvcmQxGjAYBgNVBAoM
 # EUNvbW9kbyBDQSBMaW1pdGVkMSEwHwYDVQQDDBhBQUEgQ2VydGlmaWNhdGUgU2Vy
@@ -16880,23 +17090,23 @@ function Test-ValidateUrl {
 # IExpbWl0ZWQxLjAsBgNVBAMTJVNlY3RpZ28gUHVibGljIENvZGUgU2lnbmluZyBD
 # QSBFViBSMzYCEGilgQZhq4aQSRu7qELTizkwDQYJYIZIAWUDBAIBBQCgfDAQBgor
 # BgEEAYI3AgEMMQIwADAZBgkqhkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEE
-# AYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAvBgkqhkiG9w0BCQQxIgQgqNJT3fZeTJ1F
-# BQJl5ZnCa6dyzKCcfxCwP8BynSHWhLIwDQYJKoZIhvcNAQEBBQAEggIADetFCiNs
-# /6HfH/zQt3zZeJk26pK5vt6y78pqqhkWHV44w2qi9KvX9xyDSpPIpJl3Xzbg4qVF
-# jS/Bd3f8Oe93i4hs1fzklBWUSifseM2LuVJ/BjgQEo6ogyMepGmO6eFBK3RPv9g+
-# SFiBruEJZqKeb3e8+H2j7zpWs6LrgqjnlgCShE1rRrCDg+Wwe/ybH62EdgUAXbbJ
-# EQv7V3XzhTvBmpxBWq47VfOLLyqcQI9ZY/BfuhaBZaiZH+b4qBqJC/ABglUOq2qo
-# UMjPjeNxGXqzNhFxZvxDK/nDSHu4HozwI4qfYO0+Vz4hqILgOtmFrnrqnbWtlHD2
-# 2vvw+RLhqh8oqkGWWP8Jt8dDC0cAtwX1ic4dcmE/IOQgNpbEeXgcEdXBOu5MWLGK
-# IQjzHwMyadZjqAbxmy8h9Ufz0LrfwTv2JJYwgjmdVFZEqOQ09HAJ1Nckk21fnuPn
-# MLx7hB54Z+SVA8GiXabAAt7y4TmgAW8womZ6Eq4ZzkXV9XFCSW/rziznlkleCujv
-# Bxz6K/dknJ1DS6u1AEL1zirY1A81MqK+yUkGu1ML6Mz5GGaTzgxTRB++BBEc9VFg
-# HOUkmQJfJZo0aqr0kNccKIvh0QTPb/smTZFPHPlegxygK230hJf0b+WyjmcKFNLp
-# HhWPxem1GeebKJExnNW2Fz0J7YYGO7ih1QahghNPMIITSwYKKwYBBAGCNwMDATGC
+# AYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAvBgkqhkiG9w0BCQQxIgQg9Viv7SoWG8KY
+# z+joBhidMFXAja2IWDqPHbzDaqEQK4cwDQYJKoZIhvcNAQEBBQAEggIAC0yUGaJu
+# DMTAfYz7zZkAdbHBHZaysvFqkbkO28BDbkfKQ1g6w3j4y2cJpHnx3M+fFok2THEL
+# yjO/XW9rqx2YlAeKGRn687mKLNWXtYTBD9YbZfxtdVsJp71zPOHGNaXcK+ubWMLH
+# ZZJYjys2JdCm0MnbH/E+pv9LYTEqItoCbsz5DVz0KMXmt1GtR/CuzZr/NodiASX7
+# bHuz7CG44GVklwFGPEG+zPVvmTxE/SgAJBXfzmm+PyAKn0wlswLnHPOpMebuilAr
+# mMlb30dwN6to96rZAQ4jtt9/8aX6WtvWWgyl0JMdCQ2971yePVV00/rjtsrCvo11
+# jqMKS/7ZzFg85RQV6LYj5Hod3aoauurlnuHjd9CboIRl8Nc5mADRn0AWvjeRFavm
+# LBc0XzTiXXXIyDzec6FlpRHt9tSX2Xx9TKdPdbrH3G0wxyEQkjRvv1aavCZ8uwym
+# hVl6dPb2lT73hw9t2rkjtmgGu5u3GbtaRJFmI3ZeIm7GlSZXmiPnSBSiGM3nEWtP
+# V+5JkuzUDuxeCyIRfhuJ5QOa1N7few2NyLr1Uo0tHAgIvI5tnKOJBFsmWrJqn4FM
+# AjUYS/S0o1hog4DY1FHPY8JARO5p1FaUBjU9B0/fSiJwft3wxZ/ji2QmQW//kWzs
+# Rnw3iHgRSQ0cDJZVfkZf6YbuYc5lDxqt9AShghNPMIITSwYKKwYBBAGCNwMDATGC
 # EzswghM3BgkqhkiG9w0BBwKgghMoMIITJAIBAzEPMA0GCWCGSAFlAwQCAgUAMIHw
 # BgsqhkiG9w0BCRABBKCB4ASB3TCB2gIBAQYKKwYBBAGyMQIBATAxMA0GCWCGSAFl
-# AwQCAQUABCCy9IQhKtqDBzrFVdDS2fLXpSloQ1pWSHMVLX+fqwTO7wIVAJs1U79g
-# viT/aYjDDuFVx4udSjStGA8yMDIzMDYyMzE0MDYyMFqgbqRsMGoxCzAJBgNVBAYT
+# AwQCAQUABCAjavjL/2dAd0l2UeD2Xeq69uKUqBHgOCdrtjvZ3pwNfAIVANyN7liE
+# yiIw5J5oyjyH/Zm9xJzgGA8yMDIzMDYyMzIxMDIyMlqgbqRsMGoxCzAJBgNVBAYT
 # AkdCMRMwEQYDVQQIEwpNYW5jaGVzdGVyMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
 # ZWQxLDAqBgNVBAMMI1NlY3RpZ28gUlNBIFRpbWUgU3RhbXBpbmcgU2lnbmVyICM0
 # oIIN6TCCBvUwggTdoAMCAQICEDlMJeF8oG0nqGXiO9kdItQwDQYJKoZIhvcNAQEM
@@ -16978,22 +17188,22 @@ function Test-ValidateUrl {
 # BAoTD1NlY3RpZ28gTGltaXRlZDElMCMGA1UEAxMcU2VjdGlnbyBSU0EgVGltZSBT
 # dGFtcGluZyBDQQIQOUwl4XygbSeoZeI72R0i1DANBglghkgBZQMEAgIFAKCCAWsw
 # GgYJKoZIhvcNAQkDMQ0GCyqGSIb3DQEJEAEEMBwGCSqGSIb3DQEJBTEPFw0yMzA2
-# MjMxNDA2MTlaMD8GCSqGSIb3DQEJBDEyBDCRIMyd51GNiKf56Kvpdpi24U1U6ADf
-# pitgiSzvtDs2ombJryB4YymOYAk9k4X9k3owge0GCyqGSIb3DQEJEAIMMYHdMIHa
+# MjMyMTAyMjJaMD8GCSqGSIb3DQEJBDEyBDB70NWf6Z4jfh+TpW644BuymsulAa4r
+# lcEqnig6o9tN6HtvT9t2nlW1R3yE6E1NwkYwge0GCyqGSIb3DQEJEAIMMYHdMIHa
 # MIHXMBYEFK5ir3UKDL1H1kYfdWjivIznyk+UMIG8BBQC1luV4oNwwVcAlfqI+SPd
 # k3+tjzCBozCBjqSBizCBiDELMAkGA1UEBhMCVVMxEzARBgNVBAgTCk5ldyBKZXJz
 # ZXkxFDASBgNVBAcTC0plcnNleSBDaXR5MR4wHAYDVQQKExVUaGUgVVNFUlRSVVNU
 # IE5ldHdvcmsxLjAsBgNVBAMTJVVTRVJUcnVzdCBSU0EgQ2VydGlmaWNhdGlvbiBB
-# dXRob3JpdHkCEDAPb6zdZph0fKlGNqd4LbkwDQYJKoZIhvcNAQEBBQAEggIAYSMQ
-# isUxH/CQFK8e9ln9NXwYLOGXNQDD0p183/JH3P+cG8xwbcTq4LIXG1F3rxBAeLlD
-# J+wJw8xWd6vvAI47T6u+xMP3qK3BrJivKeLyYP9w9/2/BmYMf4kS7LP4FsqThCo2
-# gliW+Fz2O4gmeSQ/h96Wm7fYzRntghKvCnqMEHbeE4/Bd7vo0a9oxbR2YP9N5RnQ
-# i2fbzKgrgB91YjgI6k+ifbzIDJCJ+aVIiB8E5AbnG9+MzI7Vdienwx2uF0EgA5/H
-# drUlNUmYaJjurlHaXKiKCc1n9YsySOHSzbaNuxJEsgSVEThK97OT/9EXdC5TkKzE
-# C3tktWBajrmxvwDi62spDbqp7sY1x/L6igKB9Gp/u7bCrCtkMo1uKjFrsHXhmcGX
-# J0O6xoIIj1kMqrxUAhlsp3yT9IYxNdxjz+vFpJmlW63gu+42fOs0vp5BQUkaZmSB
-# eZInjhh51Jh/N15fgk7xcbA1kUaxqJaEeYyj+rGCkyT0WOr78k6AodAvOCSvUJCa
-# nzi+FLI6ax9OWzW56TwIS3xMhDTKwhoYQClB2T8vsNVRtOiTlJRuqKsQxXLMzjkI
-# FATtDxagW+SlawGPHHHbr0zf0JJibCjjQdG0jFIEUehj/TyGgzmQHydK85KiD0tS
-# 55Jly3C24560gDQnHkQMK62w2wc/z6vlKlm9HnQ=
+# dXRob3JpdHkCEDAPb6zdZph0fKlGNqd4LbkwDQYJKoZIhvcNAQEBBQAEggIAFez5
+# +qrCVYhz98tyg1bjJh4HHT+dwvYNONGE8EMiNPZAU55lGn3AOGQ1HRR3z3v8wGyz
+# H+hs4wWWbLYSiVy/tR6BGNQs9QIgzLIJB9Bajv75DKDw2aHADhtpcvlvY7zAIaL4
+# unCy9jr3FIexIJj/wVS+nH5ODNGbEVyRsZy6Yw/s+CEAwX/P6hMNWAzy161hZZZz
+# DJwdE2uXoG5xOmWsQiWJ0OAftvhIl2gWG5Rcst63wBl8SPZv9X1NHiFnmBPsgmNp
+# UdbB4t058lkngu65gzUb4gaUS6SLl8dCxGAzQND5pKjAQjdNfR+Na1WRfDisLdBt
+# ko3m2awQXk6p2tVdz5SHTK4kWTLokol1xE62hMykKbqVOAL7OgBWJD02NXMfrWld
+# 9saeR/OgkQhiLCgHrU6JsK0AqAAwi+DIo59/J1LjUbWk1hq0VYBQkLTbMu+92bAO
+# GY5w3/SPQJv5PK6Cljax19ezkRezaTprO1KcKnY1Rv/cUQVM26kYyHs2wTMSbFEk
+# vcj14duNFGyiImdfdLGeNhHmRUN8NBpOGjn69lqmS+UXKm0DaA5L1UNNIj6IzDB5
+# NVcr0Lnj9qX4kpcLp9WNLPHcwkM1f8Uj6Wj+Je5Lc2ewUkTyL+iK6l6wZIBrDBgu
+# /6/9swXX92Zsnv7saosXnhn/z4/ICaZlRMlPpbg=
 # SIG # End signature block

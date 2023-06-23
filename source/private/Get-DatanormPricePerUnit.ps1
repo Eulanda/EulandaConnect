@@ -5,13 +5,12 @@ Function Get-DatanormPricePerUnit {
         [int]$priceUnitCode
     )
 
-    switch ($priceUnitCode) {
-        0 { $pricePerUnit = $price }
-        1 { $pricePerUnit = $price / 10 }
-        2 { $pricePerUnit = $price / 100 }
-        3 { $pricePerUnit = $price / 1000 }
-        default { throw (Get-ResStr 'DATANORM_PRICEUNITCODE_ERROR') -f $priceUnitCode, $myInvocation.Mycommand }
+    $priceUnit = Get-DatanormPriceUnit -priceUnitCode $priceUnitCode
+    if ($priceUnit -gt 1) {
+        $result = $price / $priceUnit
+    } else {
+        $result = $price
     }
 
-    Return $pricePerUnit
+    Return $result
 }

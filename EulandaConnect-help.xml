@@ -17877,6 +17877,225 @@ No technical information available</dev:code>
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
+      <command:name>Import-ArticleFromXml</command:name>
+      <command:verb>Import</command:verb>
+      <command:noun>ArticleFromXml</command:noun>
+      <maml:description>
+        <maml:para>The `Import-ArticleFromXml` function is used to import article data from an XML source into a EULANDA database.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>The `Import-ArticleFromXml` function is a robust utility designed to handle the importation of article data from an XML source into a EULANDA database. The function is flexible, allowing the XML data to be passed as a string (`xmlString`) or sourced from a file (`path`).</maml:para>
+      <maml:para>The function utilizes ADO (ActiveX Data Objects) Recordset objects to interact with the database, facilitating the retrieval, manipulation, and writing of data.</maml:para>
+      <maml:para>At the beginning of the function, a connection to the database is established through one of three ways: a direct connection object (`conn`), a UDL file (`udl`), or a connection string (`connStr`). The function performs validation checks to ensure that a valid connection method has been provided and that the XML data is sourced from either `xmlString` or `path`.</maml:para>
+      <maml:para>Once the XML data is loaded, it is parsed to extract information about each article, including its properties and related price data. This information is processed and then written into the database. Notably, the function has the ability to discern whether an article already exists within the database. If the article does exist, the function merely updates the existing price data. Conversely, if the article does not exist, the function creates a new database entry and populates it with the article information.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Import-ArticleFromXml</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>xml</maml:name>
+          <maml:description>
+            <maml:para>An XML string containing the article data.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+          <maml:name>path</maml:name>
+          <maml:description>
+            <maml:para>The path to the XML file containing the article data.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+          <maml:name>conn</maml:name>
+          <maml:description>
+            <maml:para>The connection can be established via an existing ADO object of the type 'ADODB.Connection'. If the connection is already open, it remains open even after the function has been executed. If it was closed, it will be closed again after the function has been executed.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Object</command:parameterValue>
+          <dev:type>
+            <maml:name>Object</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
+          <maml:name>udl</maml:name>
+          <maml:description>
+            <maml:para>Alternatively to a connection, a string to a UDL file can be specified. In this case an ADO object is created and closed again at the end of the function.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="4" aliases="none">
+          <maml:name>connStr</maml:name>
+          <maml:description>
+            <maml:para>A ConnectionString can be specified here, with which a database can be opened.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+        <maml:name>conn</maml:name>
+        <maml:description>
+          <maml:para>The connection can be established via an existing ADO object of the type 'ADODB.Connection'. If the connection is already open, it remains open even after the function has been executed. If it was closed, it will be closed again after the function has been executed.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Object</command:parameterValue>
+        <dev:type>
+          <maml:name>Object</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="4" aliases="none">
+        <maml:name>connStr</maml:name>
+        <maml:description>
+          <maml:para>A ConnectionString can be specified here, with which a database can be opened.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+        <maml:name>path</maml:name>
+        <maml:description>
+          <maml:para>The path to the XML file containing the article data.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
+        <maml:name>udl</maml:name>
+        <maml:description>
+          <maml:para>Alternatively to a connection, a string to a UDL file can be specified. In this case an ADO object is created and closed again at the end of the function.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>xml</maml:name>
+        <maml:description>
+          <maml:para>An XML string containing the article data.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para></maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>- Example 1: Imports an XML file into the EULANDA ERP Database -</maml:title>
+        <dev:code>PS C:\&gt; $datanorm = Convert-FromDatanorm -path "C:\Users\john\Desktop\datanorm\Test\datanorm.001" -cuDel 879
+PS C:\&gt; $xml = Convert-DatanormToXml -datanorm $datanorm
+PS C:\&gt; Import-ArticleFromXml -xml $xml -udl 'C:\temp\Eulanda_1 johndoe.udl'
+
+&lt;EULANDA&gt;
+    &lt;METADATA&gt;
+        &lt;VERSION&gt;3.2.1&lt;/VERSION&gt;
+        &lt;GENERATOR&gt;EulandaConnect&lt;/GENERATOR&gt;
+        &lt;DATEFORMAT&gt;ISO8601&lt;/DATEFORMAT&gt;
+        &lt;FLOATFORMAT&gt;US&lt;/FLOATFORMAT&gt;
+        &lt;COUNTRYFORMAT&gt;ISO2&lt;/COUNTRYFORMAT&gt;
+        &lt;FIELDNAMES&gt;NATIVE&lt;/FIELDNAMES&gt;
+        &lt;DATE&gt;2023-06-23T22:50:11&lt;/DATE&gt;
+        &lt;PCNAME&gt;DADOSTUDIO&lt;/PCNAME&gt;
+        &lt;USERNAME&gt;CN&lt;/USERNAME&gt;
+    &lt;/METADATA&gt;
+    &lt;ARTIKELLISTE&gt;
+        &lt;ARTIKEL&gt;
+            &lt;ARTNUMMER&gt;8241335&lt;/ARTNUMMER&gt;
+            &lt;ARTMATCH&gt;EVB 10/265 A2&lt;/ARTMATCH&gt;
+            &lt;BARCODE&gt;4003899170225&lt;/BARCODE&gt;
+            &lt;ARTNUMMERERSATZ&gt;456 01 31&lt;/ARTNUMMERERSATZ&gt;
+            &lt;VKNETTO&gt;2.57&lt;/VKNETTO&gt;
+            &lt;PREISEH&gt;1&lt;/PREISEH&gt;
+            &lt;MENGENEH&gt;Stk&lt;/MENGENEH&gt;
+            &lt;VERPACKEH&gt;1&lt;/VERPACKEH&gt;
+            &lt;RABATTGR&gt;EM01&lt;/RABATTGR&gt;
+            &lt;WARENGR&gt;01&lt;/WARENGR&gt;
+            &lt;KURZTEXT1&gt;ELTROPA Verdrahtungsbrücke 1ph 265mm sw&lt;/KURZTEXT1&gt;
+            &lt;KURZTEXT2&gt;EVB 10/265 A2 10qmm Stift isol&lt;/KURZTEXT2&gt;
+            &lt;ULTRAKURZTEXT&gt;ELTROPA Verdrahtungsbrücke 1ph 265mm sw&lt;/ULTRAKURZTEXT&gt;
+            &lt;LANGTEXT&gt;ELTROPA Verdrahtungsbrücke 1ph 265mm sw
+EVB 10/265 A2 10qmm Stift isol&lt;/LANGTEXT&gt;
+            &lt;USERN3&gt;0.18225&lt;/USERN3&gt;
+        &lt;/ARTIKEL&gt;
+    &lt;/ARTIKELLISTE&gt;      
+&lt;/EULANDA&gt;</dev:code>
+        <dev:remarks>
+          <maml:para>Reads a Datanorm file into a PowerShell object. Subsequently, the PowerShell object is converted into an XML file and finally imported into the SQL database of the EULANDA ERP. The database connection is established via a UDL file.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version:</maml:linkText>
+        <maml:uri>https://github.com/Eulanda/EulandaConnect/blob/master/docs/Import-ArticleFromXml.md</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
       <command:name>Import-TieredPrices</command:name>
       <command:verb>Import</command:verb>
       <command:noun>TieredPrices</command:noun>
