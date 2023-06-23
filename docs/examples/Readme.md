@@ -1,3 +1,7 @@
+---
+bookCollapseSection: false
+---
+
 ![](/examples.png) 
 
 # Welcome to the Examples

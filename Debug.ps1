@@ -23,7 +23,7 @@ Write-Host "*******************************************************************"
 try {
     # YOUR TEST CODE HERE
 
-    $datanorm = Convert-FromDatanorm -path "C:\Users\cn\Desktop\datanorm\Test\datanorm.001"
+    $datanorm = Convert-FromDatanorm -path "$PSScriptRoot\.ignore\data\test\cu\datanorm.001"
     $xml = Convert-DatanormToXml -datanorm $datanorm
     $xml
 
