@@ -576,4 +576,10 @@
   <data name="USFLOAT_ERROR" xml:space="preserve">
     <value>Kann Eingangswert {0} nicht in US-Gleitkomma-Wert konvertieren. Funktion {1}</value>
   </data>
+  <data name="DATANORM_DEVISIONCODE_ERROR" xml:space="preserve">
+    <value>Ungültiger Teilungscode '{0}'. Erlaubte Werte sind 0, 1 und 2 für 0=kein Kupfer, 1=100 Einheiten 2=1000 Einheiten. Funktion {1}</value>
+  </data>
+  <data name="DATANORM_PRICEUNITCODE_ERROR" xml:space="preserve">
+    <value>Ungültiger Preis pro Einheit Code '{0}'. Erlaubte Werte sind 0, 1, 2 und 3. 0=pro Einheit, 1=pro 10 Einheiten, 2=100 Einheiten und 3 pro 1000 Einheiten. Funktion {1}</value>
+  </data>
 </root>

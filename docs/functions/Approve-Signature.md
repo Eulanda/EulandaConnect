@@ -65,6 +65,8 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## RELATED LINKS
 
+[Approve-Signature.ps1 on GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Approve-Signature.ps1)
+
 [Get-SignToolPath](Get-SignToolPath.md)
 
 [Install-SignTool](Install-SignTool.md)

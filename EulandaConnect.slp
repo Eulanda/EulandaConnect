@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<document created="20230218074329" version="4.0.374" date="20230623083620" scan="56" scanned="20230623083540">
+<document created="20230218074329" version="4.0.374" date="20230623133943" scan="58" scanned="20230623133926">
   <lang id="de-DE"/>
-  <source class="TNetResourceSource" name=".\EulandaConnect.en-US.resx" original="en-US" date="20230623063348" usebom="1" options="[]" righttoleft="nrlNone">
+  <source class="TNetResourceSource" name=".\EulandaConnect.en-US.resx" original="en-US" date="20230623113920" usebom="1" options="[]" righttoleft="nrlNone">
     <outputfile dir="." localized="EulandaConnect.&lt;net&gt;.&lt;ext&gt;"/>
     <excludeddatatypes>
       <class>TBinaryData</class>
@@ -634,6 +634,14 @@
     <row id="USFLOAT_ERROR" state="0" created="20230623083540">
       <native>Cannot convert input {0} to US float. Function {1}</native>
       <lang id="de-DE" date="20230623083619" status="3">Kann Eingangswert {0} nicht in US-Gleitkomma-Wert konvertieren. Funktion {1}</lang>
+    </row>
+    <row id="DATANORM_DEVISIONCODE_ERROR" state="0" created="20230623123741">
+      <native>Invalid division code '{0}'. Allowed values are 0, 1 and 2 for 0=no copper, 1=100 units 2=1000 units. Function {1}</native>
+      <lang id="de-DE" date="20230623123757" status="3">Ungültiger Teilungscode '{0}'. Erlaubte Werte sind 0, 1 und 2 für 0=kein Kupfer, 1=100 Einheiten 2=1000 Einheiten. Funktion {1}</lang>
+    </row>
+    <row id="DATANORM_PRICEUNITCODE_ERROR" state="0" created="20230623133926">
+      <native>Invalid price per unit code '{0}'. Allowed values are 0, 1, 2 and 3. 0=per unit, 1=per 10 units, 2=100 units and 3 per 1000 units. Function {1}</native>
+      <lang id="de-DE" date="20230623133942" status="3">Ungültiger Preis pro Einheit Code '{0}'. Erlaubte Werte sind 0, 1, 2 und 3. 0=pro Einheit, 1=pro 10 Einheiten, 2=100 Einheiten und 3 pro 1000 Einheiten. Funktion {1}</lang>
     </row>
   </source>
 </document>

@@ -13,7 +13,8 @@ Converts a Datanorm 4.0 file into a structured PowerShell object.
 ## SYNTAX
 
 ```
-Convert-FromDatanorm [[-path] <String>] [[-mwst] <Double>] [[-decimalSeparator] <String>] [<CommonParameters>]
+Convert-FromDatanorm [[-path] <String>] [-vat <Double>] [-cuDel <Double>] [[-decimalSeparator] <String>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -37,11 +38,18 @@ This command converts a Datanorm file located at `C:\Users\john\Desktop\datanorm
 
 ### Example 2:  Shows the data for a specific article number
 ```powershell
-PS C:\> $datanorm = Convert-FromDatanorm -path "C:\Users\john\Desktop\datanorm\Test\datanorm.001"
+PS C:\> $datanorm = Convert-FromDatanorm -path "C:\Users\john\Desktop\datanorm\Test\datanorm.001" -cuDel 879
 PS C:\> $datanorm.a["8241335"]
+PS C:\> $datanorm.b["8241335"]
+PS C:\> $datanorm.a["8241335"].Kurztext1
 ```
 
-```
+```ini
+# original datanorm dump
+A;A;8241335;00;ELTROPA Verdrahtungsbr�cke 1ph 265mm sw;EVB 10/265 A2 10qmm Stift isol;1;0;Stk;257;EM01;01;;
+B;A;8241335;EVB 10/265 A2;456 01 31;;1;150;250;4003899170225;;010204;0;1;;;
+
+# PowerShell object from $datanorm.a["8241335"]
 SatzKennzeichen          : A
 VerarbeitungsKennzeichen : A
 ArtikelNummer            : 8241335
@@ -54,10 +62,35 @@ MengenEinheit            : Stk
 Preis                    : 2,57
 RabattGruppe             : EM01
 WarenhauptGruppe         : 01
-LangtextSchluessel       :
+LangtextSchluessel       : 
+EUL_PreisProStueck       : 2,57
+
+# PowerShell object from $datanorm.b["8241335"]
+SatzKennzeichen          : B
+VerarbeitungsKennzeichen : A
+ArtikelNummer            : 8241335
+Matchcode                : EVB 10/265 A2
+AlternativArtikelNummer  : 456 01 31
+KatalogSeite             : 
+CUGewichtsMerker         : 1
+CUKennzahl               : 150
+Gewicht                  : 2,50
+EuroArtikelNummer        : 4003899170225
+AnbindungsNummer         : 
+WarenGruppe              : 010204
+KostenArt                : 0
+VerpackungsMenge         : 1
+ReverenzKuerzel          : 
+ReverenzNummer           : 
+EUL_CuGewichtProStueck   : 0,025
+EUL_CuAufschlagProStueck : 0,18225
+EUL_CuDelPro100Kg        : 879
+
+# PowerShell field object from $datanorm.a["8241335"].Kurztext1
+ELTROPA Verdrahtungsbrücke 1ph 265mm sw
 ```
 
-Via `$datanorm.a` the individual field values can be retrieved and also addressed directly by specifying the article number. The same applies to the other properties like `$datanorm.b` or `$datanorm.p`.
+Via `$datanorm.a` the individual field values can be retrieved and also addressed directly by specifying the article number. The same applies to the other properties like `$datanorm.b` or `$datanorm.p`. Field designations with EUL contain adjusted values so that, for example, copper surcharges are displayed in unit terms.
 
 ## PARAMETERS
 
@@ -91,8 +124,8 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -mwst
-The value-added tax rate. The default value is 19.0.
+### -cuDel
+Copper-DEL Notation, the price is in EUR per 100 kg copper. The price was in 02/2022 879 EUR for 100 kg copper.
 
 ```yaml
 Type: Double
@@ -100,7 +133,22 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 1
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -vat
+The value-added tax rate. The default value is 19.0 %.
+
+```yaml
+Type: Double
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -125,3 +173,5 @@ Datanorm 5.0 introduces additional complexities and features that are not yet su
 It is important to note that due to the complexity and variety of data, there might be special cases which this function does not cover. It is recommended to thoroughly test this function with your specific Datanorm files to ensure compatibility.
 
 ## RELATED LINKS
+
+[Convert-FromDatanorm](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Convert-FromDatanorm.ps1)

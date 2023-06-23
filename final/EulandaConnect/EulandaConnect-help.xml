@@ -86,6 +86,10 @@
         <maml:uri>https://github.com/Eulanda/EulandaConnect/blob/master/docs/Approve-Signature.md</maml:uri>
       </maml:navigationLink>
       <maml:navigationLink>
+        <maml:linkText>Approve-Signature.ps1 on GitHub</maml:linkText>
+        <maml:uri>https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Approve-Signature.ps1</maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
         <maml:linkText>Get-SignToolPath</maml:linkText>
         <maml:uri></maml:uri>
       </maml:navigationLink>
@@ -544,6 +548,10 @@
         <maml:linkText>Online Version:</maml:linkText>
         <maml:uri>https://github.com/Eulanda/EulandaConnect/blob/master/docs/Backup-MssqlDatabase.md</maml:uri>
       </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Backup-MssqlDatabase.ps1 on GitHub</maml:linkText>
+        <maml:uri>https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Backup-MssqlDatabase.ps1</maml:uri>
+      </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
@@ -723,6 +731,10 @@
       <maml:navigationLink>
         <maml:linkText>Online Version:</maml:linkText>
         <maml:uri>https://github.com/Eulanda/EulandaConnect/blob/master/docs/Close-Delivery.md</maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Close-Delivery.ps1 on GitHub</maml:linkText>
+        <maml:uri>https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Close-Delivery.ps1</maml:uri>
       </maml:navigationLink>
       <maml:navigationLink>
         <maml:linkText>Open-Delivery</maml:linkText>
@@ -913,6 +925,10 @@
       <maml:navigationLink>
         <maml:linkText>Online Version:</maml:linkText>
         <maml:uri>https://github.com/Eulanda/EulandaConnect/blob/master/docs/Close-SalesOrder.md</maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Close-SalesOrder.ps1 on GitHub</maml:linkText>
+        <maml:uri>https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Close-SalesOrder.ps1</maml:uri>
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
@@ -1137,6 +1153,10 @@ Broadcast Ip                                 192.168.178.255</dev:code>
         <maml:linkText>Online Version:</maml:linkText>
         <maml:uri>https://github.com/Eulanda/EulandaConnect/blob/master/docs/Confirm-System.md</maml:uri>
       </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Confirm-System.ps1 on GitHub</maml:linkText>
+        <maml:uri>https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Confirm-System.ps1</maml:uri>
+      </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
@@ -1250,6 +1270,10 @@ Haeuser stehen in Zuerich</dev:code>
         <maml:linkText>Online Version:</maml:linkText>
         <maml:uri>https://github.com/Eulanda/EulandaConnect/blob/master/docs/Convert-Accent.md</maml:uri>
       </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Convert-Accent.ps1 on GitHub</maml:linkText>
+        <maml:uri>https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Convert-Accent.ps1</maml:uri>
+      </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
@@ -1323,9 +1347,42 @@ Haeuser stehen in Zuerich</dev:code>
     <command:examples>
       <command:example>
         <maml:title>Example 1: Converts PowerShell Datanorm object to an EULANDA specific XML</maml:title>
-        <dev:code>PS C:\&gt; $xml = Convert-DatanormToXml -datanorm $datanorm</dev:code>
+        <dev:code>PS C:\&gt; $datanorm = Convert-FromDatanorm -path "C:\Users\john\Desktop\datanorm\Test\datanorm.001"
+PS C:\&gt; $xml = Convert-DatanormToXml -datanorm $datanorm
+
+&lt;EULANDA&gt;
+    &lt;METADATA&gt;
+        &lt;VERSION&gt;3.2.1&lt;/VERSION&gt;
+        &lt;GENERATOR&gt;EulandaConnect&lt;/GENERATOR&gt;
+        &lt;DATEFORMAT&gt;ISO8601&lt;/DATEFORMAT&gt;
+        &lt;FLOATFORMAT&gt;US&lt;/FLOATFORMAT&gt;
+        &lt;COUNTRYFORMAT&gt;ISO2&lt;/COUNTRYFORMAT&gt;
+        &lt;FIELDNAMES&gt;NATIVE&lt;/FIELDNAMES&gt;
+        &lt;DATE&gt;2023-06-23T15:38:00&lt;/DATE&gt;
+        &lt;PCNAME&gt;DADOSTUDIO&lt;/PCNAME&gt;
+        &lt;USERNAME&gt;CN&lt;/USERNAME&gt;
+    &lt;/METADATA&gt;
+    &lt;ARTIKELLISTE&gt;
+        &lt;ARTIKEL&gt;
+            &lt;ARTNUMMER&gt;8241335&lt;/ARTNUMMER&gt;
+            &lt;ARTMATCH&gt;EVB 10/265 A2&lt;/ARTMATCH&gt;
+            &lt;BARCODE&gt;4003899170225&lt;/BARCODE&gt;
+            &lt;ARTNUMMERERSATZ&gt;456 01 31&lt;/ARTNUMMERERSATZ&gt;
+            &lt;VKNETTO&gt;2.75&lt;/VKNETTO&gt;
+            &lt;MENGENEH&gt;Stk&lt;/MENGENEH&gt;
+            &lt;VERPACKEH&gt;1&lt;/VERPACKEH&gt;
+            &lt;RABATTGR&gt;EM01&lt;/RABATTGR&gt;
+            &lt;WARENGR&gt;01&lt;/WARENGR&gt;
+            &lt;KURZTEXT1&gt;ELTROPA Verdrahtungsbrücke 1ph 265mm sw&lt;/KURZTEXT1&gt;
+            &lt;KURZTEXT2&gt;EVB 10/265 A2 10qmm Stift isol&lt;/KURZTEXT2&gt;
+            &lt;ULTRAKURZTEXT&gt;ELTROPA Verdrahtungsbrücke 1ph 265mm sw&lt;/ULTRAKURZTEXT&gt;
+            &lt;LANGTEXT&gt;ELTROPA Verdrahtungsbrücke 1ph 265mm sw
+EVB 10/265 A2 10qmm Stift isol&lt;/LANGTEXT&gt;
+        &lt;/ARTIKEL&gt;
+    &lt;/ARTIKELLISTE&gt;
+&lt;/EULANDA&gt;</dev:code>
         <dev:remarks>
-          <maml:para>This command converts a Datanorm PowerShell object into an XML string that's compatible with the EULANDA merchandise management system.</maml:para>
+          <maml:para>This command converts a Datanorm PowerShell object into an XML string that's compatible with the EULANDA merchandise management system. These files can be imported directly.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -1333,6 +1390,10 @@ Haeuser stehen in Zuerich</dev:code>
       <maml:navigationLink>
         <maml:linkText>Online Version:</maml:linkText>
         <maml:uri>https://github.com/Eulanda/EulandaConnect/blob/master/docs/Convert-DatanormToXml.md</maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Convert-DatanormToXml.ps1 on GitHub</maml:linkText>
+        <maml:uri>https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Convert-DatanormToXml.ps1</maml:uri>
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
@@ -1612,6 +1673,10 @@ $xml.Save("C:\Temp\MyData.xml")
         <maml:uri>https://github.com/Eulanda/EulandaConnect/blob/master/docs/Convert-DataToXml.md</maml:uri>
       </maml:navigationLink>
       <maml:navigationLink>
+        <maml:linkText>Convert-DataToXml</maml:linkText>
+        <maml:uri>https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Convert-DataToXml.ps1</maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
         <maml:linkText>Write-XmlMetadata</maml:linkText>
         <maml:uri></maml:uri>
       </maml:navigationLink>
@@ -1842,6 +1907,10 @@ PS C:\&gt; $myDate
         <maml:linkText>Online Version:</maml:linkText>
         <maml:uri>https://github.com/Eulanda/EulandaConnect/blob/master/docs/Convert-DateToIso.md</maml:uri>
       </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Convert-DateToIso</maml:linkText>
+        <maml:uri>https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Convert-DateToIso.ps1</maml:uri>
+      </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
@@ -1873,18 +1942,6 @@ PS C:\&gt; $myDate
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
-          <maml:name>mwst</maml:name>
-          <maml:description>
-            <maml:para>The value-added tax rate. The default value is 19.0.</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">Double</command:parameterValue>
-          <dev:type>
-            <maml:name>Double</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="decimal">
           <maml:name>decimalSeparator</maml:name>
           <maml:description>
@@ -1893,6 +1950,30 @@ PS C:\&gt; $myDate
           <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
             <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>cuDel</maml:name>
+          <maml:description>
+            <maml:para>Copper-DEL Notation, the price is in EUR per 100 kg copper. The price was in 02/2022 879 EUR for 100 kg copper.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Double</command:parameterValue>
+          <dev:type>
+            <maml:name>Double</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>vat</maml:name>
+          <maml:description>
+            <maml:para>The value-added tax rate. The default value is 19.0 %.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Double</command:parameterValue>
+          <dev:type>
+            <maml:name>Double</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -1924,10 +2005,22 @@ PS C:\&gt; $myDate
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
-        <maml:name>mwst</maml:name>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>cuDel</maml:name>
         <maml:description>
-          <maml:para>The value-added tax rate. The default value is 19.0.</maml:para>
+          <maml:para>Copper-DEL Notation, the price is in EUR per 100 kg copper. The price was in 02/2022 879 EUR for 100 kg copper.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Double</command:parameterValue>
+        <dev:type>
+          <maml:name>Double</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>vat</maml:name>
+        <maml:description>
+          <maml:para>The value-added tax rate. The default value is 19.0 %.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">Double</command:parameterValue>
         <dev:type>
@@ -1974,9 +2067,16 @@ PS C:\&gt; $myDate
       </command:example>
       <command:example>
         <maml:title>--- Example 2:  Shows the data for a specific article number ---</maml:title>
-        <dev:code>PS C:\&gt; $datanorm = Convert-FromDatanorm -path "C:\Users\john\Desktop\datanorm\Test\datanorm.001"
+        <dev:code>PS C:\&gt; $datanorm = Convert-FromDatanorm -path "C:\Users\john\Desktop\datanorm\Test\datanorm.001" -cuDel 879
 PS C:\&gt; $datanorm.a["8241335"]
+PS C:\&gt; $datanorm.b["8241335"]
+PS C:\&gt; $datanorm.a["8241335"].Kurztext1
 
+# original datanorm dump
+A;A;8241335;00;ELTROPA Verdrahtungsbr�cke 1ph 265mm sw;EVB 10/265 A2 10qmm Stift isol;1;0;Stk;257;EM01;01;;
+B;A;8241335;EVB 10/265 A2;456 01 31;;1;150;250;4003899170225;;010204;0;1;;;
+
+# PowerShell object from $datanorm.a["8241335"]
 SatzKennzeichen          : A
 VerarbeitungsKennzeichen : A
 ArtikelNummer            : 8241335
@@ -1989,9 +2089,34 @@ MengenEinheit            : Stk
 Preis                    : 2,57
 RabattGruppe             : EM01
 WarenhauptGruppe         : 01
-LangtextSchluessel       :</dev:code>
+LangtextSchluessel       : 
+EUL_PreisProStueck       : 2,57
+
+# PowerShell object from $datanorm.b["8241335"]
+SatzKennzeichen          : B
+VerarbeitungsKennzeichen : A
+ArtikelNummer            : 8241335
+Matchcode                : EVB 10/265 A2
+AlternativArtikelNummer  : 456 01 31
+KatalogSeite             : 
+CUGewichtsMerker         : 1
+CUKennzahl               : 150
+Gewicht                  : 2,50
+EuroArtikelNummer        : 4003899170225
+AnbindungsNummer         : 
+WarenGruppe              : 010204
+KostenArt                : 0
+VerpackungsMenge         : 1
+ReverenzKuerzel          : 
+ReverenzNummer           : 
+EUL_CuGewichtProStueck   : 0,025
+EUL_CuAufschlagProStueck : 0,18225
+EUL_CuDelPro100Kg        : 879
+
+# PowerShell field object from $datanorm.a["8241335"].Kurztext1
+ELTROPA Verdrahtungsbrücke 1ph 265mm sw</dev:code>
         <dev:remarks>
-          <maml:para>Via `$datanorm.a` the individual field values can be retrieved and also addressed directly by specifying the article number. The same applies to the other properties like `$datanorm.b` or `$datanorm.p`.</maml:para>
+          <maml:para>Via `$datanorm.a` the individual field values can be retrieved and also addressed directly by specifying the article number. The same applies to the other properties like `$datanorm.b` or `$datanorm.p`. Field designations with EUL contain adjusted values so that, for example, copper surcharges are displayed in unit terms.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -1999,6 +2124,10 @@ LangtextSchluessel       :</dev:code>
       <maml:navigationLink>
         <maml:linkText>Online Version:</maml:linkText>
         <maml:uri>https://github.com/Eulanda/EulandaConnect/blob/master/docs/Convert-FromDatanorm.md</maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Convert-FromDatanorm</maml:linkText>
+        <maml:uri>https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Convert-FromDatanorm.ps1</maml:uri>
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>

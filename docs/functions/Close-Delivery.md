@@ -121,4 +121,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## RELATED LINKS
 
+[Close-Delivery.ps1 on GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Close-Delivery.ps1)
+
 [Open-Delivery](./Open-Delivery.md)

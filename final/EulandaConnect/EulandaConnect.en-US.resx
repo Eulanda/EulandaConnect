@@ -729,4 +729,12 @@
     <value>Cannot convert input {0} to US float. Function {1}</value>
     <comment/>
   </data>
+  <data name="DATANORM_DEVISIONCODE_ERROR" xml:space="preserve">
+    <value>Invalid division code '{0}'. Allowed values are 0, 1 and 2 for 0=no copper, 1=100 units 2=1000 units. Function {1}</value>
+    <comment/>
+  </data>
+  <data name="DATANORM_PRICEUNITCODE_ERROR" xml:space="preserve">
+    <value>Invalid price per unit code '{0}'. Allowed values are 0, 1, 2 and 3. 0=per unit, 1=per 10 units, 2=100 units and 3 per 1000 units. Function {1}</value>
+    <comment/>
+  </data>
 </root>

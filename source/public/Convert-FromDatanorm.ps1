@@ -3,7 +3,9 @@ function Convert-FromDatanorm {
     param(
         [string]$path
         ,
-        [double]$mwst = 19.0
+        [double]$vat = 19.0
+        ,
+        [double]$cuDel = 879.0 # last official cuDel (Copper-DEL Notation) price 02/2022
         ,
         [Alias('decimal')]
         [string]$decimalSeparator = [System.Globalization.CultureInfo]::CurrentCulture.NumberFormat.NumberDecimalSeparator
@@ -39,6 +41,9 @@ function Convert-FromDatanorm {
                 RabattGruppe          = $fields[10]
                 WarenhauptGruppe      = $fields[11]
                 LangtextSchluessel    = $fields[12]
+                EUL_PreisProStueck    = Get-DatanormPricePerUnit `
+                                          -price (ConvertTo-USFloat(Add-DecimalPoint -number $fields[9])) `
+                                          -priceUnitCode $fields[7]
             })
             $a[$rec.ArtikelNummer] = $rec
         }
@@ -65,6 +70,15 @@ function Convert-FromDatanorm {
                 VerpackungsMenge         = $fields[13]
                 ReverenzKuerzel          = $fields[14]
                 ReverenzNummer           = $fields[15]
+                EUL_CuGewichtProStueck   = Get-DatanormCuWeight `
+                                            -cuWeight (ConvertTo-USFloat(Add-DecimalPoint -number $fields[8])) `
+                                            -divisionCode $fields[6]
+                EUL_CuAufschlagProStueck = Get-DatanormCuSurcharge `
+                                            -cuWeight (ConvertTo-USFloat(Add-DecimalPoint -number $fields[8])) `
+                                            -cuDel $cuDel `
+                                            -cuIncluded $fields[7] `
+                                            -divisionCode $fields[6]
+                EUL_CuDelPro100Kg        = $CuDel.ToString()
             })
             $b[$rec.ArtikelNummer] = $rec
         }

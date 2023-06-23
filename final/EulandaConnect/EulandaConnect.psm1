@@ -882,14 +882,36 @@ function Convert-DatanormToXml {
     # Start ARTIKELLISTE
     $writer.WriteStartElement('ARTIKELLISTE')
 
-    foreach ($article in $datanorm.a.values) {
+    foreach ($articleA in $datanorm.a.values) {
         # Start ARTIKEL
         $writer.WriteStartElement('ARTIKEL')
 
-        $writer.WriteElementString('ARTNUMMER', $article.ArtikelNummer)
-        $writer.WriteElementString('VK', (ConvertTo-USFloat -inputString $article.Preis))
-        $writer.WriteElementString('KURZTEXT1', $article.Kurztext1)
-        $writer.WriteElementString('KURZTEXT2', $article.Kurztext2)
+        $articleB = $datanorm.b[$articleA.ArtikelNummer]
+
+        $cuSurchargePerUnit = [double](ConvertTo-USFloat($articleB.EUL_CuAufschlagProStueck))
+        $pricePerUnit = [double](ConvertTo-USFloat -inputString ($articleA.EUL_PreisProStueck))
+        $price = [math]::Round($pricePerUnit + $cuSurchargePerUnit, 2)
+        $price = (ConvertTo-USFloat -inputString $price.ToString())
+
+        $writer.WriteElementString('ARTNUMMER', $articleA.ArtikelNummer)
+        $writer.WriteElementString('ARTMATCH', $articleB.Matchcode)
+        $writer.WriteElementString('BARCODE', $articleB.EuroArtikelNummer)
+
+        $writer.WriteElementString('ARTNUMMERERSATZ', $articleB.AlternativArtikelNummer)
+        if ($articleA.PreisKennzeichen -eq '1') {
+            $writer.WriteElementString('VKNETTO', $price)
+        } else {
+            $writer.WriteElementString('EKNETTO', $price)
+        }
+        $writer.WriteElementString('MENGENEH', $articleA.MengenEinheit)
+        $writer.WriteElementString('VERPACKEH', $articleB.VerpackungsMenge)
+        $writer.WriteElementString('RABATTGR', $articleA.RabattGruppe)
+        $writer.WriteElementString('WARENGR', $articleA.WarenhauptGruppe)
+
+        $writer.WriteElementString('KURZTEXT1', $articleA.Kurztext1)
+        $writer.WriteElementString('KURZTEXT2', $articleA.Kurztext2)
+        $writer.WriteElementString('ULTRAKURZTEXT', $articleA.Kurztext1)
+        $writer.WriteElementString('LANGTEXT', "$($articleA.Kurztext1)`r`n$($articleA.Kurztext2)"  )
 
         # End ARTIKEL
         $writer.WriteEndElement()
@@ -903,10 +925,28 @@ function Convert-DatanormToXml {
     $writer.Flush()
     $writer.Close()
 
-    # Now you have the XML in the StringWriter
-    $xml = $stringWriter.ToString()
+    # XML RAW for Root
+    [xml]$xml = Get-XmlEulandaRoot
 
-    Return $xml
+    # XML RAW for Metadata
+    [xml]$xmlMetadata = Get-XmlEulandaMetadata
+
+    # Now you have the XML in the StringWriter
+    [xml]$xmlArticle = $stringWriter.ToString()
+
+    $newNode = $xmlMetadata.SelectSingleNode("//METADATA")
+    $node = $xml.ImportNode($newNode, $true)
+    $xml.DocumentElement.AppendChild($node) | Out-Null
+
+    if ($xmlArticle) {
+        $newNode = $xmlArticle.SelectSingleNode("//ARTIKELLISTE")
+        $node = $xml.ImportNode($newNode, $true)
+        $xml.DocumentElement.AppendChild($node) | Out-Null
+    }
+
+    $result = [string](Format-Xml -xmlString $xml.OuterXml)
+
+    Return $result
 }
 
 function Convert-DataToXml {
@@ -1213,7 +1253,9 @@ function Convert-FromDatanorm {
     param(
         [string]$path
         ,
-        [double]$mwst = 19.0
+        [double]$vat = 19.0
+        ,
+        [double]$cuDel = 879.0 # last official cuDel (Copper-DEL Notation) price 02/2022
         ,
         [Alias('decimal')]
         [string]$decimalSeparator = [System.Globalization.CultureInfo]::CurrentCulture.NumberFormat.NumberDecimalSeparator
@@ -1249,6 +1291,9 @@ function Convert-FromDatanorm {
                 RabattGruppe          = $fields[10]
                 WarenhauptGruppe      = $fields[11]
                 LangtextSchluessel    = $fields[12]
+                EUL_PreisProStueck    = Get-DatanormPricePerUnit `
+                                          -price (ConvertTo-USFloat(Add-DecimalPoint -number $fields[9])) `
+                                          -priceUnitCode $fields[7]
             })
             $a[$rec.ArtikelNummer] = $rec
         }
@@ -1275,6 +1320,15 @@ function Convert-FromDatanorm {
                 VerpackungsMenge         = $fields[13]
                 ReverenzKuerzel          = $fields[14]
                 ReverenzNummer           = $fields[15]
+                EUL_CuGewichtProStueck   = Get-DatanormCuWeight `
+                                            -cuWeight (ConvertTo-USFloat(Add-DecimalPoint -number $fields[8])) `
+                                            -divisionCode $fields[6]
+                EUL_CuAufschlagProStueck = Get-DatanormCuSurcharge `
+                                            -cuWeight (ConvertTo-USFloat(Add-DecimalPoint -number $fields[8])) `
+                                            -cuDel $cuDel `
+                                            -cuIncluded $fields[7] `
+                                            -divisionCode $fields[6]
+                EUL_CuDelPro100Kg        = $CuDel.ToString()
             })
             $b[$rec.ArtikelNummer] = $rec
         }
@@ -12821,6 +12875,78 @@ function Get-ConnFromUdl {
 
 }
 
+function Get-DatanormCuSurcharge {
+    [CmdletBinding()]
+    param (
+        [int]$divisionCode
+        ,
+        [double]$cuIncluded
+        ,
+        [double]$cuWeight
+        ,
+        [double]$cuDel = 879 # last official cuDel (Copper-DEL Notation) price 02/2022
+    )
+
+    <#
+        .SYNOPSIS
+        Calculates the copper surcharge for a product based on various parameters
+        including the copper weight, the division code, and the included and actual copper prices.
+
+        .DESCRIPTION
+        The `Get-DatanormCuSurcharge` function calculates the copper surcharge that applies to a product
+        in a Datanorm file. The calculation is based on the weight of copper in the product,
+        the division code that indicates how the weight is measured (per unit, per 100 units, or per 1000 units),
+        and the difference between the included and actual copper prices.
+
+        The copper weight must be specified in kilograms. The division code is an integer value where 0 indicates
+        no copper processing, 1 indicates that the weight is per 100 units,
+        and 2 indicates that the weight is per 1000 units.
+
+        The included copper price and actual copper price (known as `cuDel`) should be specified per 100 kg.
+        The function returns the calculated copper surcharge. If the surcharge would be
+        negative (i.e., the actual price is less than the included price), the function returns 0.
+
+        .PARAMETER divisionCode
+        The division code for the copper weight. Valid values are 0 (no copper processing),
+        1 (weight is per 100 units), and 2 (weight is per 1000 units).
+
+        .PARAMETER cuIncluded
+        The copper price already included in the base product price, specified per 100 kg.
+
+        .PARAMETER cuWeight
+        The weight of copper in the product, specified in kilograms but depends also on the devisionCode
+
+        .PARAMETER cuDel
+        The actual copper price, specified per 100 kg. The default value is 879.
+
+        .EXAMPLE
+        Get-DatanormCuSurcharge -cuWeight 2.5 -divisionCode 1 -cuDel 879 -cuIncluded 150
+
+        This example calculates the copper surcharge for a product with a copper weight of 2.5 kg,
+        a division code of 1 (indicating that the weight is per 100 units),
+        and an included copper price of 150 per 100 kg. The actual copper price (cuDel)
+        is assumed to be the default value of 879 per 100 kg.
+
+        The result is in this case: 0,18225 EUR
+    #>
+
+    $copperSurcharge = 0
+
+    $weightPerUnit = Get-DatanormCuWeight -cuWeight $cuWeight -divisionCode $divisionCode
+
+    # Calculate the copper surcharge
+    if ($weightPerUnit -gt 0) {
+        $copperSurcharge = $weightPerUnit * ($cuDel - $cuIncluded) / 100
+        if ($copperSurcharge -lt 0.0) {
+            $copperSurcharge = [double]0.0
+        }
+    }
+
+    return $copperSurcharge
+
+    # Test: Get-DatanormCuSurcharge -cuWeight 2.5 -divisionCode 1 -cuDel 879 -cuIncluded 150
+}
+
 function Get-CurrentVariables {
 <#
 .SYNOPSIS
@@ -13010,6 +13136,89 @@ function Get-DatanormConditionDecimals {
     }
 }
 
+function Get-DatanormCuWeight {
+    [CmdletBinding()]
+    param (
+        [int]$divisionCode
+        ,
+        [double]$cuWeight
+    )
+
+    <#
+        .SYNOPSIS
+        Calculates the copper weight per unit for a given item based on the supplied division code and copper weight.
+
+        .DESCRIPTION
+        The `Get-DatanormCuWeight` function calculates the copper weight per unit for a specific
+        item based on the supplied division code and the total copper weight of the item.
+        The division code determines how the total copper weight is divided:
+
+        - Division code 0: The item doesn't involve any copper processing, so the copper weight per unit is 0.
+        - Division code 1: The copper weight provided is for 100 units, so the total copper weight is
+          divided by 100 to get the copper weight per unit.
+        - Division code 2: The copper weight provided is for 1000 units, so the total copper weight is
+          divided by 1000 to get the copper weight per unit.
+
+        .PARAMETER divisionCode
+        The division code indicating how the total copper weight is to be divided to get the copper
+        weight per unit. Accepted values are 0, 1, and 2.
+
+        .PARAMETER cuWeight
+        The total copper weight for the item. This will be divided according to the
+        division code to calculate the copper weight per unit.
+
+        .EXAMPLE
+        Get-DatanormCuWeight -cuWeight 2.5 -divisionCode 1
+        This command calculates the copper weight per unit for an item with a total copper
+        weight of 2.5kg, where this weight is for 100 units.
+
+        Result is: 0,025 kg per unit copper
+
+        .INPUTS
+        System.Int32, System.Double
+
+        .OUTPUTS
+        System.Double
+
+        .NOTES
+        The division code must be one of the following values:
+        0 - The item does not involve any copper processing.
+        1 - The copper weight provided is for 100 units.
+        2 - The copper weight provided is for 1000 units.
+        Any other value will cause an error.
+    #>
+
+
+    # Calculate the weight per unit depending on the Merker value
+    switch ($divisionCode) {
+        0 { $weightPerUnit = 0 } # no copper processing
+        1 { $weightPerUnit = $cuWeight / 100 } # weight is per 100 units
+        2 { $weightPerUnit = $cuWeight / 1000 } # weight is per 1000 units
+        default { throw (Get-ResStr 'DATANORM_DEVISIONCODE_ERROR') -f $divisionCode, $myInvocation.Mycommand }
+    }
+
+    return $weightPerUnit
+
+    # Test: Get-DatanormCuWeight -cuWeight 2.5 -divisionCode 1
+}
+
+Function Get-DatanormPricePerUnit {
+    param(
+        [double]$price
+        ,
+        [int]$priceUnitCode
+    )
+
+    switch ($priceUnitCode) {
+        0 { $pricePerUnit = $price }
+        1 { $pricePerUnit = $price / 10 }
+        2 { $pricePerUnit = $price / 100 }
+        3 { $pricePerUnit = $price / 1000 }
+        default { throw (Get-ResStr 'DATANORM_PRICEUNITCODE_ERROR') -f $priceUnitCode, $myInvocation.Mycommand }
+    }
+
+    Return $pricePerUnit
+}
 function Get-DefaultSelectArticle {
     [CmdletBinding()]
     param()
@@ -16567,8 +16776,8 @@ function Test-ValidateUrl {
 # SIG # Begin signature block
 # MIIpiQYJKoZIhvcNAQcCoIIpejCCKXYCAQExDzANBglghkgBZQMEAgEFADB5Bgor
 # BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
-# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCAnbjMj1Pdab77F
-# wfarROGO7EEWtpTzv3mR84Ap1gxzyKCCEngwggVvMIIEV6ADAgECAhBI/JO0YFWU
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCDphrf1gQMuAu5i
+# LMGoXyC9+c8WlQFW5aB0uLrgKpEwj6CCEngwggVvMIIEV6ADAgECAhBI/JO0YFWU
 # jTanyYqJ1pQWMA0GCSqGSIb3DQEBDAUAMHsxCzAJBgNVBAYTAkdCMRswGQYDVQQI
 # DBJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcMB1NhbGZvcmQxGjAYBgNVBAoM
 # EUNvbW9kbyBDQSBMaW1pdGVkMSEwHwYDVQQDDBhBQUEgQ2VydGlmaWNhdGUgU2Vy
@@ -16671,23 +16880,23 @@ function Test-ValidateUrl {
 # IExpbWl0ZWQxLjAsBgNVBAMTJVNlY3RpZ28gUHVibGljIENvZGUgU2lnbmluZyBD
 # QSBFViBSMzYCEGilgQZhq4aQSRu7qELTizkwDQYJYIZIAWUDBAIBBQCgfDAQBgor
 # BgEEAYI3AgEMMQIwADAZBgkqhkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEE
-# AYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAvBgkqhkiG9w0BCQQxIgQgWe2WK8DtYpxY
-# HYAEiTR17DsbICw7oKKtMlP83/4MtQwwDQYJKoZIhvcNAQEBBQAEggIAP0Sq6x4V
-# nZ71j83IngmAbgr2bjK23bteAo7F6hEU5FSkRLZF0zON7XPCgxLnGxQOEUU22D5i
-# 4bFfT37nPMIrfpqbZa7tTJRkwS993aogFrLwKlAkBQkWzow+Gqrrke10lJLaqRt2
-# Dw3ZIZwxz5+9PRTix6vicBlnBPunmZvw57XNwXnHkjS9UKPZHrjwUrlSfgxDTXyP
-# MJvIRBmLW6HPJKsNKwxuMX3h7mxTA2zuvVyf0P4/RqtTuatH4fneh7If7XbOsNyP
-# lx4aXEtCWK+8TcMm3SPWkyJpqZjQBLvN2c7w0xTaLfntTSAiXpFw0S8o65+WRGal
-# jg/T/rTJA73OSeGy9iApzSW+ns2BxFtHQP0ewQ6oogpAzjOB/44LFkBtW9i1gh5g
-# YSrML+McKWmNcdT9XFO+Xt6ncpJh/JeYcEN+buYT2rgaMJy3qQwYrndD7u+TYpoF
-# S/vhiVq6Zv3Oh8cs1POa8NF7nVXWEQqjOYZVF9PEM+5gyRdAEBJsZx3tltHJ/WVC
-# KNZO9m5WNM++tV3PZMX3N/odkD6Akc4iuRPcyjNtwQvLVTCqkhcQdoUH5TEkLuzi
-# 7/Nxbww1XWHFjd1GzyUkBVSuQz6HlzN2PK0cykwDmiKdN7D0hqGNxdP2jX9I/sHW
-# BpAFnXukdiJZOiWqCG6HL/jSg3NyDAUeEwihghNPMIITSwYKKwYBBAGCNwMDATGC
+# AYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAvBgkqhkiG9w0BCQQxIgQgqNJT3fZeTJ1F
+# BQJl5ZnCa6dyzKCcfxCwP8BynSHWhLIwDQYJKoZIhvcNAQEBBQAEggIADetFCiNs
+# /6HfH/zQt3zZeJk26pK5vt6y78pqqhkWHV44w2qi9KvX9xyDSpPIpJl3Xzbg4qVF
+# jS/Bd3f8Oe93i4hs1fzklBWUSifseM2LuVJ/BjgQEo6ogyMepGmO6eFBK3RPv9g+
+# SFiBruEJZqKeb3e8+H2j7zpWs6LrgqjnlgCShE1rRrCDg+Wwe/ybH62EdgUAXbbJ
+# EQv7V3XzhTvBmpxBWq47VfOLLyqcQI9ZY/BfuhaBZaiZH+b4qBqJC/ABglUOq2qo
+# UMjPjeNxGXqzNhFxZvxDK/nDSHu4HozwI4qfYO0+Vz4hqILgOtmFrnrqnbWtlHD2
+# 2vvw+RLhqh8oqkGWWP8Jt8dDC0cAtwX1ic4dcmE/IOQgNpbEeXgcEdXBOu5MWLGK
+# IQjzHwMyadZjqAbxmy8h9Ufz0LrfwTv2JJYwgjmdVFZEqOQ09HAJ1Nckk21fnuPn
+# MLx7hB54Z+SVA8GiXabAAt7y4TmgAW8womZ6Eq4ZzkXV9XFCSW/rziznlkleCujv
+# Bxz6K/dknJ1DS6u1AEL1zirY1A81MqK+yUkGu1ML6Mz5GGaTzgxTRB++BBEc9VFg
+# HOUkmQJfJZo0aqr0kNccKIvh0QTPb/smTZFPHPlegxygK230hJf0b+WyjmcKFNLp
+# HhWPxem1GeebKJExnNW2Fz0J7YYGO7ih1QahghNPMIITSwYKKwYBBAGCNwMDATGC
 # EzswghM3BgkqhkiG9w0BBwKgghMoMIITJAIBAzEPMA0GCWCGSAFlAwQCAgUAMIHw
 # BgsqhkiG9w0BCRABBKCB4ASB3TCB2gIBAQYKKwYBBAGyMQIBATAxMA0GCWCGSAFl
-# AwQCAQUABCD73xWkL9vkm2KWBhy0K8jvLkzJKWP9oUDihxA7Mc6QNAIVAN8rHeLL
-# 1HHk9IXm+QJJUqHFom8XGA8yMDIzMDYyMzA3NDgwN1qgbqRsMGoxCzAJBgNVBAYT
+# AwQCAQUABCCy9IQhKtqDBzrFVdDS2fLXpSloQ1pWSHMVLX+fqwTO7wIVAJs1U79g
+# viT/aYjDDuFVx4udSjStGA8yMDIzMDYyMzE0MDYyMFqgbqRsMGoxCzAJBgNVBAYT
 # AkdCMRMwEQYDVQQIEwpNYW5jaGVzdGVyMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
 # ZWQxLDAqBgNVBAMMI1NlY3RpZ28gUlNBIFRpbWUgU3RhbXBpbmcgU2lnbmVyICM0
 # oIIN6TCCBvUwggTdoAMCAQICEDlMJeF8oG0nqGXiO9kdItQwDQYJKoZIhvcNAQEM
@@ -16769,22 +16978,22 @@ function Test-ValidateUrl {
 # BAoTD1NlY3RpZ28gTGltaXRlZDElMCMGA1UEAxMcU2VjdGlnbyBSU0EgVGltZSBT
 # dGFtcGluZyBDQQIQOUwl4XygbSeoZeI72R0i1DANBglghkgBZQMEAgIFAKCCAWsw
 # GgYJKoZIhvcNAQkDMQ0GCyqGSIb3DQEJEAEEMBwGCSqGSIb3DQEJBTEPFw0yMzA2
-# MjMwNzQ4MDdaMD8GCSqGSIb3DQEJBDEyBDDzHSzYsFNSQFA0r8qr9yIozTohhHKj
-# Au48ksNFIo16TzU4hsUdrPbAqCEvoRXr5Ekwge0GCyqGSIb3DQEJEAIMMYHdMIHa
+# MjMxNDA2MTlaMD8GCSqGSIb3DQEJBDEyBDCRIMyd51GNiKf56Kvpdpi24U1U6ADf
+# pitgiSzvtDs2ombJryB4YymOYAk9k4X9k3owge0GCyqGSIb3DQEJEAIMMYHdMIHa
 # MIHXMBYEFK5ir3UKDL1H1kYfdWjivIznyk+UMIG8BBQC1luV4oNwwVcAlfqI+SPd
 # k3+tjzCBozCBjqSBizCBiDELMAkGA1UEBhMCVVMxEzARBgNVBAgTCk5ldyBKZXJz
 # ZXkxFDASBgNVBAcTC0plcnNleSBDaXR5MR4wHAYDVQQKExVUaGUgVVNFUlRSVVNU
 # IE5ldHdvcmsxLjAsBgNVBAMTJVVTRVJUcnVzdCBSU0EgQ2VydGlmaWNhdGlvbiBB
-# dXRob3JpdHkCEDAPb6zdZph0fKlGNqd4LbkwDQYJKoZIhvcNAQEBBQAEggIAM5T/
-# 5ZG5VVGPPB9sVYiNQp5tpdP6ZmSXIjw/aqRI2HPOMMFfYs+SKWKLcYCi01lnDk2r
-# U4xR+Gizx9sSK3EbLLUVwTbVVEzbJ2+MrHt+qi/dmE/Sntvm/lpuo7ss+0oofaXP
-# usQCTmfZFwEW9LdfsMcAcd6Rp2WHIszniI470yLfsQHRQrrxo5GMHoBj2VruYCOD
-# uDS20Zn5YuSLf7cE3PKGct0kuERtikCxOY9Lsg/1uKpZ1uAI0IN/Enm30FLhAABF
-# cu3VPN2Ms8d2r4K4LK5b/xp9jNc7cDC0Q+b9q0pSPK6INl38HRQ4hb03f4TlNlBq
-# ddyLbv/Rob4Zxxr0WS2YTITaXUqSd4U2L+X3SYoj6s4aKi47TFcA7lT1LRFu4Pj4
-# 19eI60fxqeJ5cNlFzZDtYJvIPt61kTKgH7wZfRgzCjyll41SMFVCg1fs+S3IQEOk
-# hBfPhObJD5LfpqGusdmKehTEZee3BCWKzOPj93Cqg+an9MfvAYy/ZP0HQn7qH0VN
-# 6/vQ2Ukm0jU/IDciKoIKZlfMGdFArakKKYzKWcYxFeY359vrbN7cgwfzXfabl5Ww
-# Al2sMW0ooLBta4NgtSEL1iKNn744JIdqeFYO4s552CiGgnxxB7uHJPZTloaP0PPf
-# lGA/Y/0pwvdmfrfXth4YOsFYZzOwhIYaGER3Fc4=
+# dXRob3JpdHkCEDAPb6zdZph0fKlGNqd4LbkwDQYJKoZIhvcNAQEBBQAEggIAYSMQ
+# isUxH/CQFK8e9ln9NXwYLOGXNQDD0p183/JH3P+cG8xwbcTq4LIXG1F3rxBAeLlD
+# J+wJw8xWd6vvAI47T6u+xMP3qK3BrJivKeLyYP9w9/2/BmYMf4kS7LP4FsqThCo2
+# gliW+Fz2O4gmeSQ/h96Wm7fYzRntghKvCnqMEHbeE4/Bd7vo0a9oxbR2YP9N5RnQ
+# i2fbzKgrgB91YjgI6k+ifbzIDJCJ+aVIiB8E5AbnG9+MzI7Vdienwx2uF0EgA5/H
+# drUlNUmYaJjurlHaXKiKCc1n9YsySOHSzbaNuxJEsgSVEThK97OT/9EXdC5TkKzE
+# C3tktWBajrmxvwDi62spDbqp7sY1x/L6igKB9Gp/u7bCrCtkMo1uKjFrsHXhmcGX
+# J0O6xoIIj1kMqrxUAhlsp3yT9IYxNdxjz+vFpJmlW63gu+42fOs0vp5BQUkaZmSB
+# eZInjhh51Jh/N15fgk7xcbA1kUaxqJaEeYyj+rGCkyT0WOr78k6AodAvOCSvUJCa
+# nzi+FLI6ax9OWzW56TwIS3xMhDTKwhoYQClB2T8vsNVRtOiTlJRuqKsQxXLMzjkI
+# FATtDxagW+SlawGPHHHbr0zf0JJibCjjQdG0jFIEUehj/TyGgzmQHydK85KiD0tS
+# 55Jly3C24560gDQnHkQMK62w2wc/z6vlKlm9HnQ=
 # SIG # End signature block

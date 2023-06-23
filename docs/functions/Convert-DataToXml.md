@@ -223,4 +223,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## RELATED LINKS
 
+[Convert-DataToXml](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Convert-DataToXml.ps1)
+
 [Write-XmlMetadata](Write-XmlMetadata.md)

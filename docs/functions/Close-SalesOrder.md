@@ -131,3 +131,5 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
+
+[Close-SalesOrder.ps1 on GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Close-SalesOrder.ps1)

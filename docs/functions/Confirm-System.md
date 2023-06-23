@@ -162,3 +162,5 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
+
+[Confirm-System.ps1 on GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Confirm-System.ps1)
