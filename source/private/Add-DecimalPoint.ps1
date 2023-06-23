@@ -1,4 +1,5 @@
 function Add-DecimalPoint {
+    [CmdletBinding()]
     param(
         [string]$number
         ,

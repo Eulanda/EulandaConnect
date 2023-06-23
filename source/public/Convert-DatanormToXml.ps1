@@ -1,4 +1,5 @@
 function Convert-DatanormToXml {
+    [CmdletBinding()]
     param(
         $datanorm
     )

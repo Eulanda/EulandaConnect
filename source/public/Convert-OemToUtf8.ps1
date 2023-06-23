@@ -1,4 +1,5 @@
 function Convert-OemToUtf8 {
+    [CmdletBinding()]
     param(
         [Parameter(Mandatory=$true)]
         [string]$inputString

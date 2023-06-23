@@ -1,4 +1,5 @@
 function Convert-FromDatanorm {
+    [CmdletBinding()]
     param(
         [string]$path
         ,

@@ -1,4 +1,5 @@
 function Convert-DatanormDateFormat {
+    [CmdletBinding()]
     param(
         [string]$date
     )

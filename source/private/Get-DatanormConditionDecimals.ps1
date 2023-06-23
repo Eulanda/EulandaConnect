@@ -1,4 +1,5 @@
 function Get-DatanormConditionDecimals {
+    [CmdletBinding()]
     param(
         [string]$condition,
         [int]$indicator
