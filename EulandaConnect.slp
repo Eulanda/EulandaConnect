@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<document created="20230218074329" version="4.0.374" date="20230622195237" scan="55" scanned="20230622195208">
+<document created="20230218074329" version="4.0.374" date="20230623083620" scan="56" scanned="20230623083540">
   <lang id="de-DE"/>
-  <source class="TNetResourceSource" name=".\EulandaConnect.en-US.resx" original="en-US" date="20230622174842" usebom="1" options="[]" righttoleft="nrlNone">
+  <source class="TNetResourceSource" name=".\EulandaConnect.en-US.resx" original="en-US" date="20230623063348" usebom="1" options="[]" righttoleft="nrlNone">
     <outputfile dir="." localized="EulandaConnect.&lt;net&gt;.&lt;ext&gt;"/>
     <excludeddatatypes>
       <class>TBinaryData</class>
@@ -630,6 +630,10 @@
     <row id="INVALID_DATANORM_INDICATOR" state="0" created="20230622195208">
       <native>Invalid condition indicator: {0}. Function {1}</native>
       <lang id="de-DE" date="20230622195235" status="3">Ungültiger Bedingungsindikator: {0}. Funktion {1}</lang>
+    </row>
+    <row id="USFLOAT_ERROR" state="0" created="20230623083540">
+      <native>Cannot convert input {0} to US float. Function {1}</native>
+      <lang id="de-DE" date="20230623083619" status="3">Kann Eingangswert {0} nicht in US-Gleitkomma-Wert konvertieren. Funktion {1}</lang>
     </row>
   </source>
 </document>

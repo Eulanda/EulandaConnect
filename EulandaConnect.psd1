@@ -86,6 +86,7 @@ FunctionsToExport = @(
     'Convert-StringCase',
     'Convert-SubnetToBitMask',
     'Convert-ToDecimalDegrees',
+    'ConvertTo-USFloat',
     'ConvertTo-WrappedLines',
     'ConvertTo-WrappedLinesEdi',
     'ConvertTo-XmlString',

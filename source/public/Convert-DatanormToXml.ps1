@@ -24,7 +24,7 @@ function Convert-DatanormToXml {
         $writer.WriteStartElement('ARTIKEL')
 
         $writer.WriteElementString('ARTNUMMER', $article.ArtikelNummer)
-        $writer.WriteElementString('VK', $article.Preis)
+        $writer.WriteElementString('VK', (ConvertTo-USFloat -inputString $article.Preis))
         $writer.WriteElementString('KURZTEXT1', $article.Kurztext1)
         $writer.WriteElementString('KURZTEXT2', $article.Kurztext2)
 
