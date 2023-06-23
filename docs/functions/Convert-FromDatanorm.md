@@ -13,7 +13,7 @@ Converts a Datanorm 4.0 file into a structured PowerShell object.
 ## SYNTAX
 
 ```
-Convert-FromDatanorm [[-path] <String>] [[-mwSt] <Double>] [[-decimalSeparator] <String>] [<CommonParameters>]
+Convert-FromDatanorm [[-path] <String>] [[-mwst] <Double>] [[-decimalSeparator] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -54,11 +54,10 @@ MengenEinheit            : Stk
 Preis                    : 2,57
 RabattGruppe             : EM01
 WarenhauptGruppe         : 01
-LangtextSchluessel       : 
+LangtextSchluessel       :
 ```
 
 Via `$datanorm.a` the individual field values can be retrieved and also addressed directly by specifying the article number. The same applies to the other properties like `$datanorm.b` or `$datanorm.p`.
-
 
 ## PARAMETERS
 
@@ -77,21 +76,6 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -mwSt
-The value-added tax rate. The default value is 19.0.
-
-```yaml
-Type: Double
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 1
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -path
 The path of the Datanorm file to be converted.
 
@@ -102,6 +86,21 @@ Aliases:
 
 Required: False
 Position: 0
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -mwst
+The value-added tax rate. The default value is 19.0.
+
+```yaml
+Type: Double
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 1
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

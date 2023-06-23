@@ -9,7 +9,7 @@ This open source PowerShell functions are developed by
 
 > **Version 3.1** is now live and available as an open-source project! We are thrilled to present this powerful new release, with over 16,000 lines of PowerShell and more than 160 documented functions (in total more then 200), now available in the PowerShell Gallery. It is important to note that EulandaConnect is not solely reliant on the EULANDA-ERP system; indeed, about half of the functions can be used independently. Particularly, the file transfer functions, MSSQL functions, and network functions are universally applicable across scenarios.
 >
-> In this release, we introduce a revamped **MSSQL backup** system, capable of securing your data across NAS, SFTP, FTP, and FTPS. Additionally, we've enriched the module with more than 10 new functions to interact with FTP, **SFTP**, and FTPS, including the remarkable ability to resume interrupted uploads. We are excited to introduce new functions designed specifically for creating **snapshots** or **symbolic links**.
+> In this release, we introduce a revamped **MSSQL backup** system, capable of securing your data across NAS, SFTP, FTP, and FTPS. Additionally, we've enriched the module with more than 10 new functions to interact with FTP, **SFTP**, and FTPS, including the remarkable ability to resume interrupted uploads. We are excited to introduce new functions designed specifically for creating **snapshots** or **symbolic links**. Also new is the ability to convert **datanorm** 4 files into a PowerShell object and into the eulanda-specific xml format.
 >
 
 ## Brief introduction

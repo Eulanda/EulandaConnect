@@ -2,7 +2,7 @@ function Convert-FromDatanorm {
     param(
         [string]$path
         ,
-        [double]$mwSt = 19.0
+        [double]$mwst = 19.0
         ,
         [Alias('decimal')]
         [string]$decimalSeparator = [System.Globalization.CultureInfo]::CurrentCulture.NumberFormat.NumberDecimalSeparator
