@@ -27,7 +27,7 @@ try {
 
     $datanorm = Convert-FromDatanorm -path "$PSScriptRoot\.ignore\data\test\cu\datanorm.001"
     $xml = Convert-DatanormToXml -datanorm $datanorm
-    Import-ArticleFromXml -xml $xml -udl 'C:\temp\Eulanda_1 MeineFirma.udl'
+    Import-ArticleFromXml -xml $xml -udl 'C:\temp\Eulanda_1 MeineFirma.udl' -cuSurcharge
     # $xml
 
 <#

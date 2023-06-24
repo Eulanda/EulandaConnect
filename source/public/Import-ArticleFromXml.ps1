@@ -6,6 +6,8 @@ function Import-ArticleFromXml {
         [ValidateScript({ Test-ValidatePathXML -path $_  })]
         [string]$path
         ,
+        [switch]$cuSurcharge
+        ,
         [Parameter(Mandatory = $false)]
         [ValidateScript({ Test-ValidateConn -conn $_  })]
         $conn
@@ -33,94 +35,159 @@ function Import-ArticleFromXml {
             [xml]$xml = $xml
         }
 
+        $readOnlyFields = Get-ReadOnlyFields -conn $myConn -tablename 'Artikel'
+        # We are making special handlings with these price fields
+        $readOnlyFields = $readOnlyFields | Where-Object { $_ -ne "VKNETTO" -and $_ -ne "VKBRUTTO" }
+
         $rs = new-object -comObject ADODB.Recordset
         $rs.CursorLocation = $adUseClient
-        $allowedProperties = @("ARTNUMMER", "EKNETTO", "VKNETTO", "VKBRUTTO", "BRUTTOFLG", "VK", "EK2NETTO")
+        $pricelistProperties = @("ARTNUMMER", "EKNETTO", "VKNETTO", "VKBRUTTO", "BRUTTOFLG", "VK", "EK2NETTO")
+
+        $RabattGr = New-Object -TypeName 'System.Collections.Generic.HashSet[string]'([StringComparer]::InvariantCultureIgnoreCase)
+        $rs = $myConn.Execute('SELECT GR FROM KonRG')
+        while(-not $rs.EOF) {
+            $RabattGr.Add($rs.Fields.Item(0).Value) | Out-Null
+            $rs.MoveNext()
+        }
+        $rs.Close()
+
+        $WarenGr = New-Object -TypeName 'System.Collections.Generic.HashSet[string]'([StringComparer]::InvariantCultureIgnoreCase)
+        $rs = $myConn.Execute('SELECT GR FROM KonWG')
+        while(-not $rs.EOF) {
+            $WarenGr.Add($rs.Fields.Item(0).Value) | Out-Null
+            $rs.MoveNext()
+        }
+        $rs.Close()
+
+        $MengenEh = New-Object -TypeName 'System.Collections.Generic.HashSet[string]'([StringComparer]::InvariantCultureIgnoreCase)
+        $rs = $myConn.Execute('SELECT GR FROM KonMengenEh')
+        while(-not $rs.EOF) {
+            $MengenEh.Add($rs.Fields.Item(0).Value) | Out-Null
+            $rs.MoveNext()
+        }
+        $rs.Close()
+
+        $ErloesGr = New-Object -TypeName 'System.Collections.Generic.HashSet[string]'([StringComparer]::InvariantCultureIgnoreCase)
+        $rs = $myConn.Execute('SELECT ErloesGR FROM KonErloesKonto')
+        while(-not $rs.EOF) {
+            $ErloesGr.Add($rs.Fields.Item(0).Value) | Out-Null
+            $rs.MoveNext()
+        }
+        $rs.Close()
+
+
+
         foreach($article in $xml.EULANDA.ARTIKELLISTE.ARTIKEL) {
 
+            # ------------------------------------------------
+            # IGNORE NODE WITHOUT UNIQUE KEY
+            # ------------------------------------------------
             if ($article.PSObject.Properties.Name -contains "ARTNUMMER") {
                 $articleNo = $article.ARTNUMMER
                 $id = Get-ArticleId -articleNo $articleNo -conn $myConn
             } else {
                 Write-Error "ArticleNo not present in xml!" -ErrorAction Continue
+                Continue
             }
 
+
+            # ------------------------------------------------
+            # CHECK IF IT IS ONLY AN PRICELIST UPDATE
+            # ------------------------------------------------
             $articleChildNodes = $article.ChildNodes | Select-Object -ExpandProperty Name
-            # Check if there are any properties that are not in the allowed list
-            if ((@($articleChildNodes | Where-Object {$_ -notin $allowedProperties})).Count -gt 0) {
-                $priceUpdate = $false
+            if ((@($articleChildNodes | Where-Object {$_ -notin $pricelistProperties})).Count -gt 0) {
+                $onlyUpdateAllowed = $false
             } else {
-                $priceUpdate = $true
+                $onlyUpdateAllowed = $true
             }
 
+
+            # ------------------------------------------------
+            # NEW OR UPDATE
+            # ------------------------------------------------
             if ($id) {
                 # if we found an article we wont to update prices or an article
                 $rs.Open("SELECT TOP 1 * FROM Artikel WHERE ID = $id", $myConn, $adOpenKeyset, $adLockOptimistic, $adCmdText)
             } else  {
-                if (! $priceUpdate) {
+                if (! $onlyUpdateAllowed) {
                     $rs.Open("SELECT TOP 0 * FROM Artikel", $myConn, $adOpenKeyset, $adLockOptimistic, $adCmdText)
                     $rs.AddNew()
-                    $rs.fields('ARTNUMMER').value = $articleNo
+                    $rs.fields('ARTNUMMER').value = Convert-Accent -value $articleNo -strCase 'upper'
                 } else {
                     # A price was found, but the article does not exist
-                    # We do not want to insert an article with only one price
+                    # We do not want to insert an article with only prices
                     continue
                 }
             }
 
-            if ($article.PSObject.Properties.Name -contains 'ARTMATCH') {
-                $rs.fields('ARTMATCH').value = $article.ARTMATCH
-            }
+            # ------------------------------------------------
+            # PROCESS ANY XML NODE
+            # ------------------------------------------------
+            foreach ($node in $articleChildNodes) {
+                if ((-not ($readOnlyFields -icontains $node)) -and (-not ($node -ieq 'ARTNUMMER'))) {
+                    if (-not [string]::IsNullOrEmpty($article.$node)) {
 
-            if ($article.PSObject.Properties.Name -contains 'LANGTEXT') {
-                $rs.fields('LANGTEXT').value = $article.LANGTEXT
-            }
-
-            if ($article.PSObject.Properties.Name -contains 'KURZTEXT1') {
-                $rs.fields('KURZTEXT1').value = $article.KURZTEXT1
-            }
-
-            if ($article.PSObject.Properties.Name -contains 'KURZTEXT2') {
-                $rs.fields('KURZTEXT2').value = $article.KURZTEXT2
-            }
-
-            if ($article.PSObject.Properties.Name -contains 'ULTRAKURZTEXT') {
-                $rs.fields('ULTRAKURZTEXT').value = $article.ULTRAKURZTEXT
-            }
-
-            if ($article.PSObject.Properties.Name -contains 'USERN3') {
-                # used for copper surcharge
-                $rs.fields('USERN3').value = $article.USERN3
-            }
-
-            if ($article.PSObject.Properties.Name -contains 'EKNETTO') {
-                $rs.fields('EKNETTO').value = $article.EKNETTO
-            }
-
-            if ($article.PSObject.Properties.Name -contains 'EK2NETTO') {
-                $rs.fields('EK2NETTO').value = $article.EK2NETTO
-            }
-
-            if (($article.PSObject.Properties.Name -contains 'VK') -and
-                ($article.PSObject.Properties.Name -contains 'BRUTTOFLG')) {
-                    $rs.fields('VK').value = $article.VK
-                    $rs.fields('BruttoFlg').value = $article.BRUTTOFLG
-            } elseif ($article.PSObject.Properties.Name -contains 'VKNETTO') {
-
-                if ($rs.fields('EKNETTO').value -gt 0) {
-                    # Only Datanorm uses UserNr3 für the copper surcharge per one unit
-                    # If there is a PriceUnit higher then 1, then the copper surcharge must be multiplied with price units
-                    $cuSurcharge = [float]($rs.fields('PREISEH').value * $rs.fields('USERN3').value)
-                    $price = [float][math]::Round(([float]$article.VKNETTO + $cuSurcharge), 2)
-                    $rs.fields('VK').value = [float]$price
-                } else {
-                    $rs.fields('VK').value = $article.VKNETTO
+                        # some special handlings
+                        if ($node -ieq 'ARTMATCH') {
+                            $rs.fields($node).value = Convert-Accent -value $article.$node -strCase 'upper'
+                        } elseif ($node -ieq 'VK') {
+                            $rs.fields('VK').value = $article.$node
+                            # if not special BRUTTOFLG is found it is a price without VAT
+                            if (-not ($article.PSObject.Properties.Name -contains 'BRUTTOFLG')) {
+                                $rs.fields('BruttoFlg').value = 0
+                            }
+                        } elseif ($node -ieq 'VKNETTO') {
+                            $rs.fields('VK').value = $article.$node
+                            $rs.fields('BruttoFlg').value = 0
+                        } elseif ($node -ieq 'VKBRUTTO') {
+                            $rs.fields('VK').value = $article.$node
+                            $rs.fields('BruttoFlg').value = 1
+                        } elseif ($node -ieq 'MENGENEH') {
+                            if ($MengenEh.Contains($article.$node)) {
+                                $rs.fields($node).value = $article.$node
+                            }
+                        } elseif ($node -ieq 'WARENGR') {
+                            if ($WarenGr.Contains($article.$node)) {
+                                $rs.fields($node).value = $article.$node
+                            }
+                        } elseif ($node -ieq 'ERLOESGR') {
+                            if ($ErloesGr.Contains($article.$node)) {
+                                $rs.fields($node).value = $article.$node
+                            }
+                        } elseif ($node -ieq 'RABATTGR') {
+                            if ($RabattGr.Contains($article.$node)) {
+                                $rs.fields($node).value = $article.$node
+                            }
+                        }
+                        else {
+                            $rs.fields($node).value = $article.$node
+                        }
+                    }
                 }
-                $rs.fields('BruttoFlg').value = 0
-            } elseif ($article.PSObject.Properties.Name -contains 'VKBRUTTO') {
-                $rs.fields('VK').value = $article.VKBRUTTO
-                $rs.fields('BruttoFlg').value = 1
             }
+
+            # ------------------------------------------------
+            # POST PROCESS e.g. COPPER SURCHARGE
+            # ------------------------------------------------
+            if ($cuSurcharge) {
+                if ($rs.fields('USERN3').value -gt 0.001) {
+                    $priceUnit = $rs.fields('PREISEH').value
+                    if (! $priceUnit) {
+                        $priceUnit = 1
+                        $rs.fields('PREISEH').value = $priceUnit
+                    }
+                    # Copper surchagre must be multiplied, because it is a per unit price
+                    if ($priceUnit -gt 1.001) {
+                        $surcharge = [float]($rs.fields('PREISEH').value * $rs.fields('USERN3').value)
+                    } else {
+                        $surcharge = [float]$rs.fields('USERN3').value
+                    }
+                    $price = [float][math]::Round(($rs.fields('VK').value + $surcharge), 2)
+                    $rs.fields('VK').value = [float]$price
+                }
+            }
+
+
 
             $rs.Update()
             $rs.Close()

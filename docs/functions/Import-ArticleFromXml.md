@@ -26,6 +26,8 @@ At the beginning of the function, a connection to the database is established th
 
 Once the XML data is loaded, it is parsed to extract information about each article, including its properties and related price data. This information is processed and then written into the database. Notably, the function has the ability to discern whether an article already exists within the database. If the article does exist, the function merely updates the existing price data. Conversely, if the article does not exist, the function creates a new database entry and populates it with the article information.
 
+> A special feature is the processing of the copper metal surcharge DEL. This is transferred in field UserN3 and added to the sales price when the articles are imported. The metal surcharge is always expected per unit. If the article has a price unit greater than 1, the metal surcharge is multiplied by this price unit before it is added. This special feature only comes into effect if the sales price is net, i.e. without VAT.
+
 ## EXAMPLES
 
 ### Example 1: Imports an XML file into the EULANDA ERP Database
