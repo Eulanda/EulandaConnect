@@ -1303,6 +1303,17 @@ Haeuser stehen in Zuerich</dev:code>
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>show</maml:name>
+          <maml:description>
+            <maml:para>Displays a progress bar during execution.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
@@ -1317,6 +1328,18 @@ Haeuser stehen in Zuerich</dev:code>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>show</maml:name>
+        <maml:description>
+          <maml:para>Displays a progress bar during execution.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
       </command:parameter>
     </command:parameters>
     <command:inputTypes>
@@ -1978,6 +2001,28 @@ PS C:\&gt; $myDate
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>show</maml:name>
+          <maml:description>
+            <maml:para>Displays a progress bar during execution.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>utf8</maml:name>
+          <maml:description>
+            <maml:para>If this switch is set, an attempt is first made to open the Datanorm file as UTF8 (without BOM). If this fails, the file is opened as ANSI file. Datanorm is not available as Utf8 according to the documentation, but the first wholesalers output this encoding. The switch can usually not hurt, because there is an automatic fallback, but it should remain the exception and with a fallback it simply also takes longer to read. So use the switch only if you have problems with the character representation, which is ANSI according to the standard.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
@@ -2028,6 +2073,30 @@ PS C:\&gt; $myDate
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>show</maml:name>
+        <maml:description>
+          <maml:para>Displays a progress bar during execution.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>utf8</maml:name>
+        <maml:description>
+          <maml:para>If this switch is set, an attempt is first made to open the Datanorm file as UTF8 (without BOM). If this fails, the file is opened as ANSI file. Datanorm is not available as Utf8 according to the documentation, but the first wholesalers output this encoding. The switch can usually not hurt, because there is an automatic fallback, but it should remain the exception and with a fallback it simply also takes longer to read. So use the switch only if you have problems with the character representation, which is ANSI according to the standard.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
       </command:parameter>
     </command:parameters>
     <command:inputTypes>
@@ -17889,6 +17958,7 @@ No technical information available</dev:code>
       <maml:para>The function utilizes ADO (ActiveX Data Objects) Recordset objects to interact with the database, facilitating the retrieval, manipulation, and writing of data.</maml:para>
       <maml:para>At the beginning of the function, a connection to the database is established through one of three ways: a direct connection object (`conn`), a UDL file (`udl`), or a connection string (`connStr`). The function performs validation checks to ensure that a valid connection method has been provided and that the XML data is sourced from either `xmlString` or `path`.</maml:para>
       <maml:para>Once the XML data is loaded, it is parsed to extract information about each article, including its properties and related price data. This information is processed and then written into the database. Notably, the function has the ability to discern whether an article already exists within the database. If the article does exist, the function merely updates the existing price data. Conversely, if the article does not exist, the function creates a new database entry and populates it with the article information.</maml:para>
+      <maml:para>&gt; A special feature is the processing of the copper metal surcharge DEL. This is transferred in field UserN3 and added to the sales price when the articles are imported. The metal surcharge is always expected per unit. If the article has a price unit greater than 1, the metal surcharge is multiplied by this price unit before it is added. This special feature only comes into effect if the sales price is net, i.e. without VAT.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -17953,6 +18023,28 @@ No technical information available</dev:code>
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>cuSurcharge</maml:name>
+          <maml:description>
+            <maml:para>The XML import is a general approach to import data natively into the EULANDA ERP system. The format is as far as possible compatible to the EULANDA-ERP software from the year 2000. The copper processing uses a user field UserN3, which contains the copper added value of the article. This is added to the purchase and sales price during import. The price unit of the item is taken into account. If the price unit is specified as more than 1, the value in UserN3 is multiplied by this factor. The UserN3 field, in turn, is maintained by the Datanorm import function and always refers to a unit of the article, so it is independent of the price unit.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>show</maml:name>
+          <maml:description>
+            <maml:para>Displays a progress bar during execution.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
@@ -18015,6 +18107,30 @@ No technical information available</dev:code>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>cuSurcharge</maml:name>
+        <maml:description>
+          <maml:para>The XML import is a general approach to import data natively into the EULANDA ERP system. The format is as far as possible compatible to the EULANDA-ERP software from the year 2000. The copper processing uses a user field UserN3, which contains the copper added value of the article. This is added to the purchase and sales price during import. The price unit of the item is taken into account. If the price unit is specified as more than 1, the value in UserN3 is multiplied by this factor. The UserN3 field, in turn, is maintained by the Datanorm import function and always refers to a unit of the article, so it is independent of the price unit.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>show</maml:name>
+        <maml:description>
+          <maml:para>Displays a progress bar during execution.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
       </command:parameter>
     </command:parameters>
     <command:inputTypes>

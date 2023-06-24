@@ -8,6 +8,8 @@ function Import-ArticleFromXml {
         ,
         [switch]$cuSurcharge
         ,
+        [switch]$show
+        ,
         [Parameter(Mandatory = $false)]
         [ValidateScript({ Test-ValidateConn -conn $_  })]
         $conn
@@ -100,6 +102,16 @@ function Import-ArticleFromXml {
 
 
 
+        if ($show) {
+            try {
+                $totalItems = $xml.EULANDA.ARTIKELLISTE.ARTIKEL.count
+            } catch {
+                $totalItems = 1
+            }
+            $currentItem = 0
+            $item = [string]""
+        }
+
         foreach($article in $xml.EULANDA.ARTIKELLISTE.ARTIKEL) {
 
             # ------------------------------------------------
@@ -112,6 +124,16 @@ function Import-ArticleFromXml {
                 ARTICLENO_MISSING_IN_XML
                 Write-Error ((Get-ResStr 'ARTICLENO_MISSING_IN_XML') -f  $myInvocation.Mycommand) -ErrorAction Continue
                 Continue
+            }
+
+            if ($show) {
+                $currentItem++
+                $percentage = ($currentItem / $totalItems) * 100
+                $item = $articleNo
+                Write-Progress `
+                    -Activity (Get-ResStr 'PROGBAR_XML_PROMPT') `
+                    -Status ((Get-ResStr 'PROGBAR_XML_STATUS') -f $item, $currentItem, $totalItems) `
+                    -PercentComplete $percentage
             }
 
 
@@ -225,6 +247,10 @@ function Import-ArticleFromXml {
             $rs.Close()
         }
         $myConn.Close()
+
+        if ($show) {
+            Write-Progress -Activity (Get-ResStr 'PROGBAR_XML_PROMPT') -Completed
+        }
     }
 
     End {

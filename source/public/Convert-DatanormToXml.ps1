@@ -2,6 +2,8 @@ function Convert-DatanormToXml {
     [CmdletBinding()]
     param(
         $datanorm
+        ,
+        [switch]$show
     )
 
     begin {
@@ -20,12 +22,28 @@ function Convert-DatanormToXml {
         # Create XmlWriter that writes to the StringWriter
         $writer = [System.Xml.XmlWriter]::Create($stringWriter, $settings)
 
+        if ($show) {
+            $totalItems = $datanorm.a.values.count + $datanorm.p.values.count
+            $currentItem = 0
+            $item = [string]""
+        }
+
         $writer.WriteStartDocument()
 
         # Start ARTIKELLISTE
         $writer.WriteStartElement('ARTIKELLISTE')
 
         foreach ($articleA in $datanorm.a.values) {
+            if ($show) {
+                $currentItem++
+                $percentage = ($currentItem / $totalItems) * 100
+                $item = $articleA.ArtikelNummer
+                Write-Progress `
+                    -Activity (Get-ResStr 'PROGBAR_DATANORM_PROMPT') `
+                    -Status ((Get-ResStr 'PROGBAR_DATANORM_STATUS') -f $item, $currentItem, $totalItems) `
+                    -PercentComplete $percentage
+            }
+
             # Start ARTIKEL
             $writer.WriteStartElement('ARTIKEL')
 
@@ -65,6 +83,7 @@ function Convert-DatanormToXml {
             $writer.WriteEndElement()
         }
 
+
         foreach ($price in $datanorm.p.values) {
             # Start ARTIKEL
             $writer.WriteStartElement('ARTIKEL')
@@ -72,6 +91,7 @@ function Convert-DatanormToXml {
             $artNoSet = $false
             if ($price['1']) {
                 $writer.WriteElementString('ARTNUMMER', $price['1'].ArtikelNummer)
+                $item = $price['1'].ArtikelNummer
                 $artNoSet = $true
                 $writer.WriteElementString('VKNETTO', (ConvertTo-USFloat -inputString $price['1'].Preis))
             }
@@ -79,12 +99,22 @@ function Convert-DatanormToXml {
             if ($price['2']) {
                 if (! $artNoSet) {
                     $writer.WriteElementString('ARTNUMMER', $price['2'].ArtikelNummer)
+                    $item = $price['2'].ArtikelNummer
                 }
                 $writer.WriteElementString('EKNETTO', (ConvertTo-USFloat -inputString $price['2'].Preis))
             }
 
             # End ARTIKEL
             $writer.WriteEndElement()
+
+            if ($show) {
+                $currentItem++
+                $percentage = ($currentItem / $totalItems) * 100
+                Write-Progress `
+                    -Activity (Get-ResStr 'PROGBAR_DATANORM_PROMPT') `
+                    -Status ((Get-ResStr 'PROGBAR_DATANORM_STATUS') -f $item, $currentItem, $totalItems) `
+                    -PercentComplete $percentage
+            }
         }
 
         # End ARTIKELLISTE
@@ -115,6 +145,10 @@ function Convert-DatanormToXml {
         }
 
         $result = [string](Format-Xml -xmlString $xml.OuterXml)
+
+        if ($show) {
+            Write-Progress -Activity (Get-ResStr 'PROGBAR_DATANORM_PROMPT') -Completed
+        }
     }
 
     end {

@@ -13,7 +13,7 @@ Converts a Datanorm PowerShell object into an XML string that's compatible with 
 ## SYNTAX
 
 ```
-Convert-DatanormToXml [[-datanorm] <Object>] [<CommonParameters>]
+Convert-DatanormToXml [[-datanorm] <Object>] [-show] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -75,6 +75,21 @@ Aliases:
 
 Required: False
 Position: 0
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -show
+Displays a progress bar during execution.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<desktop scan="59" scanned="20230624183606" built="20230624183636" lang="de-DE" pane="TLogPane" col="3" row=".\EulandaConnect.en-US.resx.DATANORM_FILE_EMPTY">
+<desktop scan="61" scanned="20230624221805" built="20230624221819" lang="de-DE" pane="TLogPane" col="4" row=".\EulandaConnect.en-US.resx.DATANORM_PRICEUNITCODE_ERROR">
   <language id="de-DE" autoime="0" autokeyboard="0"/>
   <triggers>
     <item class="TValidateTrigger" position="6" enabled="0"/>

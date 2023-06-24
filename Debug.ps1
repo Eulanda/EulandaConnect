@@ -25,15 +25,19 @@ Write-Host "*******************************************************************"
 try {
     # YOUR TEST CODE HERE
 
-    $datanorm = Convert-FromDatanorm -path "$PSScriptRoot\.ignore\data\zander"
+    $datanorm = Convert-FromDatanorm -path "$PSScriptRoot\.ignore\data\zander" -show
     Out-Goodbye
+
     Out-Welcome
-    $xml = Convert-DatanormToXml -datanorm $datanorm
+    $xml = Convert-DatanormToXml -datanorm $datanorm -show
     Out-Goodbye
+
     Out-Welcome
-    Import-ArticleFromXml -xml $xml -udl 'C:\temp\Eulanda_1 MeineFirma.udl' -cuSurcharge
+    Import-ArticleFromXml -xml $xml -udl 'C:\temp\Eulanda_1 MeineFirma.udl' -cuSurcharge -show
     Out-Goodbye
+
     Out-Welcome
+
 
 
 <#

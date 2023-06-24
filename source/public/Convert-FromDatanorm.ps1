@@ -48,7 +48,11 @@ function Convert-FromDatanorm {
             if ($show) {
                 $currentFile++
                 $percentage = ($currentFile / $totalFiles) * 100
-                Write-Progress -Id 1 -Activity "Processing files..." -Status "Processing file: $(Split-Path $filepath -Leaf) (File $currentFile of $($filepaths.Count))" -PercentComplete $percentage
+                Write-Progress `
+                    -Id 1 `
+                    -Activity (Get-ResStr 'PROGBAR_FILES_PROMPT') `
+                    -Status ((Get-ResStr 'PROGBAR_FILES_STATUS') -f $(Split-Path $filepath -Leaf), $currentFile, $filepaths.Count) `
+                    -PercentComplete $percentage
             }
 
 
@@ -121,7 +125,11 @@ function Convert-FromDatanorm {
                     $a[$rec.ArtikelNummer] = $rec
                     if ($show) {
                         $percentage = ($currentLine / $totalLines * 100)
-                        Write-Progress -Id 2 -Activity "Processing file: $(Split-Path $filepath -Leaf)" -Status "Processing articleNo: $($rec.ArtikelNummer) (Line $currentLine of $totalLines)" -PercentComplete $percentage
+                        Write-Progress `
+                            -Id 2 `
+                            -Activity ((Get-ResStr 'PROGBAR_FILE_PROMPT') -f $(Split-Path $filepath -Leaf)) `
+                            -Status ((Get-ResStr 'PROGBAR_FILE_STATUS') -f $rec.ArtikelNummer, $currentLine, $totalLines) `
+                            -PercentComplete $percentage
                     }
                 }
 
@@ -204,7 +212,11 @@ function Convert-FromDatanorm {
                     })
                     if ($show) {
                         $percentage = ($currentLine / $totalLines * 100)
-                        Write-Progress -Id 2 -Activity "Processing file: $(Split-Path $filepath -Leaf)" -Status "Processing articleNo: $($rec.ArtikelNummer) (Line $currentLine of $totalLines)" -PercentComplete $percentage
+                        Write-Progress `
+                            -Id 2 `
+                            -Activity ((Get-ResStr 'PROGBAR_FILE_PROMPT') -f $(Split-Path $filepath -Leaf)) `
+                            -Status ((Get-ResStr 'PROGBAR_FILE_STATUS') -f $rec.ArtikelNummer, $currentLine, $totalLines) `
+                            -PercentComplete $percentage
                     }
 
 
@@ -274,8 +286,8 @@ function Convert-FromDatanorm {
         }
 
         if ($show) {
-            Write-Progress -Id 1 -Activity "Processing files..." -Completed
-            Write-Progress -Id 2 -Activity "Processing file:" -Completed
+            Write-Progress -Id 1 -Activity (Get-ResStr 'PROGBAR_FILES_PROMPT') -Completed
+            Write-Progress -Id 2 -Activity (Get-ResStr 'PROGBAR_FILE_PROMPT') -Completed
         }
 
         # Create a new object that contains all supported record types of ol processed files

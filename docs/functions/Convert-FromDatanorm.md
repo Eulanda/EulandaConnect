@@ -13,7 +13,7 @@ Converts a Datanorm 4.0 file into a structured PowerShell object.
 ## SYNTAX
 
 ```
-Convert-FromDatanorm [[-path] <String>] [-vat <Double>] [-cuDel <Double>] [-utf8]
+Convert-FromDatanorm [[-path] <String>] [-vat <Double>] [-cuDel <Double>] [-utf8] [-show]
  [[-decimalSeparator] <String>] [<CommonParameters>]
 ```
 
@@ -144,6 +144,21 @@ The value-added tax rate. The default value is 19.0 %.
 
 ```yaml
 Type: Double
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -show
+Displays a progress bar during execution.
+
+```yaml
+Type: SwitchParameter
 Parameter Sets: (All)
 Aliases:
 

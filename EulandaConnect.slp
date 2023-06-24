@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<document created="20230218074329" version="4.0.374" date="20230624183630" scan="59" scanned="20230624183606">
+<document created="20230218074329" version="4.0.374" date="20230624221816" scan="61" scanned="20230624221805">
   <lang id="de-DE"/>
-  <source class="TNetResourceSource" name=".\EulandaConnect.en-US.resx" original="en-US" date="20230624152332" usebom="1" options="[]" righttoleft="nrlNone">
+  <source class="TNetResourceSource" name=".\EulandaConnect.en-US.resx" original="en-US" date="20230624201802" usebom="1" options="[]" righttoleft="nrlNone">
     <outputfile dir="." localized="EulandaConnect.&lt;net&gt;.&lt;ext&gt;"/>
     <excludeddatatypes>
       <class>TBinaryData</class>
@@ -650,6 +650,39 @@
     <row id="ARTICLENO_MISSING_IN_XML" state="0" created="20230624183606">
       <native>The article number does not exist in xml file! However, it is necessary as a unique key. Function {0}</native>
       <lang id="de-DE" date="20230624183628" status="3">Die Artikelnummer existiert nicht in der xml-Datei! Sie ist jedoch als eindeutiger Schlüssel erforderlich. Funktion {0}</lang>
+    </row>
+    <row id="PROGBAR_FILES_PROMPT" state="0" created="20230624221444">
+      <native>Processing files...</native>
+      <lang id="de-DE" date="20230624221636" status="3">Verarbeitung von Dateien...</lang>
+    </row>
+    <row id="PROGBAR_FILES_STATUS" state="0" created="20230624221444">
+      <native>Processing file: {0} (file {1} of {2})</native>
+      <lang id="de-DE" date="20230624221650" status="3">Verarbeite Datei: {0} (Datei {1} von {2})</lang>
+    </row>
+    <row id="PROGBAR_FILE_PROMPT" state="0" created="20230624221444">
+      <native>Processing file...</native>
+      <lang id="de-DE" date="20230624221709" status="3">Verarbeitung von Datei...</lang>
+    </row>
+    <row id="PROGBAR_FILE_STATUS" state="0" created="20230624221444">
+      <native>Processing article: {0} (line {1} of {2})</native>
+      <lang id="de-DE" date="20230624221717" status="3">Verarbeite Artikel: {0} (Zeile {1} von {2})</lang>
+    </row>
+    <row id="PROGBAR_DATANORM_PROMPT" state="0" created="20230624221444">
+      <native>Processing datanorm...</native>
+      <lang id="de-DE" date="20230624221525" status="3">Verarbeitung von Datanorm...</lang>
+    </row>
+    <row id="PROGBAR_DATANORM_STATUS" state="0" created="20230624221444">
+      <native>Processing article: {0} (object {1} of {2})</native>
+      <lang id="de-DE" date="20230624221723" status="3">Verarbeite Artikel: {0} (Objekt {1} von {2})</lang>
+    </row>
+    <row id="PROGBAR_XML_PROMPT" state="0" created="20230624221444">
+      <native>Processing xml...</native>
+      <lang id="de-DE" date="20230624221727" status="3">Verarbeitung von Xml...</lang>
+    </row>
+    <row id="PROGBAR_XML_STATUS" state="3" created="20230624221444" changed="20230624221805">
+      <prev>Processing articleNo: {0} (node {1} of {2})</prev>
+      <native>Processing article: {0} (node {1} of {2})</native>
+      <lang id="de-DE" date="20230624221740" invalidated="1" status="3">Verarbeite Artikel: {0} (Knoten {1} von {2})</lang>
     </row>
   </source>
 </document>
