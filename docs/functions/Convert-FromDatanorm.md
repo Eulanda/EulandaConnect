@@ -13,8 +13,8 @@ Converts a Datanorm 4.0 file into a structured PowerShell object.
 ## SYNTAX
 
 ```
-Convert-FromDatanorm [[-path] <String>] [-vat <Double>] [-cuDel <Double>] [[-decimalSeparator] <String>]
- [<CommonParameters>]
+Convert-FromDatanorm [[-path] <String>] [-vat <Double>] [-cuDel <Double>] [-utf8]
+ [[-decimalSeparator] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -144,6 +144,21 @@ The value-added tax rate. The default value is 19.0 %.
 
 ```yaml
 Type: Double
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -utf8
+If this switch is set, an attempt is first made to open the Datanorm file as UTF8 (without BOM). If this fails, the file is opened as ANSI file. Datanorm is not available as Utf8 according to the documentation, but the first wholesalers output this encoding. The switch can usually not hurt, because there is an automatic fallback, but it should remain the exception and with a fallback it simply also takes longer to read. So use the switch only if you have problems with the character representation, which is ANSI according to the standard.
+
+```yaml
+Type: SwitchParameter
 Parameter Sets: (All)
 Aliases:
 

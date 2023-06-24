@@ -21,6 +21,8 @@
         [string]$result = $value
         # case sensitive
         $hash = New-Object hashtable
+        $hash['µ']='mikro'
+        $hash['€']='eur'
         $hash['ä']='ae'
         $hash['ö']='oe'
         $hash['ü']='ue'

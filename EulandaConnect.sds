@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<desktop scan="58" scanned="20230623133926" built="20230623133947" lang="de-DE" pane="TLogPane" col="3" row=".\EulandaConnect.en-US.resx.INVALID_DATANORM_INDICATOR">
+<desktop scan="59" scanned="20230624183606" built="20230624183636" lang="de-DE" pane="TLogPane" col="3" row=".\EulandaConnect.en-US.resx.DATANORM_FILE_EMPTY">
   <language id="de-DE" autoime="0" autokeyboard="0"/>
   <triggers>
     <item class="TValidateTrigger" position="6" enabled="0"/>

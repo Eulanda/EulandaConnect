@@ -35,14 +35,37 @@ function Import-ArticleFromXml {
             [xml]$xml = $xml
         }
 
+        $rs = new-object -comObject ADODB.Recordset
+        $rs.CursorLocation = $adUseClient
+
+        # ------------------------------------------------
+        # HANDLE READONLY FIELDS
+        # ------------------------------------------------
         $readOnlyFields = Get-ReadOnlyFields -conn $myConn -tablename 'Artikel'
+
+        # We dont support these field in this moment
+        $readOnlyFields += 'BasisArtikelId', 'ChargenPflichtFlg', 'HauptLieferantID', 'HerstellerID', `
+            'IdentTyp', 'KasseVorfallTyp', 'LangtextRevision', 'Locked', 'LoeschFlg', 'Multi', 'MwStGr', `
+            'MwstSatz', 'ProduktManagerId', 'Revision', 'SNPflichtFlg', 'Sperre_Lager', 'Stamp', `
+            'StatistikArtikelId', 'StatistikFlg', 'Status', 'StkLstProdFlg', 'StueckMulti', 'Typ', `
+            'VarianteFlg', 'VarianteHauptArtikelId', 'VarianteHauptFlg', 'VertreterID'
+
         # We are making special handlings with these price fields
         $readOnlyFields = $readOnlyFields | Where-Object { $_ -ne "VKNETTO" -and $_ -ne "VKBRUTTO" }
 
-        $rs = new-object -comObject ADODB.Recordset
-        $rs.CursorLocation = $adUseClient
+        $readOnlyFields = $readOnlyFields | Select-Object -Unique
+
+        # ------------------------------------------------
+        # HANDLE OTHER STUFF
+        # ------------------------------------------------
+
+        # If only this fields are in an XML then it is a pricelist update
         $pricelistProperties = @("ARTNUMMER", "EKNETTO", "VKNETTO", "VKBRUTTO", "BRUTTOFLG", "VK", "EK2NETTO")
 
+
+        # ------------------------------------------------
+        # FILL ALL GROUPS TO ENHANCE PERFORMANCE
+        # ------------------------------------------------
         $RabattGr = New-Object -TypeName 'System.Collections.Generic.HashSet[string]'([StringComparer]::InvariantCultureIgnoreCase)
         $rs = $myConn.Execute('SELECT GR FROM KonRG')
         while(-not $rs.EOF) {
@@ -86,7 +109,8 @@ function Import-ArticleFromXml {
                 $articleNo = $article.ARTNUMMER
                 $id = Get-ArticleId -articleNo $articleNo -conn $myConn
             } else {
-                Write-Error "ArticleNo not present in xml!" -ErrorAction Continue
+                ARTICLENO_MISSING_IN_XML
+                Write-Error ((Get-ResStr 'ARTICLENO_MISSING_IN_XML') -f  $myInvocation.Mycommand) -ErrorAction Continue
                 Continue
             }
 
@@ -142,6 +166,14 @@ function Import-ArticleFromXml {
                         } elseif ($node -ieq 'VKBRUTTO') {
                             $rs.fields('VK').value = $article.$node
                             $rs.fields('BruttoFlg').value = 1
+                        } elseif ($node -ieq 'VERPACKEH') {
+                            if ($MengenEh.Contains($article.$node)) {
+                                if ($article.$node -gt 1) {
+                                    $rs.fields($node).value = $article.$node
+                                } else {
+                                    $rs.fields($node).value = 1
+                                }
+                            }
                         } elseif ($node -ieq 'MENGENEH') {
                             if ($MengenEh.Contains($article.$node)) {
                                 $rs.fields($node).value = $article.$node
@@ -184,10 +216,10 @@ function Import-ArticleFromXml {
                     }
                     $price = [float][math]::Round(($rs.fields('VK').value + $surcharge), 2)
                     $rs.fields('VK').value = [float]$price
+                    $price = [float][math]::Round(($rs.fields('EKNetto').value + $surcharge), 2)
+                    $rs.fields('EkNetto').value = [float]$price
                 }
             }
-
-
 
             $rs.Update()
             $rs.Close()
@@ -199,4 +231,5 @@ function Import-ArticleFromXml {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
         Return
     }
+    # Tets:  Import-ArticleFromXml -xml $xml -udl 'C:\temp\Eulanda_1 JohnDoe.udl' -cuSurcharge
 }
