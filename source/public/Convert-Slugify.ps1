@@ -24,7 +24,7 @@ function Convert-Slugify {
     process {
         $regex = [System.Text.RegularExpressions.Regex]
         $result = convert-accent -value $value
-        $result = $result.replace([char]0x20AC,' EUR ')  # For compatibility with powerShell 5.x
+        $result = [Regex]::Replace($result, [char]0x20AC, ' EUR ')  # For compatibility with powerShell 5.x
         $result = $result.replace('$',' USD ')
         $result = $result.replace('£',' GBP ')
         $result = $result.replace('²','2')
