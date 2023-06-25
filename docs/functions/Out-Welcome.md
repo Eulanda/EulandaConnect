@@ -28,20 +28,23 @@ PS C:\> Out-Welcome
 
 ```ini
 # Output
-		  ________  ____    ___    _   ______  ___
-         / ____/ / / / /   /   |  / | / / __ \/   |
-        / __/ / / / / /   / /| | /  |/ / / / / /| |
-       / /___/ /_/ / /___/ ___ |/ /|  / /_/ / ___ |
-      /_____/\____/_____/_/  |_/_/ |_/_____/_/  |_|
-         _____       ______
-        / ___/____  / __/ /__      ______ _________
-        \__ \/ __ \/ /_/ __/ | /| / / __  / ___/ _ \
-       ___/ / /_/ / __/ /_ | |/ |/ / /_/ / /  /  __/
-      /____/\____/_/  \__/ |__/|__/\__,_/_/   \___/
 
-Version:         2.5
-Script path:     C:\Powershell\EulandaConnect\MyScript
-Execution start: 02/26/2023 09:38:38
+              ________  ____    ___    _   ______  ___
+             / ____/ / / / /   /   |  / | / / __ \/   |
+            / __/ / / / / /   / /| | /  |/ / / / / /| |
+           / /___/ /_/ / /___/ ___ |/ /|  / /_/ / ___ |
+          /_____/\____/_____/_/  |_/_/ |_/_____/_/  |_|
+             _____       ______
+            / ___/____  / __/ /__      ______ _________
+            \__ \/ __ \/ /_/ __/ | /| / / __  / ___/ _ \
+           ___/ / /_/ / __/ /_ | |/ |/ / /_/ / /  /  __/
+          /____/\____/_/  \__/ |__/|__/\__,_/_/   \___/
+
+Version:         EulandaConnect v3.2.1
+Copyright:       © EULANDA Software GmbH. All rights reserved.
+                 https://www.github.com/Eulanda/EulandaConnect
+Module Path      C:\Git\Powershell\EulandaConnect\EulandaConnect.psm1
+Execution start: 6/25/2023 12:16:19 PM
 ```
 
 Displays the welcome screen and some information like the start time and the script path.
