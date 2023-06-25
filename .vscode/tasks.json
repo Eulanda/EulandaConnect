@@ -55,20 +55,7 @@
             ]
         },
         {
-            "label": "5. Publish to PsGallery",
-            "type": "shell",
-            "group": "build",
-            "command": "pwsh.exe",
-            "args": [
-                "-ExecutionPolicy",
-                "Unrestricted",
-                "-File",
-                "${workspaceFolder}\\Build.ps1",
-                "-publishToPsGallery"
-            ]
-        },
-        {
-            "label": "6. Update Online Docs",
+            "label": "5. Update Online Docs",
             "type": "shell",
             "group": "build",
             "command": "pwsh.exe",
@@ -81,7 +68,7 @@
             ]
         },
         {
-            "label": "7. Invoke Pester",
+            "label": "6. Invoke Pester",
             "type": "shell",
             "group": "build",
             "command": "pwsh.exe",
@@ -92,6 +79,19 @@
                 "${workspaceFolder}\\Build.ps1",
                 "-invokePester",
                 "-pesterNoTelegram"
+            ]
+        },
+        {
+            "label": "7. Publish to PsGallery",
+            "type": "shell",
+            "group": "build",
+            "command": "pwsh.exe",
+            "args": [
+                "-ExecutionPolicy",
+                "Unrestricted",
+                "-File",
+                "${workspaceFolder}\\Build.ps1",
+                "-publishToPsGallery"
             ]
         }
     ]
