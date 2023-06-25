@@ -74,7 +74,7 @@ CompanyName = 'EULANDA Software GmbH'
 Copyright = '© EULANDA Software GmbH. All rights reserved.'
 
 # Description of the functionality provided by this module
-Description = 'Automate operations within your EULANDA ERP software with this powerful PowerShell extension, available on the PsGallery. This extension supports EULANDA ERP 8.x and PowerShell 5.1 or a newer version. It supports features for XML data exchange, delivery notes as HTML, messages to Telegram, diagnostic functions, MSSQL functions such as complete renaming of the database, data backup, finding the SQL browser on the network, creating orders, and much more. Currently, there are over 180 functions available, with an additional 60 functions in preparation for release.'
+Description = 'EulandaConnect enables the automation of processes both within and beyond your EULANDA ERP software. Compatible with EULANDA ERP 8.x and PowerShell 5.1 or higher, it supports a range of functionalities. These include XML data exchange, Datanorm, delivery bills, order creation, and communication via the Telegram API. In addition, EulandaConnect offers image functions, diagnostic functions, and a suite of MSSQL features such as comprehensive database renaming, data backup, and SQL browser location within the network. With over 250 functions currently available and more in development, EulandaConnect is a powerful extension not only for your ERP system. https://eulandaconnect.eulanda.eu'
 
 # Minimum version of the PowerShell engine required by this module
 PowerShellVersion = '5.1'
@@ -148,29 +148,32 @@ PrivateData = @{
         "ERP",
         "SDK",
         "API",
+        "OEM-Charset",
         "DATANORM",
+        "CUDEL",
         "Order",
         "Delivery",
         "Invoice",
         "Shop",
         "Store",
         "Carrier",
+        "Textprocessing",
+        "Slugify",
+        "LoremIpsum",
         "MSSQL",
         "Backup",
         "Ftp",
         "Convert",
         "Rename",
         "Database",
+        "VSS",
         "Signing",
         "Signtool",
+        "PublicIp",
         "XML",
         "Telegram",
         "SqlBrowser",
-        "Img",
-        "Image",
-        "Jpg",
-        "Jpeg",
-        "Resize",
+        "ImageProcessing",
         "WIA.ImageFile")
 
         # A URL to the license for this module.

@@ -806,6 +806,8 @@ function Convert-Accent {
         [string]$result = $value
         # case sensitive
         $hash = New-Object hashtable
+        $hash['µ']='mikro'
+        $hash['€']='eur'
         $hash['ä']='ae'
         $hash['ö']='oe'
         $hash['ü']='ue'
@@ -865,112 +867,160 @@ function Convert-DatanormToXml {
     [CmdletBinding()]
     param(
         $datanorm
+        ,
+        [switch]$show
     )
 
-    # Create XmlWriterSettings
-    $settings = New-Object System.Xml.XmlWriterSettings
-    $settings.Indent = $true
-
-    # Create a StringWriter
-    $stringWriter = New-Object System.IO.StringWriter
-
-    # Create XmlWriter that writes to the StringWriter
-    $writer = [System.Xml.XmlWriter]::Create($stringWriter, $settings)
-
-    $writer.WriteStartDocument()
-
-    # Start ARTIKELLISTE
-    $writer.WriteStartElement('ARTIKELLISTE')
-
-    foreach ($articleA in $datanorm.a.values) {
-        # Start ARTIKEL
-        $writer.WriteStartElement('ARTIKEL')
-
-        $articleB = $datanorm.b[$articleA.ArtikelNummer]
-
-        $writer.WriteElementString('ARTNUMMER', $articleA.ArtikelNummer)
-        $writer.WriteElementString('ARTMATCH', $articleB.Matchcode)
-        $writer.WriteElementString('BARCODE', $articleB.EuroArtikelNummer)
-        $writer.WriteElementString('ARTNUMMERERSATZ', $articleB.AlternativArtikelNummer)
-
-
-        $price = (ConvertTo-USFloat -inputString $articleA.Preis)
-        if ($articleA.PreisKennzeichen -eq '1') {
-            $writer.WriteElementString('VKNETTO', $price)
-        } else {
-            $writer.WriteElementString('EKNETTO', $price)
-        }
-
-        $writer.WriteElementString('PREISEH', (Get-DatanormPriceUnit -priceUnitCode $articleA.PreisEinheit ))
-        $writer.WriteElementString('MENGENEH', $articleA.MengenEinheit)
-        $writer.WriteElementString('VERPACKEH', $articleB.VerpackungsMenge)
-        $writer.WriteElementString('RABATTGR', $articleA.RabattGruppe)
-        $writer.WriteElementString('WARENGR', $articleA.WarenhauptGruppe)
-
-        $writer.WriteElementString('KURZTEXT1', $articleA.Kurztext1)
-        $writer.WriteElementString('KURZTEXT2', $articleA.Kurztext2)
-        $writer.WriteElementString('ULTRAKURZTEXT', $articleA.Kurztext1)
-        $writer.WriteElementString('LANGTEXT', "$($articleA.Kurztext1)`r`n$($articleA.Kurztext2)"  )
-
-        $writer.WriteElementString('USERN3',  (ConvertTo-USFloat -inputString $articleB.EUL_CuAufschlagProStueck))
-
-        # End ARTIKEL
-        $writer.WriteEndElement()
+    begin {
+        Write-Verbose -Message ((Get-ResStr 'STARTING_FUNCTION') -f $myInvocation.Mycommand)
+        $initialVariables = Get-CurrentVariables -Debug:$DebugPreference
     }
 
-    foreach ($price in $datanorm.p.values) {
-        # Start ARTIKEL
-        $writer.WriteStartElement('ARTIKEL')
+    process {
+        # Create XmlWriterSettings
+        $settings = New-Object System.Xml.XmlWriterSettings
+        $settings.Indent = $true
 
-        $artNoSet = $false
-        if ($price['1']) {
-            $writer.WriteElementString('ARTNUMMER', $price['1'].ArtikelNummer)
-            $artNoSet = $true
-            $writer.WriteElementString('VKNETTO', (ConvertTo-USFloat -inputString $price['1'].Preis))
+        # Create a StringWriter
+        $stringWriter = New-Object System.IO.StringWriter
+
+        # Create XmlWriter that writes to the StringWriter
+        $writer = [System.Xml.XmlWriter]::Create($stringWriter, $settings)
+
+        if ($show) {
+            $totalItems = $datanorm.a.values.count + $datanorm.p.values.count
+            $currentItem = 0
+            $item = [string]""
         }
 
-        if ($price['2']) {
-            if (! $artNoSet) {
-                $writer.WriteElementString('ARTNUMMER', $price['2'].ArtikelNummer)
+        $writer.WriteStartDocument()
+
+        # Start ARTIKELLISTE
+        $writer.WriteStartElement('ARTIKELLISTE')
+
+        foreach ($articleA in $datanorm.a.values) {
+            if ($show) {
+                $currentItem++
+                $percentage = ($currentItem / $totalItems) * 100
+                $item = $articleA.ArtikelNummer
+                Write-Progress `
+                    -Activity (Get-ResStr 'PROGBAR_DATANORM_PROMPT') `
+                    -Status ((Get-ResStr 'PROGBAR_DATANORM_STATUS') -f $item, $currentItem, $totalItems) `
+                    -PercentComplete $percentage
             }
-            $writer.WriteElementString('EKNETTO', (ConvertTo-USFloat -inputString $price['2'].Preis))
+
+            # Start ARTIKEL
+            $writer.WriteStartElement('ARTIKEL')
+
+            $articleB = $datanorm.b[$articleA.ArtikelNummer]
+
+            $writer.WriteElementString('ARTNUMMER', $articleA.ArtikelNummer)
+            $writer.WriteElementString('ARTMATCH', $articleB.Matchcode)
+            $writer.WriteElementString('BARCODE', $articleB.EuroArtikelNummer)
+            $writer.WriteElementString('ARTNUMMERERSATZ', $articleB.AlternativArtikelNummer)
+
+
+            $price = (ConvertTo-USFloat -inputString $articleA.Preis)
+            if ($articleA.PreisKennzeichen -eq '1') {
+                $writer.WriteElementString('VKNETTO', $price)
+            } else {
+                $writer.WriteElementString('EKNETTO', $price)
+            }
+
+            $writer.WriteElementString('PREISEH', (Get-DatanormPriceUnit -priceUnitCode $articleA.PreisEinheit ))
+            $writer.WriteElementString('MENGENEH', $articleA.MengenEinheit)
+            if ($articleB.VerpackungsMenge) {
+                $writer.WriteElementString('VERPACKEH', $articleB.VerpackungsMenge)
+            } else {
+                $writer.WriteElementString('VERPACKEH', 1)
+            }
+            $writer.WriteElementString('RABATTGR', $articleA.RabattGruppe)
+            $writer.WriteElementString('WARENGR', $articleA.WarenhauptGruppe)
+
+            $writer.WriteElementString('KURZTEXT1', $articleA.Kurztext1)
+            $writer.WriteElementString('KURZTEXT2', $articleA.Kurztext2)
+            $writer.WriteElementString('ULTRAKURZTEXT', $articleA.Kurztext1)
+            $writer.WriteElementString('LANGTEXT', "$($articleA.Kurztext1)`r`n$($articleA.Kurztext2)"  )
+
+            $writer.WriteElementString('USERN3',  (ConvertTo-USFloat -inputString $articleB.EUL_CuAufschlagProStueck))
+
+            # End ARTIKEL
+            $writer.WriteEndElement()
         }
 
-        # End ARTIKEL
+
+        foreach ($price in $datanorm.p.values) {
+            # Start ARTIKEL
+            $writer.WriteStartElement('ARTIKEL')
+
+            $artNoSet = $false
+            if ($price['1']) {
+                $writer.WriteElementString('ARTNUMMER', $price['1'].ArtikelNummer)
+                $item = $price['1'].ArtikelNummer
+                $artNoSet = $true
+                $writer.WriteElementString('VKNETTO', (ConvertTo-USFloat -inputString $price['1'].Preis))
+            }
+
+            if ($price['2']) {
+                if (! $artNoSet) {
+                    $writer.WriteElementString('ARTNUMMER', $price['2'].ArtikelNummer)
+                    $item = $price['2'].ArtikelNummer
+                }
+                $writer.WriteElementString('EKNETTO', (ConvertTo-USFloat -inputString $price['2'].Preis))
+            }
+
+            # End ARTIKEL
+            $writer.WriteEndElement()
+
+            if ($show) {
+                $currentItem++
+                $percentage = ($currentItem / $totalItems) * 100
+                Write-Progress `
+                    -Activity (Get-ResStr 'PROGBAR_DATANORM_PROMPT') `
+                    -Status ((Get-ResStr 'PROGBAR_DATANORM_STATUS') -f $item, $currentItem, $totalItems) `
+                    -PercentComplete $percentage
+            }
+        }
+
+        # End ARTIKELLISTE
         $writer.WriteEndElement()
-    }
+        $writer.WriteEndDocument()
 
+        # Clean up the writer
+        $writer.Flush()
+        $writer.Close()
 
-    # End ARTIKELLISTE
-    $writer.WriteEndElement()
-    $writer.WriteEndDocument()
+        # XML RAW for Root
+        [xml]$xml = Get-XmlEulandaRoot
 
-    # Clean up the writer
-    $writer.Flush()
-    $writer.Close()
+        # XML RAW for Metadata
+        [xml]$xmlMetadata = Get-XmlEulandaMetadata
 
-    # XML RAW for Root
-    [xml]$xml = Get-XmlEulandaRoot
+        # Now you have the XML in the StringWriter
+        [xml]$xmlArticle = $stringWriter.ToString()
 
-    # XML RAW for Metadata
-    [xml]$xmlMetadata = Get-XmlEulandaMetadata
-
-    # Now you have the XML in the StringWriter
-    [xml]$xmlArticle = $stringWriter.ToString()
-
-    $newNode = $xmlMetadata.SelectSingleNode("//METADATA")
-    $node = $xml.ImportNode($newNode, $true)
-    $xml.DocumentElement.AppendChild($node) | Out-Null
-
-    if ($xmlArticle) {
-        $newNode = $xmlArticle.SelectSingleNode("//ARTIKELLISTE")
+        $newNode = $xmlMetadata.SelectSingleNode("//METADATA")
         $node = $xml.ImportNode($newNode, $true)
         $xml.DocumentElement.AppendChild($node) | Out-Null
+
+        if ($xmlArticle) {
+            $newNode = $xmlArticle.SelectSingleNode("//ARTIKELLISTE")
+            $node = $xml.ImportNode($newNode, $true)
+            $xml.DocumentElement.AppendChild($node) | Out-Null
+        }
+
+        $result = [string](Format-Xml -xmlString $xml.OuterXml)
+
+        if ($show) {
+            Write-Progress -Activity (Get-ResStr 'PROGBAR_DATANORM_PROMPT') -Completed
+        }
     }
 
-    $result = [string](Format-Xml -xmlString $xml.OuterXml)
-
-    Return $result
+    end {
+        Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
+        Return $result
+    }
+    # Test:  $xml = Convert-DatanormToXml -datanorm $datanorm
 }
 
 function Convert-DataToXml {
@@ -1279,224 +1329,305 @@ function Convert-FromDatanorm {
         ,
         [double]$vat = 19.0
         ,
-        [double]$cuDel = 879.0 # last official cuDel (Copper-DEL Notation) price 02/2022
+        [double]$cuDel = 802.0 # LAPP Copper Price (LCP) per 100 kg, because DEL has stopped his notes
+        ,
+        [switch]$utf8
+        ,
+        [switch]$show
         ,
         [Alias('decimal')]
         [string]$decimalSeparator = [System.Globalization.CultureInfo]::CurrentCulture.NumberFormat.NumberDecimalSeparator
     )
 
-    if ((Get-Item $path).Length -eq 0) {
-        throw "File $path is empty."
+    begin {
+        Write-Verbose -Message ((Get-ResStr 'STARTING_FUNCTION') -f $myInvocation.Mycommand)
+        $initialVariables = Get-CurrentVariables -Debug:$DebugPreference
     }
 
-    # First test utf-8, this is uncommon and also not according to the standard, but a good way to support both encodings
-    $encoding = [System.Text.Encoding]::GetEncoding("UTF-8")
-    $allLines = [System.IO.File]::ReadAllLines($path, $encoding)
-
-    $hasInvalidChars = $false
-    foreach($line in $allLines) {
-        if ($line -match '�') {  # illegal char '�' found
-            $hasInvalidChars = $true
-            break
-        }
-    }
-
-    if ($hasInvalidChars) {
-        # This is the allowed method for datanorm
-        $encoding = [System.Text.Encoding]::GetEncoding("IBM850")  # IBM850 corresponds to CP850
-        $allLines = [System.IO.File]::ReadAllLines($path, $encoding)
-    }
-
-
-    # Create empty lists for each record type
-    $a = @{}
-    $b = @{}
-    $v = @{}
-    $p = @{}
-
-    foreach ($line in $allLines) {
-        # Check which record type is present and process accordingly
-
-        # ------------------------------
-        # TYPE A
-        # ------------------------------
-        if ($line[0] -eq "A") {
-            # Separate individual fields
-            $fields = $line.Split(";")
-
-            # Create new PSobject and assign fields
-            $rec = New-Object PSObject -Property ([ordered]@{
-                SatzKennzeichen       = $fields[0]
-                VerarbeitungsKennzeichen = $fields[1]
-                ArtikelNummer         = $fields[2]
-                TextKennzeichen       = $fields[3]
-                Kurztext1             = $fields[4]
-                Kurztext2             = $fields[5]
-                PreisKennzeichen      = $fields[6]
-                PreisEinheit          = $fields[7]
-                MengenEinheit         = $fields[8]
-                Preis                 = Add-DecimalPoint -number $fields[9]
-                RabattGruppe          = $fields[10]
-                WarenhauptGruppe      = $fields[11]
-                LangtextSchluessel    = $fields[12]
-                EUL_PreisProStueck    = Get-DatanormPricePerUnit `
-                                          -price (ConvertTo-USFloat(Add-DecimalPoint -number $fields[9])) `
-                                          -priceUnitCode $fields[7]
-            })
-            $a[$rec.ArtikelNummer] = $rec
-        }
-
-        # ------------------------------
-        # TYPE B
-        # ------------------------------
-        elseif ($line[0] -eq "B") {
-            # Separate individual fields
-            $fields = $line.Split(";")
-
-            # Create new PSobject and assign fields
-            $rec = New-Object PSObject -Property ([ordered]@{
-                SatzKennzeichen          = $fields[0]
-                VerarbeitungsKennzeichen = $fields[1]
-                ArtikelNummer            = $fields[2]
-                Matchcode                = $fields[3]
-                AlternativArtikelNummer  = $fields[4]
-                KatalogSeite             = $fields[5]
-                CUGewichtsMerker         = $fields[6]
-                CUKennzahl               = $fields[7]
-                Gewicht                  = Add-DecimalPoint -number $fields[8]
-                EuroArtikelNummer        = $fields[9]
-                AnbindungsNummer         = $fields[10]
-                WarenGruppe              = $fields[11]
-                KostenArt                = $fields[12]
-                VerpackungsMenge         = $fields[13]
-                ReverenzKuerzel          = $fields[14]
-                ReverenzNummer           = $fields[15]
-                EUL_CuGewichtProStueck   = Get-DatanormCuWeight `
-                                            -cuWeight (ConvertTo-USFloat(Add-DecimalPoint -number $fields[8])) `
-                                            -divisionCode $fields[6]
-                EUL_CuAufschlagProStueck = Get-DatanormCuSurcharge `
-                                            -cuWeight (ConvertTo-USFloat(Add-DecimalPoint -number $fields[8])) `
-                                            -cuDel $cuDel `
-                                            -cuIncluded $fields[7] `
-                                            -divisionCode $fields[6]
-                EUL_CuDelPro100Kg        = $CuDel.ToString()
-            })
-            $b[$rec.ArtikelNummer] = $rec
+    process {
+        if (Test-Path $path -PathType Container) {
+            $filenames = @("DATANORM.RAB", "DATANORM.WRG") + (1..999 | ForEach-Object { "DATANORM.{0:D3}" -f $_ }) + (1..999 | ForEach-Object { "DATPREIS.{0:D3}" -f $_ })
+            # Convert filenames to absolute paths
+            $filepaths = $filenames | ForEach-Object { Join-Path -Path $path -ChildPath $_ }
+            # Keep only paths that refer to existing files
+            $filepaths = $filepaths | Where-Object { Test-Path $_ -PathType Leaf }
+        } else {
+            # Path is only a single file
+            $filepaths = @($path)
         }
 
 
-        # ------------------------------
-        # TYPE V
-        # ------------------------------
-        elseif ($line[0] -eq "V") {
-            $rec = New-Object PSObject -Property ([ordered]@{
-                SatzKennzeichen       = $line.Substring(0,1)
-                Frei                  = $line.Substring(1,1)
-                Datum                 = Convert-DatanormDateFormat $line.Substring(2,6)
-                InfoText1             = $line.Substring(8,40).Trim()
-                InfoText2             = $line.Substring(48,40).Trim()
-                InfoText3             = $line.Substring(88,35).Trim()
-                VersionsNummer        = $line.Substring(123,2)
-                WaehrungsKennzeichen  = $line.Substring(125,3)
-            })
-            $v['V'] = $rec
+        # Create empty lists for each record type
+        $a = @{}
+        $b = @{}
+        $v = @{}
+        $p = @{}
+
+        if ($show) {
+            $totalFiles = $filepaths.Count
+            $currentFile = 0
         }
+        foreach ($filepath in $filepaths) {
 
-
-        # ------------------------------
-        # TYPE P
-        # ------------------------------
-        elseif ($line[0] -eq "P") {
-            $fields = $line.Split(";")
-
-            $rec = New-Object PSObject -Property ([ordered]@{
-                SatzKennzeichen          = $fields[0]
-                VerarbeitungsKennzeichen = $fields[1]
-
-                ArtikelNummer           = $fields[2]
-                PreisKennzeichen        = $fields[3]
-                Preis                   = Add-DecimalPoint -number $fields[4]
-                KonditonKennzeichen1    = $fields[5]
-                Kondition1              = Get-DatanormConditionDecimals -condition $fields[6] -indicator ([int]$fields[5])
-                KonditonKennzeichen2    = $fields[7]
-                Kondition2              = Get-DatanormConditionDecimals -condition $fields[8] -indicator ([int]$fields[7])
-                KonditonKennzeichen3    = $fields[9]
-                Kondition3              = Get-DatanormConditionDecimals -condition $fields[10] -indicator ([int]$fields[9])
-            })
-
-            if ($rec.ArtikelNummer -ne '') {
-                # Check if there's already an entry for the A article number
-                if (!$p.ContainsKey($rec.ArtikelNummer)) {
-                    # If not, create a new inner hash table for this article number
-                    $p[$rec.ArtikelNummer] = @{}
-                }
-                # Now add the record to the inner hash table, using the PreisKennzeichen as the key
-                $p[$rec.ArtikelNummer][$rec.PreisKennzeichen] = $rec
+            if ($show) {
+                $currentFile++
+                $percentage = ($currentFile / $totalFiles) * 100
+                Write-Progress `
+                    -Id 1 `
+                    -Activity (Get-ResStr 'PROGBAR_FILES_PROMPT') `
+                    -Status ((Get-ResStr 'PROGBAR_FILES_STATUS') -f $(Split-Path $filepath -Leaf), $currentFile, $filepaths.Count) `
+                    -PercentComplete $percentage
             }
 
 
-            $rec = New-Object PSObject -Property ([ordered]@{
-                SatzKennzeichen          = $fields[0]
-                VerarbeitungsKennzeichen = $fields[1]
-
-                ArtikelNummer           = $fields[11]
-                PreisKennzeichen        = $fields[12]
-                Preis                   = Add-DecimalPoint -number $fields[13]
-                KonditonKennzeichen1    = $fields[14]
-                Kondition1              = Get-DatanormConditionDecimals -condition $fields[15] -indicator ([int]$fields[14])
-                KonditonKennzeichen2    = $fields[16]
-                Kondition2              = Get-DatanormConditionDecimals -condition $fields[17] -indicator ([int]$fields[16])
-                KonditonKennzeichen3    = $fields[18]
-                Kondition3              = Get-DatanormConditionDecimals -condition $fields[19] -indicator ([int]$fields[18])
-            })
-
-            if ($rec.ArtikelNummer -ne '') {
-                # Check if there's already an entry for the A article number
-                if (!$p.ContainsKey($rec.ArtikelNummer)) {
-                    # If not, create a new inner hash table for this article number
-                    $p[$rec.ArtikelNummer] = @{}
-                }
-                # Now add the record to the inner hash table, using the PreisKennzeichen as the key
-                $p[$rec.ArtikelNummer][$rec.PreisKennzeichen] = $rec
+            # Test if it is an empty file
+            if ((Get-Item $filepath).Length -eq 0) {
+                Write-Error ((Get-ResStr 'DATANORM_FILE_EMPTY') -f $filepath, $myInvocation.Mycommand) -ErrorAction Continue
+                Continue
             }
 
-            $rec = New-Object PSObject -Property ([ordered]@{
-                SatzKennzeichen          = $fields[0]
-                VerarbeitungsKennzeichen = $fields[1]
+            if ($utf8) {
+                # First test utf-8, this is uncommon and also not according to the standard, but a good way to support both encodings
+                $encoding = [System.Text.Encoding]::GetEncoding("UTF-8")
+                $allLines = [System.IO.File]::ReadAllLines($filepath, $encoding)
 
-                ArtikelNummer           = $fields[20]
-                PreisKennzeichen        = $fields[21]
-                Preis                   = Add-DecimalPoint -number $fields[22]
-                KonditonKennzeichen1    = $fields[23]
-                Kondition1              = Get-DatanormConditionDecimals -condition $fields[24] -indicator ([int]$fields[23])
-                KonditonKennzeichen2    = $fields[25]
-                Kondition2              = Get-DatanormConditionDecimals -condition $fields[26] -indicator ([int]$fields[25])
-                KonditonKennzeichen3    = $fields[27]
-                Kondition3              = Get-DatanormConditionDecimals -condition $fields[28] -indicator ([int]$fields[27])
-            })
-
-            if ($rec.ArtikelNummer -ne '') {
-                # Check if there's already an entry for the A article number
-                if (!$p.ContainsKey($rec.ArtikelNummer)) {
-                    # If not, create a new inner hash table for this article number
-                    $p[$rec.ArtikelNummer] = @{}
+                $hasInvalidChars = $false
+                foreach($line in $allLines) {
+                    if ($line -match '�') {  # illegal char '�' found
+                        $hasInvalidChars = $true
+                        break
+                    }
                 }
-                # Now add the record to the inner hash table, using the PreisKennzeichen as the key
-                $p[$rec.ArtikelNummer][$rec.PreisKennzeichen] = $rec
+
+                if ($hasInvalidChars) {
+                    # This is the allowed method for datanorm
+                    $encoding = [System.Text.Encoding]::GetEncoding("IBM850")  # IBM850 corresponds to CP850
+                    $allLines = [System.IO.File]::ReadAllLines($filepath, $encoding)
+                }
+            } else {
+                $encoding = [System.Text.Encoding]::GetEncoding("IBM850")  # IBM850 corresponds to CP850
+                $allLines = [System.IO.File]::ReadAllLines($filepath, $encoding)
+            }
+
+            $totalLines = $AllLines.Count
+            $currentLine = 0
+            foreach ($line in $allLines) {
+                $currentLine++
+
+                # Check which record type is present and process accordingly
+                if (! $line) {
+                    continue
+                }
+
+
+                # ------------------------------
+                # TYPE A
+                # ------------------------------
+                if ($line[0] -eq "A") {
+                    # Separate individual fields
+                    $fields = $line.Split(";")
+
+                    # Create new PSobject and assign fields
+                    $rec = New-Object PSObject -Property ([ordered]@{
+                        SatzKennzeichen       = $fields[0]
+                        VerarbeitungsKennzeichen = $fields[1]
+                        ArtikelNummer         = $fields[2]
+                        TextKennzeichen       = $fields[3]
+                        Kurztext1             = $fields[4]
+                        Kurztext2             = $fields[5]
+                        PreisKennzeichen      = $fields[6]
+                        PreisEinheit          = $fields[7]
+                        MengenEinheit         = $fields[8]
+                        Preis                 = Add-DecimalPoint -number $fields[9]
+                        RabattGruppe          = $fields[10]
+                        WarenhauptGruppe      = $fields[11]
+                        LangtextSchluessel    = $fields[12]
+                        EUL_PreisProStueck    = Get-DatanormPricePerUnit `
+                                                -price (ConvertTo-USFloat(Add-DecimalPoint -number $fields[9])) `
+                                                -priceUnitCode $fields[7]
+                    })
+                    $a[$rec.ArtikelNummer] = $rec
+                    if ($show) {
+                        $percentage = ($currentLine / $totalLines * 100)
+                        Write-Progress `
+                            -Id 2 `
+                            -Activity ((Get-ResStr 'PROGBAR_FILE_PROMPT') -f $(Split-Path $filepath -Leaf)) `
+                            -Status ((Get-ResStr 'PROGBAR_FILE_STATUS') -f $rec.ArtikelNummer, $currentLine, $totalLines) `
+                            -PercentComplete $percentage
+                    }
+                }
+
+                # ------------------------------
+                # TYPE B
+                # ------------------------------
+                elseif ($line[0] -eq "B") {
+                    # Separate individual fields
+                    $fields = $line.Split(";")
+
+                    # Create new PSobject and assign fields
+                    $rec = New-Object PSObject -Property ([ordered]@{
+                        SatzKennzeichen          = $fields[0]
+                        VerarbeitungsKennzeichen = $fields[1]
+                        ArtikelNummer            = $fields[2]
+                        Matchcode                = $fields[3]
+                        AlternativArtikelNummer  = $fields[4]
+                        KatalogSeite             = $fields[5]
+                        CUGewichtsMerker         = $fields[6]
+                        CUKennzahl               = $fields[7]
+                        Gewicht                  = Add-DecimalPoint -number $fields[8]
+                        EuroArtikelNummer        = $fields[9]
+                        AnbindungsNummer         = $fields[10]
+                        WarenGruppe              = $fields[11]
+                        KostenArt                = $fields[12]
+                        VerpackungsMenge         = $fields[13]
+                        ReverenzKuerzel          = $fields[14]
+                        ReverenzNummer           = $fields[15]
+                        EUL_CuGewichtProStueck   = Get-DatanormCuWeight `
+                                                    -cuWeight (ConvertTo-USFloat(Add-DecimalPoint -number $fields[8])) `
+                                                    -divisionCode $fields[6]
+                        EUL_CuAufschlagProStueck = Get-DatanormCuSurcharge `
+                                                    -cuWeight (ConvertTo-USFloat(Add-DecimalPoint -number $fields[8])) `
+                                                    -cuDel $cuDel `
+                                                    -cuIncluded $fields[7] `
+                                                    -divisionCode $fields[6]
+                        EUL_CuDelPro100Kg        = $CuDel.ToString()
+                    })
+                    $b[$rec.ArtikelNummer] = $rec
+                }
+
+
+                # ------------------------------
+                # TYPE V
+                # ------------------------------
+                elseif ($line[0] -eq "V") {
+                    $rec = New-Object PSObject -Property ([ordered]@{
+                        SatzKennzeichen       = $line.Substring(0,1)
+                        Frei                  = $line.Substring(1,1)
+                        Datum                 = Convert-DatanormDateFormat $line.Substring(2,6)
+                        InfoText1             = $line.Substring(8,40).Trim()
+                        InfoText2             = $line.Substring(48,40).Trim()
+                        InfoText3             = $line.Substring(88,35).Trim()
+                        VersionsNummer        = $line.Substring(123,2)
+                        WaehrungsKennzeichen  = $line.Substring(125,3)
+                    })
+                    $v['V'] = $rec
+                }
+
+
+                # ------------------------------
+                # TYPE P
+                # ------------------------------
+                elseif ($line[0] -eq "P") {
+                    $fields = $line.Split(";")
+
+                    $rec = New-Object PSObject -Property ([ordered]@{
+                        SatzKennzeichen          = $fields[0]
+                        VerarbeitungsKennzeichen = $fields[1]
+
+                        ArtikelNummer           = $fields[2]
+                        PreisKennzeichen        = $fields[3]
+                        Preis                   = Add-DecimalPoint -number $fields[4]
+                        KonditonKennzeichen1    = $fields[5]
+                        Kondition1              = Get-DatanormConditionDecimals -condition $fields[6] -indicator ([int]$fields[5])
+                        KonditonKennzeichen2    = $fields[7]
+                        Kondition2              = Get-DatanormConditionDecimals -condition $fields[8] -indicator ([int]$fields[7])
+                        KonditonKennzeichen3    = $fields[9]
+                        Kondition3              = Get-DatanormConditionDecimals -condition $fields[10] -indicator ([int]$fields[9])
+                    })
+                    if ($show) {
+                        $percentage = ($currentLine / $totalLines * 100)
+                        Write-Progress `
+                            -Id 2 `
+                            -Activity ((Get-ResStr 'PROGBAR_FILE_PROMPT') -f $(Split-Path $filepath -Leaf)) `
+                            -Status ((Get-ResStr 'PROGBAR_FILE_STATUS') -f $rec.ArtikelNummer, $currentLine, $totalLines) `
+                            -PercentComplete $percentage
+                    }
+
+
+                    if ($rec.ArtikelNummer -ne '') {
+                        # Check if there's already an entry for the A article number
+                        if (!$p.ContainsKey($rec.ArtikelNummer)) {
+                            # If not, create a new inner hash table for this article number
+                            $p[$rec.ArtikelNummer] = @{}
+                        }
+                        # Now add the record to the inner hash table, using the PreisKennzeichen as the key
+                        $p[$rec.ArtikelNummer][$rec.PreisKennzeichen] = $rec
+                    }
+
+
+                    $rec = New-Object PSObject -Property ([ordered]@{
+                        SatzKennzeichen          = $fields[0]
+                        VerarbeitungsKennzeichen = $fields[1]
+
+                        ArtikelNummer           = $fields[11]
+                        PreisKennzeichen        = $fields[12]
+                        Preis                   = Add-DecimalPoint -number $fields[13]
+                        KonditonKennzeichen1    = $fields[14]
+                        Kondition1              = Get-DatanormConditionDecimals -condition $fields[15] -indicator ([int]$fields[14])
+                        KonditonKennzeichen2    = $fields[16]
+                        Kondition2              = Get-DatanormConditionDecimals -condition $fields[17] -indicator ([int]$fields[16])
+                        KonditonKennzeichen3    = $fields[18]
+                        Kondition3              = Get-DatanormConditionDecimals -condition $fields[19] -indicator ([int]$fields[18])
+                    })
+
+                    if ($rec.ArtikelNummer -ne '') {
+                        # Check if there's already an entry for the A article number
+                        if (!$p.ContainsKey($rec.ArtikelNummer)) {
+                            # If not, create a new inner hash table for this article number
+                            $p[$rec.ArtikelNummer] = @{}
+                        }
+                        # Now add the record to the inner hash table, using the PreisKennzeichen as the key
+                        $p[$rec.ArtikelNummer][$rec.PreisKennzeichen] = $rec
+                    }
+
+                    $rec = New-Object PSObject -Property ([ordered]@{
+                        SatzKennzeichen          = $fields[0]
+                        VerarbeitungsKennzeichen = $fields[1]
+
+                        ArtikelNummer           = $fields[20]
+                        PreisKennzeichen        = $fields[21]
+                        Preis                   = Add-DecimalPoint -number $fields[22]
+                        KonditonKennzeichen1    = $fields[23]
+                        Kondition1              = Get-DatanormConditionDecimals -condition $fields[24] -indicator ([int]$fields[23])
+                        KonditonKennzeichen2    = $fields[25]
+                        Kondition2              = Get-DatanormConditionDecimals -condition $fields[26] -indicator ([int]$fields[25])
+                        KonditonKennzeichen3    = $fields[27]
+                        Kondition3              = Get-DatanormConditionDecimals -condition $fields[28] -indicator ([int]$fields[27])
+                    })
+
+                    if ($rec.ArtikelNummer -ne '') {
+                        # Check if there's already an entry for the A article number
+                        if (!$p.ContainsKey($rec.ArtikelNummer)) {
+                            # If not, create a new inner hash table for this article number
+                            $p[$rec.ArtikelNummer] = @{}
+                        }
+                        # Now add the record to the inner hash table, using the PreisKennzeichen as the key
+                        $p[$rec.ArtikelNummer][$rec.PreisKennzeichen] = $rec
+                    }
+                }
             }
 
         }
+
+        if ($show) {
+            Write-Progress -Id 1 -Activity (Get-ResStr 'PROGBAR_FILES_PROMPT') -Completed
+            Write-Progress -Id 2 -Activity (Get-ResStr 'PROGBAR_FILE_PROMPT') -Completed
+        }
+
+        # Create a new object that contains all supported record types of ol processed files
+        $datanorm = New-Object PSObject -Property @{
+            a = $a
+            b = $b
+            v = $v
+            p = $p
+        }
     }
 
-    # Create a new object that contains all four record types
-    $datanorm = New-Object PSObject -Property @{
-        a = $a
-        b = $b
-        v = $v
-        p = $p
+    end {
+        Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
+        return $datanorm
     }
-
-    return $datanorm
+    # Test: $datanorm = Convert-FromDatanorm -path "$PSScriptRoot\.ignore\data\zander"
 }
 
 function Convert-ImageToBase64 {
@@ -8341,6 +8472,10 @@ function Import-ArticleFromXml {
         [ValidateScript({ Test-ValidatePathXML -path $_  })]
         [string]$path
         ,
+        [switch]$cuSurcharge
+        ,
+        [switch]$show
+        ,
         [Parameter(Mandatory = $false)]
         [ValidateScript({ Test-ValidateConn -conn $_  })]
         $conn
@@ -8370,103 +8505,225 @@ function Import-ArticleFromXml {
 
         $rs = new-object -comObject ADODB.Recordset
         $rs.CursorLocation = $adUseClient
-        $allowedProperties = @("ARTNUMMER", "EKNETTO", "VKNETTO", "VKBRUTTO", "BRUTTOFLG", "VK", "EK2NETTO")
+
+        # ------------------------------------------------
+        # HANDLE READONLY FIELDS
+        # ------------------------------------------------
+        $readOnlyFields = Get-ReadOnlyFields -conn $myConn -tablename 'Artikel'
+
+        # We dont support these field in this moment
+        $readOnlyFields += 'BasisArtikelId', 'ChargenPflichtFlg', 'HauptLieferantID', 'HerstellerID', `
+            'IdentTyp', 'KasseVorfallTyp', 'LangtextRevision', 'Locked', 'LoeschFlg', 'Multi', 'MwStGr', `
+            'MwstSatz', 'ProduktManagerId', 'Revision', 'SNPflichtFlg', 'Sperre_Lager', 'Stamp', `
+            'StatistikArtikelId', 'StatistikFlg', 'Status', 'StkLstProdFlg', 'StueckMulti', 'Typ', `
+            'VarianteFlg', 'VarianteHauptArtikelId', 'VarianteHauptFlg', 'VertreterID'
+
+        # We are making special handlings with these price fields
+        $readOnlyFields = $readOnlyFields | Where-Object { $_ -ne "VKNETTO" -and $_ -ne "VKBRUTTO" }
+
+        $readOnlyFields = $readOnlyFields | Select-Object -Unique
+
+        # ------------------------------------------------
+        # HANDLE OTHER STUFF
+        # ------------------------------------------------
+
+        # If only this fields are in an XML then it is a pricelist update
+        $pricelistProperties = @("ARTNUMMER", "EKNETTO", "VKNETTO", "VKBRUTTO", "BRUTTOFLG", "VK", "EK2NETTO")
+
+
+        # ------------------------------------------------
+        # FILL ALL GROUPS TO ENHANCE PERFORMANCE
+        # ------------------------------------------------
+        $RabattGr = New-Object -TypeName 'System.Collections.Generic.HashSet[string]'([StringComparer]::InvariantCultureIgnoreCase)
+        $rs = $myConn.Execute('SELECT GR FROM KonRG')
+        while(-not $rs.EOF) {
+            $RabattGr.Add($rs.Fields.Item(0).Value) | Out-Null
+            $rs.MoveNext()
+        }
+        $rs.Close()
+
+        $WarenGr = New-Object -TypeName 'System.Collections.Generic.HashSet[string]'([StringComparer]::InvariantCultureIgnoreCase)
+        $rs = $myConn.Execute('SELECT GR FROM KonWG')
+        while(-not $rs.EOF) {
+            $WarenGr.Add($rs.Fields.Item(0).Value) | Out-Null
+            $rs.MoveNext()
+        }
+        $rs.Close()
+
+        $MengenEh = New-Object -TypeName 'System.Collections.Generic.HashSet[string]'([StringComparer]::InvariantCultureIgnoreCase)
+        $rs = $myConn.Execute('SELECT GR FROM KonMengenEh')
+        while(-not $rs.EOF) {
+            $MengenEh.Add($rs.Fields.Item(0).Value) | Out-Null
+            $rs.MoveNext()
+        }
+        $rs.Close()
+
+        $ErloesGr = New-Object -TypeName 'System.Collections.Generic.HashSet[string]'([StringComparer]::InvariantCultureIgnoreCase)
+        $rs = $myConn.Execute('SELECT ErloesGR FROM KonErloesKonto')
+        while(-not $rs.EOF) {
+            $ErloesGr.Add($rs.Fields.Item(0).Value) | Out-Null
+            $rs.MoveNext()
+        }
+        $rs.Close()
+
+
+
+        if ($show) {
+            try {
+                $totalItems = $xml.EULANDA.ARTIKELLISTE.ARTIKEL.count
+            } catch {
+                $totalItems = 1
+            }
+            $currentItem = 0
+            $item = [string]""
+        }
+
         foreach($article in $xml.EULANDA.ARTIKELLISTE.ARTIKEL) {
 
+            # ------------------------------------------------
+            # IGNORE NODE WITHOUT UNIQUE KEY
+            # ------------------------------------------------
             if ($article.PSObject.Properties.Name -contains "ARTNUMMER") {
                 $articleNo = $article.ARTNUMMER
                 $id = Get-ArticleId -articleNo $articleNo -conn $myConn
             } else {
-                Write-Error "ArticleNo not present in xml!" -ErrorAction Continue
+                ARTICLENO_MISSING_IN_XML
+                Write-Error ((Get-ResStr 'ARTICLENO_MISSING_IN_XML') -f  $myInvocation.Mycommand) -ErrorAction Continue
+                Continue
             }
 
+            if ($show) {
+                $currentItem++
+                $percentage = ($currentItem / $totalItems) * 100
+                $item = $articleNo
+                Write-Progress `
+                    -Activity (Get-ResStr 'PROGBAR_XML_PROMPT') `
+                    -Status ((Get-ResStr 'PROGBAR_XML_STATUS') -f $item, $currentItem, $totalItems) `
+                    -PercentComplete $percentage
+            }
+
+
+            # ------------------------------------------------
+            # CHECK IF IT IS ONLY AN PRICELIST UPDATE
+            # ------------------------------------------------
             $articleChildNodes = $article.ChildNodes | Select-Object -ExpandProperty Name
-            # Check if there are any properties that are not in the allowed list
-            if ((@($articleChildNodes | Where-Object {$_ -notin $allowedProperties})).Count -gt 0) {
-                $priceUpdate = $false
+            if ((@($articleChildNodes | Where-Object {$_ -notin $pricelistProperties})).Count -gt 0) {
+                $onlyUpdateAllowed = $false
             } else {
-                $priceUpdate = $true
+                $onlyUpdateAllowed = $true
             }
 
+
+            # ------------------------------------------------
+            # NEW OR UPDATE
+            # ------------------------------------------------
             if ($id) {
                 # if we found an article we wont to update prices or an article
                 $rs.Open("SELECT TOP 1 * FROM Artikel WHERE ID = $id", $myConn, $adOpenKeyset, $adLockOptimistic, $adCmdText)
             } else  {
-                if (! $priceUpdate) {
+                if (! $onlyUpdateAllowed) {
                     $rs.Open("SELECT TOP 0 * FROM Artikel", $myConn, $adOpenKeyset, $adLockOptimistic, $adCmdText)
                     $rs.AddNew()
-                    $rs.fields('ARTNUMMER').value = $articleNo
+                    $rs.fields('ARTNUMMER').value = Convert-Accent -value $articleNo -strCase 'upper'
                 } else {
                     # A price was found, but the article does not exist
-                    # We do not want to insert an article with only one price
+                    # We do not want to insert an article with only prices
                     continue
                 }
             }
 
-            if ($article.PSObject.Properties.Name -contains 'ARTMATCH') {
-                $rs.fields('ARTMATCH').value = $article.ARTMATCH
-            }
+            # ------------------------------------------------
+            # PROCESS ANY XML NODE
+            # ------------------------------------------------
+            foreach ($node in $articleChildNodes) {
+                if ((-not ($readOnlyFields -icontains $node)) -and (-not ($node -ieq 'ARTNUMMER'))) {
+                    if (-not [string]::IsNullOrEmpty($article.$node)) {
 
-            if ($article.PSObject.Properties.Name -contains 'LANGTEXT') {
-                $rs.fields('LANGTEXT').value = $article.LANGTEXT
-            }
-
-            if ($article.PSObject.Properties.Name -contains 'KURZTEXT1') {
-                $rs.fields('KURZTEXT1').value = $article.KURZTEXT1
-            }
-
-            if ($article.PSObject.Properties.Name -contains 'KURZTEXT2') {
-                $rs.fields('KURZTEXT2').value = $article.KURZTEXT2
-            }
-
-            if ($article.PSObject.Properties.Name -contains 'ULTRAKURZTEXT') {
-                $rs.fields('ULTRAKURZTEXT').value = $article.ULTRAKURZTEXT
-            }
-
-            if ($article.PSObject.Properties.Name -contains 'USERN3') {
-                # used for copper surcharge
-                $rs.fields('USERN3').value = $article.USERN3
-            }
-
-            if ($article.PSObject.Properties.Name -contains 'EKNETTO') {
-                $rs.fields('EKNETTO').value = $article.EKNETTO
-            }
-
-            if ($article.PSObject.Properties.Name -contains 'EK2NETTO') {
-                $rs.fields('EK2NETTO').value = $article.EK2NETTO
-            }
-
-            if (($article.PSObject.Properties.Name -contains 'VK') -and
-                ($article.PSObject.Properties.Name -contains 'BRUTTOFLG')) {
-                    $rs.fields('VK').value = $article.VK
-                    $rs.fields('BruttoFlg').value = $article.BRUTTOFLG
-            } elseif ($article.PSObject.Properties.Name -contains 'VKNETTO') {
-
-                if ($rs.fields('EKNETTO').value -gt 0) {
-                    # Only Datanorm uses UserNr3 für the copper surcharge per one unit
-                    # If there is a PriceUnit higher then 1, then the copper surcharge must be multiplied with price units
-                    $cuSurcharge = [float]($rs.fields('PREISEH').value * $rs.fields('USERN3').value)
-                    $price = [float][math]::Round(([float]$article.VKNETTO + $cuSurcharge), 2)
-                    $rs.fields('VK').value = [float]$price
-                } else {
-                    $rs.fields('VK').value = $article.VKNETTO
+                        # some special handlings
+                        if ($node -ieq 'ARTMATCH') {
+                            $rs.fields($node).value = Convert-Accent -value $article.$node -strCase 'upper'
+                        } elseif ($node -ieq 'VK') {
+                            $rs.fields('VK').value = $article.$node
+                            # if not special BRUTTOFLG is found it is a price without VAT
+                            if (-not ($article.PSObject.Properties.Name -contains 'BRUTTOFLG')) {
+                                $rs.fields('BruttoFlg').value = 0
+                            }
+                        } elseif ($node -ieq 'VKNETTO') {
+                            $rs.fields('VK').value = $article.$node
+                            $rs.fields('BruttoFlg').value = 0
+                        } elseif ($node -ieq 'VKBRUTTO') {
+                            $rs.fields('VK').value = $article.$node
+                            $rs.fields('BruttoFlg').value = 1
+                        } elseif ($node -ieq 'VERPACKEH') {
+                            if ($MengenEh.Contains($article.$node)) {
+                                if ($article.$node -gt 1) {
+                                    $rs.fields($node).value = $article.$node
+                                } else {
+                                    $rs.fields($node).value = 1
+                                }
+                            }
+                        } elseif ($node -ieq 'MENGENEH') {
+                            if ($MengenEh.Contains($article.$node)) {
+                                $rs.fields($node).value = $article.$node
+                            }
+                        } elseif ($node -ieq 'WARENGR') {
+                            if ($WarenGr.Contains($article.$node)) {
+                                $rs.fields($node).value = $article.$node
+                            }
+                        } elseif ($node -ieq 'ERLOESGR') {
+                            if ($ErloesGr.Contains($article.$node)) {
+                                $rs.fields($node).value = $article.$node
+                            }
+                        } elseif ($node -ieq 'RABATTGR') {
+                            if ($RabattGr.Contains($article.$node)) {
+                                $rs.fields($node).value = $article.$node
+                            }
+                        }
+                        else {
+                            $rs.fields($node).value = $article.$node
+                        }
+                    }
                 }
-                $rs.fields('BruttoFlg').value = 0
-            } elseif ($article.PSObject.Properties.Name -contains 'VKBRUTTO') {
-                $rs.fields('VK').value = $article.VKBRUTTO
-                $rs.fields('BruttoFlg').value = 1
+            }
+
+            # ------------------------------------------------
+            # POST PROCESS e.g. COPPER SURCHARGE
+            # ------------------------------------------------
+            if ($cuSurcharge) {
+                if ($rs.fields('USERN3').value -gt 0.001) {
+                    $priceUnit = $rs.fields('PREISEH').value
+                    if (! $priceUnit) {
+                        $priceUnit = 1
+                        $rs.fields('PREISEH').value = $priceUnit
+                    }
+                    # Copper surchagre must be multiplied, because it is a per unit price
+                    if ($priceUnit -gt 1.001) {
+                        $surcharge = [float]($rs.fields('PREISEH').value * $rs.fields('USERN3').value)
+                    } else {
+                        $surcharge = [float]$rs.fields('USERN3').value
+                    }
+                    $price = [float][math]::Round(($rs.fields('VK').value + $surcharge), 2)
+                    $rs.fields('VK').value = [float]$price
+                    $price = [float][math]::Round(($rs.fields('EKNetto').value + $surcharge), 2)
+                    $rs.fields('EkNetto').value = [float]$price
+                }
             }
 
             $rs.Update()
             $rs.Close()
         }
         $myConn.Close()
+
+        if ($show) {
+            Write-Progress -Activity (Get-ResStr 'PROGBAR_XML_PROMPT') -Completed
+        }
     }
 
     End {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
         Return
     }
+    # Tets:  Import-ArticleFromXml -xml $xml -udl 'C:\temp\Eulanda_1 JohnDoe.udl' -cuSurcharge
 }
 
 function Import-TieredPrices {
@@ -14163,6 +14420,56 @@ function Get-RandomWords {
     return $result.TrimEnd()
 }
 
+function Get-ReadOnlyFields {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory=$true)]
+        [string]$tableName
+        ,
+        [Parameter(Mandatory = $false)]
+        [ValidateScript({ Test-ValidateConn -conn $_  })]
+        $conn
+        ,
+        [Parameter(Mandatory = $false)]
+        [ValidateScript({ Test-ValidatePathUDL -path $_  })]
+        [string]$udl
+        ,
+        [Parameter(Mandatory = $false)]
+        [ValidateScript({ Test-ValidateConnStr -connStr $_ })]
+        [string]$connStr
+    )
+
+    begin {
+        Write-Verbose -Message ((Get-ResStr 'STARTING_FUNCTION') -f $myInvocation.Mycommand)
+        $initialVariables = Get-CurrentVariables -Debug:$DebugPreference
+    }
+
+    process {
+        $myConn = Get-Conn -conn $conn -udl $udl -connStr $connStr
+
+        $readOnlyFields = @()
+
+        $rs = New-Object -ComObject ADODB.Recordset
+        $query = "SELECT TOP 0 * FROM $tableName"
+        $rs.Open($query, $myConn)
+
+        for ($i=0; $i -lt $rs.Fields.Count; $i++) {
+            $field = $rs.Fields.Item($i)
+            # write-host "$($field.name) $($field.attributes)"
+            if (-not ($field.Attributes -band 0x8)) {  # 0x8 is adFldUpdatable
+                $readOnlyFields += $field.Name
+            }
+        }
+        $rs.Close()
+        # $readOnlyFields | ForEach-Object { $_.ToUpper() }
+    }
+
+    end {
+        Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
+        return $readOnlyFields
+    }
+}
+
 function Get-SetAddressFilter {
     [CmdletBinding()]
     param()
@@ -16986,8 +17293,8 @@ function Test-ValidateUrl {
 # SIG # Begin signature block
 # MIIpiQYJKoZIhvcNAQcCoIIpejCCKXYCAQExDzANBglghkgBZQMEAgEFADB5Bgor
 # BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
-# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCDHiyD+00/qTi5I
-# k+jPR8dplr2qLYthDK9AjkjW8RaRQ6CCEngwggVvMIIEV6ADAgECAhBI/JO0YFWU
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCDUiW4B+2E2z4cq
+# qfzQ/pp/ghIJhF5sZDSSRbTfcWsSYKCCEngwggVvMIIEV6ADAgECAhBI/JO0YFWU
 # jTanyYqJ1pQWMA0GCSqGSIb3DQEBDAUAMHsxCzAJBgNVBAYTAkdCMRswGQYDVQQI
 # DBJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcMB1NhbGZvcmQxGjAYBgNVBAoM
 # EUNvbW9kbyBDQSBMaW1pdGVkMSEwHwYDVQQDDBhBQUEgQ2VydGlmaWNhdGUgU2Vy
@@ -17090,23 +17397,23 @@ function Test-ValidateUrl {
 # IExpbWl0ZWQxLjAsBgNVBAMTJVNlY3RpZ28gUHVibGljIENvZGUgU2lnbmluZyBD
 # QSBFViBSMzYCEGilgQZhq4aQSRu7qELTizkwDQYJYIZIAWUDBAIBBQCgfDAQBgor
 # BgEEAYI3AgEMMQIwADAZBgkqhkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEE
-# AYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAvBgkqhkiG9w0BCQQxIgQg9Viv7SoWG8KY
-# z+joBhidMFXAja2IWDqPHbzDaqEQK4cwDQYJKoZIhvcNAQEBBQAEggIAC0yUGaJu
-# DMTAfYz7zZkAdbHBHZaysvFqkbkO28BDbkfKQ1g6w3j4y2cJpHnx3M+fFok2THEL
-# yjO/XW9rqx2YlAeKGRn687mKLNWXtYTBD9YbZfxtdVsJp71zPOHGNaXcK+ubWMLH
-# ZZJYjys2JdCm0MnbH/E+pv9LYTEqItoCbsz5DVz0KMXmt1GtR/CuzZr/NodiASX7
-# bHuz7CG44GVklwFGPEG+zPVvmTxE/SgAJBXfzmm+PyAKn0wlswLnHPOpMebuilAr
-# mMlb30dwN6to96rZAQ4jtt9/8aX6WtvWWgyl0JMdCQ2971yePVV00/rjtsrCvo11
-# jqMKS/7ZzFg85RQV6LYj5Hod3aoauurlnuHjd9CboIRl8Nc5mADRn0AWvjeRFavm
-# LBc0XzTiXXXIyDzec6FlpRHt9tSX2Xx9TKdPdbrH3G0wxyEQkjRvv1aavCZ8uwym
-# hVl6dPb2lT73hw9t2rkjtmgGu5u3GbtaRJFmI3ZeIm7GlSZXmiPnSBSiGM3nEWtP
-# V+5JkuzUDuxeCyIRfhuJ5QOa1N7few2NyLr1Uo0tHAgIvI5tnKOJBFsmWrJqn4FM
-# AjUYS/S0o1hog4DY1FHPY8JARO5p1FaUBjU9B0/fSiJwft3wxZ/ji2QmQW//kWzs
-# Rnw3iHgRSQ0cDJZVfkZf6YbuYc5lDxqt9AShghNPMIITSwYKKwYBBAGCNwMDATGC
+# AYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAvBgkqhkiG9w0BCQQxIgQg3zOPet21uCKb
+# 3yB07ZKyHqCCX1c7tJNwJACj/6F+ArMwDQYJKoZIhvcNAQEBBQAEggIAtB/yZkGU
+# IWNGn0Eua1LGAYmDs24L7qFBjA9tQVPgYHouMlh8S47p0pa6Fbj7arzZ6FKt2q4G
+# xcOHXlk3cQueeuYovAsDwaMXtDXgZoatB7Vk8ECpFGosmk7d0wU0RwxL9n+9sHZh
+# lsrq3j5dDP5nRraNRYcyFzpkhUxrcdLj28RbrBmygCkDzYnqzPmdyeQESJ/1mF8H
+# NrVPI/DZx/5X8Kzk3NMuSa6RGn5cFLbGSwkcjX5wKaVhCaEeBnV8EgQMQJZNdayQ
+# YzQ/9RM4lhEsAgOhB/zvDPtBHuBtke7BixcIcgIMRwtvCPdKheKRXsa0jMiclcTV
+# mP6/eyL2ymIlOs6rlvL1gcfeiY8rzvDZVUe6XbLYogIPd/8SbY7CyX3xbmckfgqB
+# v/n5UCTucIVpHXp6+WmvAjv4KsyNAOBHhWBKNleaewNupMk7Atj0GKaaaVbmgucd
+# hfqL09kYl4+jwwiX0hYyG9lXvWucfAFHepmbIyiE56Lg4c+QFWOXIObSYXEqaHRj
+# 8i4sc9EOfgFC2K6nhaPK2NmRW1oNTTfKhh7n1+klnx2t2whaULFycxaW/MxSSgFC
+# LttRa0gUslk5cqheETsyJutNukeQwfUxLXi+8ifkMGB7RjhT97HgiPVCrXdvnBEh
+# 4UCKtOp0/WQRetdes6y3yiz8/ecgu9IFjs6hghNPMIITSwYKKwYBBAGCNwMDATGC
 # EzswghM3BgkqhkiG9w0BBwKgghMoMIITJAIBAzEPMA0GCWCGSAFlAwQCAgUAMIHw
 # BgsqhkiG9w0BCRABBKCB4ASB3TCB2gIBAQYKKwYBBAGyMQIBATAxMA0GCWCGSAFl
-# AwQCAQUABCAjavjL/2dAd0l2UeD2Xeq69uKUqBHgOCdrtjvZ3pwNfAIVANyN7liE
-# yiIw5J5oyjyH/Zm9xJzgGA8yMDIzMDYyMzIxMDIyMlqgbqRsMGoxCzAJBgNVBAYT
+# AwQCAQUABCDhi1I/7VnkaI2456eBTz/eFrjtzGtLRc6t6fjgrTXQLQIVAJyRYSZg
+# hgLaQMmUtmJujwnKFd6qGA8yMDIzMDYyNTA0Mzc1OFqgbqRsMGoxCzAJBgNVBAYT
 # AkdCMRMwEQYDVQQIEwpNYW5jaGVzdGVyMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
 # ZWQxLDAqBgNVBAMMI1NlY3RpZ28gUlNBIFRpbWUgU3RhbXBpbmcgU2lnbmVyICM0
 # oIIN6TCCBvUwggTdoAMCAQICEDlMJeF8oG0nqGXiO9kdItQwDQYJKoZIhvcNAQEM
@@ -17188,22 +17495,22 @@ function Test-ValidateUrl {
 # BAoTD1NlY3RpZ28gTGltaXRlZDElMCMGA1UEAxMcU2VjdGlnbyBSU0EgVGltZSBT
 # dGFtcGluZyBDQQIQOUwl4XygbSeoZeI72R0i1DANBglghkgBZQMEAgIFAKCCAWsw
 # GgYJKoZIhvcNAQkDMQ0GCyqGSIb3DQEJEAEEMBwGCSqGSIb3DQEJBTEPFw0yMzA2
-# MjMyMTAyMjJaMD8GCSqGSIb3DQEJBDEyBDB70NWf6Z4jfh+TpW644BuymsulAa4r
-# lcEqnig6o9tN6HtvT9t2nlW1R3yE6E1NwkYwge0GCyqGSIb3DQEJEAIMMYHdMIHa
+# MjUwNDM3NThaMD8GCSqGSIb3DQEJBDEyBDBsKUyQjxKDxmU8CLEZF4OOy+d078OE
+# 3Y/kLlR0BLKSnrZTPgpzvrgXBzdBTD5stJQwge0GCyqGSIb3DQEJEAIMMYHdMIHa
 # MIHXMBYEFK5ir3UKDL1H1kYfdWjivIznyk+UMIG8BBQC1luV4oNwwVcAlfqI+SPd
 # k3+tjzCBozCBjqSBizCBiDELMAkGA1UEBhMCVVMxEzARBgNVBAgTCk5ldyBKZXJz
 # ZXkxFDASBgNVBAcTC0plcnNleSBDaXR5MR4wHAYDVQQKExVUaGUgVVNFUlRSVVNU
 # IE5ldHdvcmsxLjAsBgNVBAMTJVVTRVJUcnVzdCBSU0EgQ2VydGlmaWNhdGlvbiBB
-# dXRob3JpdHkCEDAPb6zdZph0fKlGNqd4LbkwDQYJKoZIhvcNAQEBBQAEggIAFez5
-# +qrCVYhz98tyg1bjJh4HHT+dwvYNONGE8EMiNPZAU55lGn3AOGQ1HRR3z3v8wGyz
-# H+hs4wWWbLYSiVy/tR6BGNQs9QIgzLIJB9Bajv75DKDw2aHADhtpcvlvY7zAIaL4
-# unCy9jr3FIexIJj/wVS+nH5ODNGbEVyRsZy6Yw/s+CEAwX/P6hMNWAzy161hZZZz
-# DJwdE2uXoG5xOmWsQiWJ0OAftvhIl2gWG5Rcst63wBl8SPZv9X1NHiFnmBPsgmNp
-# UdbB4t058lkngu65gzUb4gaUS6SLl8dCxGAzQND5pKjAQjdNfR+Na1WRfDisLdBt
-# ko3m2awQXk6p2tVdz5SHTK4kWTLokol1xE62hMykKbqVOAL7OgBWJD02NXMfrWld
-# 9saeR/OgkQhiLCgHrU6JsK0AqAAwi+DIo59/J1LjUbWk1hq0VYBQkLTbMu+92bAO
-# GY5w3/SPQJv5PK6Cljax19ezkRezaTprO1KcKnY1Rv/cUQVM26kYyHs2wTMSbFEk
-# vcj14duNFGyiImdfdLGeNhHmRUN8NBpOGjn69lqmS+UXKm0DaA5L1UNNIj6IzDB5
-# NVcr0Lnj9qX4kpcLp9WNLPHcwkM1f8Uj6Wj+Je5Lc2ewUkTyL+iK6l6wZIBrDBgu
-# /6/9swXX92Zsnv7saosXnhn/z4/ICaZlRMlPpbg=
+# dXRob3JpdHkCEDAPb6zdZph0fKlGNqd4LbkwDQYJKoZIhvcNAQEBBQAEggIAMp5i
+# g/0nJ4qjGfN2nQ3tlG+UyZMEgt+qmTS2dyFM5UgxVNrYS5jQLq/6Vtj/EgNhlJ8l
+# u4MKru/6rzBOGNkUj5pfOaeh3lBxwFgsBbHo4XWieKbO9Pt3b86yESvyLwOIRj1T
+# cHZfsCFgcV//19gyZr7WXzuh2xhJ/+xis/4aG8OPkZCb82+MRVKLxf6/Ig+gGNP8
+# ZHXawqWT1hKu+wAPdhrlq9TTZorw6z/Q/mA/u81ZdulG8apPtp+nksGCpubW9UXM
+# gfQHnEK3NFQiQaNYc4llTYrUMpR7z9YIRSn2YOCkmwKY3ysdXgf4pOukkatKUz6U
+# yyIpqqGG/H3KZ18BLVvLgRNvzRyWZ3VsfWf6vKfY6lK+BCvhup/uU2uDKNfZfsb8
+# 5XoFLMKoZUvKN3e2nbgqe1Bm4P3nAWndS+wKRiuiuIxXNVARZ9iTRe4mNpVroQh7
+# 0ShfF4jKdlz2H2oRjEvXVI674SQ9QTJIN75ndXZC5ljNCjFPG9E0EBrqmyCWbgVi
+# 7y7D2rDEAtyzPh2wsC6+Xuv2ov3pVGGO9Gc3Cw9qGW3KnRuzM/I3SzCZ6Q9nEEtB
+# cmbShVTFewtyZCUAT8c/kiH8PDRMOrhu02DuA5n/NCYonkYVy+SOh8D0iuBJ3H9U
+# 6ezEWnOxPhPGLuZQgli/XvKwnj7JxwZeMD7411w=
 # SIG # End signature block

@@ -8,7 +8,7 @@ The most important changes to EulandaConnect can be found listed chronologically
 
 | Version | Date        | Description                                                  |
 | ------- | ----------- | ------------------------------------------------------------ |
-| 3.2.1 | coming soon | `New`: [Convert-DatanormToXml](./docs/Convert-DatanormToXml.md), [Convert-FromDatanorm](./docs/Convert-FromDatanorm.md) and [Convert-OemToUtf8](./docs/Convert-OemToUtf8.md) brings the datanorm standard to PowerShell. |
+| 3.2.1 | 06/25/2023 | `New`: [Convert-DatanormToXml](./docs/Convert-DatanormToXml.md), [Convert-FromDatanorm](./docs/Convert-FromDatanorm.md), [Import-ArticleFromXml](./docs/Import-ArticleFromXml) and [Convert-OemToUtf8](./docs/Convert-OemToUtf8.md) brings the datanorm standard to PowerShell. |
 | 3.1.9 | 06/21/2023 | `Breaking Change`: Function Import-TieredPrices renamed, lot of new parameters and also alias exists.|
 | 3.1.8 | 06/21/2023 | `Bugfixes`: Some bugfixes, when it is an Excel file. |
 | 3.1.7 | 06/21/2023 | `New`: Import-TieredPrice to add tiered prices to the article table. |

@@ -582,4 +582,34 @@
   <data name="DATANORM_PRICEUNITCODE_ERROR" xml:space="preserve">
     <value>Ungültiger Preis pro Einheit Code '{0}'. Erlaubte Werte sind 0, 1, 2 und 3. 0=pro Einheit, 1=pro 10 Einheiten, 2=100 Einheiten und 3 pro 1000 Einheiten. Funktion {1}</value>
   </data>
+  <data name="DATANORM_FILE_EMPTY" xml:space="preserve">
+    <value>ie Datanorm-Datei '{0}' ist leer. Funktion {1}</value>
+  </data>
+  <data name="ARTICLENO_MISSING_IN_XML" xml:space="preserve">
+    <value>Die Artikelnummer existiert nicht in der xml-Datei! Sie ist jedoch als eindeutiger Schlüssel erforderlich. Funktion {0}</value>
+  </data>
+  <data name="PROGBAR_FILES_PROMPT" xml:space="preserve">
+    <value>Verarbeitung von Dateien...</value>
+  </data>
+  <data name="PROGBAR_FILES_STATUS" xml:space="preserve">
+    <value>Verarbeite Datei: {0} (Datei {1} von {2})</value>
+  </data>
+  <data name="PROGBAR_FILE_PROMPT" xml:space="preserve">
+    <value>Verarbeitung von Datei...</value>
+  </data>
+  <data name="PROGBAR_FILE_STATUS" xml:space="preserve">
+    <value>Verarbeite Artikel: {0} (Zeile {1} von {2})</value>
+  </data>
+  <data name="PROGBAR_DATANORM_PROMPT" xml:space="preserve">
+    <value>Verarbeitung von Datanorm...</value>
+  </data>
+  <data name="PROGBAR_DATANORM_STATUS" xml:space="preserve">
+    <value>Verarbeite Artikel: {0} (Objekt {1} von {2})</value>
+  </data>
+  <data name="PROGBAR_XML_PROMPT" xml:space="preserve">
+    <value>Verarbeitung von Xml...</value>
+  </data>
+  <data name="PROGBAR_XML_STATUS" xml:space="preserve">
+    <value>Verarbeite Artikel: {0} (Knoten {1} von {2})</value>
+  </data>
 </root>

@@ -737,4 +737,44 @@
     <value>Invalid price per unit code '{0}'. Allowed values are 0, 1, 2 and 3. 0=per unit, 1=per 10 units, 2=100 units and 3 per 1000 units. Function {1}</value>
     <comment/>
   </data>
+  <data name="DATANORM_FILE_EMPTY" xml:space="preserve">
+    <value>Datanorm file '{0}' is empty. Function {1}</value>
+    <comment/>
+  </data>
+  <data name="ARTICLENO_MISSING_IN_XML" xml:space="preserve">
+    <value>The article number does not exist in xml file! However, it is necessary as a unique key. Function {0}</value>
+    <comment/>
+  </data>
+  <data name="PROGBAR_FILES_PROMPT" xml:space="preserve">
+    <value>Processing files...</value>
+    <comment/>
+  </data>
+  <data name="PROGBAR_FILES_STATUS" xml:space="preserve">
+    <value>Processing file: {0} (file {1} of {2})</value>
+    <comment/>
+  </data>
+  <data name="PROGBAR_FILE_PROMPT" xml:space="preserve">
+    <value>Processing file...</value>
+    <comment/>
+  </data>
+  <data name="PROGBAR_FILE_STATUS" xml:space="preserve">
+    <value>Processing article: {0} (line {1} of {2})</value>
+    <comment/>
+  </data>
+  <data name="PROGBAR_DATANORM_PROMPT" xml:space="preserve">
+    <value>Processing datanorm...</value>
+    <comment/>
+  </data>
+  <data name="PROGBAR_DATANORM_STATUS" xml:space="preserve">
+    <value>Processing article: {0} (object {1} of {2})</value>
+    <comment/>
+  </data>
+  <data name="PROGBAR_XML_PROMPT" xml:space="preserve">
+    <value>Processing xml...</value>
+    <comment/>
+  </data>
+  <data name="PROGBAR_XML_STATUS" xml:space="preserve">
+    <value>Processing article: {0} (node {1} of {2})</value>
+    <comment/>
+  </data>
 </root>
