@@ -22,9 +22,7 @@ function Test-Console {
 
         if ($hasRdpSession) {
             $result = $false
-
-        }
-        else {
+        } else {
             $result = $true
         }
     }

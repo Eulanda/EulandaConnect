@@ -19,4 +19,3 @@ Describe "Convert-OemToUtf8" {
         Convert-OemToUtf8 -inputString $inputString | Should -Be $expectedOutput
     }
 }
-

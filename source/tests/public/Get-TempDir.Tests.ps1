@@ -17,4 +17,9 @@ Describe 'Testing Get-TempDir function' {
         $result = Get-TempDir
         $result | Should -Not -Be '\'
     }
+
+   It "should return a valid path" {
+        $result = Get-TempDir
+        { Test-Path -Path $result -IsValid } | Should -Not -Throw
+    }
 }
