@@ -13,11 +13,11 @@
     ,
     [switch]$newFinalImage       # 4
     ,
-    [switch]$publishToPsGallery  # 5
+    [switch]$updateOnlineDocs    # 5
     ,
-    [switch]$updateOnlineDocs    # 6
+    [switch]$invokePester        # 6
     ,
-    [switch]$invokePester        # 7
+    [switch]$publishToPsGallery  # 7
     ,
     [switch]$pesterNoTelegram    # Parameter
     )
@@ -798,12 +798,12 @@ function Invoke-Main {
             ConvertTo-Maml                  # Generates the MAML XML help from markdowns
         } elseif ($newFinalImage) {
             New-FinalImage                  # Creates an uploadable image in the FinalFolder
-        } elseif ($publishToPsGallery) {
-            Publish-ToPsGallery             # Publishes to PowerShell Gallery
         } elseif ($updateOnlineDocs) {
             Update-OnlineDocs               # Sync to CMS, Compile Size, Upload
         } elseif ($invokePester) {
             Invoke-Pester                   # Pester tests
+        } elseif ($publishToPsGallery) {
+            Publish-ToPsGallery             # Publishes to PowerShell Gallery
         }
 
     } finally {
