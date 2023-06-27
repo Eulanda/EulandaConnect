@@ -186,6 +186,7 @@ FunctionsToExport = @(
     'New-DeliveryPropertyItem',
     'New-EulException',
     'New-EulLog',
+    'New-PurchaseOrder',
     'New-RemoteFolder',
     'New-SalesOrder',
     'New-Shortcut',

@@ -41,9 +41,6 @@ function Get-NewNumberFromSeries {
         $cmd.Execute() | Out-Null
 
         $result = $cmd.Parameters.Item("@nr_NextNr").Value
-
-        $myconn.Close()
-
     }
 
     end {
