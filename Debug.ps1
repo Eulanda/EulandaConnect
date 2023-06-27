@@ -25,10 +25,12 @@ Write-Host "*******************************************************************"
 try {
     # YOUR TEST CODE HERE
 
-    $datanorm = Convert-FromDatanorm -path "$PSScriptRoot\.ignore\data\zander" -show
-    $xml = Convert-DatanormToXml -datanorm $datanorm -show
-    Import-ArticleFromXml -xml $xml -udl 'C:\temp\Eulanda_1 MeineFirma.udl' -cuSurcharge -show
+    # $datanorm = Convert-FromDatanorm -path "$PSScriptRoot\.ignore\data\zander" -show
+    # $xml = Convert-DatanormToXml -datanorm $datanorm -show
+    # Import-ArticleFromXml -xml $xml -udl 'C:\temp\Eulanda_1 MeineFirma.udl' -cuSurcharge -show
 
+    $i = Get-NewNumberFromSeries -seriesName 'KrAuftrag' -udl 'C:\temp\Eulanda_1 JohnDoe.udl'
+    Write-Host $i
 
 
 <#

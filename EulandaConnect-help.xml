@@ -11858,6 +11858,164 @@ BLUE,YELLOW</dev:code>
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
+      <command:name>Get-NewNumberFromSeries</command:name>
+      <command:verb>Get</command:verb>
+      <command:noun>NewNumberFromSeries</command:noun>
+      <maml:description>
+        <maml:para>Generates a new number for a specific series.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>The `Get-NewNumberFromSeries` function generates a new number for a specific series in a database using an ADODB connection. The function uses the "cn_NumGetNext" stored procedure and executes it with the series name to get the next available number.</maml:para>
+      <maml:para>The function takes the series name as a parameter, and it is expected to be one of the following:</maml:para>
+      <maml:para>| Series Name (German) | Series Name (English) | |---|---| | Angebot | Offer | | Auftrag | Order | | Rechnung | Invoice | | Lieferschein | Delivery Note | | Debitor | Debtor | | KasseBeleg | Cash Receipt | | KrAuftrag | Wholesale Order | | Inventurbelege | Inventory Documents | | EDIListen | EDI Lists | | Umbuchungen | Transfers | | Warenbewegungen | Goods Movements | | Wareneingaenge | Goods Receipts |</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Get-NewNumberFromSeries</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>seriesName</maml:name>
+          <maml:description>
+            <maml:para>Specifies the name of the series for which a new number is to be generated. The value must be one of the series listed in the description.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+          <maml:name>conn</maml:name>
+          <maml:description>
+            <maml:para>The connection can be established via an existing ADO object of the type 'ADODB.Connection'. If the connection is already open, it remains open even after the function has been executed. If it was closed, it will be closed again after the function has been executed.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Object</command:parameterValue>
+          <dev:type>
+            <maml:name>Object</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+          <maml:name>udl</maml:name>
+          <maml:description>
+            <maml:para>Alternatively to a connection, a string to a UDL file can be specified. In this case an ADO object is created and closed again at the end of the function.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
+          <maml:name>connStr</maml:name>
+          <maml:description>
+            <maml:para>A `ConnectionString` can be specified here, with which a database can be opened.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+        <maml:name>conn</maml:name>
+        <maml:description>
+          <maml:para>The connection can be established via an existing ADO object of the type 'ADODB.Connection'. If the connection is already open, it remains open even after the function has been executed. If it was closed, it will be closed again after the function has been executed.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Object</command:parameterValue>
+        <dev:type>
+          <maml:name>Object</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
+        <maml:name>connStr</maml:name>
+        <maml:description>
+          <maml:para>A `ConnectionString` can be specified here, with which a database can be opened.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>seriesName</maml:name>
+        <maml:description>
+          <maml:para>Specifies the name of the series for which a new number is to be generated. The value must be one of the series listed in the description.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+        <maml:name>udl</maml:name>
+        <maml:description>
+          <maml:para>Alternatively to a connection, a string to a UDL file can be specified. In this case an ADO object is created and closed again at the end of the function.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Please ensure that the necessary resources such as the "cn_NumGetNext" stored procedure and ADODB connection are available and configured correctly.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>------ Example 1: Next Number of series name ‘KrAuftrag’ ------</maml:title>
+        <dev:code>PS C:\&gt; $i = Get-NewNumberFromSeries -seriesName 'KrAuftrag' -udl 'C:\temp\EULANDA_1 JohnDow.udl'</dev:code>
+        <dev:remarks>
+          <maml:para>In this example, a new number for the 'KrAuftrag' (Wholesale Order) series is generated using a UDL file to establish the ADODB connection.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version:</maml:linkText>
+        <maml:uri>https://github.com/Eulanda/EulandaConnect/blob/master/docs/Get-NewNumberFromSeries.md</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
       <command:name>Get-NextIp</command:name>
       <command:verb>Get</command:verb>
       <command:noun>NextIp</command:noun>
