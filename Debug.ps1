@@ -29,7 +29,8 @@ try {
     # $xml = Convert-DatanormToXml -datanorm $datanorm -show
     # Import-ArticleFromXml -xml $xml -udl 'C:\temp\Eulanda_1 MeineFirma.udl' -cuSurcharge -show
 
-    $i = Get-NewNumberFromSeries -seriesName 'KrAuftrag' -udl 'C:\temp\Eulanda_1 JohnDoe.udl'
+    # $i = Get-NewNumberFromSeries -seriesName 'KrAuftrag' -udl 'C:\temp\Eulanda_1 JohnDoe.udl'
+    $i = Get-SupplierAddressID -supplierID 15 -udl 'C:\temp\Eulanda_1 JohnDoe.udl'
     Write-Host $i
 
 

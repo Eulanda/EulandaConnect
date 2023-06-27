@@ -1,50 +1,37 @@
 ---
 external help file: EulandaConnect-help.xml
 Module Name: EulandaConnect
-online version: https://github.com/Eulanda/EulandaConnect/blob/master/docs/Get-NewNumberFromSeries.md
+online version: https://github.com/Eulanda/EulandaConnect/blob/master/docs/Get-SupplierAddressId.md
 schema: 2.0.0
 ---
 
-# Get-NewNumberFromSeries
+# Get-SupplierAddressId
 
 ## SYNOPSIS
-Generates a new number for a specific series.
+The `Get-SupplierAddressId` function retrieves the latest revision of a supplier's address from a SQL database. 
 
 ## SYNTAX
 
 ```
-Get-NewNumberFromSeries [[-seriesName] <String>] [[-conn] <Object>] [[-udl] <String>] [[-connStr] <String>]
+Get-SupplierAddressId [[-supplierID] <Int32>] [[-conn] <Object>] [[-udl] <String>] [[-connStr] <String>]
  [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-The `Get-NewNumberFromSeries` function generates a new number for a specific series in a database using an ADODB connection. The function uses the "cn_NumGetNext" stored procedure and executes it with the series name to get the next available number.
+The function executes a SQL query that selects the address revision with the highest revision number for each supplier address, effectively fetching the latest revision of the address.
 
-The function takes the series name as a parameter, and it is expected to be one of the following:
+If the SQL query returns a non-empty result, the function extracts the ID of the address with the highest revision number.
 
-| Series Name (German) | Series Name (English) |
-|---|---|
-| Angebot | Offer |
-| Auftrag | Order |
-| Rechnung | Invoice |
-| Lieferschein | Delivery Note |
-| Debitor | Debtor |
-| KasseBeleg | Cash Receipt |
-| KrAuftrag | Wholesale Order |
-| Inventurbelege | Inventory Documents |
-| EDIListen | EDI Lists |
-| Umbuchungen | Transfers |
-| Warenbewegungen | Goods Movements |
-| Wareneingaenge | Goods Receipts |
+In summary, `Get-SupplierAddressId` provides a way to retrieve the latest revision of a supplier's address in a SQL database, taking into account a complex table structure and ensuring that all database interactions are secure and robust. It's designed to be flexible and easy to use, with various options for specifying the database connection.
 
 ## EXAMPLES
 
-### Example 1: Next Number of series name 'KrAuftrag'
+### Example 1
 ```powershell
-PS C:\> $i = Get-NewNumberFromSeries -seriesName 'KrAuftrag' -udl 'C:\temp\EULANDA_1 JohnDow.udl'
+PS C:\> $id = Get-SupplierAddressId -supplierID 15 -udl 'C:\temp\Eulanda_1 JohnDoe.udl'
 ```
 
-In this example, a new number for the 'KrAuftrag' (Wholesale Order) series is generated using a UDL file to establish the ADODB connection.
+Returns the SupplierAdressId with the highest revision of address information.
 
 ## PARAMETERS
 
@@ -78,11 +65,11 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -seriesName
-Specifies the name of the series for which a new number is to be generated. The value must be one of the series listed in the description.
+### -supplierID
+This mandatory integer parameter is used to specify the ID of the supplier for which you want to retrieve the latest address revision.
 
 ```yaml
-Type: String
+Type: Int32
 Parameter Sets: (All)
 Aliases:
 
@@ -119,7 +106,5 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ### System.Object
 ## NOTES
-
-Please ensure that the necessary resources such as the "cn_NumGetNext" stored procedure and ADODB connection are available and configured correctly.
 
 ## RELATED LINKS
