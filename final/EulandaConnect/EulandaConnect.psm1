@@ -5845,9 +5845,6 @@ function Get-NewNumberFromSeries {
         $cmd.Execute() | Out-Null
 
         $result = $cmd.Parameters.Item("@nr_NextNr").Value
-
-        $myconn.Close()
-
     }
 
     end {
@@ -6998,6 +6995,63 @@ function Get-Subnet {
     # Test:  Get-Subnet -cidr 24
 }
 
+function Get-SupplierAddressId {
+    param(
+        [int]$supplierID
+        ,
+        [Parameter(Mandatory = $false)]
+        [ValidateScript({ Test-ValidateConn -conn $_  })]
+        $conn
+        ,
+        [Parameter(Mandatory = $false)]
+        [ValidateScript({ Test-ValidatePathUDL -path $_  })]
+        [string]$udl
+        ,
+        [Parameter(Mandatory = $false)]
+        [ValidateScript({ Test-ValidateConnStr -connStr $_ })]
+        [string]$connStr
+    )
+
+    begin {
+        Write-Verbose -Message ((Get-ResStr 'STARTING_FUNCTION') -f $myInvocation.Mycommand)
+        Test-ValidateSingle -validParams (Get-SingleConnection) @PSBoundParameters
+        $initialVariables = Get-CurrentVariables -Debug:$DebugPreference
+    }
+
+    process {
+        $myConn = Get-Conn -conn $conn -udl $udl -connStr $connStr
+
+        $sql = @"
+            SELECT ans.ID [SupplierAddressId]
+            FROM Kreditor k
+            JOIN Adresse adr ON adr.Id = k.AdresseID
+            JOIN (
+                SELECT ID, AdresseID, AdresseRevision
+                FROM (
+                    SELECT ID, AdresseID, AdresseRevision,
+                        ROW_NUMBER() OVER (PARTITION BY AdresseID ORDER BY AdresseRevision DESC) as row_num
+                    FROM cnAnschrift
+                ) sub
+                WHERE sub.row_num = 1
+            ) ans ON ans.AdresseID = adr.ID
+            WHERE k.ID = $supplierID;
+"@
+
+        $rs = $myConn.Execute($sql)
+        if ($rs) {
+            if (! $rs.eof) {
+                [int]$result = $rs.fields('SupplierAddressId').value
+            }
+        }
+    }
+
+
+    end {
+        Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
+        Return $result
+    }
+
+}
 function Get-TempDir {
     [CmdletBinding()]
     param()
@@ -9463,6 +9517,67 @@ function New-EulLog {
     )
     Write-Verbose -Message ((Get-ResStr 'STARTING_FUNCTION') -f $myInvocation.Mycommand)
     return [EulLog]::New($name, $path)
+}
+
+function New-PurchaseOrder {
+    param(
+        [int]$supplierID
+        ,
+        [string]$processedBy
+        ,
+        [Parameter(Mandatory = $false)]
+        [ValidateScript({ Test-ValidateConn -conn $_  })]
+        $conn
+        ,
+        [Parameter(Mandatory = $false)]
+        [ValidateScript({ Test-ValidatePathUDL -path $_  })]
+        [string]$udl
+        ,
+        [Parameter(Mandatory = $false)]
+        [ValidateScript({ Test-ValidateConnStr -connStr $_ })]
+        [string]$connStr
+    )
+
+    begin {
+        Write-Verbose -Message ((Get-ResStr 'STARTING_FUNCTION') -f $myInvocation.Mycommand)
+        Test-ValidateSingle -validParams (Get-SingleConnection) @PSBoundParameters
+        $initialVariables = Get-CurrentVariables -Debug:$DebugPreference
+    }
+
+    process {
+        $myConn = Get-Conn -conn $conn -udl $udl -connStr $connStr
+
+        $cmd = New-Object -ComObject ADODB.Command
+        $cmd.ActiveConnection = $myConn
+        $cmd.CommandType = 4 #adCmdStoredProc
+        $cmd.CommandText = "[dbo].[cn_KfNew]"
+
+        $cmd.Parameters.Append(($cmd.CreateParameter("@KreditorId", 3, 1,4, $supplierID))) #adInteger
+        $cmd.Parameters.Append(($cmd.CreateParameter("@KopfId", 3, 2))) #adInteger, adParamOutput
+        $cmd.Parameters.Append(($cmd.CreateParameter("@KopfNummer", 200, 2, 255))) #adVarWChar, adParamOutput
+        $cmd.Parameters.Append(($cmd.CreateParameter("@BearbeitetDurch", 200, 1, 255, $processedBy))) #adVarWChar
+
+        $cmd.Execute() | Out-Null
+
+        $result = $cmd.Parameters.Item("@KopfId").Value
+
+        if ($result) {
+            $PurchaseOrderNo = Get-NewNumberFromSeries -seriesName 'KrAuftrag' -conn $myConn
+            $sql = "UPDATE KrAuftrag SET KopfNummer = $PurchaseOrderNo WHERE ID = $result"
+            $myConn.Execute($sql) | Out-Null
+        }
+        <#
+            $output = @{
+                KopfId = $cmd.Parameters.Item("@KopfId").Value
+                KopfNummer = $cmd.Parameters.Item("@KopfNummer").Value
+            }
+        #>
+    }
+
+    end {
+        Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
+        Return $result
+    }
 }
 
 Function New-RemoteFolder {
@@ -17347,8 +17462,8 @@ function Test-ValidateUrl {
 # SIG # Begin signature block
 # MIIpiAYJKoZIhvcNAQcCoIIpeTCCKXUCAQExDzANBglghkgBZQMEAgEFADB5Bgor
 # BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
-# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCDOaENFQJP4SocC
-# TkabKUjb3LyPzCcZb6jHasujFDMISqCCEngwggVvMIIEV6ADAgECAhBI/JO0YFWU
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCAOq+LN0foS95qU
+# kzqLA0DGFmVKo0DsQjh+W1AasDqsb6CCEngwggVvMIIEV6ADAgECAhBI/JO0YFWU
 # jTanyYqJ1pQWMA0GCSqGSIb3DQEBDAUAMHsxCzAJBgNVBAYTAkdCMRswGQYDVQQI
 # DBJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcMB1NhbGZvcmQxGjAYBgNVBAoM
 # EUNvbW9kbyBDQSBMaW1pdGVkMSEwHwYDVQQDDBhBQUEgQ2VydGlmaWNhdGUgU2Vy
@@ -17451,23 +17566,23 @@ function Test-ValidateUrl {
 # IExpbWl0ZWQxLjAsBgNVBAMTJVNlY3RpZ28gUHVibGljIENvZGUgU2lnbmluZyBD
 # QSBFViBSMzYCEGilgQZhq4aQSRu7qELTizkwDQYJYIZIAWUDBAIBBQCgfDAQBgor
 # BgEEAYI3AgEMMQIwADAZBgkqhkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEE
-# AYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAvBgkqhkiG9w0BCQQxIgQgvKGTEu212ubI
-# ysactu5fBaNZvoDDWuIkaua9QX08lf4wDQYJKoZIhvcNAQEBBQAEggIATk5opB4c
-# MKvqkfWMBA/PzSCFZZ7XDxOgpKf6oj1Br2jHa8RS5wXVdosrn2KGS8WW5FDjqkrP
-# 36nERfStxlbKiJublmWmNAmfbcsI7ehxiJPdAh0kfIvU5dfTtrRncrEO3F8zJjZK
-# 4BCX89p2fTmfCgDce7J9JsxCj6bmtO/p8DfE1kAIxZTeP5nAZC8kHRf0lcAux9ze
-# 7QOIWkWwm8y2aEBwWX6spIfmJRPE/Vb96DPG2WgYDMXwJzVZ+YDrJbU7t2dRVNKW
-# ucN1JQlqnYuHgXqBRer5xPNfjmGiq/ePRENA/SNF6kq4alcQGYJqz4dsXYiuOVRu
-# ffNtz8jzkYZNRGBwA6Dej5VMtpaKDkRK0X1i+nGm82O2ByolW1mRSTG90ESxA0LX
-# rFGuMzVqPQh4G3TiCrYVsPvDSFMn2VJ9LKNC/7ffEbEqVb70H6eLWEtg0o/hPOPj
-# JF6bnG9VA+Rz1DpZcf9FRnImGFbgaxq8SZCw/7xDV7Bi3xO0Iazm2L5oEWr5KQbf
-# f9PctgJ1WQ00pkn/0d0xOAOKRIsUEqYjccMdaZKR41XpFgAU5OB8Tgam2mwSzKhG
-# ia7u6XbHmjoEc7tyGt+91Sa3R2hnB5H+o9ckgbB830bAITVrDrVphqOohLvvhlT6
-# ohJuNjUMeULMcSDi2PCN576RBz3BMMBeWROhghNOMIITSgYKKwYBBAGCNwMDATGC
+# AYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAvBgkqhkiG9w0BCQQxIgQg15A/wn1OR3X9
+# MHKg7bhmu4R9ytOzJ806Bv5ZUV6UYOwwDQYJKoZIhvcNAQEBBQAEggIAUF0YTSVJ
+# RocTNKE48b6rrPJdFuHwvvhMprbaiVhd/UnBMBWaUlGhdljOBAwDmkhXaoxvo4XT
+# Lp/yWc4fJKnt1kb+wwaGM6lk7iaBhnNRy7YCYuPbdfwHoAjWkzCCTwlo0uWXh/Ux
+# /X/52JCROyqYg4sdRm5UgvfIkcpmkXzhULdHgcnYRdkgrNhtZbex8SO1IBooIkaN
+# EwO1T9FW8foMOAak2cICG4DpVvDEzApmWmoeOvLyCeSsgV8NrQAbOiIEdefrtJYe
+# MfzA62lyY4BUPZGfpwPpY6zhSmN16MVvWN6vNRh6OZqKp7bupaytOWbYiT+tiF6p
+# chfPJmVOG2UUnGU+EagRwVHxwArImysDpYjoQwrFy8cHhjFcP7M+cxPwhgdDEHYh
+# TyLWuj8m4jCRC3okr0kozSCFjoAeSTo+jEVMSFCFq4UYsfK0DWhyOfNg0vc8eHe+
+# h8YAmxqWhoIiUEqnYOo6NK02c1VBhWDasu9d7IVZCeKoI+kpC7kdtC/9667BGaM3
+# mZNLOPrOLekYCohlUOSk3EYVKDXdk45bYtTZ9zmC3O+X6lgpSlmxAHvAA+JZ144P
+# eMEw11rgjLFKbV40KmrNK8/IJ9BPtRbobkvtB32xHwZNNewaSnH8nQ1x3BVZqnFl
+# WQQhDTBU8n70MPnvvzV52XX2CHVYfxl8mjWhghNOMIITSgYKKwYBBAGCNwMDATGC
 # EzowghM2BgkqhkiG9w0BBwKgghMnMIITIwIBAzEPMA0GCWCGSAFlAwQCAgUAMIHv
 # BgsqhkiG9w0BCRABBKCB3wSB3DCB2QIBAQYKKwYBBAGyMQIBATAxMA0GCWCGSAFl
-# AwQCAQUABCBPS9LvRwJ/Mwt8rh63Zr5RA+uRuUjb9Fu7tJYd9WteMgIUBbiVHcTP
-# pKpzBKm5vBLOjUUDONsYDzIwMjMwNjI3MDYyMzEwWqBupGwwajELMAkGA1UEBhMC
+# AwQCAQUABCCPkWnGAblBE+pAK/dPEP/b+wSQNhu1X8psNPgEdxOqDAIUKhuq/Eb0
+# wmxEq5B4k856cuhCYDEYDzIwMjMwNjI3MTAyMjA3WqBupGwwajELMAkGA1UEBhMC
 # R0IxEzARBgNVBAgTCk1hbmNoZXN0ZXIxGDAWBgNVBAoTD1NlY3RpZ28gTGltaXRl
 # ZDEsMCoGA1UEAwwjU2VjdGlnbyBSU0EgVGltZSBTdGFtcGluZyBTaWduZXIgIzSg
 # gg3pMIIG9TCCBN2gAwIBAgIQOUwl4XygbSeoZeI72R0i1DANBgkqhkiG9w0BAQwF
@@ -17549,22 +17664,22 @@ function Test-ValidateUrl {
 # ChMPU2VjdGlnbyBMaW1pdGVkMSUwIwYDVQQDExxTZWN0aWdvIFJTQSBUaW1lIFN0
 # YW1waW5nIENBAhA5TCXhfKBtJ6hl4jvZHSLUMA0GCWCGSAFlAwQCAgUAoIIBazAa
 # BgkqhkiG9w0BCQMxDQYLKoZIhvcNAQkQAQQwHAYJKoZIhvcNAQkFMQ8XDTIzMDYy
-# NzA2MjMxMFowPwYJKoZIhvcNAQkEMTIEMBIVDlV13bWyuS1iUck4kmciIFBnLFQi
-# uU4yrYinOl0MDZuHZmMoBK78/B2+B34KrTCB7QYLKoZIhvcNAQkQAgwxgd0wgdow
+# NzEwMjIwN1owPwYJKoZIhvcNAQkEMTIEMHULb1YRNoqB9WZG3AzZL51aSQIBFI3I
+# 9m+ZP2fYkp2eYMj4h+J4qeXubPq88Lx1ojCB7QYLKoZIhvcNAQkQAgwxgd0wgdow
 # gdcwFgQUrmKvdQoMvUfWRh91aOK8jOfKT5QwgbwEFALWW5Xig3DBVwCV+oj5I92T
 # f62PMIGjMIGOpIGLMIGIMQswCQYDVQQGEwJVUzETMBEGA1UECBMKTmV3IEplcnNl
 # eTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoTFVRoZSBVU0VSVFJVU1Qg
 # TmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0aW9uIEF1
-# dGhvcml0eQIQMA9vrN1mmHR8qUY2p3gtuTANBgkqhkiG9w0BAQEFAASCAgAsYPSM
-# U++NQ4LVJzh5vAHInNmxrIJM+rIuBJO9z+5NUxPoqX0DOy2AeNjrE6d+2JUAz0aU
-# 8qAiIQoBJRF8jk8T0oC7aHxYuHyxSU+pWt04HyUIOhc1C1S2vsn9mrjriQGiI+9w
-# j6Gjdnb20bahpGcMGkkehC3SRY5q5LfvMBVdLO8FNeySj2zfESmgAtU/kJUB1Jxm
-# CScy+aAPoi42YB8Xw7jCw5VOxdDJAj71P6BkFymKjrYQ0KlFXOufFMd4KQbP0xMO
-# qW+iNxQFHrz9HTUSa8fpag0owwGbQUJZfsR+XVDZSnAjk+v7iLvJl7xfJDFzFV3M
-# ATeRt2q3Y/zBnpazWzywR9GUdbhhjJQfu4iPi3sRr87MPayNF2/Bwhbmz8+IcH0j
-# km4n6XE8QxYIDuokU9ADX4hulOrThhOhWfQIhYvJlNIe+kKbSlAuVzCLLzT6MG91
-# /mD4uol4XLXw6ivEN5VZXSjmr/vv4bp0mje2N6vS/NxUnWxAa+Fj9YFX3zzfBi/g
-# f+v5FQPOXPDJ4CIOarNaqvPKelaJVTfXIUHvazYXmhvyCNOatXHFgR1K2+8emeYX
-# gpY/fQR+j6KEQGHQj7qn61oY2S0Oq+iYwdzaTx2iUo8rocSs8cbHhJlb+6Xpkbm4
-# ays9sUF6RUT/w1XpVkvXk4EPHoTYqz2B+VV3zQ==
+# dGhvcml0eQIQMA9vrN1mmHR8qUY2p3gtuTANBgkqhkiG9w0BAQEFAASCAgBORAN2
+# lu1JheHUi8sSlB6feNXnbpYwW9m7KTxtEOdE1ADKa/NfeccEH3KcF4m0pQAQs9sw
+# KdrmPQ9ZrbNLHEJGBtl2TwAJ8NQhNevQwCqmZSd5RP/Zd9Yewr3D6r6cW7vph9yP
+# 1lUe8XHBbvKk4beBDb0BrLKUrqgS7nD7iWeM1JGTDz2xAEyQz+Wtz7FGJPL13U0A
+# 9+yVM91PKneTIzYRq1XISyFXFfe+TsNKzFMdVm4Hq/KvIPwpfP+5JUbXaL1rVzng
+# k0/+VRNH9nUnqnM4xldRhQSYwHXFWZ/B4AP+eMJubLIW/dLHaj0V8kFG7RlLp0Hu
+# nTf0Kf3yxM+ABtYke8fTrcdaoASnJExasxRyXSAC9zMxzqKPqrLKtTES6cgqVEDF
+# QK042FAOkVKeixJ9M1K3owR/ewDZOpGGNLX1Cm8WJmEynBpGFw1XrQCtJkUwoIms
+# Y801srxxYwTd4cm6ptnt/Bsx37FDDPpnd5Q67uCYDwiTMZsPVJ2HNJL1FyZxYXwU
+# cHSLIWQp0Pp+UKfah8Lb17fuXa46LmG71QSrYdSHAr+UOZwyg4WYwKLK7UpFNRPF
+# 5zwxWarMmn+BiQF7rzXNk5MkI2YjBAXy3hzfm6LUSmONA8iZulYL+g0FTwr/CbzS
+# 3x6rQ8S0z9arZ6qkvpQNTWQ5rM9wRmcxokcvIw==
 # SIG # End signature block
