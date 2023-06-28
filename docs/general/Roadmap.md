@@ -20,16 +20,17 @@ Our roadmap represents an exciting journey towards achieving our goals. While we
    4. Address master data (address*.xml)
 3. Implementing a function to **convert** a delivery note into an invoice `(confirmed for june 2023)`
 4. Enabling the import of **tier prices** from CSV and Excel files `(just done)`
-5. Import Datanorm 4.0 in a PowerShell object structure  `(in progress)`
+5. Import Datanorm 4.0 in a PowerShell object structure  `(just done for V+A+B+P)`
 6. Full support for **nopCommerce** 4.2 via ODATA interface `(expected in autumn 2023)`
-7. Basic functions for **nopCommerce** 4.6 via REST interface `(expected in summer 2024)`
-8. Basic functions for **Shopify** via REST interface  `(expected in spring 2024)`
-9. Basic functions for **Shopware** 6.x REST interface `(rescheduled to end-2024)`
-10. Output of documents like orders, delivery notes etc. as **HTML**
-11. Converting documents from HTML to **PDF** using Pandoc 3.x
-12. Adding support for **DeepL** API translation service to enable the translation of product descriptions in supported languages
-13. Implementing **Telegram** messaging functions that can send messages and are also compatible with PowerShell 5.x  `(just done)`
-14. Expanding the **image** functions to include conversion of BMP files to JPEG or PNG formats.
-15. Adding **geo-functions** that can calculate distances based on GPS coordinates  `(just done)`
-16. Implementing **modulo** functions that can be used in various scenarios, such as IBAN and Girocode
-17. **Examples** of using EulandaConnect
+7. Implementing import purchase order (expected in summer 2023)
+8. Basic functions for **nopCommerce** 4.6 via REST interface `(expected in summer 2024)`
+9. Basic functions for **Shopify** via REST interface  `(expected in spring 2024)`
+10. Basic functions for **Shopware** 6.x REST interface `(rescheduled to end-2024)`
+11. Output of documents like orders, delivery notes etc. as **HTML**
+12. Converting documents from HTML to **PDF** using Pandoc 3.x
+13. Adding support for **DeepL** API translation service to enable the translation of product descriptions in supported languages
+14. Implementing **Telegram** messaging functions that can send messages and are also compatible with PowerShell 5.x  `(just done)`
+15. Expanding the **image** functions to include conversion of BMP files to JPEG or PNG formats.
+16. Adding **geo-functions** that can calculate distances based on GPS coordinates  `(just done)`
+17. Implementing **modulo** functions that can be used in various scenarios, such as IBAN and Girocode
+18. **Examples** of using EulandaConnect
