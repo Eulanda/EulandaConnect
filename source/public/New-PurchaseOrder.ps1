@@ -1,4 +1,5 @@
 function New-PurchaseOrder {
+    [CmdletBinding()]
     param(
         [int]$supplierID
         ,
@@ -20,6 +21,11 @@ function New-PurchaseOrder {
     begin {
         Write-Verbose -Message ((Get-ResStr 'STARTING_FUNCTION') -f $myInvocation.Mycommand)
         Test-ValidateSingle -validParams (Get-SingleConnection) @PSBoundParameters
+        New-Variable -Name 'cmd' -Scope 'Private' -Value ($null)
+        New-Variable -Name 'myConn' -Scope 'Private' -Value ($null)
+        New-Variable -Name 'purchaseOrderNo' -Scope 'Private' -Value ([int32]0)
+        New-Variable -Name 'sql' -Scope 'Private' -Value ([string]'')
+        New-Variable -Name 'result' -Scope 'Private' -Value ([int32]0)
         $initialVariables = Get-CurrentVariables -Debug:$DebugPreference
     }
 
@@ -41,11 +47,18 @@ function New-PurchaseOrder {
         $result = $cmd.Parameters.Item("@KopfId").Value
 
         if ($result) {
-            $PurchaseOrderNo = Get-NewNumberFromSeries -seriesName 'KrAuftrag' -conn $myConn
-            $sql = "UPDATE KrAuftrag SET KopfNummer = $PurchaseOrderNo WHERE ID = $result"
-            $myConn.Execute($sql) | Out-Null
+            $purchaseOrderNo = Get-NewNumberFromSeries -seriesName 'KrAuftrag' -conn $myConn
+            if ($purchaseOrderNo) {
+                $sql = "UPDATE KrAuftrag SET KopfNummer = $purchaseOrderNo WHERE ID = $result"
+                $myConn.Execute($sql) | Out-Null
+            } else {
+                Throw ((Get-ResStr 'NUMBERSERIES_WITHOUT_RESULT') -f $myInvocation.Mycommand)
+            }
+        } else {
+            Throw ((Get-ResStr 'NO_PURCHASEORDER_CREATED') -f $myInvocation.Mycommand)
         }
         <#
+            # Actually we dont need that field
             $output = @{
                 KopfId = $cmd.Parameters.Item("@KopfId").Value
                 KopfNummer = $cmd.Parameters.Item("@KopfNummer").Value
@@ -57,4 +70,5 @@ function New-PurchaseOrder {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
         Return $result
     }
+    # Test: $id = New-PurchaseOrder -supplierID 15 -processedBy robot -udl 'C:\temp\Eulanda_1 JohnDoe.udl'
 }

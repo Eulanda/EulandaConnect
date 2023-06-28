@@ -1,4 +1,5 @@
 function Get-SupplierId {
+    [CmdletBinding()]
     param(
         [string]$addressMatch
         ,
@@ -18,6 +19,10 @@ function Get-SupplierId {
     begin {
         Write-Verbose -Message ((Get-ResStr 'STARTING_FUNCTION') -f $myInvocation.Mycommand)
         Test-ValidateSingle -validParams (Get-SingleConnection) @PSBoundParameters
+        New-Variable -Name 'myConn' -Scope 'Private' -Value ($null)
+        New-Variable -Name 'rs' -Scope 'Private' -Value ($null)
+        New-Variable -Name 'sql' -Scope 'Private' -Value ([string]'')
+        New-Variable -Name 'result' -Scope 'Private' -Value ([int32]0)
         $initialVariables = Get-CurrentVariables -Debug:$DebugPreference
     }
 
@@ -43,5 +48,5 @@ function Get-SupplierId {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
         Return $result
     }
-
+    # Test: $id = Get-SupplierId -addressMatch 'WUERTH' -udl 'C:\temp\Eulanda_1 JohnDoe.udl'
 }

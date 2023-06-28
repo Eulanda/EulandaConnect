@@ -777,4 +777,20 @@
     <value>Processing article: {0} (node {1} of {2})</value>
     <comment/>
   </data>
+  <data name="PURCHASEORDER_NOT_FOUND" xml:space="preserve">
+    <value>There was no valid PurchaseOrderId found. Function: {0}</value>
+    <comment/>
+  </data>
+  <data name="ARTCILEID_NOT_FOUND" xml:space="preserve">
+    <value>Could not find the article id. Function: {0}</value>
+    <comment/>
+  </data>
+  <data name="NUMBERSERIES_WITHOUT_RESULT" xml:space="preserve">
+    <value>he number series for KrAuftrag did not gave a new number. Function: {0}</value>
+    <comment/>
+  </data>
+  <data name="NO_PURCHASEORDER_CREATED" xml:space="preserve">
+    <value>No Purchase Order could be created. Function: {0}</value>
+    <comment/>
+  </data>
 </root>

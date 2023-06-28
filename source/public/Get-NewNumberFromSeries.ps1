@@ -1,4 +1,5 @@
 function Get-NewNumberFromSeries {
+    [CmdletBinding()]
     Param(
         [string]$seriesName
         ,
@@ -18,6 +19,12 @@ function Get-NewNumberFromSeries {
     begin {
         Write-Verbose -Message ((Get-ResStr 'STARTING_FUNCTION') -f $myInvocation.Mycommand)
         Test-ValidateSingle -validParams (Get-SingleConnection) @PSBoundParameters
+        New-Variable -Name 'adParamOutput' -Scope 'Private' -Value ([int32]0)
+        New-Variable -Name 'cmd' -Scope 'Private' -Value ($null)
+        New-Variable -Name 'myConn' -Scope 'Private' -Value ($null)
+        New-Variable -Name 'param1' -Scope 'Private' -Value ($null)
+        New-Variable -Name 'param2' -Scope 'Private' -Value ($null)
+        New-Variable -Name 'result' -Scope 'Private' -Value ([int32]0)
         $initialVariables = Get-CurrentVariables -Debug:$DebugPreference
     }
 
@@ -37,9 +44,7 @@ function Get-NewNumberFromSeries {
         $param2 = $cmd.CreateParameter("@nr_NextNr", $adLockOptimistic, $adParamOutput, 0, 0) # adInteger, adParamOutput
         $cmd.Parameters.Append($param2)
 
-        # Führen Sie die gespeicherte Prozedur aus
         $cmd.Execute() | Out-Null
-
         $result = $cmd.Parameters.Item("@nr_NextNr").Value
     }
 
@@ -48,5 +53,5 @@ function Get-NewNumberFromSeries {
         Return $result
     }
 
-    # Test: $i = Get-NewNumberFromSeries -seriesName 'KrAuftrag' -udl 'C:\temp\EULANDA_1 JohnDow.udl'
+    # Test: $i = Get-NewNumberFromSeries -seriesName 'KrAuftrag' -udl 'C:\temp\EULANDA_1 JohnDoe.udl'
 }

@@ -13,7 +13,7 @@ The provided function retrieves the SupplierId based on the -addressMatch of an 
 ## SYNTAX
 
 ```
-Get-SupplierId [[-addressMatch] <Int32>] [[-conn] <Object>] [[-udl] <String>] [[-connStr] <String>]
+Get-SupplierId [[-addressMatch] <String>] [[-conn] <Object>] [[-udl] <String>] [[-connStr] <String>]
  [<CommonParameters>]
 ```
 
@@ -37,7 +37,7 @@ Returns the SupplierId for an address with the matchcode 'WUERTH'. It is importa
 The parameter `-addressMatch` is a match code in the EULANDA ERP system, which also serves as a search term but as a unique search field. It is practical because it is easily readable and understandable, and is often used to compare data with external systems. The match code is used to search for a specific address, to ensure that the searched address is unique and valid.
 
 ```yaml
-Type: Int32
+Type: String
 Parameter Sets: (All)
 Aliases:
 

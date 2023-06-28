@@ -3227,7 +3227,7 @@ function Get-ArticleId {
         $paramsArticle = Get-UsedParameters -validParams (Get-SingleArticleKeys) -boundParams $PSBoundParameters
         $firstEntry = $paramsArticle.GetEnumerator() | Select-Object -First 1
         $key = Test-ValidateMapping -strValue ($firstEntry.Key) -mapping (Get-MappingArticleKeys)
-        $value = $firstEntry.Value
+        $value = [string]$firstEntry.Value
         $value = $value.replace("'","''") # Escape Single Quote in Strings
         $sqlFrag = "$key = '$value'"
         [string]$sql = "SELECT Id [articleId] FROM Artikel WHERE $sqlFrag"
@@ -3296,7 +3296,7 @@ function Get-ArticleNo {
         $firstEntry = $paramsArticle.GetEnumerator() | Select-Object -First 1
         $key = Test-ValidateMapping -strValue ($firstEntry.Key) -mapping (Get-MappingArticleKeys)
         $value = $firstEntry.Value
-        $value = $value.replace("'","''") # Escape Single Quote in Strings
+        $value = [string]$value.replace("'","''") # Escape Single Quote in Strings
         $sqlFrag = "$key = '$value'"
         [string]$sql = "SELECT ArtNummer [articleNo] FROM Artikel WHERE $sqlFrag"
         $rs = $myConn.Execute($sql)
@@ -3364,7 +3364,7 @@ function Get-ArticlePackingUnit {
         $firstEntry = $paramsArticle.GetEnumerator() | Select-Object -First 1
         $key = Test-ValidateMapping -strValue ($firstEntry.Key) -mapping (Get-MappingArticleKeys)
         $value = $firstEntry.Value
-        $value = $value.replace("'","''") # Escape Single Quote in Strings
+        $value = [string]$value.replace("'","''") # Escape Single Quote in Strings
         $sqlFrag = "$key = '$value'"
         [string]$sql = "SELECT VerpackEH [PackingUnit] FROM Artikel WHERE $sqlFrag"
         $rs = $myConn.Execute($sql)
@@ -5803,6 +5803,7 @@ function Get-NetworkId {
 }
 
 function Get-NewNumberFromSeries {
+    [CmdletBinding()]
     Param(
         [string]$seriesName
         ,
@@ -5841,9 +5842,7 @@ function Get-NewNumberFromSeries {
         $param2 = $cmd.CreateParameter("@nr_NextNr", $adLockOptimistic, $adParamOutput, 0, 0) # adInteger, adParamOutput
         $cmd.Parameters.Append($param2)
 
-        # Führen Sie die gespeicherte Prozedur aus
         $cmd.Execute() | Out-Null
-
         $result = $cmd.Parameters.Item("@nr_NextNr").Value
     }
 
@@ -6996,6 +6995,7 @@ function Get-Subnet {
 }
 
 function Get-SupplierAddressId {
+    [CmdletBinding()]
     param(
         [int]$supplierID
         ,
@@ -7050,11 +7050,12 @@ function Get-SupplierAddressId {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
         Return $result
     }
-
+    # Test $id = Get-SupplierAddressId -supplierID 15 -udl 'C:\temp\Eulanda_1 JohnDoe.udl'
 }
 function Get-SupplierId {
+    [CmdletBinding()]
     param(
-        [int]$addressMatch
+        [string]$addressMatch
         ,
         [Parameter(Mandatory = $false)]
         [ValidateScript({ Test-ValidateConn -conn $_  })]
@@ -7097,7 +7098,7 @@ function Get-SupplierId {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
         Return $result
     }
-
+    # Test: $id = Get-SupplierId -addressMatch 'WUERTH' -udl 'C:\temp\Eulanda_1 JohnDoe.udl'
 }
 function Get-TempDir {
     [CmdletBinding()]
@@ -9567,6 +9568,7 @@ function New-EulLog {
 }
 
 function New-PurchaseOrder {
+    [CmdletBinding()]
     param(
         [int]$supplierID
         ,
@@ -9614,6 +9616,7 @@ function New-PurchaseOrder {
             $myConn.Execute($sql) | Out-Null
         }
         <#
+            # Actually we dont need that field
             $output = @{
                 KopfId = $cmd.Parameters.Item("@KopfId").Value
                 KopfNummer = $cmd.Parameters.Item("@KopfNummer").Value
@@ -9625,9 +9628,11 @@ function New-PurchaseOrder {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
         Return $result
     }
+    # Test: $id = New-PurchaseOrder -supplierID 15 -processedBy robot -udl 'C:\temp\Eulanda_1 JohnDoe.udl'
 }
 
 function New-PurchaseOrderLineItem {
+    [CmdletBinding()]
     param(
         [int]$purchaseOrderId
         ,
@@ -9672,20 +9677,20 @@ function New-PurchaseOrderLineItem {
         $result = 0
 
         if (! $purchaseOrderId) {
-            $sql = "SELECT Id From KrAuftrag Where KopfNummer = $purchaseOrderNo"
+            $sql = "SELECT Id FROM KrAuftrag WHERE KopfNummer = $purchaseOrderNo"
             $rs =  $myConn.Execute($sql)
             if ($rs -and !$rs.EOF) {
                 $purchaseOrderId = $rs.Fields('Id').Value
             }
-        }
-        if (! $purchaseOrderId) {
-            Throw ("There was no valid PurchaseOrderId found. Function: {0}" -f $myInvocation.Mycommand)
+            if (! $purchaseOrderId) {
+                Throw ((Get-ResStr 'PURCHASEORDER_NOT_FOUND') -f $myInvocation.Mycommand)
+            }
         }
 
         $paramsArticle = Get-UsedParameters -validParams (Get-SingleArticleKeys) -boundParams $PSBoundParameters
         $articleId = Get-ArticleId @paramsArticle -conn $myConn
         if (! $articleId) {
-            Throw ("Could not find the article id. Function: {0}" -f $myInvocation.Mycommand)
+            Throw ((Get-ResStr 'ARTCILEID_NOT_FOUND') -f $myInvocation.Mycommand)
         }
 
         $cmd = New-Object -ComObject ADODB.Command
@@ -9711,6 +9716,7 @@ function New-PurchaseOrderLineItem {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
         Return $result
     }
+    # Test: $id = New-PurchaseOrderLineItem -purchaseOrderId 200 -articleId 123 -quantity 5 -udl 'C:\temp\Eulanda_1 JohnDoe.udl'
 }
 
 Function New-RemoteFolder {
@@ -17595,8 +17601,8 @@ function Test-ValidateUrl {
 # SIG # Begin signature block
 # MIIpiQYJKoZIhvcNAQcCoIIpejCCKXYCAQExDzANBglghkgBZQMEAgEFADB5Bgor
 # BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
-# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCBmOWGGzZWadPUo
-# 8HiTdrbp3XmaH48ZRKLM71fGbfgpfKCCEngwggVvMIIEV6ADAgECAhBI/JO0YFWU
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCCOvks9haA0M2wn
+# xM8D/4kH+CSj6iZ1BKrLbZLkA4bmYqCCEngwggVvMIIEV6ADAgECAhBI/JO0YFWU
 # jTanyYqJ1pQWMA0GCSqGSIb3DQEBDAUAMHsxCzAJBgNVBAYTAkdCMRswGQYDVQQI
 # DBJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcMB1NhbGZvcmQxGjAYBgNVBAoM
 # EUNvbW9kbyBDQSBMaW1pdGVkMSEwHwYDVQQDDBhBQUEgQ2VydGlmaWNhdGUgU2Vy
@@ -17699,23 +17705,23 @@ function Test-ValidateUrl {
 # IExpbWl0ZWQxLjAsBgNVBAMTJVNlY3RpZ28gUHVibGljIENvZGUgU2lnbmluZyBD
 # QSBFViBSMzYCEGilgQZhq4aQSRu7qELTizkwDQYJYIZIAWUDBAIBBQCgfDAQBgor
 # BgEEAYI3AgEMMQIwADAZBgkqhkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEE
-# AYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAvBgkqhkiG9w0BCQQxIgQg/7a1onC+gla2
-# cIpjrz3azVbeQSk0eQrCadgWTM/e1bswDQYJKoZIhvcNAQEBBQAEggIAChqSxx4C
-# 2iy6414+Cv8QBHWHR1uHtpp15EaByUY/qBb7pKGnc4IEv81ywnshyIvDWPLkFdBe
-# G79CDNcHfKrL6emeZPiOx1hbiL4l6pw1PIgRCiuOYaGhNgy9pgY9ek19ztLzBzxL
-# ml0M9/y+ccz6sldX/7jWZqz9bXiOsGmkDC7i/Q3mEfkqVCK/EsLXQ01ivz+NBEvL
-# uo/IpezXMTOilKLUj9gKecYuIbFffKtrjfJOa8x0fspAvCf6km1CVWERz+aIpWFw
-# GzC5EWualxt043bGN8rExAvi7HmUa3LWLB9ZPqVR9K2ALeVl2v5swKN3z5TrKiFA
-# V43NuJ2mRqhz8S8adhsooVOwThKZsVJFixXsmjeGw1Lf1odKAKFHmZYPg1Tr/ID8
-# GXCp3asMhp5x5VsX1BmBcxkBe6z8K434SRPHmI0pk7KiHBWK8sH0LneKNeFVkA0R
-# 9Ng+ILhVYdVExZYUcXGR6UiMIo0XSoRv3fuYSxXpSkyGcu9dSl8TzxIAqE5OrL+c
-# RT/QoJ0ti9nuE9U3Mc3kk9twpycXg0nUjoiT4ZB55EPtWu26MS6jZXSch7qif/iO
-# F1UCwYDa4NT/D1T6V9OisrHP08p/tRhn5OtIheDmke6xhvRRVya9G2Bgygo4yVXr
-# aIZ3HFQgU4vcwN3ucZKXYBUcj5aBMODqSlehghNPMIITSwYKKwYBBAGCNwMDATGC
+# AYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAvBgkqhkiG9w0BCQQxIgQg9qbsPcgXx+JJ
+# b4kG0JRTvf9IJ1r1YkJxOnsnGGzdoTowDQYJKoZIhvcNAQEBBQAEggIAhX5Dfzjy
+# Y9ln8R3Flq/yWOeL6ZalqkRbRekUDlKtLBCBgay6sXM8sdAWppL6FT20b2vhrwlY
+# TF/huWSqhkHTdOLpryPHJsOWN9O/mWAUdQnma75BdnEP9IeQxmT08kc2F96bEfpI
+# mJsNyfPTRHO7a3/WLpJvwJI0PEfk70KmsMORKX8moC9dl++XKAJiSkI+udjk/Qyn
+# orjCYZinNW/3JE3feWEssJCP0w14OwxbBgTEiD10azan2csoCf1m7aErmiJpi5MK
+# NYepanG17AcgszsVny4p9GB/djTJPJ2d4WxVoQfCOVnX2CG93jX1s6XovX2bhUmB
+# jxPGsIvBvcmgxe22pQxL5BaPpB9HUiHKamcBnl9I3U2irxxiiJ6pd2AZH2Te1jPi
+# xzpaXgtJygyV8W9tZS0Ewcy/yfgdpFICYPj4o1ykDse7jvGx1SvGe3iDkv/pVc0y
+# EY+gkkGw2T1vn6aDMTmcu/3p3Lhn9GLxjkN+RDhZ3hXTUImh8C2BbDzdHHBr7vk3
+# 1nrf6zsZViMQMYNl7knWe5orj+zLoNTm0FAo8MgUuCY4j1I2aNqIThcGnVtGQqLP
+# QNQvYimFjU2TwstjxKVeyOHMaUpnn5dFaGoiVKVTguBwLBaz6o7zqQ6sb87oCxBt
+# aHgXfghQxWrxUo73fXgIESM43Kc8bm5sKjWhghNPMIITSwYKKwYBBAGCNwMDATGC
 # EzswghM3BgkqhkiG9w0BBwKgghMoMIITJAIBAzEPMA0GCWCGSAFlAwQCAgUAMIHw
 # BgsqhkiG9w0BCRABBKCB4ASB3TCB2gIBAQYKKwYBBAGyMQIBATAxMA0GCWCGSAFl
-# AwQCAQUABCB2N1HiDGVti1WoKLuHbCg4guuQ0K9MP/4p5Jwz0qyPBAIVANJS3w2e
-# 4q4EXfQSvgBZ/08kAVgSGA8yMDIzMDYyODExNDk0MFqgbqRsMGoxCzAJBgNVBAYT
+# AwQCAQUABCCdSv4nJ7mBYKTYzC2ypXk/d5fUHVA/PJD4Wv3oh+8BuwIVAMLAq+go
+# hRy76+wjlFuWkIsd99hfGA8yMDIzMDYyODE4MjA0OVqgbqRsMGoxCzAJBgNVBAYT
 # AkdCMRMwEQYDVQQIEwpNYW5jaGVzdGVyMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
 # ZWQxLDAqBgNVBAMMI1NlY3RpZ28gUlNBIFRpbWUgU3RhbXBpbmcgU2lnbmVyICM0
 # oIIN6TCCBvUwggTdoAMCAQICEDlMJeF8oG0nqGXiO9kdItQwDQYJKoZIhvcNAQEM
@@ -17797,22 +17803,22 @@ function Test-ValidateUrl {
 # BAoTD1NlY3RpZ28gTGltaXRlZDElMCMGA1UEAxMcU2VjdGlnbyBSU0EgVGltZSBT
 # dGFtcGluZyBDQQIQOUwl4XygbSeoZeI72R0i1DANBglghkgBZQMEAgIFAKCCAWsw
 # GgYJKoZIhvcNAQkDMQ0GCyqGSIb3DQEJEAEEMBwGCSqGSIb3DQEJBTEPFw0yMzA2
-# MjgxMTQ5NDBaMD8GCSqGSIb3DQEJBDEyBDApVd6NyC1mfRixD1xpT0nYTdAE/Ybl
-# cja1Nd+HyQoJdHhMZ7YhpeZEWzciumeEtGUwge0GCyqGSIb3DQEJEAIMMYHdMIHa
+# MjgxODIwNDlaMD8GCSqGSIb3DQEJBDEyBDBenzxz3aSKxPwaWsFD/5wPXCfwvNS1
+# pf5B6UzuEAyimv3ZjvWROWsW/Jj8QFPx2NYwge0GCyqGSIb3DQEJEAIMMYHdMIHa
 # MIHXMBYEFK5ir3UKDL1H1kYfdWjivIznyk+UMIG8BBQC1luV4oNwwVcAlfqI+SPd
 # k3+tjzCBozCBjqSBizCBiDELMAkGA1UEBhMCVVMxEzARBgNVBAgTCk5ldyBKZXJz
 # ZXkxFDASBgNVBAcTC0plcnNleSBDaXR5MR4wHAYDVQQKExVUaGUgVVNFUlRSVVNU
 # IE5ldHdvcmsxLjAsBgNVBAMTJVVTRVJUcnVzdCBSU0EgQ2VydGlmaWNhdGlvbiBB
-# dXRob3JpdHkCEDAPb6zdZph0fKlGNqd4LbkwDQYJKoZIhvcNAQEBBQAEggIAZzv4
-# 8eM2YrguS48E2KlSFfMMTUbWpQh+aSjb7cg1Zx+j3JnyjEipeYqaUWxY2BqLmij1
-# /m1sz7VEYoS1UcDQnN48n8D6BQmcarMAknh6YXSHgsIfG3ejtSajZrCChYO+GFtR
-# HaRbXvuWYkAWdHYNAKW5QCQrvTCv5LzhrP3AiSfKX3b3l9uNTm5c9qHNRzvxIANe
-# KkpxFtGvyzxtWY+iULgafo2o4kKEBonisYiw1jWNROo6Y0f9/uXasdMAIuHemHXV
-# UaEZRR8ZGQIZsaiMG2a0I/QwIE2hhczCzv5gT4WYU9bj6eKC1vLk3gwQBdtMGAwk
-# 2FYy08IsZyE8bXIzVgPpTa8AOsaJp2fL3htOhmL4jA6o7D6qwsnga4RswilUP+Ae
-# nm/rMe4vsNezbHaNIvvbodQsP2FdB6Bdges9QChlCKtQwPmn1tFMNtC9n1j0UQAX
-# Y2kHGxj+nmxhEmIPL0+pRRPG1sJVF1j5ofkwi79ZLX7w+znb9A7rYcIEexuvXuku
-# zKp7VUDu8Fub9hKbsow7h6TI+0h8SNuDLpSHIaFu+/dXHOBDhCAIVJecI74OQtQD
-# rdpEdc+XEcEc7/CXP+dGuJrzsJl64n8Rdd9sjby4eg+QoBVb8oGpsKf/XoiNW6aF
-# K9oZ29i1SpvYVr49Q7zJZevQtNskwTvRXd0ZMR8=
+# dXRob3JpdHkCEDAPb6zdZph0fKlGNqd4LbkwDQYJKoZIhvcNAQEBBQAEggIAL5oU
+# egowjqnStZ9gOSgorZMOF7GP/ZVtQlKd6NeacZnpEh9oG0RNojPoNEgeiKeQMnli
+# tfGFVhuQXO19VhmQsBaGlPWtixd8mmce8+YZwCnIitA35ZRpYo2Ud5jRrf5oh2SP
+# aNoAYmOROBKHbyaYK7BR6R0pJen7dQtv1o6Yj0WNYJV5zj7UqsTWVZCWZEWY8g9o
+# /X0GJ24DU7QGd2w/8AnhCJokpU5IgZV8D/ZyKjw6+nWJvzc8ZZu9hx94O8f4PpEl
+# JDMap7pxCOxti9uJQTDFxwgV6LgA5MOnubpLaZ4H1mfEi/PF8OiiWBlE9FKpQ6mZ
+# II4g88ttEB9est0T9vWC4nZrrKP2dczL+xc1g2FkX2W/zpP74UwLDsmhjjrESurZ
+# lAJEu29Wgld3r4WpTbjnsrLo0SPD2JvfM0fyS19OQ0FUwf5wsc/IkMn3As/Q41hT
+# 8aWzY+b4kktcTMVSrRY18nKNjGYL94GBudsH+7+z6UF0pKm6MEOYZn3Sy0lExRVx
+# VUPqTry8VeeqSJsiMkBbz525W0tuzo9Gmvbe7+PN4si3tHHe78S03MA+mfmg/A9O
+# 5KnSq7wyWBwZ+zuqtsPzKPqC4YLitqnRk1NWOVI/abWOF06OG7p0oOVG14XwlDOM
+# CjYCgEAJmeC9PiCgr6as1IfBl2dnGe/4fc5xP6A=
 # SIG # End signature block

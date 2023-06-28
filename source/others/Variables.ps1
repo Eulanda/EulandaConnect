@@ -46,7 +46,7 @@ New-Variable -Name 'ecProjectVersion' -Scope 'Global' -Option ReadOnly -Force -V
 # Global EulandaConnect Variables
 # -----------------------------------------------------------------------------
 New-Variable -Name 'ecResx' -Scope 'Global' -Force -Value ([System.Collections.Hashtable]@{}) -Description  'Language resources of EulandaConnect module'
-New-Variable -Name 'ecProcessId' -Scope 'Global' -Force -Value ([System.Collections.Hashtable]@{}) -Description  'Process id used in logging of EulandaConnect module'
+New-Variable -Name 'ecProcessId' -Scope 'Global' -Force -Value [System.Guid]'00000000-0000-0000-0000-000000000000' -Description  'Process id used in logging of EulandaConnect module'
 
 
 

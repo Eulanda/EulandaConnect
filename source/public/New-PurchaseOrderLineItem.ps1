@@ -1,4 +1,5 @@
 function New-PurchaseOrderLineItem {
+    [CmdletBinding()]
     param(
         [int]$purchaseOrderId
         ,
@@ -35,6 +36,12 @@ function New-PurchaseOrderLineItem {
     begin {
         Write-Verbose -Message ((Get-ResStr 'STARTING_FUNCTION') -f $myInvocation.Mycommand)
         Test-ValidateSingle -validParams (Get-SingleConnection) @PSBoundParameters
+        New-Variable -Name 'cmd' -Scope 'Private' -Value ($null)
+        New-Variable -Name 'myConn' -Scope 'Private' -Value ($null)
+        New-Variable -Name 'paramsArticle' -Scope 'Private' -Value ([System.Collections.Hashtable]@{})
+        New-Variable -Name 'rs' -Scope 'Private' -Value ($null)
+        New-Variable -Name 'sql' -Scope 'Private' -Value ([string]'')
+        New-Variable -Name 'result' -Scope 'Private' -Value ([int32]0)
         $initialVariables = Get-CurrentVariables -Debug:$DebugPreference
     }
 
@@ -43,21 +50,20 @@ function New-PurchaseOrderLineItem {
         $result = 0
 
         if (! $purchaseOrderId) {
-            $sql = "SELECT Id From KrAuftrag Where KopfNummer = $purchaseOrderNo"
+            $sql = "SELECT Id FROM KrAuftrag WHERE KopfNummer = $purchaseOrderNo"
             $rs =  $myConn.Execute($sql)
             if ($rs -and !$rs.EOF) {
                 $purchaseOrderId = $rs.Fields('Id').Value
             }
             if (! $purchaseOrderId) {
-                Throw ("There was no valid PurchaseOrderId found. Function: {0}" -f $myInvocation.Mycommand)
+                Throw ((Get-ResStr 'PURCHASEORDER_NOT_FOUND') -f $myInvocation.Mycommand)
             }
         }
-
 
         $paramsArticle = Get-UsedParameters -validParams (Get-SingleArticleKeys) -boundParams $PSBoundParameters
         $articleId = Get-ArticleId @paramsArticle -conn $myConn
         if (! $articleId) {
-            Throw ("Could not find the article id. Function: {0}" -f $myInvocation.Mycommand)
+            Throw ((Get-ResStr 'ARTCILEID_NOT_FOUND') -f $myInvocation.Mycommand)
         }
 
         $cmd = New-Object -ComObject ADODB.Command
@@ -83,4 +89,5 @@ function New-PurchaseOrderLineItem {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
         Return $result
     }
+    # Test: $id = New-PurchaseOrderLineItem -purchaseOrderId 200 -articleId 123 -quantity 5 -udl 'C:\temp\Eulanda_1 JohnDoe.udl'
 }
