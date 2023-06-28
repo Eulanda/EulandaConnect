@@ -8,14 +8,14 @@ weight: 10
 
 The installation of PowerShell 7 is recommended. Many functions of EulandaConnect also work under PowerShell 5.1, but the functions are tested and developed under PowerShell 7.x.
 
-The following script can be inserted into the **PowerShell for Windows** console or from the DOS Command Prompt. The script loads version 7.3.4 in the Windows 64-bit variant as MSI from the official GitHub page and initiates the installation. Elevated privileges are required and will be requested.
+The following script can be inserted into the **PowerShell for Windows** console or from the DOS Command Prompt. The script loads version 7.3.x in the Windows 64-bit variant as MSI from the official GitHub page and initiates the installation. Elevated privileges are required and will be requested.
 
 ### From Windows PowerShell
 
 `PS C:\Users\Administrator>`
 
 ```powershell
-iwr -useb https://github.com/PowerShell/PowerShell/releases/download/v7.3.4/PowerShell-7.3.4-win-x64.msi -o pwsh-7.3.4.msi; msiexec /i pwsh-7.3.4.msi /qn
+iwr -useb https://github.com/PowerShell/PowerShell/releases/download/v7.3.5/PowerShell-7.3.5-win-x64.msi -o pwsh-7.3.5.msi; msiexec /i pwsh-7.3.5.msi /qn
 ```
 
 ### From Command Prompt
@@ -23,12 +23,12 @@ iwr -useb https://github.com/PowerShell/PowerShell/releases/download/v7.3.4/Powe
 `C:\Users\Administrator>`
 
 ```bash
-powershell.exe -Command "iwr -useb https://github.com/PowerShell/PowerShell/releases/download/v7.3.4/PowerShell-7.3.4-win-x64.msi -o pwsh-7.3.4.msi; msiexec /i pwsh-7.3.4.msi /qn"
+powershell.exe -Command "iwr -useb https://github.com/PowerShell/PowerShell/releases/download/v7.3.5/PowerShell-7.3.5-win-x64.msi -o pwsh-7.3.5.msi; msiexec /i pwsh-7.3.5.msi /qn"
 ```
 
 # Installation
 
-Open a PowerShell console, the new PowerShell 7.3 is best, but most functions also work in Windows PowerShell 5.1. The console does not need to have elevated rights. Then at the PowerShell copy and paste one line at a time into the console and press Enter each time.
+Open a PowerShell console, the new PowerShell 7.3.x is best, but most functions also work in Windows PowerShell 5.1. The console does not need to have elevated rights. Then at the PowerShell copy and paste one line at a time into the console and press Enter each time.
 
 `PS C:\Users\Administrator>`
 
@@ -75,8 +75,8 @@ If you don't configure PSGallery as "Trusted," you'll receive a prompt asking if
 
 # Update your Installation
 
-After the module installation is completed, about 200 functions of EulandaConnect are available. These cover the various areas such as image manipulation, sending messages via Telegram, MSSQL data backups to NAS, FTP and SFTP, control of the EULANDA ERP Softawre and much more.
-To update the module in the future, enter the following commands in the Powershell console:
+After the module installation is completed, about 200 functions of EulandaConnect are available. These cover the various areas such as image manipulation, sending messages via Telegram, MSSQL data backups to NAS, FTP and SFTP, control of the EULANDA ERP Software and much more.
+To update the module in the future, enter the following commands in the PowerShell console:
 
 `PS C:\Users\Administrator>`
 

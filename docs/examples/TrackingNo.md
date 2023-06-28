@@ -1,6 +1,6 @@
 # Importing Tracking Numbers with EulandaConnect
 
-Effortlessly import any number of tracking numbers to a delivery note using a simple CSV file. To get started, you'll need EULANDA ERP system version 8.5 and the PowerShell extension version 7.x EulandaConnect.
+Effortlessly import any number of tracking numbers to a delivery note using a simple CSV file. To get started, you'll need EULANDA ERP system version 8.5 and the PowerShell extension version 7.3.x EulandaConnect.
 
 ## What is EulandaConnect?
 
@@ -34,7 +34,7 @@ The first delivery note with number 69 consists of two shipments, 1UW09LZ328259 
 First, open a PowerShell console with version 7.x. This can be done directly through the Windows logo with `pwsh.exe` or through the `Windows Terminal`. The console window should look like this:
 
 ```powershell
-PowerShell 7.3.4
+PowerShell 7.3.x
 PS C:\Users\cn>
 ```
 

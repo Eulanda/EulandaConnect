@@ -10,7 +10,7 @@ The Backup-MssqlDatabase function supports file transfer via both FTP and SFTP p
 
 ## Install POSH-SSH
 
-Open a PowerShell console, the new PowerShell 7.3 is best, but most functions also work in Windows PowerShell 5.1. The console does not need to have elevated rights. Then at the PowerShell copy and paste one line at a time into the console and press Enter each time.
+Open a PowerShell console, the new PowerShell 7.3.x is best, but most functions also work in Windows PowerShell 5.1. The console does not need to have elevated rights. Then at the PowerShell copy and paste one line at a time into the console and press Enter each time.
 
 ```powershell
 Set-PSRepository PSGallery -InstallationPolicy Trusted

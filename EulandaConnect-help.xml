@@ -10456,7 +10456,7 @@ Transferred with umlauts &amp;quot;&amp;#246;&amp;#228;&amp;#252;&amp;quot; &lt;
 Name                           Value
 ----                           -----
 author                         EULANDA Software GmbH - ERP-Systems - Germany
-generator                      Powershell 7.3.2 by function ConvertTo-Html
+generator                      Powershell 7.3.x by function ConvertTo-Html
 keywords                       eulanda, erp, powershell, convertto-html, html
 description                    This is my special description
 viewport                       width=device-width, initial-scale=1.0</dev:code>

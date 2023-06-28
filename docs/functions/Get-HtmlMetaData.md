@@ -32,7 +32,7 @@ PS C:\> Get-HtmlMetadata -description 'This is my special description'
 Name                           Value
 ----                           -----
 author                         EULANDA Software GmbH - ERP-Systems - Germany
-generator                      Powershell 7.3.2 by function ConvertTo-Html
+generator                      Powershell 7.3.x by function ConvertTo-Html
 keywords                       eulanda, erp, powershell, convertto-html, html
 description                    This is my special description
 viewport                       width=device-width, initial-scale=1.0
