@@ -1,6 +1,6 @@
 function Get-SupplierId {
     param(
-        [int]$addressMatch
+        [string]$addressMatch
         ,
         [Parameter(Mandatory = $false)]
         [ValidateScript({ Test-ValidateConn -conn $_  })]

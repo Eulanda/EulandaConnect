@@ -48,10 +48,11 @@ function New-PurchaseOrderLineItem {
             if ($rs -and !$rs.EOF) {
                 $purchaseOrderId = $rs.Fields('Id').Value
             }
+            if (! $purchaseOrderId) {
+                Throw ("There was no valid PurchaseOrderId found. Function: {0}" -f $myInvocation.Mycommand)
+            }
         }
-        if (! $purchaseOrderId) {
-            Throw ("There was no valid PurchaseOrderId found. Function: {0}" -f $myInvocation.Mycommand)
-        }
+
 
         $paramsArticle = Get-UsedParameters -validParams (Get-SingleArticleKeys) -boundParams $PSBoundParameters
         $articleId = Get-ArticleId @paramsArticle -conn $myConn

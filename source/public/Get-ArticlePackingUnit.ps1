@@ -49,7 +49,7 @@ function Get-ArticlePackingUnit {
         $firstEntry = $paramsArticle.GetEnumerator() | Select-Object -First 1
         $key = Test-ValidateMapping -strValue ($firstEntry.Key) -mapping (Get-MappingArticleKeys)
         $value = $firstEntry.Value
-        $value = $value.replace("'","''") # Escape Single Quote in Strings
+        $value = [string]$value.replace("'","''") # Escape Single Quote in Strings
         $sqlFrag = "$key = '$value'"
         [string]$sql = "SELECT VerpackEH [PackingUnit] FROM Artikel WHERE $sqlFrag"
         $rs = $myConn.Execute($sql)

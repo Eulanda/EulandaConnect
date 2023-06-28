@@ -48,7 +48,7 @@ function Get-ArticleId {
         $paramsArticle = Get-UsedParameters -validParams (Get-SingleArticleKeys) -boundParams $PSBoundParameters
         $firstEntry = $paramsArticle.GetEnumerator() | Select-Object -First 1
         $key = Test-ValidateMapping -strValue ($firstEntry.Key) -mapping (Get-MappingArticleKeys)
-        $value = $firstEntry.Value
+        $value = [string]$firstEntry.Value
         $value = $value.replace("'","''") # Escape Single Quote in Strings
         $sqlFrag = "$key = '$value'"
         [string]$sql = "SELECT Id [articleId] FROM Artikel WHERE $sqlFrag"
