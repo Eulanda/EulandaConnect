@@ -26,7 +26,7 @@ The `Get-SupplierId` function takes a `-addressMatch`, connects to the database,
 
 ### Example 1: Returns the supplierId for an addressMatch 'WUERTH'
 ```powershell
-PS C:\> $id = Get-SupplierId -addressMatch 'WUERTH'
+PS C:\> $id = Get-SupplierId -addressMatch 'WUERTH' -udl "C:\temp\Eulanda_1 JohnDoe.udl"
 ```
 
 Returns the SupplierId for an address with the matchcode 'WUERTH'. It is important to note that the matchcode is searched in the address table and not in the linked supplier file.

@@ -15152,7 +15152,7 @@ ID.ALIAS</dev:code>
     <command:examples>
       <command:example>
         <maml:title>Example 1: Returns the supplierId for an addressMatch 'WUERTH'</maml:title>
-        <dev:code>PS C:\&gt; $id = Get-SupplierId -addressMatch 'WUERTH'</dev:code>
+        <dev:code>PS C:\&gt; $id = Get-SupplierId -addressMatch 'WUERTH' -udl "C:\temp\Eulanda_1 JohnDoe.udl"</dev:code>
         <dev:remarks>
           <maml:para>Returns the SupplierId for an address with the matchcode 'WUERTH'. It is important to note that the matchcode is searched in the address table and not in the linked supplier file.</maml:para>
         </dev:remarks>
