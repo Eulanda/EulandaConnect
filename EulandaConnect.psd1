@@ -162,6 +162,7 @@ FunctionsToExport = @(
     'Get-StockSql',
     'Get-Subnet',
     'Get-SupplierAddressId',
+    'Get-SupplierId',
     'Get-TempDir',
     'Get-TranslateSection',
     'Get-UpsellingFromVariants',

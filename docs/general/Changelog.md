@@ -8,7 +8,7 @@ The most important changes to EulandaConnect can be found listed chronologically
 
 | Version | Date        | Description                                                  |
 | ------- | ----------- | ------------------------------------------------------------ |
-| 3.2.3 | coming soon | `New`: [Get-NewNumberFromSeries](./docs/Get-NewNumberFromSeries.md) Get the next number from series like OrderNo, OfferNo and so on, from EULANDA ERP system. [New-PurchaseOrder](./docs/New-PurchaseOrder.md) and [New-PurchaseOrderLineItem](./docs/New-PurchaseOrderLineItem.md) creates EULANDA Purchase order by API in PowerShell. |
+| 3.2.3 | coming soon | `New`: [Get-NewNumberFromSeries](./docs/Get-NewNumberFromSeries.md) Get the next number from series like OrderNo, OfferNo and so on, from EULANDA ERP system. [New-PurchaseOrder](./docs/New-PurchaseOrder.md) and [New-PurchaseOrderLineItem](./docs/New-PurchaseOrderLineItem.md) creates EULANDA Purchase order by API in PowerShell. [Get-SupplierId](./docs/Get-SupplierId.md) gets the supplierId for an -addressMatch. |
 | 3.2.2 | 06/25/2023 | Added a lot of new Pester-Tests |
 | 3.2.2 | 06/25/2023 | `Bugfixes`: Convert-Slugify had an problem with the EUR symbol. |
 | 3.2.2 | 06/25/2023 | More Pester-Tests |
