@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<document created="20230218074329" version="4.0.374" date="20230624221816" scan="61" scanned="20230624221805">
+<document created="20230218074329" version="4.0.374" date="20230628210121" scan="62" scanned="20230628210039">
   <lang id="de-DE"/>
-  <source class="TNetResourceSource" name=".\EulandaConnect.en-US.resx" original="en-US" date="20230624201802" usebom="1" options="[]" righttoleft="nrlNone">
+  <source class="TNetResourceSource" name=".\EulandaConnect.en-US.resx" original="en-US" date="20230628183252" usebom="1" options="[]" righttoleft="nrlNone">
     <outputfile dir="." localized="EulandaConnect.&lt;net&gt;.&lt;ext&gt;"/>
     <excludeddatatypes>
       <class>TBinaryData</class>
@@ -683,6 +683,22 @@
       <prev>Processing articleNo: {0} (node {1} of {2})</prev>
       <native>Processing article: {0} (node {1} of {2})</native>
       <lang id="de-DE" date="20230624221740" invalidated="1" status="3">Verarbeite Artikel: {0} (Knoten {1} von {2})</lang>
+    </row>
+    <row id="PURCHASEORDER_NOT_FOUND" state="0" created="20230628210039">
+      <native>There was no valid PurchaseOrderId found. Function: {0}</native>
+      <lang id="de-DE" date="20230628210054" status="3">Es wurde keine gültige PurchaseOrderId gefunden. Funktion: {0}</lang>
+    </row>
+    <row id="ARTCILEID_NOT_FOUND" state="0" created="20230628210039">
+      <native>Could not find the article id. Function: {0}</native>
+      <lang id="de-DE" date="20230628210109" status="3">Die Artikel-ID konnte nicht gefunden werden. Funktion: {0}</lang>
+    </row>
+    <row id="NUMBERSERIES_WITHOUT_RESULT" state="0" created="20230628210039">
+      <native>he number series for KrAuftrag did not gave a new number. Function: {0}</native>
+      <lang id="de-DE" date="20230628210115" status="3">Die Zahlenreihe für KrAuftrag hat keine neue Zahl ergeben. Funktion: {0}</lang>
+    </row>
+    <row id="NO_PURCHASEORDER_CREATED" state="0" created="20230628210039">
+      <native>No Purchase Order could be created. Function: {0}</native>
+      <lang id="de-DE" date="20230628210120" status="3">Es konnte keine Bestellung erstellt werden. Funktion: {0}</lang>
     </row>
   </source>
 </document>

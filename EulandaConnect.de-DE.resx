@@ -612,4 +612,16 @@
   <data name="PROGBAR_XML_STATUS" xml:space="preserve">
     <value>Verarbeite Artikel: {0} (Knoten {1} von {2})</value>
   </data>
+  <data name="PURCHASEORDER_NOT_FOUND" xml:space="preserve">
+    <value>Es wurde keine gültige PurchaseOrderId gefunden. Funktion: {0}</value>
+  </data>
+  <data name="ARTCILEID_NOT_FOUND" xml:space="preserve">
+    <value>Die Artikel-ID konnte nicht gefunden werden. Funktion: {0}</value>
+  </data>
+  <data name="NUMBERSERIES_WITHOUT_RESULT" xml:space="preserve">
+    <value>Die Zahlenreihe für KrAuftrag hat keine neue Zahl ergeben. Funktion: {0}</value>
+  </data>
+  <data name="NO_PURCHASEORDER_CREATED" xml:space="preserve">
+    <value>Es konnte keine Bestellung erstellt werden. Funktion: {0}</value>
+  </data>
 </root>
