@@ -40,25 +40,25 @@
             "args": ["-newFinalImage -verbose"]
         },
         {
-            "name": "[DBG]:5 Publish to PsGallery",
-            "type": "PowerShell",
-            "request": "launch",
-            "script": "${workspaceFolder}\\Build.ps1",
-            "args": ["-publishToPsGallery -verbose"]
-        },
-        {
-            "name": "[DBG]:6 Update Online Docs",
+            "name": "[DBG]:5 Update Online Docs",
             "type": "PowerShell",
             "request": "launch",
             "script": "${workspaceFolder}\\Build.ps1",
             "args": ["-updateOnlineDocs -verbose"]
         },
         {
-            "name": "[DBG]:7 Invoke Pester",
+            "name": "[DBG]:6 Invoke Pester",
             "type": "PowerShell",
             "request": "launch",
             "script": "${workspaceFolder}\\Build.ps1",
             "args": ["-invokePester -pesterNoTelegram -verbose"]
+        },
+        {
+            "name": "[DBG]:7 Publish to PsGallery",
+            "type": "PowerShell",
+            "request": "launch",
+            "script": "${workspaceFolder}\\Build.ps1",
+            "args": ["-publishToPsGallery -verbose"]
         }
     ]
 }
