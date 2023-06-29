@@ -8,7 +8,7 @@ schema: 2.0.0
 # Format-Xml
 
 ## SYNOPSIS
-Formats an XML string or file by applying indentation and encoding.
+This PowerShell function formats or beautifies an XML string or file by applying indentation and encoding. Source code on [GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Format-Xml.ps1).
 
 ## SYNTAX
 

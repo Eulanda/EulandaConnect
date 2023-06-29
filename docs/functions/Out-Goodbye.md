@@ -83,4 +83,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## RELATED LINKS
 
-[Out-Welcome](./Out-Welcome.md)
+[Out-Welcome](./functions/Out-Welcome.md)

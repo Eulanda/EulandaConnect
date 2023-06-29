@@ -8,7 +8,7 @@ schema: 2.0.0
 # Close-SalesOrder
 
 ## SYNOPSIS
-When the sales order is closed, it is considered completed and can no longer be modified.
+This PowerShell function closes a sales order, it is considered completed and can no longer be modified. This function requires an EULANDA ERP system. Source code on [GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Close-SalesOrder.ps1).
 
 ## SYNTAX
 

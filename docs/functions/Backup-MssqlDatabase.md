@@ -8,7 +8,7 @@ schema: 2.0.0
 # Backup-MssqlDatabase
 
 ## SYNOPSIS
-Backs up a Microsoft SQL Server database to a file, compresses it, and stores it locally and/or on an FTP server. The local backup files also the FTP files are kept according to the specified history.
+This PowerShell function backs up a Microsoft SQL Server database to a file, compresses it, and stores it locally and/or on an FTP server. The local backup files also the FTP files are kept according to the specified history. Source code on [GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Backup-MssqlDatabase.ps1).
 
 ## SYNTAX
 

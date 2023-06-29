@@ -143,6 +143,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## RELATED LINKS
 
-[Approve-Signature](Approve-Signature.md)
+[Approve-Signature](../functions/Approve-Signature.md)
 
-[Get-SignToolPath](Get-SignToolPath.md)
+[Get-SignToolPath](../functions/Get-SignToolPath.md)

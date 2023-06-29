@@ -419,22 +419,26 @@ function Sync-MarkdownFiles {
                if (($basePart -eq '../docs/') -or ($basePart -eq './docs/')) {
                     $newBasePart = '../../Functions/'
                 } elseif (($basePart -eq '../appendix/') -or ($basePart -eq './appendix/')) {
-                    $newBasePart = '../../Appendix/'
+                    $newBasePart = '/docs/Appendix/'
+                } elseif (($basePart -eq '../functions/') -or ($basePart -eq './functions/')) {
+                    $newBasePart = '/docs/Functions/'
                 } elseif (($basePart -eq '../examples/') -or ($basePart -eq './examples/')) {
-                    $newBasePart = '../../Examples/'
+                    $newBasePart = '/docs/Examples/'
                 } elseif (($basePart -eq '../general/') -or ($basePart -eq './general/')) {
-                    $newBasePart = '../../General/'
+                    $newBasePart = '/docs/General/'
                 } elseif ($filePart.IndexOf('.') -ge 0) { # all media are going in the root
                     $newBasePart = "/"
                 } elseif ($filePart.IndexOf('Readme') -eq 0) { # allreadme links also with hash tag (#)
                     $newBasePart = "../../General/"
                 } elseif ($basePart -eq './') {
                     $newBasePart = '../'
+                } elseif ($basepart = "") {
+                    $newBasePart = '/'
                 } else {
                     $newBasePart = '../'
                 }
             } else {
-                $newBasePart = '../'
+                $newBasePart = ''
             }
 
             $adjustedLink = $newBasePart + $filePart + $hashTag

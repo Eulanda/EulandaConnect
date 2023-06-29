@@ -8,7 +8,7 @@ schema: 2.0.0
 # Convert-StringCase
 
 ## SYNOPSIS
-Converts text to lowercase, uppercase, or capitalized
+This PowerShell function converts text to lowercase, uppercase, or capitalized. Source code on [GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Convert-StringCase.ps1).
 
 ## SYNTAX
 

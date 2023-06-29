@@ -8,7 +8,7 @@ schema: 2.0.0
 # ConvertTo-WrappedLines
 
 ## SYNOPSIS
-Performs a wrap of a text
+This PowerShell function performs a wrap of a text. Source code on [GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/ConvertTo-WrappedLines.ps1).
 
 ## SYNTAX
 

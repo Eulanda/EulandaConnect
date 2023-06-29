@@ -8,7 +8,7 @@ schema: 2.0.0
 # ConvertTo-XmlString
 
 ## SYNOPSIS
-The `ConvertTo-XmlString` function converts ADO (ActiveX Data Objects) field objects into XML strings. It accepts various data types and handles `NULL` values according to the specified options.
+This PowerShell function converts ADO (ActiveX Data Objects) field objects into XML strings. It accepts various data types and handles `NULL` values according to the specified options. Source code on [GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/ConvertTo-XmlString.ps1).
 
 ## SYNTAX
 

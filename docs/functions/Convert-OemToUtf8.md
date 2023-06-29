@@ -8,7 +8,7 @@ schema: 2.0.0
 # Convert-OemToUtf8
 
 ## SYNOPSIS
-Converts an input string from OEM (Original Equipment Manufacturer) encoding to UTF-8 encoding, with specific mappings for German special characters.
+This PowerShell function converts an input string from OEM (Original Equipment Manufacturer) encoding to UTF-8 encoding, with specific mappings for German special characters also called Umlaut like äöü. Source code on [GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Convert-OemToUtf8.ps1).
 
 ## SYNTAX
 

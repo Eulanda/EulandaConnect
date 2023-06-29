@@ -63,4 +63,4 @@ The function requires administrative rights! If the function is run without thes
 
 ## RELATED LINKS
 
-[New-SymbolicLink](./New-SymbolicLink.md)
+[New-SymbolicLink](./functions/New-SymbolicLink.md)

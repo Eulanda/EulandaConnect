@@ -8,7 +8,7 @@ schema: 2.0.0
 # Convert-ToDecimalDegrees
 
 ## SYNOPSIS
-Converts coordinates in Degrees-Minutes-Seconds (DMS) format to Decimal Degrees (DD).
+This PowerShell function converts coordinates in Degrees-Minutes-Seconds (DMS) format to Decimal Degrees (DD). Source code on [GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Convert-ToDecimalDegrees.ps1).
 
 ## SYNTAX
 
@@ -106,4 +106,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## RELATED LINKS
 
-[Get-Distance](./Get-Distance.md)
+[Get-Distance](../functions/Get-Distance.md)

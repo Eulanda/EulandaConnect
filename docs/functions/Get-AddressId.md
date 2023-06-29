@@ -8,7 +8,7 @@ schema: 2.0.0
 # Get-AddressId
 
 ## SYNOPSIS
-Returns the ID of an address based on its unique field like addressMatch, addressId or addressUid
+This PowerShell function returns the `ID` of an address based on its unique field like addressMatch, addressId or addressUid of the EULANDA merchandise management system. This function requires an EULANDA ERP system. Source code on [GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Get-AddressId.ps1).
 
 ## SYNTAX
 

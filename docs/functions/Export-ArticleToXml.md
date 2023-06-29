@@ -8,7 +8,7 @@ schema: 2.0.0
 # Export-ArticleToXml
 
 ## SYNOPSIS
-xports an XML message type for Eulanda articles, calling various fragment functions to create the output. Compatible with the classic Eulanda shop interface format.
+This PowerShell function exports an XML message type for EULANDA articles, calling various fragment functions to create the output. Compatible with the classic Eulanda shop interface format. This function requires an EULANDA ERP system. Source code on [GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Export-ArticleToXml.ps1).
 
 ## SYNTAX
 

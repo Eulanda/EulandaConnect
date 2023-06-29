@@ -8,7 +8,7 @@ schema: 2.0.0
 # ConvertTo-WrappedLinesEdi
 
 ## SYNOPSIS
-Creates two lines of text from a long continuous text
+This PowerShell function creates two lines of text from a long continuous text, often used in EDI systems. Source code on [GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/ConvertTo-WrappedLinesEdi.ps1).
 
 ## SYNTAX
 

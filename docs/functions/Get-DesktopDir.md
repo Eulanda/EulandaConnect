@@ -50,4 +50,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## RELATED LINKS
 
-[Get-TempDir](Get-TempDir.md)
+[Get-TempDir](../functions/Get-TempDir.md)

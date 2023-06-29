@@ -85,4 +85,4 @@ The function requires administrative rights! If the function is run without thes
 
 ## RELATED LINKS
 
-[Remove-Snapshot](./Remove-Snapshot.md)
+[Remove-Snapshot](./functions/Remove-Snapshot.md)

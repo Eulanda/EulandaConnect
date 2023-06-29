@@ -8,7 +8,7 @@ schema: 2.0.0
 # Deny-RemoteFingerprint
 
 ## SYNOPSIS
-Compares the SSH key of a server with the one stored in the local cache (Trusted Hosts).
+This PowerShell function compares the SSH key of a server with the one stored in the local cache (Trusted Hosts). Source code on [GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Deny-RemoteFingerprint.ps1).
 
 ## SYNTAX
 

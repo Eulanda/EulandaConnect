@@ -8,7 +8,7 @@ schema: 2.0.0
 # Approve-Signature
 
 ## SYNOPSIS
-Signs a script or program with an EV certificate
+This PowerShell function signs a script or program with an EV certificate. Source code on [GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Approve-Signature.ps1).
 
 ## SYNTAX
 
@@ -65,9 +65,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## RELATED LINKS
 
-[Approve-Signature.ps1 on GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Approve-Signature.ps1)
+[Get-SignToolPath](../functions/Get-SignToolPath.md)
 
-[Get-SignToolPath](Get-SignToolPath.md)
-
-[Install-SignTool](Install-SignTool.md)
+[Install-SignTool](../functions/Install-SignTool.md)
 

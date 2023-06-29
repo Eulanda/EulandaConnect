@@ -8,7 +8,7 @@ schema: 2.0.0
 # Get-AddressSql
 
 ## SYNOPSIS
-Generates a SQL statement for selecting addresses from the database based on the specified selection criteria.
+This PowerShell function generates a SQL statement for selecting addresses from the database based on the specified selection criteria. This function requires an EULANDA ERP system. Source code on [GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Get-AddressSql.ps1).
 
 ## SYNTAX
 

@@ -8,7 +8,7 @@ schema: 2.0.0
 # Get-AdoRs
 
 ## SYNOPSIS
-Returns the first valid and opened recordset due to a query
+This PowerShell function returns the first valid and opened recordset due to a query. Source code on [GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Get-AdoRs.ps1).
 
 ## SYNTAX
 

@@ -134,4 +134,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## RELATED LINKS
 
-[Show-MsgBoxYes](./Show-MsgBoxYes.md)
+[Show-MsgBoxYes](./functions/Show-MsgBoxYes.md)

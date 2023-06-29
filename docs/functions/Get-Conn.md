@@ -89,4 +89,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## RELATED LINKS
 
-[Get-ConnItems](Get-ConnItems.md)
+[Get-ConnItems](./functions/Get-ConnItems.md)

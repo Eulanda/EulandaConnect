@@ -8,7 +8,7 @@ schema: 2.0.0
 # Convert-Slugify
 
 ## SYNOPSIS
-Converts a string so that only letters from a-z, underscores and digits are output.
+This PowerShell function converts a string so that only letters from a-z, underscores and digits are output. All other letters are converted to these base letters if possible. Source code on [GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Convert-Slugify.ps1).
 
 ## SYNTAX
 

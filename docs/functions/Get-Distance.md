@@ -105,4 +105,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## RELATED LINKS
 
-[Convert-ToDecimalDegrees](./Convert-ToDecimalDegrees.md)
+[Convert-ToDecimalDegrees](../functions/Convert-ToDecimalDegrees.md)

@@ -82,4 +82,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## RELATED LINKS
 
-[Unprotect-String](./Unprotect-String.md)
+[Unprotect-String](./functions/Unprotect-String.md)

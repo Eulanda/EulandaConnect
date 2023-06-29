@@ -8,7 +8,7 @@ schema: 2.0.0
 # Convert-Accent
 
 ## SYNOPSIS
-Special characters from other languages are converted to the characters a-z. **ö** becomes **oe** etc.
+This PowerShell function converts special characters from other languages to the characters a-z. **ö** becomes **oe** etc. Source code on [GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Convert-Accent.ps1).
 
 ## SYNTAX
 

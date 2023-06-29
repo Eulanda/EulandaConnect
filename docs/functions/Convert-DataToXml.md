@@ -8,7 +8,7 @@ schema: 2.0.0
 # Convert-DataToXml
 
 ## SYNOPSIS
-Converts data structures like nested hashtables or arrays into an XML
+This PowerShell function converts data structures like nested hashtables or arrays into an XML. Source code on [GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Convert-DataToXml.ps1).
 
 ## SYNTAX
 
@@ -223,6 +223,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## RELATED LINKS
 
-[Convert-DataToXml](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Convert-DataToXml.ps1)
-
-[Write-XmlMetadata](Write-XmlMetadata.md)
+[Write-XmlMetadata](./functions/Write-XmlMetadata.md)

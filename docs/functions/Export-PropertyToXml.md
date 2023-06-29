@@ -8,7 +8,7 @@ schema: 2.0.0
 # Export-PropertyToXml
 
 ## SYNOPSIS
-Exports the entire property tree starting from a specified path in a hierarchical xml structure.
+This PowerShell function exports the entire property tree starting from a specified path in a hierarchical xml structure. This function requires an EULANDA ERP system. Source code on [GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Export-PropertyToXml.ps1).
 
 ## SYNTAX
 

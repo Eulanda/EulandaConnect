@@ -93,4 +93,4 @@ This function is part of a suite of tools designed to manage IP geographic infor
 
 ## RELATED LINKS
 
-[Get-IpGeoInfo](./Get-IpGeoInfo.md)
+[Get-IpGeoInfo](../functions/Get-IpGeoInfo.md)

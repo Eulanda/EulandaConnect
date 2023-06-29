@@ -138,4 +138,5 @@ By appending the "-full" parameter to the help line, the descriptions of the par
    https://eulandaconnect.eulanda.eu/docs/Functions/.
 - On GitHub there is a typical Markdown documentation at:
    https://github.com/Eulanda/EulandaConnect/tree/master/docs
-- Upcoming things can be found at: [Roadmap](./Roadmap)
+- Upcoming things can be found at: [Roadmap](../general/Roadmap.md)
+

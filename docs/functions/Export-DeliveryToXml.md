@@ -8,7 +8,7 @@ schema: 2.0.0
 # Export-DeliveryToXml
 
 ## SYNOPSIS
-Exports a delivery bill including its positions to an XML file
+This PowerShell function exports a delivery bill including its line items to an XML file. This function requires an EULANDA ERP system. Source code on [GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Export-DeliveryToXml.ps1).
 
 ## SYNTAX
 
@@ -18,7 +18,7 @@ Export-DeliveryToXml [[-deliveryId] <Int32>] [[-deliveryNo] <Int32>] [-includeEm
 ```
 
 ## DESCRIPTION
-The delivery note to be exported is selected either by the ID or the delivery note number. You can specify the XML root node via $root. Additionally $arrRoot can be specified. The positions are then appended to this.
+The delivery note to be exported is selected either by the ID or the delivery note number. You can specify the XML root node via $root. Additionally `-arrRoot` can be specified. The positions are then appended to this.
 
 ## EXAMPLES
 

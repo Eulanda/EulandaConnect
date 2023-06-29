@@ -83,4 +83,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## RELATED LINKS
 
-[Protect-String](./Protect-String.md)
+[Protect-String](./functions/Protect-String.md)

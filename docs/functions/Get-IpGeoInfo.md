@@ -129,4 +129,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## RELATED LINKS
 
-[Merge-IpGeoInfo](./Merge-IpGeoInfo.md)
+[Merge-IpGeoInfo](./functions/Merge-IpGeoInfo.md)

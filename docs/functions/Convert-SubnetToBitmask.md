@@ -8,7 +8,7 @@ schema: 2.0.0
 # Convert-SubnetToBitmask
 
 ## SYNOPSIS
-Subnet mask or CIDR to its bit representation
+This PowerShell function converts a subnet mask or CIDR to its bit representation. Source code on [GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Convert-SubnetToBitMask.ps1).
 
 ## SYNTAX
 

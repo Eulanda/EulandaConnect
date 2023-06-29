@@ -63,4 +63,4 @@ The function requires administrative rights! If the function is run without thes
 
 ## RELATED LINKS
 
-[New-Snapshot](./New-Snapshot.md)
+[New-Snapshot](../functions/New-Snapshot.md)

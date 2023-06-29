@@ -8,7 +8,7 @@ schema: 2.0.0
 # Convert-DateToIso
 
 ## SYNOPSIS
-Converts a date to an ISO string
+This PowerShell function converts a date to an ISO string. Source code on [GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Convert-DateToIso.ps1).
 
 ## SYNTAX
 

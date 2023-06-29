@@ -8,7 +8,7 @@ schema: 2.0.0
 # ConvertTo-USFloat
 
 ## SYNOPSIS
-Converts a string representation of a float number into a U.S. format.
+This PowerShell function converts a string representation of a float number into a U.S. format. Source code on [GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/ConvertTo-USFloat.ps1).
 
 ## SYNTAX
 

@@ -8,7 +8,7 @@ schema: 2.0.0
 # Confirm-System
 
 ## SYNOPSIS
-This function retrieves various system information to quickly diagnose a malfunction.
+This PowerShell function retrieves various system information to quickly diagnose a malfunction. Source code on [GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Confirm-System.ps1).
 
 ## SYNTAX
 

@@ -44,6 +44,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## RELATED LINKS
 
-[Show-Extensions](./Show-Extensions.md)
+[Show-Extensions](./functions/Show-Extensions.md)
 
-[Update-Desktop](./Update-Desktop.md)
+[Update-Desktop](./functions/Update-Desktop.md)

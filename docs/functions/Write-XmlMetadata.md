@@ -102,4 +102,5 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## RELATED LINKS
 
-[Convert-DataToXml](Convert-DataToXml.md)
+[Convert-DataToXml](../functions/Convert-DataToXml.md)
+

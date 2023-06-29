@@ -44,6 +44,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## RELATED LINKS
 
-[Hide-Extensions](./Hide-Extensions.md)
+[Hide-Extensions](../functions/Hide-Extensions.md)
 
-[Show-Extensions](./Show-Extensions.md)
+[Show-Extensions](../functions/Show-Extensions.md)

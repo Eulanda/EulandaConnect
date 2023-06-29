@@ -8,7 +8,7 @@ schema: 2.0.0
 # Convert-ImageToBase64
 
 ## SYNOPSIS
-Converts an image file into a mime text Base64 encoded
+This PowerShell function converts an image file into a mime text Base64 encoded. Source code on [GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Convert-ImageToBase64.ps1).
 
 ## SYNTAX
 

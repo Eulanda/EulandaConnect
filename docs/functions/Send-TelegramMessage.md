@@ -205,6 +205,6 @@ Important: Treat your bot token as a password and do not share it with others. T
 
 ## RELATED LINKS
 
-[Send-TelegramPhoto](./Send-TelegramPhoto.md)
+[Send-TelegramPhoto](./functions/Send-TelegramPhoto.md)
 
-[Send-TelegramMap](./Send-TelegramMap.md)
+[Send-TelegramMap](./functions/Send-TelegramMap.md)

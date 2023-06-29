@@ -50,4 +50,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## RELATED LINKS
 
-[Get-DesktopDir](Get-DesktopDir.md)
+[Get-DesktopDir](../functions/Get-DesktopDir.md)

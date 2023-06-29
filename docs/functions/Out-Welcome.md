@@ -125,4 +125,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## RELATED LINKS
 
-[Out-Goodbye](./Out-Goodbye.md)
+[Out-Goodbye](./functions/Out-Goodbye.md)

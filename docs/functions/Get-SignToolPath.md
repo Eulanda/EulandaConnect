@@ -50,7 +50,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## RELATED LINKS
 
-[Approve-Signature](Approve-Signature.md)
+[Approve-Signature](../functions/Approve-Signature.md)
 
-[Install-SignTool](Install-SignTool.md)
+[Install-SignTool](../functions/Install-SignTool.md)
 

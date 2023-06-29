@@ -120,4 +120,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## RELATED LINKS
 
-[Close-Delivery](./Close-Delivery.md)
+[Close-Delivery](../functions/Close-Delivery.md)

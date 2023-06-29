@@ -8,7 +8,7 @@ schema: 2.0.0
 # Convert-DatanormToXml
 
 ## SYNOPSIS
-Converts a Datanorm PowerShell object into an XML string that's compatible with the EULANDA merchandise management system.
+This PowerShell function converts a Datanorm PsCustomObject into an XML string that's also compatible with the EULANDA merchandise management system. Source code on [GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Convert-DatanormToXml.ps1).
 
 ## SYNTAX
 

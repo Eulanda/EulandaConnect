@@ -8,7 +8,7 @@ schema: 2.0.0
 # Close-Delivery
 
 ## SYNOPSIS
-On closing the delivery quantities are debited from the warehouse
+This PowerShell function closes the delivery note where quantities are debited from the warehouse. This function requires an EULANDA ERP system. Source on [GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Close-Delivery.ps1).
 
 ## SYNTAX
 
@@ -121,6 +121,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## RELATED LINKS
 
-[Close-Delivery.ps1 on GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Close-Delivery.ps1)
-
-[Open-Delivery](./Open-Delivery.md)
+[Open-Delivery](./functions/Open-Delivery.md)

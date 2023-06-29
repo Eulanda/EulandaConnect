@@ -8,7 +8,7 @@ schema: 2.0.0
 # Find-MssqlServer
 
 ## SYNOPSIS
-Searches for all SQL-Servers in a specified IP range
+This PowerShell function searches for all SQL-Servers in a specified IP range. Source code on [GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Find-MssqlServer.ps1).
 
 ## SYNTAX
 

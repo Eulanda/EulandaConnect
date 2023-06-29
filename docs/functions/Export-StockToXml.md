@@ -8,7 +8,7 @@ schema: 2.0.0
 # Export-StockToXml
 
 ## SYNOPSIS
-Exports the stock level to an XML file
+This PowerShell function exports the stock level to an XML file. This function requires an EULANDA ERP system. Source code on [GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Export-StockToXml.ps1).
 
 ## SYNTAX
 

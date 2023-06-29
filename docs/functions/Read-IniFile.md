@@ -85,4 +85,4 @@ PowerShell unfortunately does not have a built-in function to process classic IN
 
 ## RELATED LINKS
 
-[Get-IniBool](Get-IniBool.md)
+[Get-IniBool](./functions/Get-IniBool.md)

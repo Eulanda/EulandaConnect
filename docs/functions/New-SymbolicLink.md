@@ -95,4 +95,4 @@ The function requires administrative rights! If the function is run without thes
 
 ## RELATED LINKS
 
-[Remove-SymbolicLink](./Remove-SymbolicLink.md)
+[Remove-SymbolicLink](./functions/Remove-SymbolicLink.md)

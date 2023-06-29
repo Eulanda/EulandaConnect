@@ -74,6 +74,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## RELATED LINKS
 
-[Read-IniFile](Read-IniFile.md)
+[Read-IniFile](../functions/Read-IniFile.md)
 
-[Get-Bool](Get-Bool.md)
+[Get-Bool](../functions/Get-Bool.md)

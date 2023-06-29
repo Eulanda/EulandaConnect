@@ -8,7 +8,7 @@ schema: 2.0.0
 # Convert-FromDatanorm
 
 ## SYNOPSIS
-Converts a Datanorm 4.0 file into a structured PowerShell object.
+This PowerShell function converts a Datanorm 4.0 file into a structured PowerShell object - PsCustomObject. Source code on [GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Convert-FromDatanorm.ps1).
 
 ## SYNTAX
 
