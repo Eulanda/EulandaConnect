@@ -127,22 +127,26 @@ function Test-Website {
         Broken = $broken.Keys
     }
 
+    if ($show) {
+        Write-Host "SUMMARY of the website analysis"
+        Write-Host "==============================="
+        Write-Host "Pages found: $($result.VisitedUrls.count)"
+
+        Write-Host "NoIndex tag found: $($result.noIndex.count)"
+        if ($result.noIndex.count -gt 0) { $result.noIndex | ForEach-Object { Write-Host "NoIndex: $_" } }
+
+        Write-Host "NoFollow tag found: $($result.noFollow.count)"
+        if ($result.noFollow.count -gt 0) { $result.noFollow | ForEach-Object { Write-Host "NoFollow: $_" } }
+
+        Write-Host "Broken links found: $($result.Broken.count)"
+        if ($result.broken.count -gt 0) { $result.broken | ForEach-Object { Write-Host "Broken: $_" } }
+    }
+
     Return $result
+
+    # Test: $myResult = Test-Website -url "https://eulandaconnect.eulanda.eu/" -show
 }
 
 
-$r = Test-Website -url "https://eulandaconnect.eulanda.eu/" -show
-
-Write-Host "Pages: $($r.VisitedUrls.count)"
-
-Write-Host "NoIndex: $($r.noIndex.count)"
-if ($r.noIndex.count -gt 0) { $r.noIndex | ForEach-Object { Write-Host "NoIndex: $_" } }
-
-Write-Host "NoFollow: $($r.noFollow.count)"
-if ($r.noFollow.count -gt 0) { $r.noFollow | ForEach-Object { Write-Host "NoFollow: $_" } }
-
-Write-Host "Broken Links: $($r.Broken.count)"
-if ($r.broken.count -gt 0) { $r.broken | ForEach-Object { Write-Host "Broken: $_" } }
-
-
-Write-Host "ready"
+# Test-Website -url "https://eulandaconnect.eulanda.eu/" -show | Out-Null
+Test-Website -url "http://www.esgedv.com/" -show | Out-Null
