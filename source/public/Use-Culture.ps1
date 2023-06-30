@@ -18,3 +18,5 @@ Function Use-Culture {
     Invoke-Command $script
     [System.Threading.Thread]::CurrentThread.CurrentCulture = $oldCulture
 }
+
+# Test: Use-Culture -culture 'it-IT' -script { $(Get-Date) }
