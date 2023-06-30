@@ -8,7 +8,7 @@ schema: 2.0.0
 # Get-ConnItems
 
 ## SYNOPSIS
-Returns all value pairs as a hash table
+This PowerShell function returns all value pairs as a hash table. Source code on [GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Get-ConnItems.ps1).
 
 ## SYNTAX
 

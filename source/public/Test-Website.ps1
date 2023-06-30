@@ -23,37 +23,8 @@ function Test-Website {
         $url = $item.Url
         $parent = $item.Parent
 
-        # Normalize slash and remove hashtag fragment if exists
-        if ($url -match "#") {
-            # Test pattern for url
-            #   '#entwurf-die' -> ''
-            #   'entwurf-die#' -> 'entwurf-die/'
-            #   'entwurf-die' -> 'entwurf-die'
-            #   'entwurf-die-b&#xE4;nder-3' ->  'entwurf-die-b&#xE4;nder-3'
-            #   'entwurf-die-b&#xE4;nd#er-3' ->  'entwurf-die-b&#xE4;nd/'
-            #   'entwu#rf-die-b&#xE4;nder-3' ->  'entwu/'
-            #   'entwurf/' ->  'entwurf/'
-            #   '' ->  ''
-            #   '/' ->  '/'
-
-            # Search for the anchor from behind
-            $anchorIndex = $url.LastIndexOf("#")
-
-            if ($anchorIndex -ge 0) {
-                $startIndex = $anchorIndex - 1
-
-                while ($startIndex -ge 0 -and $url[$anchorIndex-1] -eq '&' ) {
-                    $anchorIndex = $url.LastIndexOf('#',$startIndex)
-                }
-
-                if ($anchorIndex -ge 0) {
-                    $url = $url.Substring(0, $anchorIndex)
-                    if ($url) {
-                        $url = $url.TrimEnd('/') + '/'
-                    }
-                }
-            }
-        }
+        # RRemove hashtag fragment if present, but ignore the hashtag &# for Unicode
+        $url = Remove-UrlFragment -url $url
 
         # If we have already visited this url, no need to process again
         if ($visitedUrls[$url]) {
@@ -244,5 +215,3 @@ function Test-Website {
     # Test-Website -url "https://www.bargellinibevande.it/" -show | Out-Null
     # Test-Website -url "https://www.wizz-software.nl/" -show | Out-Null
 }
-
-

@@ -8,7 +8,7 @@ schema: 2.0.0
 # Get-Conn
 
 ## SYNOPSIS
-Returns an open connection to a EULANDA database
+This PowerShell function returns an open connection to a EULANDA database. This function requires an EULANDA ERP system. Source code on [GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Get-Conn.ps1).
 
 ## SYNTAX
 

@@ -8,7 +8,7 @@ schema: 2.0.0
 # Get-ConnStr
 
 ## SYNOPSIS
-Creates a connection string based on the specified parameters
+This PowerShell function creates a connection string based on the specified parameters. Source code on [GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Get-ConnStr.ps1).
 
 ## SYNTAX
 

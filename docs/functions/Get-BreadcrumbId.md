@@ -8,7 +8,7 @@ schema: 2.0.0
 # Get-BreadcrumbId
 
 ## SYNOPSIS
-The `Get-BreadcrumbId` cmdlet retrieves the ID of the last breadcrumb element in a given property tree path.
+This PowerShell function retrieves the ID of the last breadcrumb element in a given property tree path. This function requires an EULANDA ERP system. Source code on [GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Get-BreadcrumbId.ps1).
 
 ## SYNTAX
 

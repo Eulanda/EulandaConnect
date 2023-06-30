@@ -8,7 +8,7 @@ schema: 2.0.0
 # Get-BreadcrumbPath
 
 ## SYNOPSIS
-Returns the breadcrumb path of a given breadcrumb ID.
+This PowerShell function returns the breadcrumb path of a given breadcrumb ID. This function requires an EULANDA ERP system. Source code on [GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Get-BreadcrumbPath.ps1).
 
 ## SYNTAX
 

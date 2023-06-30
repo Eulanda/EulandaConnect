@@ -8,7 +8,7 @@ schema: 2.0.0
 # Get-Bool
 
 ## SYNOPSIS
-Converts a string like 0, 1 Ture or False to a Boolean
+This PowerShell function converts a string like 0, 1 Ture or False to a Boolean. Source code on [GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Get-Bool.ps1).
 
 ## SYNTAX
 

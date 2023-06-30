@@ -8,7 +8,7 @@ schema: 2.0.0
 # Get-Cidr
 
 ## SYNOPSIS
-Calculates the CIDR based on the subnet
+This PowerShellfunction calculates the CIDR based on the subnet. Source code on [GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Get-Cidr.ps1).
 
 ## SYNTAX
 

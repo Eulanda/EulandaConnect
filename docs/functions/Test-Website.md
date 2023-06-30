@@ -8,7 +8,7 @@ schema: 2.0.0
 # Test-Website
 
 ## SYNOPSIS
-The `Test-Website` function is a PowerShell script for comprehensive website exploration and analysis, designed to operate non-recursively for memory efficiency.
+This PowerShell function is a script for comprehensive website exploration and analysis, designed to operate non-recursively for memory efficiency. Source code on [GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Test-Website.ps1).
 
 ## SYNTAX
 

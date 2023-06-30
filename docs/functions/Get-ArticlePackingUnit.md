@@ -8,7 +8,7 @@ schema: 2.0.0
 # Get-ArticlePackingUnit
 
 ## SYNOPSIS
-Returns the packaging unit based on the `ArticleId`
+This PowerShell function returns the packaging unit based on the `ArticleId`. This function requires an EULANDA ERP system. Source code on [GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Get-ArticlePackingUnit.ps1).
 
 ## SYNTAX
 

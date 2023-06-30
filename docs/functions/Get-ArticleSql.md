@@ -8,7 +8,7 @@ schema: 2.0.0
 # Get-ArticleSql
 
 ## SYNOPSIS
-Creates a SQL command to retrieve a articles
+This PowerShell function creates an SQL command to retrieve a articles. This function requires an EULANDA ERP system. Source code on [GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Get-ArticleSql.ps1).
 
 ## SYNTAX
 

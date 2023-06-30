@@ -8,7 +8,7 @@ schema: 2.0.0
 # Get-DataFromSql
 
 ## SYNOPSIS
-Creates a PowerShell data structure based on an SQL select command
+This PowerShell function creates a data structure based on an SQL select command. This function requires an EULANDA ERP system. Source code on [GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Get-DataFromSql.ps1).
 
 ## SYNTAX
 

@@ -8,7 +8,7 @@ schema: 2.0.0
 # Get-ArticleId
 
 ## SYNOPSIS
-Returns the `Id` of the article based on its barcode or article number.
+This PowerShell function the `Id` of the article based on its barcode or article number. This function requires an EULANDA ERP system. Source code on [GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Get-ArticleId.ps1).
 
 ## SYNTAX
 

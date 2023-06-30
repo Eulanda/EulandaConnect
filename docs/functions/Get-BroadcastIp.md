@@ -8,7 +8,7 @@ schema: 2.0.0
 # Get-BroadcastIp
 
 ## SYNOPSIS
-Calculate the broadcast IP of a given network
+This PowerShell function calculate the broadcast IP of a given network. Source code on [GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Get-BroadcastIp.ps1).
 
 ## SYNTAX
 
