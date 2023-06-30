@@ -785,4 +785,12 @@
     <value>Could not find the article id. Function: {0}</value>
     <comment/>
   </data>
+  <data name="NUMBERSERIES_WITHOUT_RESULT" xml:space="preserve">
+    <value>he number series for KrAuftrag did not gave a new number. Function: {0}</value>
+    <comment/>
+  </data>
+  <data name="NO_PURCHASEORDER_CREATED" xml:space="preserve">
+    <value>No Purchase Order could be created. Function: {0}</value>
+    <comment/>
+  </data>
 </root>

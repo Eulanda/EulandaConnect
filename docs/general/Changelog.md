@@ -8,8 +8,8 @@ The most important changes to EulandaConnect can be found listed chronologically
 
 | Version | Date        | Description                                                  |
 | ------- | ----------- | ------------------------------------------------------------ |
-| 3.2.3 | coming soon | `New`: [Get-NewNumberFromSeries](../functions/Get-NewNumberFromSeries.md) Get the next number from series like OrderNo, OfferNo and so on, from EULANDA ERP system. [New-PurchaseOrder](../functions/New-PurchaseOrder.md) and [New-PurchaseOrderLineItem](../functions/New-PurchaseOrderLineItem.md) creates EULANDA Purchase order by API in PowerShell. [Get-SupplierId](../functions/Get-SupplierId.md) gets the supplierId for an -addressMatch. |
-| 3.2.3 | coming soon | `Bugfixes`: for Get-ArticleId, Get-ArticleNo and Get-ArticlePackingUnit if the search criteria was not a string an exception was thrown. |
+| 3.2.3 | 06/30/2023 | `New`: [Get-NewNumberFromSeries](../functions/Get-NewNumberFromSeries.md) Get the next number from series like OrderNo, OfferNo and so on, from EULANDA ERP system. [New-PurchaseOrder](../functions/New-PurchaseOrder.md) and [New-PurchaseOrderLineItem](../functions/New-PurchaseOrderLineItem.md) creates EULANDA Purchase order by API in PowerShell. [Get-SupplierId](../functions/Get-SupplierId.md) gets the supplierId for an -addressMatch. [Test-Website](../functions/Test-Website.md) checks broken links and more. |
+| 3.2.3 | 06/30/2023 | `Bugfixes`: for Get-ArticleId, Get-ArticleNo and Get-ArticlePackingUnit if the search criteria was not a string an exception was thrown. |
 | 3.2.2 | 06/25/2023 | Added a lot of new Pester-Tests |
 | 3.2.2 | 06/25/2023 | `Bugfixes`: Convert-Slugify had an problem with the EUR symbol. |
 | 3.2.2 | 06/25/2023 | More Pester-Tests |

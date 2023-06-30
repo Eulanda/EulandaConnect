@@ -6,7 +6,7 @@
       <command:verb>Approve</command:verb>
       <command:noun>Signature</command:noun>
       <maml:description>
-        <maml:para>Signs a script or program with an EV certificate</maml:para>
+        <maml:para>This PowerShell function signs a script or program with an EV certificate. Source code on GitHub (https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Approve-Signature.ps1).</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
@@ -86,10 +86,6 @@
         <maml:uri>https://github.com/Eulanda/EulandaConnect/blob/master/docs/Approve-Signature.md</maml:uri>
       </maml:navigationLink>
       <maml:navigationLink>
-        <maml:linkText>Approve-Signature.ps1 on GitHub</maml:linkText>
-        <maml:uri>https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Approve-Signature.ps1</maml:uri>
-      </maml:navigationLink>
-      <maml:navigationLink>
         <maml:linkText>Get-SignToolPath</maml:linkText>
         <maml:uri></maml:uri>
       </maml:navigationLink>
@@ -105,7 +101,7 @@
       <command:verb>Backup</command:verb>
       <command:noun>MssqlDatabase</command:noun>
       <maml:description>
-        <maml:para>Backs up a Microsoft SQL Server database to a file, compresses it, and stores it locally and/or on an FTP server. The local backup files also the FTP files are kept according to the specified history.</maml:para>
+        <maml:para>This PowerShell function backs up a Microsoft SQL Server database to a file, compresses it, and stores it locally and/or on an FTP server. The local backup files also the FTP files are kept according to the specified history. Source code on GitHub (https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Backup-MssqlDatabase.ps1).</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
@@ -560,7 +556,7 @@
       <command:verb>Close</command:verb>
       <command:noun>Delivery</command:noun>
       <maml:description>
-        <maml:para>On closing the delivery quantities are debited from the warehouse</maml:para>
+        <maml:para>This PowerShell function closes the delivery note where quantities are debited from the warehouse. This function requires an EULANDA ERP system. Source on GitHub (https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Close-Delivery.ps1).</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
@@ -733,10 +729,6 @@
         <maml:uri>https://github.com/Eulanda/EulandaConnect/blob/master/docs/Close-Delivery.md</maml:uri>
       </maml:navigationLink>
       <maml:navigationLink>
-        <maml:linkText>Close-Delivery.ps1 on GitHub</maml:linkText>
-        <maml:uri>https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Close-Delivery.ps1</maml:uri>
-      </maml:navigationLink>
-      <maml:navigationLink>
         <maml:linkText>Open-Delivery</maml:linkText>
         <maml:uri></maml:uri>
       </maml:navigationLink>
@@ -748,7 +740,7 @@
       <command:verb>Close</command:verb>
       <command:noun>SalesOrder</command:noun>
       <maml:description>
-        <maml:para>When the sales order is closed, it is considered completed and can no longer be modified.</maml:para>
+        <maml:para>This PowerShell function closes a sales order, it is considered completed and can no longer be modified. This function requires an EULANDA ERP system. Source code on GitHub (https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Close-SalesOrder.ps1).</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
@@ -938,7 +930,7 @@
       <command:verb>Confirm</command:verb>
       <command:noun>System</command:noun>
       <maml:description>
-        <maml:para>This function retrieves various system information to quickly diagnose a malfunction.</maml:para>
+        <maml:para>This PowerShell function retrieves various system information to quickly diagnose a malfunction. Source code on GitHub (https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Confirm-System.ps1).</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
@@ -1165,7 +1157,7 @@ Broadcast Ip                                 192.168.178.255</dev:code>
       <command:verb>Convert</command:verb>
       <command:noun>Accent</command:noun>
       <maml:description>
-        <maml:para>Special characters from other languages are converted to the characters a-z. ö becomes oe etc.</maml:para>
+        <maml:para>This PowerShell function converts special characters from other languages to the characters a-z. ö becomes oe etc. Source code on GitHub (https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Convert-Accent.ps1).</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
@@ -1282,7 +1274,7 @@ Haeuser stehen in Zuerich</dev:code>
       <command:verb>Convert</command:verb>
       <command:noun>DatanormToXml</command:noun>
       <maml:description>
-        <maml:para>Converts a Datanorm PowerShell object into an XML string that's compatible with the EULANDA merchandise management system.</maml:para>
+        <maml:para>This PowerShell function converts a Datanorm PsCustomObject into an XML string that's also compatible with the EULANDA merchandise management system. Source code on GitHub (https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Convert-DatanormToXml.ps1).</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
@@ -1426,7 +1418,7 @@ EVB 10/265 A2 10qmm Stift isol&lt;/LANGTEXT&gt;
       <command:verb>Convert</command:verb>
       <command:noun>DataToXml</command:noun>
       <maml:description>
-        <maml:para>Converts data structures like nested hashtables or arrays into an XML</maml:para>
+        <maml:para>This PowerShell function converts data structures like nested hashtables or arrays into an XML. Source code on GitHub (https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Convert-DataToXml.ps1).</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
@@ -1696,10 +1688,6 @@ $xml.Save("C:\Temp\MyData.xml")
         <maml:uri>https://github.com/Eulanda/EulandaConnect/blob/master/docs/Convert-DataToXml.md</maml:uri>
       </maml:navigationLink>
       <maml:navigationLink>
-        <maml:linkText>Convert-DataToXml</maml:linkText>
-        <maml:uri>https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Convert-DataToXml.ps1</maml:uri>
-      </maml:navigationLink>
-      <maml:navigationLink>
         <maml:linkText>Write-XmlMetadata</maml:linkText>
         <maml:uri></maml:uri>
       </maml:navigationLink>
@@ -1711,7 +1699,7 @@ $xml.Save("C:\Temp\MyData.xml")
       <command:verb>Convert</command:verb>
       <command:noun>DateToIso</command:noun>
       <maml:description>
-        <maml:para>Converts a date to an ISO string</maml:para>
+        <maml:para>This PowerShell function converts a date to an ISO string. Source code on GitHub (https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Convert-DateToIso.ps1).</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
@@ -1942,7 +1930,7 @@ PS C:\&gt; $myDate
       <command:verb>Convert</command:verb>
       <command:noun>FromDatanorm</command:noun>
       <maml:description>
-        <maml:para>Converts a Datanorm 4.0 file into a structured PowerShell object.</maml:para>
+        <maml:para>This PowerShell function converts a Datanorm 4.0 file into a structured PowerShell object - PsCustomObject. Source code on GitHub (https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Convert-FromDatanorm.ps1).</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
@@ -2206,7 +2194,7 @@ ELTROPA Verdrahtungsbrücke 1ph 265mm sw</dev:code>
       <command:verb>Convert</command:verb>
       <command:noun>ImageToBase64</command:noun>
       <maml:description>
-        <maml:para>Converts an image file into a mime text Base64 encoded</maml:para>
+        <maml:para>This PowerShell function converts an image file into a mime text Base64 encoded. Source code on GitHub (https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Convert-ImageToBase64.ps1).</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
@@ -2294,7 +2282,7 @@ data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAwADAAAD/4cNoRXhpZgAATU0AKgAAAAgACwEPA
       <command:verb>Convert</command:verb>
       <command:noun>OemToUtf8</command:noun>
       <maml:description>
-        <maml:para>Converts an input string from OEM (Original Equipment Manufacturer) encoding to UTF-8 encoding, with specific mappings for German special characters.</maml:para>
+        <maml:para>This PowerShell function converts an input string from OEM (Original Equipment Manufacturer) encoding to UTF-8 encoding, with specific mappings for German special characters also called Umlaut like äöü. Source code on GitHub (https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Convert-OemToUtf8.ps1).</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
@@ -2378,7 +2366,7 @@ data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAwADAAAD/4cNoRXhpZgAATU0AKgAAAAgACwEPA
       <command:verb>Convert</command:verb>
       <command:noun>Slugify</command:noun>
       <maml:description>
-        <maml:para>Converts a string so that only letters from a-z, underscores and digits are output.</maml:para>
+        <maml:para>This PowerShell function converts a string so that only letters from a-z, underscores and digits are output. All other letters are converted to these base letters if possible. Source code on GitHub (https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Convert-Slugify.ps1).</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
@@ -2519,7 +2507,7 @@ mein_haus_oesterreich</dev:code>
       <command:verb>Convert</command:verb>
       <command:noun>StringCase</command:noun>
       <maml:description>
-        <maml:para>Converts text to lowercase, uppercase, or capitalized</maml:para>
+        <maml:para>This PowerShell function converts text to lowercase, uppercase, or capitalized. Source code on GitHub (https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Convert-StringCase.ps1).</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
@@ -2632,7 +2620,7 @@ HELLO, I AM JOHN, JOHN DOE</dev:code>
       <command:verb>Convert</command:verb>
       <command:noun>SubnetToBitmask</command:noun>
       <maml:description>
-        <maml:para>Subnet mask or CIDR to its bit representation</maml:para>
+        <maml:para>This PowerShell function converts a subnet mask or CIDR to its bit representation. Source code on GitHub (https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Convert-SubnetToBitMask.ps1).</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
@@ -2744,7 +2732,7 @@ HELLO, I AM JOHN, JOHN DOE</dev:code>
       <command:verb>Convert</command:verb>
       <command:noun>ToDecimalDegrees</command:noun>
       <maml:description>
-        <maml:para>Converts coordinates in Degrees-Minutes-Seconds (DMS) format to Decimal Degrees (DD).</maml:para>
+        <maml:para>This PowerShell function converts coordinates in Degrees-Minutes-Seconds (DMS) format to Decimal Degrees (DD). Source code on GitHub (https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Convert-ToDecimalDegrees.ps1).</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
@@ -2910,7 +2898,7 @@ HELLO, I AM JOHN, JOHN DOE</dev:code>
       <command:verb>ConvertTo</command:verb>
       <command:noun>USFloat</command:noun>
       <maml:description>
-        <maml:para>Converts a string representation of a float number into a U.S. format.</maml:para>
+        <maml:para>This PowerShell function converts a string representation of a float number into a U.S. format. Source code on GitHub (https://github.com/Eulanda/EulandaConnect/blob/master/source/public/ConvertTo-USFloat.ps1).</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
@@ -2995,7 +2983,7 @@ Returns: "2561.12"</dev:code>
       <command:verb>ConvertTo</command:verb>
       <command:noun>WrappedLines</command:noun>
       <maml:description>
-        <maml:para>Performs a wrap of a text</maml:para>
+        <maml:para>This PowerShell function performs a wrap of a text. Source code on GitHub (https://github.com/Eulanda/EulandaConnect/blob/master/source/public/ConvertTo-WrappedLines.ps1).</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
@@ -3160,7 +3148,7 @@ voluptua.</dev:code>
       <command:verb>ConvertTo</command:verb>
       <command:noun>WrappedLinesEdi</command:noun>
       <maml:description>
-        <maml:para>Creates two lines of text from a long continuous text</maml:para>
+        <maml:para>This PowerShell function creates two lines of text from a long continuous text, often used in EDI systems. Source code on GitHub (https://github.com/Eulanda/EulandaConnect/blob/master/source/public/ConvertTo-WrappedLinesEdi.ps1).</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
@@ -3273,7 +3261,7 @@ also my castle. But anyway ...</dev:code>
       <command:verb>ConvertTo</command:verb>
       <command:noun>XmlString</command:noun>
       <maml:description>
-        <maml:para>The `ConvertTo-XmlString` function converts ADO (ActiveX Data Objects) field objects into XML strings. It accepts various data types and handles `NULL` values according to the specified options.</maml:para>
+        <maml:para>This PowerShell function converts ADO (ActiveX Data Objects) field objects into XML strings. It accepts various data types and handles `NULL` values according to the specified options. Source code on GitHub (https://github.com/Eulanda/EulandaConnect/blob/master/source/public/ConvertTo-XmlString.ps1).</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
@@ -3400,7 +3388,7 @@ $rs.Close()
       <command:verb>Deny</command:verb>
       <command:noun>RemoteFingerprint</command:noun>
       <maml:description>
-        <maml:para>Compares the SSH key of a server with the one stored in the local cache (Trusted Hosts).</maml:para>
+        <maml:para>This PowerShell function compares the SSH key of a server with the one stored in the local cache (Trusted Hosts). Source code on GitHub (https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Deny-RemoteFingerprint.ps1).</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
@@ -3538,7 +3526,7 @@ $rs.Close()
       <command:verb>Export</command:verb>
       <command:noun>ArticleToXml</command:noun>
       <maml:description>
-        <maml:para>xports an XML message type for Eulanda articles, calling various fragment functions to create the output. Compatible with the classic Eulanda shop interface format.</maml:para>
+        <maml:para>This PowerShell function exports an XML message type for EULANDA articles, calling various fragment functions to create the output. Compatible with the classic Eulanda shop interface format. This function requires an EULANDA ERP system. Source code on GitHub (https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Export-ArticleToXml.ps1).</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
@@ -3945,11 +3933,11 @@ EULANDA&gt;
       <command:verb>Export</command:verb>
       <command:noun>DeliveryToXml</command:noun>
       <maml:description>
-        <maml:para>Exports a delivery bill including its positions to an XML file</maml:para>
+        <maml:para>This PowerShell function exports a delivery bill including its line items to an XML file. This function requires an EULANDA ERP system. Source code on GitHub (https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Export-DeliveryToXml.ps1).</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The delivery note to be exported is selected either by the ID or the delivery note number. You can specify the XML root node via $root. Additionally $arrRoot can be specified. The positions are then appended to this.</maml:para>
+      <maml:para>The delivery note to be exported is selected either by the ID or the delivery note number. You can specify the XML root node via $root. Additionally `-arrRoot` can be specified. The positions are then appended to this.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -4196,7 +4184,7 @@ EULANDA&gt;
       <command:verb>Export</command:verb>
       <command:noun>PropertyToXml</command:noun>
       <maml:description>
-        <maml:para>Exports the entire property tree starting from a specified path in a hierarchical xml structure.</maml:para>
+        <maml:para>This PowerShell function exports the entire property tree starting from a specified path in a hierarchical xml structure. This function requires an EULANDA ERP system. Source code on GitHub (https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Export-PropertyToXml.ps1).</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
@@ -4461,7 +4449,7 @@ EULANDA&gt;
       <command:verb>Export</command:verb>
       <command:noun>StockToXml</command:noun>
       <maml:description>
-        <maml:para>Exports the stock level to an XML file</maml:para>
+        <maml:para>This PowerShell function exports the stock level to an XML file. This function requires an EULANDA ERP system. Source code on GitHub (https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Export-StockToXml.ps1).</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
@@ -4777,7 +4765,7 @@ EULANDA&gt;
       <command:verb>Find</command:verb>
       <command:noun>MssqlServer</command:noun>
       <maml:description>
-        <maml:para>Searches for all SQL-Servers in a specified IP range</maml:para>
+        <maml:para>This PowerShell function searches for all SQL-Servers in a specified IP range. Source code on GitHub (https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Find-MssqlServer.ps1).</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
@@ -4962,7 +4950,7 @@ np           : \\STUDIO\pipe\MSSQL$SQL2019\sql\query</dev:code>
       <command:verb>Format</command:verb>
       <command:noun>Xml</command:noun>
       <maml:description>
-        <maml:para>Formats an XML string or file by applying indentation and encoding.</maml:para>
+        <maml:para>This PowerShell function formats or beautifies an XML string or file by applying indentation and encoding. Source code on GitHub (https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Format-Xml.ps1).</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
@@ -5163,7 +5151,7 @@ np           : \\STUDIO\pipe\MSSQL$SQL2019\sql\query</dev:code>
       <command:verb>Get</command:verb>
       <command:noun>AddressId</command:noun>
       <maml:description>
-        <maml:para>Returns the ID of an address based on its unique field like addressMatch, addressId or addressUid</maml:para>
+        <maml:para>This PowerShell function returns the `ID` of an address based on its unique field like addressMatch, addressId or addressUid of the EULANDA merchandise management system. This function requires an EULANDA ERP system. Source code on GitHub (https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Get-AddressId.ps1).</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
@@ -5390,7 +5378,7 @@ np           : \\STUDIO\pipe\MSSQL$SQL2019\sql\query</dev:code>
       <command:verb>Get</command:verb>
       <command:noun>AddressSql</command:noun>
       <maml:description>
-        <maml:para>Generates a SQL statement for selecting addresses from the database based on the specified selection criteria.</maml:para>
+        <maml:para>This PowerShell function generates a SQL statement for selecting addresses from the database based on the specified selection criteria. This function requires an EULANDA ERP system. Source code on GitHub (https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Get-AddressSql.ps1).</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
@@ -5710,7 +5698,7 @@ SELECT Match [ID.ALIAS], Match,Name1,Name2,Name3,Strasse,Ort FROM (
       <command:verb>Get</command:verb>
       <command:noun>AdoRs</command:noun>
       <maml:description>
-        <maml:para>Returns the first valid and opened recordset due to a query</maml:para>
+        <maml:para>This PowerShell function returns the first valid and opened recordset due to a query. Source code on GitHub (https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Get-AdoRs.ps1).</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
@@ -30370,9 +30358,126 @@ PS C:\&gt; Set-TrackingNo -trackingNo $trackingNo -deliveryNo 430220 -udl "C:\te
         <maml:linkText>Online Version:</maml:linkText>
         <maml:uri>https://github.com/Eulanda/EulandaConnect/blob/master/docs/Test-Verbose.md</maml:uri>
       </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Test-Website</command:name>
+      <command:verb>Test</command:verb>
+      <command:noun>Website</command:noun>
+      <maml:description>
+        <maml:para>The `Test-Website` function is a PowerShell script for comprehensive website exploration and analysis, designed to operate non-recursively for memory efficiency.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>The `Test-Website` function is designed to provide in-depth analysis of a website, including link validity, page indexing status, and 'noFollow' link identification. The function uses a queue-based approach for memory efficiency, avoiding recursion while processing URLs. It checks for broken links, provides a comprehensive list of all pages on the website, identifies pages marked as 'noIndex' and links marked as 'noFollow', and checks if the robots settings of the web server are set to restrict indexing.</maml:para>
+      <maml:para>The `Test-Website` function is a comprehensive tool for website exploration and analysis. Designed to be memory efficient, it operates non-recursively, utilizing a queue instead of recursion for URL processing. Here are the main functions it provides:</maml:para>
+      <maml:para>1. Identifying broken links : The function scans all the links of a website and identifies whether they are functional or broken. 2. Providing a list of all pages on a site : The function crawls through each page on the website, providing a comprehensive list of all the discovered pages. 3. Identifying pages marked as 'noIndex' : The function checks if pages have specific directives (in HTML headers or meta tags) preventing search engines from indexing them. It returns a list of all pages marked as 'noIndex'. 4. Checking for 'noFollow' links : It checks for links on the site that are flagged as 'noFollow', indicating to search engines not to follow the link for indexing. 5. Web Server Robots settings : The function inspects if the robots settings of the web server (header) restrict indexing.</maml:para>
+      <maml:para>Here is a brief overview of its process:</maml:para>
+      <maml:para>- Initializes hash tables for visited URLs, 'noIndex' pages, 'noFollow' links, and broken links.</maml:para>
+      <maml:para>- Starts a while loop to visit every URL in the queue.</maml:para>
+      <maml:para>- Normalizes each URL and checks if it has been visited before.</maml:para>
+      <maml:para>- Processes each unvisited URL, gets the web response, and reads its headers.</maml:para>
+      <maml:para>- Checks for 'noIndex' directives in the headers or meta tags of the HTML.</maml:para>
+      <maml:para>- Extracts all links in the document and checks for 'noFollow' attributes.</maml:para>
+      <maml:para>- Handles relative links and only enqueues links belonging to the same domain.</maml:para>
+      <maml:para>- Catches exceptions for broken links and logs them.</maml:para>
+      <maml:para>- Returns a final object with properties for visited URLs, 'noIndex' pages, 'noFollow' links, and broken links.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Test-Website</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>url</maml:name>
+          <maml:description>
+            <maml:para>This parameter expects the URL of the website to be analyzed as input. This is a mandatory parameter.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>show</maml:name>
+          <maml:description>
+            <maml:para>This is a switch parameter. If this parameter is passed, the function will output detailed processing information to the console in real time.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>show</maml:name>
+        <maml:description>
+          <maml:para>This is a switch parameter. If this parameter is passed, the function will output detailed processing information to the console in real time.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>url</maml:name>
+        <maml:description>
+          <maml:para>This parameter expects the URL of the website to be analyzed as input. This is a mandatory parameter.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para></maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>---- Example 1: Shows broken links and more for a given url ----</maml:title>
+        <dev:code>PS C:\&gt; $myResult = Test-Website -url "https://eulandaconnect.eulanda.eu/" -show
+PS C:\&gt; Write-Host "NoIndex tag found: $($myResult.noIndex.count)"
+PS C:\&gt; if ($myResult.noIndex.count -gt 0) { $myResult.noIndex | ForEach-Object { Write-Host "NoIndex: $_" } }</dev:code>
+        <dev:remarks>
+          <maml:para>This will crawl through the website at 'https://eulandaconnect.eulanda.eu/', showing the processing details as it goes. It will then provide a summary of the analysis, including the total number of pages found, pages with 'noIndex' tags, links with 'noFollow' attributes, and broken links. The result is also stored in the `$myResult` variable for further inspection.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
       <maml:navigationLink>
-        <maml:linkText>Test-Debug</maml:linkText>
-        <maml:uri></maml:uri>
+        <maml:linkText>Online Version:</maml:linkText>
+        <maml:uri>https://github.com/Eulanda/EulandaConnect/blob/master/docs/Test-Website.md</maml:uri>
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>

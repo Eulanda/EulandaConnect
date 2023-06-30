@@ -235,14 +235,14 @@ function Test-Website {
     Return $result
 
     # Test: $myResult = Test-Website -url "https://eulandaconnect.eulanda.eu/" -show
+
+    # Test-Website -url "https://eulandaconnect.eulanda.eu/" -show | Out-Null
+    # Test-Website -url "http://www.esgedv.com/" -show | Out-Null
+    # Test-Website -url "https://gohugo.io/" -show | Out-Null
+    # Test-Website -url "https://www.eulanda.eu/" -show | Out-Null
+    # Test-Website -url "https://www.we-elektronik.com" -show | Out-Null
+    # Test-Website -url "https://www.bargellinibevande.it/" -show | Out-Null
+    # Test-Website -url "https://www.wizz-software.nl/" -show | Out-Null
 }
 
-
-Test-Website -url "https://eulandaconnect.eulanda.eu/" -show | Out-Null
-# Test-Website -url "http://www.esgedv.com/" -show | Out-Null
-# Test-Website -url "https://gohugo.io/" -show | Out-Null
-# Test-Website -url "https://www.spiegel.de/" -show | Out-Null
-# Test-Website -url "https://www.eulanda.eu/" -show | Out-Null
-# Test-Website -url "https://www.we-elektronik.com" -show | Out-Null
-# Test-Website -url "https://www.bargellinibevande.it/" -show | Out-Null
 

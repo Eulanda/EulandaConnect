@@ -52,7 +52,7 @@ New-Variable -Name 'ecProjectVersion' -Scope 'Global' -Option ReadOnly -Force -V
 # Global EulandaConnect Variables
 # -----------------------------------------------------------------------------
 New-Variable -Name 'ecResx' -Scope 'Global' -Force -Value ([System.Collections.Hashtable]@{}) -Description  'Language resources of EulandaConnect module'
-New-Variable -Name 'ecProcessId' -Scope 'Global' -Force -Value ([System.Collections.Hashtable]@{}) -Description  'Process id used in logging of EulandaConnect module'
+New-Variable -Name 'ecProcessId' -Scope 'Global' -Force -Value [System.Guid]'00000000-0000-0000-0000-000000000000' -Description  'Process id used in logging of EulandaConnect module'
 
 
 
@@ -5823,6 +5823,12 @@ function Get-NewNumberFromSeries {
     begin {
         Write-Verbose -Message ((Get-ResStr 'STARTING_FUNCTION') -f $myInvocation.Mycommand)
         Test-ValidateSingle -validParams (Get-SingleConnection) @PSBoundParameters
+        New-Variable -Name 'adParamOutput' -Scope 'Private' -Value ([int32]0)
+        New-Variable -Name 'cmd' -Scope 'Private' -Value ($null)
+        New-Variable -Name 'myConn' -Scope 'Private' -Value ($null)
+        New-Variable -Name 'param1' -Scope 'Private' -Value ($null)
+        New-Variable -Name 'param2' -Scope 'Private' -Value ($null)
+        New-Variable -Name 'result' -Scope 'Private' -Value ([int32]0)
         $initialVariables = Get-CurrentVariables -Debug:$DebugPreference
     }
 
@@ -5851,7 +5857,7 @@ function Get-NewNumberFromSeries {
         Return $result
     }
 
-    # Test: $i = Get-NewNumberFromSeries -seriesName 'KrAuftrag' -udl 'C:\temp\EULANDA_1 JohnDow.udl'
+    # Test: $i = Get-NewNumberFromSeries -seriesName 'KrAuftrag' -udl 'C:\temp\EULANDA_1 JohnDoe.udl'
 }
 function Get-NextIp {
     [CmdletBinding()]
@@ -7015,6 +7021,10 @@ function Get-SupplierAddressId {
     begin {
         Write-Verbose -Message ((Get-ResStr 'STARTING_FUNCTION') -f $myInvocation.Mycommand)
         Test-ValidateSingle -validParams (Get-SingleConnection) @PSBoundParameters
+        New-Variable -Name 'myConn' -Scope 'Private' -Value ($null)
+        New-Variable -Name 'rs' -Scope 'Private' -Value ($null)
+        New-Variable -Name 'sql' -Scope 'Private' -Value ([string]'')
+        New-Variable -Name 'result' -Scope 'Private' -Value ([int32]0)
         $initialVariables = Get-CurrentVariables -Debug:$DebugPreference
     }
 
@@ -7073,6 +7083,10 @@ function Get-SupplierId {
     begin {
         Write-Verbose -Message ((Get-ResStr 'STARTING_FUNCTION') -f $myInvocation.Mycommand)
         Test-ValidateSingle -validParams (Get-SingleConnection) @PSBoundParameters
+        New-Variable -Name 'myConn' -Scope 'Private' -Value ($null)
+        New-Variable -Name 'rs' -Scope 'Private' -Value ($null)
+        New-Variable -Name 'sql' -Scope 'Private' -Value ([string]'')
+        New-Variable -Name 'result' -Scope 'Private' -Value ([int32]0)
         $initialVariables = Get-CurrentVariables -Debug:$DebugPreference
     }
 
@@ -9590,6 +9604,11 @@ function New-PurchaseOrder {
     begin {
         Write-Verbose -Message ((Get-ResStr 'STARTING_FUNCTION') -f $myInvocation.Mycommand)
         Test-ValidateSingle -validParams (Get-SingleConnection) @PSBoundParameters
+        New-Variable -Name 'cmd' -Scope 'Private' -Value ($null)
+        New-Variable -Name 'myConn' -Scope 'Private' -Value ($null)
+        New-Variable -Name 'purchaseOrderNo' -Scope 'Private' -Value ([int32]0)
+        New-Variable -Name 'sql' -Scope 'Private' -Value ([string]'')
+        New-Variable -Name 'result' -Scope 'Private' -Value ([int32]0)
         $initialVariables = Get-CurrentVariables -Debug:$DebugPreference
     }
 
@@ -9611,9 +9630,15 @@ function New-PurchaseOrder {
         $result = $cmd.Parameters.Item("@KopfId").Value
 
         if ($result) {
-            $PurchaseOrderNo = Get-NewNumberFromSeries -seriesName 'KrAuftrag' -conn $myConn
-            $sql = "UPDATE KrAuftrag SET KopfNummer = $PurchaseOrderNo WHERE ID = $result"
-            $myConn.Execute($sql) | Out-Null
+            $purchaseOrderNo = Get-NewNumberFromSeries -seriesName 'KrAuftrag' -conn $myConn
+            if ($purchaseOrderNo) {
+                $sql = "UPDATE KrAuftrag SET KopfNummer = $purchaseOrderNo WHERE ID = $result"
+                $myConn.Execute($sql) | Out-Null
+            } else {
+                Throw ((Get-ResStr 'NUMBERSERIES_WITHOUT_RESULT') -f $myInvocation.Mycommand)
+            }
+        } else {
+            Throw ((Get-ResStr 'NO_PURCHASEORDER_CREATED') -f $myInvocation.Mycommand)
         }
         <#
             # Actually we dont need that field
@@ -9669,6 +9694,12 @@ function New-PurchaseOrderLineItem {
     begin {
         Write-Verbose -Message ((Get-ResStr 'STARTING_FUNCTION') -f $myInvocation.Mycommand)
         Test-ValidateSingle -validParams (Get-SingleConnection) @PSBoundParameters
+        New-Variable -Name 'cmd' -Scope 'Private' -Value ($null)
+        New-Variable -Name 'myConn' -Scope 'Private' -Value ($null)
+        New-Variable -Name 'paramsArticle' -Scope 'Private' -Value ([System.Collections.Hashtable]@{})
+        New-Variable -Name 'rs' -Scope 'Private' -Value ($null)
+        New-Variable -Name 'sql' -Scope 'Private' -Value ([string]'')
+        New-Variable -Name 'result' -Scope 'Private' -Value ([int32]0)
         $initialVariables = Get-CurrentVariables -Debug:$DebugPreference
     }
 
@@ -13196,6 +13227,255 @@ function Test-Verbose {
     }
     # Test:  Test-Verbose
 }
+
+function Test-Website {
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$url
+        ,
+        [switch]$show
+    )
+
+    # Initialize hashtables
+    $visitedUrls = @{}
+    $noIndex = @{}
+    $noFollow = @{}
+    $broken = @{}
+
+
+    # Queue for URLs to be visited
+    $queue = New-Object System.Collections.Queue
+    $queue.Enqueue(@{Url=$url; Parent=$null})
+
+    # While there are still URLs to visit
+    while($queue.Count -gt 0) {
+        $item = $queue.Dequeue()
+        $url = $item.Url
+        $parent = $item.Parent
+
+        # Normalize slash and remove hashtag fragment if exists
+        if ($url -match "#") {
+            # Test pattern for url
+            #   '#entwurf-die' -> ''
+            #   'entwurf-die#' -> 'entwurf-die/'
+            #   'entwurf-die' -> 'entwurf-die'
+            #   'entwurf-die-b&#xE4;nder-3' ->  'entwurf-die-b&#xE4;nder-3'
+            #   'entwurf-die-b&#xE4;nd#er-3' ->  'entwurf-die-b&#xE4;nd/'
+            #   'entwu#rf-die-b&#xE4;nder-3' ->  'entwu/'
+            #   'entwurf/' ->  'entwurf/'
+            #   '' ->  ''
+            #   '/' ->  '/'
+
+            # Search for the anchor from behind
+            $anchorIndex = $url.LastIndexOf("#")
+
+            if ($anchorIndex -ge 0) {
+                $startIndex = $anchorIndex - 1
+
+                while ($startIndex -ge 0 -and $url[$anchorIndex-1] -eq '&' ) {
+                    $anchorIndex = $url.LastIndexOf('#',$startIndex)
+                }
+
+                if ($anchorIndex -ge 0) {
+                    $url = $url.Substring(0, $anchorIndex)
+                    if ($url) {
+                        $url = $url.TrimEnd('/') + '/'
+                    }
+                }
+            }
+        }
+
+        # If we have already visited this url, no need to process again
+        if ($visitedUrls[$url]) {
+            continue
+        }
+
+        # Add current URL to visited URLs
+        $visitedUrls[$url] = $true
+
+        if ($show) { Write-Host "Processing: $url" -ForegroundColor Green }
+
+        # Create a new URI object for handling relative links
+        $uri = New-Object System.Uri($url)
+
+        # At start parent is empty, so we use the base URL at the beginning
+        $parentUrl = if ($parent) { $parent } else { $url }
+
+        try {
+            $request = [System.Net.WebRequest]::Create($url)
+            $response = $request.GetResponse()
+            $headers = $response.Headers
+
+            # Load html page
+            $stream = $response.GetResponseStream()
+            $reader = New-Object System.IO.StreamReader($stream)
+            $html = $reader.ReadToEnd()
+
+            # Check robot header or html meta tag
+            if ($headers["X-Robots-Tag"]) {
+                $noIndexHeader = $headers["X-Robots-Tag"] -contains 'noindex'
+            }
+            $noIndexMetaTag = Select-String -InputObject $html -Pattern '<meta\s+name="robots"\s+content="noindex"' -AllMatches
+            if ($noIndexMetaTag -or $noIndexHeader) {
+                if ($show) { Write-Host "Page $url is excluded from indexing"  -ForegroundColor Yellow }
+                $noIndex[$url] = $true
+            }
+
+            # Get all links in document
+            $htmlLinks = @()
+            $anchorTags = [regex]::Matches($html, '<a [^>]*?>') | ForEach-Object { $_.Value }
+
+            # Pass through each <a ...> tag
+            foreach ($tag in $anchorTags) {
+                # Check if the href attribute is missing
+                if ($tag -notmatch 'href=') {
+                    # It's not necessarily a bug, but we only need tags with href.
+                    continue
+                }
+
+
+                # Find the href attribute inside the tag but at first it tries with quotes
+                $href = [regex]::Match($tag, 'href="([^"]+)"') | ForEach-Object { $_.Groups[1].Value }
+                if (!$href) {
+                    # Find href if is not in quotes like <a href=/news/ class="link white">
+                    $href = $tag -replace '^<a href=([^ >]+).*$', '$1'
+                }
+                $href = $href.trim('"')
+
+                # Add the link to the list if an href attribute was found but
+                # if it doesn't contain "javascript:" and also not contains ? or =
+                if ($href `
+                    -and $href -notmatch "^#" `
+                    -and $href -notmatch "^javascript:" `
+                    -and $href -notmatch "\?" `
+                    -and $href -notmatch "=" `
+                    -and $href -notmatch "^ftp:" `
+                    -and $href -notmatch "^tel:" `
+                    -and $href -notmatch "^phone:") {
+                    $htmlLinks += $href
+
+                    # Check the rel attribute for "nofollow" but at first it tries with quotes
+                    $rel = [regex]::Match($tag, 'rel="([^"]+)"') | ForEach-Object { $_.Groups[1].Value }
+                    if (!$rel) {
+                        # Find rel if is not in quotes like <a href=/news/ class="link white" rel=nofollow>
+                        $rel = $tag -replace '.*rel\s*=\s*([^ >]+).*', '$1'
+                    }
+                    $rel = $rel.trim('"')
+
+
+                    if ($rel -eq "nofollow") {
+                        if ($show) { Write-Host "Link $href has 'nofollow' attribute" -ForegroundColor Yellow }
+                        $noFollow["$parent@$href"] = $true
+                    }
+                }
+            }
+
+            # Check for meta refresh tags
+            $metaRefresh = Select-String -InputObject $html -Pattern '<meta\s+http-equiv="refresh"\s+content="\d+;\s*url=(.*?)"' -AllMatches | ForEach-Object { $_.Matches.Groups[1].Value }
+            if ($metaRefresh) {
+                $htmlLinks += $metaRefresh
+            }
+
+            foreach ($link in $htmlLinks) {
+
+                # Ignore mailto: links
+                if ($link -match "^mailto:") {
+                    continue
+                }
+
+                # Handle relative links
+                if ($link -notmatch "^http" -and $link -notmatch "^mailto:") {
+                    if ($link -match "^/") {
+                        # Case 1: Link is relative to the base URL like '/test'
+                        $linkUri = New-Object System.Uri($uri, $link)
+                    }
+                    elseif ($link -match "^(\.\./)+") {
+                        # Case 2: Link is relative to the current path like '../../test'
+                        $parentUri = New-Object System.Uri($url)
+                        $count = ($link | Select-String -Pattern "\.\./" -AllMatches).Matches.Count
+                        $segments = $parentUri.Segments[0..($parentUri.Segments.Length - $count - 1)]
+                        $parentPath = $parentUri.Scheme + "://" + $parentUri.Host + [System.String]::Join('', $segments)
+                        $relativeLink = $link -replace "(\.\./)+", ""
+                        $linkUri = New-Object System.Uri($parentPath + $relativeLink)
+                    }
+                    else {
+                        # Case 3: Link is in the same directory as the current path like 'test.html' or like './test.html'
+                        $parentPath = $parentUrl -replace "(.*://.*/).*$", '$1'  # Use $parentUrl instead of $parent
+                        $linkUri = New-Object System.Uri($parentPath + $link)
+                    }
+                    $link = $linkUri.AbsoluteUri
+                }
+
+                # Only follow links that belong to the same domain
+                $linkUri = New-Object System.Uri($link)
+                if ($linkUri.Host -ne $uri.Host) {
+                    continue
+                }
+
+                # Skip if we have already visited this url
+                if ($visitedUrls[$link]) {
+                    continue
+                }
+
+                # Add the link to the queue to be visited
+                if (-not $visitedUrls.ContainsKey($link)) {
+                    $queue.Enqueue(@{Url=$link; Parent=$url})
+                }
+            }
+
+        } catch {
+            if ($show) {
+                $parentLink = if ($parent) { $parent } else { "Start-URL" }
+                if ($_.Exception.Message -notmatch "404") {
+                    Write-Host "Broken: $parentLink -> $url $($_.Exception.Message)" -ForegroundColor Red
+                } else {
+                    Write-Host "Broken: $parentLink -> $url" -ForegroundColor Red
+                }
+            }
+            if ($_.Exception.Message -notmatch "404") {
+                $broken["$parent -> $url $($_.Exception.Message)"] = $true
+            } else {
+                $broken["$parent -> $url"] = $true
+            }
+        }
+    }
+
+    $result = New-Object PSObject -Property @{
+        VisitedUrls = $visitedUrls.Keys
+        NoIndex = $noIndex.Keys
+        NoFollow = $noFollow.Keys
+        Broken = $broken.Keys
+    }
+
+    if ($show) {
+        Write-Host "SUMMARY of the website analysis"
+        Write-Host "==============================="
+        Write-Host "Pages found: $($result.VisitedUrls.count)"
+
+        Write-Host "NoIndex tag found: $($result.noIndex.count)"
+        if ($result.noIndex.count -gt 0) { $result.noIndex | ForEach-Object { Write-Host "NoIndex: $_" } }
+
+        Write-Host "NoFollow tag found: $($result.noFollow.count)"
+        if ($result.noFollow.count -gt 0) { $result.noFollow | ForEach-Object { Write-Host "NoFollow: $_" } }
+
+        Write-Host "Broken links found: $($result.Broken.count)"
+        if ($result.broken.count -gt 0) { $result.broken | ForEach-Object { Write-Host "Broken: $_" } }
+    }
+
+    Return $result
+
+    # Test: $myResult = Test-Website -url "https://eulandaconnect.eulanda.eu/" -show
+
+    # Test-Website -url "https://eulandaconnect.eulanda.eu/" -show | Out-Null
+    # Test-Website -url "http://www.esgedv.com/" -show | Out-Null
+    # Test-Website -url "https://gohugo.io/" -show | Out-Null
+    # Test-Website -url "https://www.eulanda.eu/" -show | Out-Null
+    # Test-Website -url "https://www.we-elektronik.com" -show | Out-Null
+    # Test-Website -url "https://www.bargellinibevande.it/" -show | Out-Null
+    # Test-Website -url "https://www.wizz-software.nl/" -show | Out-Null
+}
+
+
 
 function Test-XmlSchema {
     [CmdletBinding()]
@@ -17599,10 +17879,10 @@ function Test-ValidateUrl {
 
 
 # SIG # Begin signature block
-# MIIpiQYJKoZIhvcNAQcCoIIpejCCKXYCAQExDzANBglghkgBZQMEAgEFADB5Bgor
+# MIIpiAYJKoZIhvcNAQcCoIIpeTCCKXUCAQExDzANBglghkgBZQMEAgEFADB5Bgor
 # BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
-# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCCOvks9haA0M2wn
-# xM8D/4kH+CSj6iZ1BKrLbZLkA4bmYqCCEngwggVvMIIEV6ADAgECAhBI/JO0YFWU
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCBysrISjmT1OVyE
+# 1lxXErvopeGu9l1T4DemVcMgQ7Y7paCCEngwggVvMIIEV6ADAgECAhBI/JO0YFWU
 # jTanyYqJ1pQWMA0GCSqGSIb3DQEBDAUAMHsxCzAJBgNVBAYTAkdCMRswGQYDVQQI
 # DBJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcMB1NhbGZvcmQxGjAYBgNVBAoM
 # EUNvbW9kbyBDQSBMaW1pdGVkMSEwHwYDVQQDDBhBQUEgQ2VydGlmaWNhdGUgU2Vy
@@ -17701,124 +17981,124 @@ function Test-ValidateUrl {
 # KNX5jSiwwUBrA8vNyCh6d8ZCorwimYkDyGtstF0D9UoU9dX66QrfTsK+zxO7/0QF
 # 1qIc5CTZe6Kcsuxe99p5UbPU665d5BvOwq0lJKg59k+6exo1Cc5awip+d4krfyWl
 # D1sMkS0eiRSN1UNVs3Hg5gbaEEBx98sQMBF45vv0DFgY/SQVRp9yaFayTyfbb/qk
-# jc8xghZnMIIWYwIBATBrMFcxCzAJBgNVBAYTAkdCMRgwFgYDVQQKEw9TZWN0aWdv
+# jc8xghZmMIIWYgIBATBrMFcxCzAJBgNVBAYTAkdCMRgwFgYDVQQKEw9TZWN0aWdv
 # IExpbWl0ZWQxLjAsBgNVBAMTJVNlY3RpZ28gUHVibGljIENvZGUgU2lnbmluZyBD
 # QSBFViBSMzYCEGilgQZhq4aQSRu7qELTizkwDQYJYIZIAWUDBAIBBQCgfDAQBgor
 # BgEEAYI3AgEMMQIwADAZBgkqhkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEE
-# AYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAvBgkqhkiG9w0BCQQxIgQg9qbsPcgXx+JJ
-# b4kG0JRTvf9IJ1r1YkJxOnsnGGzdoTowDQYJKoZIhvcNAQEBBQAEggIAhX5Dfzjy
-# Y9ln8R3Flq/yWOeL6ZalqkRbRekUDlKtLBCBgay6sXM8sdAWppL6FT20b2vhrwlY
-# TF/huWSqhkHTdOLpryPHJsOWN9O/mWAUdQnma75BdnEP9IeQxmT08kc2F96bEfpI
-# mJsNyfPTRHO7a3/WLpJvwJI0PEfk70KmsMORKX8moC9dl++XKAJiSkI+udjk/Qyn
-# orjCYZinNW/3JE3feWEssJCP0w14OwxbBgTEiD10azan2csoCf1m7aErmiJpi5MK
-# NYepanG17AcgszsVny4p9GB/djTJPJ2d4WxVoQfCOVnX2CG93jX1s6XovX2bhUmB
-# jxPGsIvBvcmgxe22pQxL5BaPpB9HUiHKamcBnl9I3U2irxxiiJ6pd2AZH2Te1jPi
-# xzpaXgtJygyV8W9tZS0Ewcy/yfgdpFICYPj4o1ykDse7jvGx1SvGe3iDkv/pVc0y
-# EY+gkkGw2T1vn6aDMTmcu/3p3Lhn9GLxjkN+RDhZ3hXTUImh8C2BbDzdHHBr7vk3
-# 1nrf6zsZViMQMYNl7knWe5orj+zLoNTm0FAo8MgUuCY4j1I2aNqIThcGnVtGQqLP
-# QNQvYimFjU2TwstjxKVeyOHMaUpnn5dFaGoiVKVTguBwLBaz6o7zqQ6sb87oCxBt
-# aHgXfghQxWrxUo73fXgIESM43Kc8bm5sKjWhghNPMIITSwYKKwYBBAGCNwMDATGC
-# EzswghM3BgkqhkiG9w0BBwKgghMoMIITJAIBAzEPMA0GCWCGSAFlAwQCAgUAMIHw
-# BgsqhkiG9w0BCRABBKCB4ASB3TCB2gIBAQYKKwYBBAGyMQIBATAxMA0GCWCGSAFl
-# AwQCAQUABCCdSv4nJ7mBYKTYzC2ypXk/d5fUHVA/PJD4Wv3oh+8BuwIVAMLAq+go
-# hRy76+wjlFuWkIsd99hfGA8yMDIzMDYyODE4MjA0OVqgbqRsMGoxCzAJBgNVBAYT
-# AkdCMRMwEQYDVQQIEwpNYW5jaGVzdGVyMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
-# ZWQxLDAqBgNVBAMMI1NlY3RpZ28gUlNBIFRpbWUgU3RhbXBpbmcgU2lnbmVyICM0
-# oIIN6TCCBvUwggTdoAMCAQICEDlMJeF8oG0nqGXiO9kdItQwDQYJKoZIhvcNAQEM
-# BQAwfTELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQ
-# MA4GA1UEBxMHU2FsZm9yZDEYMBYGA1UEChMPU2VjdGlnbyBMaW1pdGVkMSUwIwYD
-# VQQDExxTZWN0aWdvIFJTQSBUaW1lIFN0YW1waW5nIENBMB4XDTIzMDUwMzAwMDAw
-# MFoXDTM0MDgwMjIzNTk1OVowajELMAkGA1UEBhMCR0IxEzARBgNVBAgTCk1hbmNo
-# ZXN0ZXIxGDAWBgNVBAoTD1NlY3RpZ28gTGltaXRlZDEsMCoGA1UEAwwjU2VjdGln
-# byBSU0EgVGltZSBTdGFtcGluZyBTaWduZXIgIzQwggIiMA0GCSqGSIb3DQEBAQUA
-# A4ICDwAwggIKAoICAQCkkyhSS88nh3akKRyZOMDnDtTRHOxoywFk5IrNd7BxZYK8
-# n/yLu7uVmPslEY5aiAlmERRYsroiW+b2MvFdLcB6og7g4FZk7aHlgSByIGRBbMfD
-# CPrzfV3vIZrCftcsw7oRmB780yAIQrNfv3+IWDKrMLPYjHqWShkTXKz856vpHBYu
-# sLA4lUrPhVCrZwMlobs46Q9vqVqakSgTNbkf8z3hJMhrsZnoDe+7TeU9jFQDkdD8
-# Lc9VMzh6CRwH0SLgY4anvv3Sg3MSFJuaTAlGvTS84UtQe3LgW/0Zux88ahl7brst
-# RCq+PEzMrIoEk8ZXhqBzNiuBl/obm36Ih9hSeYn+bnc317tQn/oYJU8T8l58qbEg
-# Wimro0KHd+D0TAJI3VilU6ajoO0ZlmUVKcXtMzAl5paDgZr2YGaQWAeAzUJ1rPu0
-# kdDF3QFAaraoEO72jXq3nnWv06VLGKEMn1ewXiVHkXTNdRLRnG/kXg2b7HUm7v7T
-# 9ZIvUoXo2kRRKqLMAMqHZkOjGwDvorWWnWKtJwvyG0rJw5RCN4gghKiHrsO6I3J7
-# +FTv+GsnsIX1p0OF2Cs5dNtadwLRpPr1zZw9zB+uUdB7bNgdLRFCU3F0wuU1qi1S
-# Etklz/DT0JFDEtcyfZhs43dByP8fJFTvbq3GPlV78VyHOmTxYEsFT++5L+wJEwID
-# AQABo4IBgjCCAX4wHwYDVR0jBBgwFoAUGqH4YRkgD8NBd0UojtE1XwYSBFUwHQYD
-# VR0OBBYEFAMPMciRKpO9Y/PRXU2kNA/SlQEYMA4GA1UdDwEB/wQEAwIGwDAMBgNV
-# HRMBAf8EAjAAMBYGA1UdJQEB/wQMMAoGCCsGAQUFBwMIMEoGA1UdIARDMEEwNQYM
-# KwYBBAGyMQECAQMIMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20v
-# Q1BTMAgGBmeBDAEEAjBEBgNVHR8EPTA7MDmgN6A1hjNodHRwOi8vY3JsLnNlY3Rp
-# Z28uY29tL1NlY3RpZ29SU0FUaW1lU3RhbXBpbmdDQS5jcmwwdAYIKwYBBQUHAQEE
-# aDBmMD8GCCsGAQUFBzAChjNodHRwOi8vY3J0LnNlY3RpZ28uY29tL1NlY3RpZ29S
-# U0FUaW1lU3RhbXBpbmdDQS5jcnQwIwYIKwYBBQUHMAGGF2h0dHA6Ly9vY3NwLnNl
-# Y3RpZ28uY29tMA0GCSqGSIb3DQEBDAUAA4ICAQBMm2VY+uB5z+8VwzJt3jOR63dY
-# 4uu9y0o8dd5+lG3DIscEld9laWETDPYMnvWJIF7Bh8cDJMrHpfAm3/j4MWUN4Ott
-# UVemjIRSCEYcKsLe8tqKRfO+9/YuxH7t+O1ov3pWSOlh5Zo5d7y+upFkiHX/XYUW
-# NCfSKcv/7S3a/76TDOxtog3Mw/FuvSGRGiMAUq2X1GJ4KoR5qNc9rCGPcMMkeTqX
-# 8Q2jo1tT2KsAulj7NYBPXyhxbBlewoNykK7gxtjymfvqtJJlfAd8NUQdrVgYa2L7
-# 3mzECqls0yFGcNwvjXVMI8JB0HqWO8NL3c2SJnR2XDegmiSeTl9O048P5RNPWURl
-# S0Nkz0j4Z2e5Tb/MDbE6MNChPUitemXk7N/gAfCzKko5rMGk+al9NdAyQKCxGSoY
-# IbLIfQVxGksnNqrgmByDdefHfkuEQ81D+5CXdioSrEDBcFuZCkD6gG2UYXvIbrnI
-# Z2ckXFCNASDeB/cB1PguEc2dg+X4yiUcRD0n5bCGRyoLG4R2fXtoT4239xO07aAt
-# 7nMP2RC6nZksfNd1H48QxJTmfiTllUqIjCfWhWYd+a5kdpHoSP7IVQrtKcMf3jim
-# wBT7Mj34qYNiNsjDvgCHHKv6SkIciQPc9Vx8cNldeE7un14g5glqfCsIo0j1FfwE
-# T9/NIRx65fWOGtS5QDCCBuwwggTUoAMCAQICEDAPb6zdZph0fKlGNqd4LbkwDQYJ
-# KoZIhvcNAQEMBQAwgYgxCzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpOZXcgSmVyc2V5
-# MRQwEgYDVQQHEwtKZXJzZXkgQ2l0eTEeMBwGA1UEChMVVGhlIFVTRVJUUlVTVCBO
-# ZXR3b3JrMS4wLAYDVQQDEyVVU0VSVHJ1c3QgUlNBIENlcnRpZmljYXRpb24gQXV0
-# aG9yaXR5MB4XDTE5MDUwMjAwMDAwMFoXDTM4MDExODIzNTk1OVowfTELMAkGA1UE
-# BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2Fs
-# Zm9yZDEYMBYGA1UEChMPU2VjdGlnbyBMaW1pdGVkMSUwIwYDVQQDExxTZWN0aWdv
-# IFJTQSBUaW1lIFN0YW1waW5nIENBMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIIC
-# CgKCAgEAyBsBr9ksfoiZfQGYPyCQvZyAIVSTuc+gPlPvs1rAdtYaBKXOR4O168TM
-# STTL80VlufmnZBYmCfvVMlJ5LsljwhObtoY/AQWSZm8hq9VxEHmH9EYqzcRaydvX
-# XUlNclYP3MnjU5g6Kh78zlhJ07/zObu5pCNCrNAVw3+eolzXOPEWsnDTo8Tfs8Vy
-# rC4Kd/wNlFK3/B+VcyQ9ASi8Dw1Ps5EBjm6dJ3VV0Rc7NCF7lwGUr3+Az9ERCleE
-# yX9W4L1GnIK+lJ2/tCCwYH64TfUNP9vQ6oWMilZx0S2UTMiMPNMUopy9Jv/TUyDH
-# YGmbWApU9AXn/TGs+ciFF8e4KRmkKS9G493bkV+fPzY+DjBnK0a3Na+WvtpMYMyo
-# u58NFNQYxDCYdIIhz2JWtSFzEh79qsoIWId3pBXrGVX/0DlULSbuRRo6b83XhPDX
-# 8CjFT2SDAtT74t7xvAIo9G3aJ4oG0paH3uhrDvBbfel2aZMgHEqXLHcZK5OVmJyX
-# nuuOwXhWxkQl3wYSmgYtnwNe/YOiU2fKsfqNoWTJiJJZy6hGwMnypv99V9sSdvqK
-# QSTUG/xypRSi1K1DHKRJi0E5FAMeKfobpSKupcNNgtCN2mu32/cYQFdz8HGj+0p9
-# RTbB942C+rnJDVOAffq2OVgy728YUInXT50zvRq1naHelUF6p4MCAwEAAaOCAVow
-# ggFWMB8GA1UdIwQYMBaAFFN5v1qqK0rPVIDh2JvAnfKyA2bLMB0GA1UdDgQWBBQa
-# ofhhGSAPw0F3RSiO0TVfBhIEVTAOBgNVHQ8BAf8EBAMCAYYwEgYDVR0TAQH/BAgw
-# BgEB/wIBADATBgNVHSUEDDAKBggrBgEFBQcDCDARBgNVHSAECjAIMAYGBFUdIAAw
-# UAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2VydHJ1c3QuY29tL1VTRVJU
-# cnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUFBwEBBGow
-# aDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVz
-# dFJTQUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2Vy
-# dHJ1c3QuY29tMA0GCSqGSIb3DQEBDAUAA4ICAQBtVIGlM10W4bVTgZF13wN6Mgst
-# JYQRsrDbKn0qBfW8Oyf0WqC5SVmQKWxhy7VQ2+J9+Z8A70DDrdPi5Fb5WEHP8ULl
-# EH3/sHQfj8ZcCfkzXuqgHCZYXPO0EQ/V1cPivNVYeL9IduFEZ22PsEMQD43k+Thi
-# vxMBxYWjTMXMslMwlaTW9JZWCLjNXH8Blr5yUmo7Qjd8Fng5k5OUm7Hcsm1BbWfN
-# yW+QPX9FcsEbI9bCVYRm5LPFZgb289ZLXq2jK0KKIZL+qG9aJXBigXNjXqC72NzX
-# StM9r4MGOBIdJIct5PwC1j53BLwENrXnd8ucLo0jGLmjwkcd8F3WoXNXBWiap8k3
-# ZR2+6rzYQoNDBaWLpgn/0aGUpk6qPQn1BWy30mRa2Coiwkud8TleTN5IPZs0lpoJ
-# X47997FSkc4/ifYcobWpdR9xv1tDXWU9UIFuq/DQ0/yysx+2mZYm9Dx5i1xkzM3u
-# J5rloMAMcofBbk1a0x7q8ETmMm8c6xdOlMN4ZSA7D0GqH+mhQZ3+sbigZSo04N6o
-# +TzmwTC7wKBjLPxcFgCo0MR/6hGdHgbGpm0yXbQ4CStJB6r97DDa8acvz7f9+tCj
-# hNknnvsBZne5VhDhIG7GrrH5trrINV0zdo7xfCAMKneutaIChrop7rRaALGMq+P5
-# CslUXdS5anSevUiumDGCBCwwggQoAgEBMIGRMH0xCzAJBgNVBAYTAkdCMRswGQYD
-# VQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGDAWBgNV
-# BAoTD1NlY3RpZ28gTGltaXRlZDElMCMGA1UEAxMcU2VjdGlnbyBSU0EgVGltZSBT
-# dGFtcGluZyBDQQIQOUwl4XygbSeoZeI72R0i1DANBglghkgBZQMEAgIFAKCCAWsw
-# GgYJKoZIhvcNAQkDMQ0GCyqGSIb3DQEJEAEEMBwGCSqGSIb3DQEJBTEPFw0yMzA2
-# MjgxODIwNDlaMD8GCSqGSIb3DQEJBDEyBDBenzxz3aSKxPwaWsFD/5wPXCfwvNS1
-# pf5B6UzuEAyimv3ZjvWROWsW/Jj8QFPx2NYwge0GCyqGSIb3DQEJEAIMMYHdMIHa
-# MIHXMBYEFK5ir3UKDL1H1kYfdWjivIznyk+UMIG8BBQC1luV4oNwwVcAlfqI+SPd
-# k3+tjzCBozCBjqSBizCBiDELMAkGA1UEBhMCVVMxEzARBgNVBAgTCk5ldyBKZXJz
-# ZXkxFDASBgNVBAcTC0plcnNleSBDaXR5MR4wHAYDVQQKExVUaGUgVVNFUlRSVVNU
-# IE5ldHdvcmsxLjAsBgNVBAMTJVVTRVJUcnVzdCBSU0EgQ2VydGlmaWNhdGlvbiBB
-# dXRob3JpdHkCEDAPb6zdZph0fKlGNqd4LbkwDQYJKoZIhvcNAQEBBQAEggIAL5oU
-# egowjqnStZ9gOSgorZMOF7GP/ZVtQlKd6NeacZnpEh9oG0RNojPoNEgeiKeQMnli
-# tfGFVhuQXO19VhmQsBaGlPWtixd8mmce8+YZwCnIitA35ZRpYo2Ud5jRrf5oh2SP
-# aNoAYmOROBKHbyaYK7BR6R0pJen7dQtv1o6Yj0WNYJV5zj7UqsTWVZCWZEWY8g9o
-# /X0GJ24DU7QGd2w/8AnhCJokpU5IgZV8D/ZyKjw6+nWJvzc8ZZu9hx94O8f4PpEl
-# JDMap7pxCOxti9uJQTDFxwgV6LgA5MOnubpLaZ4H1mfEi/PF8OiiWBlE9FKpQ6mZ
-# II4g88ttEB9est0T9vWC4nZrrKP2dczL+xc1g2FkX2W/zpP74UwLDsmhjjrESurZ
-# lAJEu29Wgld3r4WpTbjnsrLo0SPD2JvfM0fyS19OQ0FUwf5wsc/IkMn3As/Q41hT
-# 8aWzY+b4kktcTMVSrRY18nKNjGYL94GBudsH+7+z6UF0pKm6MEOYZn3Sy0lExRVx
-# VUPqTry8VeeqSJsiMkBbz525W0tuzo9Gmvbe7+PN4si3tHHe78S03MA+mfmg/A9O
-# 5KnSq7wyWBwZ+zuqtsPzKPqC4YLitqnRk1NWOVI/abWOF06OG7p0oOVG14XwlDOM
-# CjYCgEAJmeC9PiCgr6as1IfBl2dnGe/4fc5xP6A=
+# AYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAvBgkqhkiG9w0BCQQxIgQg6Iz2uI1alomz
+# CWkKV2SUPCUj8piyN7CkP6UNw1TeGgcwDQYJKoZIhvcNAQEBBQAEggIAOZkLXxXq
+# 50Bu8SjN45ByzHEnphEewH4iESa2QoVjIXKQj2ElBo9+VN+x0A51bxTE7tVR47Gc
+# 3dCsfoACD/98g9OLXI2OzKHhiKX8g05DNzEjeGy+6DPY9PB9oSQVYMckJtfzS5y9
+# 3QVNftKipbjd23hidfUwz8lVUAE6T7gJoMorVd/gFe6J8vplyjJkrP6T1jAWBfYl
+# GbXgD9HXoqxFIOZanO/rxG1qkCX0xMe6jMgTE1k3JAffdKZQ9e3Wx4YrFs9B/EF7
+# fP85fWjk2Bozn0Lbocxbc3fQkZix4PMEqSbLeynRgLnr9g8l8s3dEP+7NU0KEag4
+# kA+xN9CY8IrXrn2/IXK+ABWB8J7TO5meF856h7p2ilybqiY2se7MI/fqOjygoLtX
+# IoyrKf1uojj0uvpyCcb1Ns5MviIKmnevoLLiVNpvdtCWzgOjT8USD5/F+LTSKIvV
+# UfGAENgnbz5RcVUmS3H/A6oSWAQCtPKkiPlZlP/roEP43I9i+mF9DoFgPNu4ncHE
+# 0NVyvkITygZEGwtUOS7GFpVRa+5A4KI8uQ8yHvBXgWFUGxhlumAxvGloEWdEJRFP
+# WuuFjobprpTeFcifzLWx20Ihba0KpWFK7GzOxFcPXvysHzO7B9FQ1s+IU+yTMVPC
+# 6hsC8wDq3FP8FZfCAXvbxnVw/vS4OIw1XfOhghNOMIITSgYKKwYBBAGCNwMDATGC
+# EzowghM2BgkqhkiG9w0BBwKgghMnMIITIwIBAzEPMA0GCWCGSAFlAwQCAgUAMIHv
+# BgsqhkiG9w0BCRABBKCB3wSB3DCB2QIBAQYKKwYBBAGyMQIBATAxMA0GCWCGSAFl
+# AwQCAQUABCCjP5Sp6gtMgOrz6N0JeeUM9fwrBqZV0YA2pKiBMsKi6wIUb9NRb3Qd
+# x40zrB4AZIea+pfiPr4YDzIwMjMwNjMwMDkyNzU3WqBupGwwajELMAkGA1UEBhMC
+# R0IxEzARBgNVBAgTCk1hbmNoZXN0ZXIxGDAWBgNVBAoTD1NlY3RpZ28gTGltaXRl
+# ZDEsMCoGA1UEAwwjU2VjdGlnbyBSU0EgVGltZSBTdGFtcGluZyBTaWduZXIgIzSg
+# gg3pMIIG9TCCBN2gAwIBAgIQOUwl4XygbSeoZeI72R0i1DANBgkqhkiG9w0BAQwF
+# ADB9MQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAw
+# DgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxJTAjBgNV
+# BAMTHFNlY3RpZ28gUlNBIFRpbWUgU3RhbXBpbmcgQ0EwHhcNMjMwNTAzMDAwMDAw
+# WhcNMzQwODAyMjM1OTU5WjBqMQswCQYDVQQGEwJHQjETMBEGA1UECBMKTWFuY2hl
+# c3RlcjEYMBYGA1UEChMPU2VjdGlnbyBMaW1pdGVkMSwwKgYDVQQDDCNTZWN0aWdv
+# IFJTQSBUaW1lIFN0YW1waW5nIFNpZ25lciAjNDCCAiIwDQYJKoZIhvcNAQEBBQAD
+# ggIPADCCAgoCggIBAKSTKFJLzyeHdqQpHJk4wOcO1NEc7GjLAWTkis13sHFlgryf
+# /Iu7u5WY+yURjlqICWYRFFiyuiJb5vYy8V0twHqiDuDgVmTtoeWBIHIgZEFsx8MI
+# +vN9Xe8hmsJ+1yzDuhGYHvzTIAhCs1+/f4hYMqsws9iMepZKGRNcrPznq+kcFi6w
+# sDiVSs+FUKtnAyWhuzjpD2+pWpqRKBM1uR/zPeEkyGuxmegN77tN5T2MVAOR0Pwt
+# z1UzOHoJHAfRIuBjhqe+/dKDcxIUm5pMCUa9NLzhS1B7cuBb/Rm7HzxqGXtuuy1E
+# Kr48TMysigSTxleGoHM2K4GX+hubfoiH2FJ5if5udzfXu1Cf+hglTxPyXnypsSBa
+# KaujQod34PRMAkjdWKVTpqOg7RmWZRUpxe0zMCXmloOBmvZgZpBYB4DNQnWs+7SR
+# 0MXdAUBqtqgQ7vaNereeda/TpUsYoQyfV7BeJUeRdM11EtGcb+ReDZvsdSbu/tP1
+# ki9ShejaRFEqoswAyodmQ6MbAO+itZadYq0nC/IbSsnDlEI3iCCEqIeuw7ojcnv4
+# VO/4ayewhfWnQ4XYKzl021p3AtGk+vXNnD3MH65R0Hts2B0tEUJTcXTC5TWqLVIS
+# 2SXP8NPQkUMS1zJ9mGzjd0HI/x8kVO9urcY+VXvxXIc6ZPFgSwVP77kv7AkTAgMB
+# AAGjggGCMIIBfjAfBgNVHSMEGDAWgBQaofhhGSAPw0F3RSiO0TVfBhIEVTAdBgNV
+# HQ4EFgQUAw8xyJEqk71j89FdTaQ0D9KVARgwDgYDVR0PAQH/BAQDAgbAMAwGA1Ud
+# EwEB/wQCMAAwFgYDVR0lAQH/BAwwCgYIKwYBBQUHAwgwSgYDVR0gBEMwQTA1Bgwr
+# BgEEAbIxAQIBAwgwJTAjBggrBgEFBQcCARYXaHR0cHM6Ly9zZWN0aWdvLmNvbS9D
+# UFMwCAYGZ4EMAQQCMEQGA1UdHwQ9MDswOaA3oDWGM2h0dHA6Ly9jcmwuc2VjdGln
+# by5jb20vU2VjdGlnb1JTQVRpbWVTdGFtcGluZ0NBLmNybDB0BggrBgEFBQcBAQRo
+# MGYwPwYIKwYBBQUHMAKGM2h0dHA6Ly9jcnQuc2VjdGlnby5jb20vU2VjdGlnb1JT
+# QVRpbWVTdGFtcGluZ0NBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2Vj
+# dGlnby5jb20wDQYJKoZIhvcNAQEMBQADggIBAEybZVj64HnP7xXDMm3eM5Hrd1ji
+# 673LSjx13n6UbcMixwSV32VpYRMM9gye9YkgXsGHxwMkysel8Cbf+PgxZQ3g621R
+# V6aMhFIIRhwqwt7y2opF87739i7Efu347Wi/elZI6WHlmjl3vL66kWSIdf9dhRY0
+# J9Ipy//tLdr/vpMM7G2iDczD8W69IZEaIwBSrZfUYngqhHmo1z2sIY9wwyR5Opfx
+# DaOjW1PYqwC6WPs1gE9fKHFsGV7Cg3KQruDG2PKZ++q0kmV8B3w1RB2tWBhrYvve
+# bMQKqWzTIUZw3C+NdUwjwkHQepY7w0vdzZImdHZcN6CaJJ5OX07Tjw/lE09ZRGVL
+# Q2TPSPhnZ7lNv8wNsTow0KE9SK16ZeTs3+AB8LMqSjmswaT5qX010DJAoLEZKhgh
+# ssh9BXEaSyc2quCYHIN158d+S4RDzUP7kJd2KhKsQMFwW5kKQPqAbZRhe8huuchn
+# ZyRcUI0BIN4H9wHU+C4RzZ2D5fjKJRxEPSflsIZHKgsbhHZ9e2hPjbf3E7TtoC3u
+# cw/ZELqdmSx813UfjxDElOZ+JOWVSoiMJ9aFZh35rmR2kehI/shVCu0pwx/eOKbA
+# FPsyPfipg2I2yMO+AIccq/pKQhyJA9z1XHxw2V14Tu6fXiDmCWp8KwijSPUV/ARP
+# 380hHHrl9Y4a1LlAMIIG7DCCBNSgAwIBAgIQMA9vrN1mmHR8qUY2p3gtuTANBgkq
+# hkiG9w0BAQwFADCBiDELMAkGA1UEBhMCVVMxEzARBgNVBAgTCk5ldyBKZXJzZXkx
+# FDASBgNVBAcTC0plcnNleSBDaXR5MR4wHAYDVQQKExVUaGUgVVNFUlRSVVNUIE5l
+# dHdvcmsxLjAsBgNVBAMTJVVTRVJUcnVzdCBSU0EgQ2VydGlmaWNhdGlvbiBBdXRo
+# b3JpdHkwHhcNMTkwNTAyMDAwMDAwWhcNMzgwMTE4MjM1OTU5WjB9MQswCQYDVQQG
+# EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxm
+# b3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxJTAjBgNVBAMTHFNlY3RpZ28g
+# UlNBIFRpbWUgU3RhbXBpbmcgQ0EwggIiMA0GCSqGSIb3DQEBAQUAA4ICDwAwggIK
+# AoICAQDIGwGv2Sx+iJl9AZg/IJC9nIAhVJO5z6A+U++zWsB21hoEpc5Hg7XrxMxJ
+# NMvzRWW5+adkFiYJ+9UyUnkuyWPCE5u2hj8BBZJmbyGr1XEQeYf0RirNxFrJ29dd
+# SU1yVg/cyeNTmDoqHvzOWEnTv/M5u7mkI0Ks0BXDf56iXNc48RaycNOjxN+zxXKs
+# Lgp3/A2UUrf8H5VzJD0BKLwPDU+zkQGObp0ndVXRFzs0IXuXAZSvf4DP0REKV4TJ
+# f1bgvUacgr6Unb+0ILBgfrhN9Q0/29DqhYyKVnHRLZRMyIw80xSinL0m/9NTIMdg
+# aZtYClT0Bef9Maz5yIUXx7gpGaQpL0bj3duRX58/Nj4OMGcrRrc1r5a+2kxgzKi7
+# nw0U1BjEMJh0giHPYla1IXMSHv2qyghYh3ekFesZVf/QOVQtJu5FGjpvzdeE8Nfw
+# KMVPZIMC1Pvi3vG8Aij0bdonigbSlofe6GsO8Ft96XZpkyAcSpcsdxkrk5WYnJee
+# 647BeFbGRCXfBhKaBi2fA179g6JTZ8qx+o2hZMmIklnLqEbAyfKm/31X2xJ2+opB
+# JNQb/HKlFKLUrUMcpEmLQTkUAx4p+hulIq6lw02C0I3aa7fb9xhAV3PwcaP7Sn1F
+# NsH3jYL6uckNU4B9+rY5WDLvbxhQiddPnTO9GrWdod6VQXqngwIDAQABo4IBWjCC
+# AVYwHwYDVR0jBBgwFoAUU3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFBqh
+# +GEZIA/DQXdFKI7RNV8GEgRVMA4GA1UdDwEB/wQEAwIBhjASBgNVHRMBAf8ECDAG
+# AQH/AgEAMBMGA1UdJQQMMAoGCCsGAQUFBwMIMBEGA1UdIAQKMAgwBgYEVR0gADBQ
+# BgNVHR8ESTBHMEWgQ6BBhj9odHRwOi8vY3JsLnVzZXJ0cnVzdC5jb20vVVNFUlRy
+# dXN0UlNBQ2VydGlmaWNhdGlvbkF1dGhvcml0eS5jcmwwdgYIKwYBBQUHAQEEajBo
+# MD8GCCsGAQUFBzAChjNodHRwOi8vY3J0LnVzZXJ0cnVzdC5jb20vVVNFUlRydXN0
+# UlNBQWRkVHJ1c3RDQS5jcnQwJQYIKwYBBQUHMAGGGWh0dHA6Ly9vY3NwLnVzZXJ0
+# cnVzdC5jb20wDQYJKoZIhvcNAQEMBQADggIBAG1UgaUzXRbhtVOBkXXfA3oyCy0l
+# hBGysNsqfSoF9bw7J/RaoLlJWZApbGHLtVDb4n35nwDvQMOt0+LkVvlYQc/xQuUQ
+# ff+wdB+PxlwJ+TNe6qAcJlhc87QRD9XVw+K81Vh4v0h24URnbY+wQxAPjeT5OGK/
+# EwHFhaNMxcyyUzCVpNb0llYIuM1cfwGWvnJSajtCN3wWeDmTk5SbsdyybUFtZ83J
+# b5A9f0VywRsj1sJVhGbks8VmBvbz1kteraMrQoohkv6ob1olcGKBc2NeoLvY3NdK
+# 0z2vgwY4Eh0khy3k/ALWPncEvAQ2ted3y5wujSMYuaPCRx3wXdahc1cFaJqnyTdl
+# Hb7qvNhCg0MFpYumCf/RoZSmTqo9CfUFbLfSZFrYKiLCS53xOV5M3kg9mzSWmglf
+# jv33sVKRzj+J9hyhtal1H3G/W0NdZT1QgW6r8NDT/LKzH7aZlib0PHmLXGTMze4n
+# muWgwAxyh8FuTVrTHurwROYybxzrF06Uw3hlIDsPQaof6aFBnf6xuKBlKjTg3qj5
+# PObBMLvAoGMs/FwWAKjQxH/qEZ0eBsambTJdtDgJK0kHqv3sMNrxpy/Pt/360KOE
+# 2See+wFmd7lWEOEgbsausfm2usg1XTN2jvF8IAwqd661ogKGuinutFoAsYyr4/kK
+# yVRd1LlqdJ69SK6YMYIELDCCBCgCAQEwgZEwfTELMAkGA1UEBhMCR0IxGzAZBgNV
+# BAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYGA1UE
+# ChMPU2VjdGlnbyBMaW1pdGVkMSUwIwYDVQQDExxTZWN0aWdvIFJTQSBUaW1lIFN0
+# YW1waW5nIENBAhA5TCXhfKBtJ6hl4jvZHSLUMA0GCWCGSAFlAwQCAgUAoIIBazAa
+# BgkqhkiG9w0BCQMxDQYLKoZIhvcNAQkQAQQwHAYJKoZIhvcNAQkFMQ8XDTIzMDYz
+# MDA5Mjc1N1owPwYJKoZIhvcNAQkEMTIEMKpoB59QzPZlqUaYfXFzCEKmANUzPXgh
+# zbyPnJSyL1y5rEhHO1G7a9mXc1AeAMttIzCB7QYLKoZIhvcNAQkQAgwxgd0wgdow
+# gdcwFgQUrmKvdQoMvUfWRh91aOK8jOfKT5QwgbwEFALWW5Xig3DBVwCV+oj5I92T
+# f62PMIGjMIGOpIGLMIGIMQswCQYDVQQGEwJVUzETMBEGA1UECBMKTmV3IEplcnNl
+# eTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoTFVRoZSBVU0VSVFJVU1Qg
+# TmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0aW9uIEF1
+# dGhvcml0eQIQMA9vrN1mmHR8qUY2p3gtuTANBgkqhkiG9w0BAQEFAASCAgAxUU7v
+# Z6remXOeRswXGR9XMGwKppiskmNlJr8g+DhSah+HlhTEwFWFbOzAvV6HV2jUR/KF
+# 3rTocoyhl1ykE9NjHdF/I15tjXDc4upWhcIjOOlhOK5ohJcMt+slUP6jrey1Nn3K
+# uUTybpGLGJqFReawgMSBeMaEIDsJ4iNRYLT7BOI4CBCoMELS4BMn0BOcZkGLKeDe
+# iyttzA2RS+Q15xXB6ui2iKLPQb/DyvUQ4y7u6TkxkeHOVxDzMQQFA0TI61F7mSzX
+# etbpZHYzg/FANPHyk0GX8RuXX/LZK2J9dybqGC9qKMoD9gRUNOLL6B8yd+7ScJt/
+# 84VbLIJuyNkhs16V19s+V54gOi+z4vt7pKlzBPZuhxhyqZIUOoqJ2WezABnzR3Pv
+# /sjsqn5mC7+ndbFwwAUQ9hAPe3kMjHcynPTKrwNffg9fbYHyeTLw+kv5eWsHTVlw
+# XP24eMAaUGXdg9Y0MPRlAC4q5tXPZfVzKufm8tHuEHbWSNC3fgYPZ1lmSSe34i5L
+# wqPCo2+MfLumClafhZdew4aLpdlPXaghr+NTBB1y5oG9Vf0261tzCPQHM3G/PfVz
+# ociRzwCyEPcxlm7hdl72CXp2uoz4qS6Oql5BTew9cp5wB0liF2/8fCM3ttygbiMI
+# rU/gsSvYQ8zMbxY6FZDxfiv92+BK83T6G6gSGQ==
 # SIG # End signature block
