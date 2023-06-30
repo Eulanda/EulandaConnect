@@ -22,10 +22,38 @@ function Test-Website {
         $item = $queue.Dequeue()
         $url = $item.Url
         $parent = $item.Parent
-        # if (! $parent) { $parent = $url }
 
-        # Normalize Slash and remove hashtag fragment if exists
-        $url = ($url -split "#" | Select-Object -First 1).TrimEnd('/') + '/'
+        # Normalize slash and remove hashtag fragment if exists
+        if ($url -match "#") {
+            # Test pattern for url
+            #   '#entwurf-die' -> ''
+            #   'entwurf-die#' -> 'entwurf-die/'
+            #   'entwurf-die' -> 'entwurf-die'
+            #   'entwurf-die-b&#xE4;nder-3' ->  'entwurf-die-b&#xE4;nder-3'
+            #   'entwurf-die-b&#xE4;nd#er-3' ->  'entwurf-die-b&#xE4;nd/'
+            #   'entwu#rf-die-b&#xE4;nder-3' ->  'entwu/'
+            #   'entwurf/' ->  'entwurf/'
+            #   '' ->  ''
+            #   '/' ->  '/'
+
+            # Search for the anchor from behind
+            $anchorIndex = $url.LastIndexOf("#")
+
+            if ($anchorIndex -ge 0) {
+                $startIndex = $anchorIndex - 1
+
+                while ($startIndex -ge 0 -and $url[$anchorIndex-1] -eq '&' ) {
+                    $anchorIndex = $url.LastIndexOf('#',$startIndex)
+                }
+
+                if ($anchorIndex -ge 0) {
+                    $url = $url.Substring(0, $anchorIndex)
+                    if ($url) {
+                        $url = $url.TrimEnd('/') + '/'
+                    }
+                }
+            }
+        }
 
         # If we have already visited this url, no need to process again
         if ($visitedUrls[$url]) {
@@ -39,6 +67,9 @@ function Test-Website {
 
         # Create a new URI object for handling relative links
         $uri = New-Object System.Uri($url)
+
+        # At start parent is empty, so we use the base URL at the beginning
+        $parentUrl = if ($parent) { $parent } else { $url }
 
         try {
             $request = [System.Net.WebRequest]::Create($url)
@@ -66,19 +97,46 @@ function Test-Website {
 
             # Pass through each <a ...> tag
             foreach ($tag in $anchorTags) {
-                # Find the href attribute inside the tag
-                $href = [regex]::Match($tag, 'href="([^"]+)"') | ForEach-Object { $_.Groups[1].Value }
-
-                # Check the rel attribute for "nofollow"
-                $rel = [regex]::Match($tag, 'rel="([^"]+)"') | ForEach-Object { $_.Groups[1].Value }
-                if ($rel -eq "nofollow") {
-                    if ($show) { Write-Host "Link $href has 'nofollow' attribute" -ForegroundColor Yellow }
-                    $noFollow["$parent@$href"] = $true
+                # Check if the href attribute is missing
+                if ($tag -notmatch 'href=') {
+                    # It's not necessarily a bug, but we only need tags with href.
+                    continue
                 }
 
-                # Add the link to the list if an href attribute was found
-                if ($href -and $href -notmatch "^#") {
+
+                # Find the href attribute inside the tag but at first it tries with quotes
+                $href = [regex]::Match($tag, 'href="([^"]+)"') | ForEach-Object { $_.Groups[1].Value }
+                if (!$href) {
+                    # Find href if is not in quotes like <a href=/news/ class="link white">
+                    $href = $tag -replace '^<a href=([^ >]+).*$', '$1'
+                }
+                $href = $href.trim('"')
+
+                # Add the link to the list if an href attribute was found but
+                # if it doesn't contain "javascript:" and also not contains ? or =
+                if ($href `
+                    -and $href -notmatch "^#" `
+                    -and $href -notmatch "^javascript:" `
+                    -and $href -notmatch "\?" `
+                    -and $href -notmatch "=" `
+                    -and $href -notmatch "^ftp:" `
+                    -and $href -notmatch "^tel:" `
+                    -and $href -notmatch "^phone:") {
                     $htmlLinks += $href
+
+                    # Check the rel attribute for "nofollow" but at first it tries with quotes
+                    $rel = [regex]::Match($tag, 'rel="([^"]+)"') | ForEach-Object { $_.Groups[1].Value }
+                    if (!$rel) {
+                        # Find rel if is not in quotes like <a href=/news/ class="link white" rel=nofollow>
+                        $rel = $tag -replace '.*rel\s*=\s*([^ >]+).*', '$1'
+                    }
+                    $rel = $rel.trim('"')
+
+
+                    if ($rel -eq "nofollow") {
+                        if ($show) { Write-Host "Link $href has 'nofollow' attribute" -ForegroundColor Yellow }
+                        $noFollow["$parent@$href"] = $true
+                    }
                 }
             }
 
@@ -96,31 +154,23 @@ function Test-Website {
                 }
 
                 # Handle relative links
-                <#
-                    # First attempt was good for Hugo websites, but could not handle cases
-                    # like left as plain HTML filename (e.g. 'index.html').
-                    # It was replaced with case 1-3
-                    if ($link -notmatch "^http") {
-                        $linkUri = New-Object System.Uri($uri, $link)
-                        $link = $linkUri.AbsoluteUri
-                    }
-                #>
-                if ($link -notmatch "^http") {
-                    # Handles if firts call has no parent
-                    $parentUrl = if ($parent) { $parent } else { $url }
-
+                if ($link -notmatch "^http" -and $link -notmatch "^mailto:") {
                     if ($link -match "^/") {
-                        # Case 1: Link is relative to the base URL
+                        # Case 1: Link is relative to the base URL like '/test'
                         $linkUri = New-Object System.Uri($uri, $link)
                     }
-                    elseif ($link -match "^\./" -or $link -match "^\.\./") {
-                        # Case 2: Link is relative to the current path
-                        $parentPath = $parentUrl -replace "(.*://[^/]+)/.*", '$1'
-                        $linkUri = New-Object System.Uri(New-Object System.Uri($parentPath), $link)
+                    elseif ($link -match "^(\.\./)+") {
+                        # Case 2: Link is relative to the current path like '../../test'
+                        $parentUri = New-Object System.Uri($url)
+                        $count = ($link | Select-String -Pattern "\.\./" -AllMatches).Matches.Count
+                        $segments = $parentUri.Segments[0..($parentUri.Segments.Length - $count - 1)]
+                        $parentPath = $parentUri.Scheme + "://" + $parentUri.Host + [System.String]::Join('', $segments)
+                        $relativeLink = $link -replace "(\.\./)+", ""
+                        $linkUri = New-Object System.Uri($parentPath + $relativeLink)
                     }
                     else {
-                        # Case 3: Link is in the same directory as the current path
-                        $parentPath = $parentUrl -replace "(.*://.*/).*$", '$1'
+                        # Case 3: Link is in the same directory as the current path like 'test.html' or like './test.html'
+                        $parentPath = $parentUrl -replace "(.*://.*/).*$", '$1'  # Use $parentUrl instead of $parent
                         $linkUri = New-Object System.Uri($parentPath + $link)
                     }
                     $link = $linkUri.AbsoluteUri
@@ -146,9 +196,17 @@ function Test-Website {
         } catch {
             if ($show) {
                 $parentLink = if ($parent) { $parent } else { "Start-URL" }
-                Write-Host "Broken: $parentLink -> $url $($_.Exception.Message)" -ForegroundColor Red
+                if ($_.Exception.Message -notmatch "404") {
+                    Write-Host "Broken: $parentLink -> $url $($_.Exception.Message)" -ForegroundColor Red
+                } else {
+                    Write-Host "Broken: $parentLink -> $url" -ForegroundColor Red
+                }
             }
-            $broken["$parent -> $url"] = $true
+            if ($_.Exception.Message -notmatch "404") {
+                $broken["$parent -> $url $($_.Exception.Message)"] = $true
+            } else {
+                $broken["$parent -> $url"] = $true
+            }
         }
     }
 
@@ -180,5 +238,11 @@ function Test-Website {
 }
 
 
-# Test-Website -url "https://eulandaconnect.eulanda.eu/" -show | Out-Null
-Test-Website -url "http://www.esgedv.com/" -show | Out-Null
+Test-Website -url "https://eulandaconnect.eulanda.eu/" -show | Out-Null
+# Test-Website -url "http://www.esgedv.com/" -show | Out-Null
+# Test-Website -url "https://gohugo.io/" -show | Out-Null
+# Test-Website -url "https://www.spiegel.de/" -show | Out-Null
+# Test-Website -url "https://www.eulanda.eu/" -show | Out-Null
+# Test-Website -url "https://www.we-elektronik.com" -show | Out-Null
+# Test-Website -url "https://www.bargellinibevande.it/" -show | Out-Null
+
