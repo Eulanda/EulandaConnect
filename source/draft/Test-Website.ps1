@@ -22,6 +22,7 @@ function Test-Website {
         $item = $queue.Dequeue()
         $url = $item.Url
         $parent = $item.Parent
+        # if (! $parent) { $parent = $url }
 
         # Normalize Slash and remove hashtag fragment if exists
         $url = ($url -split "#" | Select-Object -First 1).TrimEnd('/') + '/'
@@ -88,9 +89,40 @@ function Test-Website {
             }
 
             foreach ($link in $htmlLinks) {
+
+                # Ignore mailto: links
+                if ($link -match "^mailto:") {
+                    continue
+                }
+
                 # Handle relative links
+                <#
+                    # First attempt was good for Hugo websites, but could not handle cases
+                    # like left as plain HTML filename (e.g. 'index.html').
+                    # It was replaced with case 1-3
+                    if ($link -notmatch "^http") {
+                        $linkUri = New-Object System.Uri($uri, $link)
+                        $link = $linkUri.AbsoluteUri
+                    }
+                #>
                 if ($link -notmatch "^http") {
-                    $linkUri = New-Object System.Uri($uri, $link)
+                    # Handles if firts call has no parent
+                    $parentUrl = if ($parent) { $parent } else { $url }
+
+                    if ($link -match "^/") {
+                        # Case 1: Link is relative to the base URL
+                        $linkUri = New-Object System.Uri($uri, $link)
+                    }
+                    elseif ($link -match "^\./" -or $link -match "^\.\./") {
+                        # Case 2: Link is relative to the current path
+                        $parentPath = $parentUrl -replace "(.*://[^/]+)/.*", '$1'
+                        $linkUri = New-Object System.Uri(New-Object System.Uri($parentPath), $link)
+                    }
+                    else {
+                        # Case 3: Link is in the same directory as the current path
+                        $parentPath = $parentUrl -replace "(.*://.*/).*$", '$1'
+                        $linkUri = New-Object System.Uri($parentPath + $link)
+                    }
                     $link = $linkUri.AbsoluteUri
                 }
 
@@ -114,7 +146,7 @@ function Test-Website {
         } catch {
             if ($show) {
                 $parentLink = if ($parent) { $parent } else { "Start-URL" }
-                Write-Host "Broken: $parentLink -> $url" -ForegroundColor Red
+                Write-Host "Broken: $parentLink -> $url $($_.Exception.Message)" -ForegroundColor Red
             }
             $broken["$parent -> $url"] = $true
         }
