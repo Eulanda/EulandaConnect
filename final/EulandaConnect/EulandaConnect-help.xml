@@ -30370,19 +30370,19 @@ PS C:\&gt; Set-TrackingNo -trackingNo $trackingNo -deliveryNo 430220 -udl "C:\te
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The `Test-Website` function is designed to provide in-depth analysis of a website, including link validity, page indexing status, and 'noFollow' link identification. The function uses a queue-based approach for memory efficiency, avoiding recursion while processing URLs. It checks for broken links, provides a comprehensive list of all pages on the website, identifies pages marked as 'noIndex' and links marked as 'noFollow', and checks if the robots settings of the web server are set to restrict indexing.</maml:para>
+      <maml:para>The `Test-Website` function is designed to provide in-depth analysis of a website, including link validity, page indexing status, and `noFollow` link identification. The function uses a queue-based approach for memory efficiency, avoiding recursion while processing URLs. It checks for broken links, provides a comprehensive list of all pages on the website, identifies pages marked as 'noIndex' and links marked as `noFollow`, and checks if the robots settings of the web server are set to restrict indexing.</maml:para>
       <maml:para>The `Test-Website` function is a comprehensive tool for website exploration and analysis. Designed to be memory efficient, it operates non-recursively, utilizing a queue instead of recursion for URL processing. Here are the main functions it provides:</maml:para>
-      <maml:para>1. Identifying broken links : The function scans all the links of a website and identifies whether they are functional or broken. 2. Providing a list of all pages on a site : The function crawls through each page on the website, providing a comprehensive list of all the discovered pages. 3. Identifying pages marked as 'noIndex' : The function checks if pages have specific directives (in HTML headers or meta tags) preventing search engines from indexing them. It returns a list of all pages marked as 'noIndex'. 4. Checking for 'noFollow' links : It checks for links on the site that are flagged as 'noFollow', indicating to search engines not to follow the link for indexing. 5. Web Server Robots settings : The function inspects if the robots settings of the web server (header) restrict indexing.</maml:para>
+      <maml:para>1. Identifying broken links : The function scans all the links of a website and identifies whether they are functional or broken. 2. Providing a list of all pages on a site : The function crawls through each page on the website, providing a comprehensive list of all the discovered pages. 3. Identifying pages marked as `noIndex` : The function checks if pages have specific directives (in HTML headers or meta tags) preventing search engines from indexing them. It returns a list of all pages marked as `noIndex`. 4. Checking for `noFollow` links : It checks for links on the site that are flagged as `noFollow`, indicating to search engines not to follow the link for indexing. 5. Web Server Robots settings : The function inspects if the robots settings of the web server (header) restrict indexing.</maml:para>
       <maml:para>Here is a brief overview of its process:</maml:para>
-      <maml:para>- Initializes hash tables for visited URLs, 'noIndex' pages, 'noFollow' links, and broken links.</maml:para>
+      <maml:para>- Initializes hash tables for visited URLs, `noIndex` pages, `noFollow` links, and broken links.</maml:para>
       <maml:para>- Starts a while loop to visit every URL in the queue.</maml:para>
       <maml:para>- Normalizes each URL and checks if it has been visited before.</maml:para>
       <maml:para>- Processes each unvisited URL, gets the web response, and reads its headers.</maml:para>
-      <maml:para>- Checks for 'noIndex' directives in the headers or meta tags of the HTML.</maml:para>
-      <maml:para>- Extracts all links in the document and checks for 'noFollow' attributes.</maml:para>
+      <maml:para>- Checks for `noIndex` directives in the headers or meta tags of the HTML.</maml:para>
+      <maml:para>- Extracts all links in the document and checks for `noFollow` attributes.</maml:para>
       <maml:para>- Handles relative links and only enqueues links belonging to the same domain.</maml:para>
       <maml:para>- Catches exceptions for broken links and logs them.</maml:para>
-      <maml:para>- Returns a final object with properties for visited URLs, 'noIndex' pages, 'noFollow' links, and broken links.</maml:para>
+      <maml:para>- Returns a final object with properties for visited URLs, `noIndex` pages, `noFollow` links, and broken links.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -30468,9 +30468,33 @@ PS C:\&gt; Set-TrackingNo -trackingNo $trackingNo -deliveryNo 430220 -udl "C:\te
         <maml:title>---- Example 1: Shows broken links and more for a given url ----</maml:title>
         <dev:code>PS C:\&gt; $myResult = Test-Website -url "https://eulandaconnect.eulanda.eu/" -show
 PS C:\&gt; Write-Host "NoIndex tag found: $($myResult.noIndex.count)"
-PS C:\&gt; if ($myResult.noIndex.count -gt 0) { $myResult.noIndex | ForEach-Object { Write-Host "NoIndex: $_" } }</dev:code>
+PS C:\&gt; if ($myResult.noIndex.count -gt 0) { $myResult.noIndex | ForEach-Object { Write-Host "NoIndex: $_" } }
+
+# Result
+...
+Processing: https://eulandaconnect.eulanda.eu/docs/Functions/Get-DesktopDir
+Processing: https://eulandaconnect.eulanda.eu/docs/Functions/Show-Extensions
+Processing: https://eulandaconnect.eulanda.eu/docs/Functions/Update-Desktop
+Processing: https://eulandaconnect.eulanda.eu/docs/Functions/Close-Delivery
+Processing: https://eulandaconnect.eulanda.eu/docs/Functions/Out-Goodbye
+Processing: https://eulandaconnect.eulanda.eu/docs/Functions/Unprotect-String
+Processing: https://eulandaconnect.eulanda.eu/docs/Functions/Get-IniBool
+Processing: https://eulandaconnect.eulanda.eu/docs/Functions/Hide-Extensions
+Processing: https://eulandaconnect.eulanda.eu/docs/Functions/Show-MsgBoxYes
+Processing: https://eulandaconnect.eulanda.eu/docs/Functions/Show-MsgBox
+Processing: https://eulandaconnect.eulanda.eu/docs/Functions/Protect-String
+Processing: https://eulandaconnect.eulanda.eu/docs/Functions/Convert-DataToXml
+Processing: https://eulandaconnect.eulanda.eu/docs/Functions/Remove-RemoteFile
+Processing: https://eulandaconnect.eulanda.eu/docs/Appendix/Fields
+SUMMARY of the website analysis
+===============================
+Pages found: 558
+NoIndex tag found: 0
+NoFollow tag found: 0
+Broken links found: 1
+Broken: http://eulandaconnect.eulanda.eu/docs/Functions/Test-Website/ -&gt; https://eulandaconnect.eulanda.eu/%27</dev:code>
         <dev:remarks>
-          <maml:para>This will crawl through the website at 'https://eulandaconnect.eulanda.eu/', showing the processing details as it goes. It will then provide a summary of the analysis, including the total number of pages found, pages with 'noIndex' tags, links with 'noFollow' attributes, and broken links. The result is also stored in the `$myResult` variable for further inspection.</maml:para>
+          <maml:para>This will crawl through the website at ' https://eulandaconnect.eulanda.eu/ (https://eulandaconnect.eulanda.eu/)', showing the processing details as it goes. It will then provide a summary of the analysis, including the total number of pages found, pages with `noIndex` tags, links with `noFollow` attributes, and broken links. The result is also stored in the `$myResult` variable for further inspection.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>

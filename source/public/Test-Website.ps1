@@ -84,11 +84,11 @@ function Test-Website {
             # Check robot header or html meta tag
             if ($headers["X-Robots-Tag"]) {
                 $noIndexHeader = $headers["X-Robots-Tag"] -contains 'noindex'
-            }
-            $noIndexMetaTag = Select-String -InputObject $html -Pattern '<meta\s+name="robots"\s+content="noindex"' -AllMatches
-            if ($noIndexMetaTag -or $noIndexHeader) {
-                if ($show) { Write-Host "Page $url is excluded from indexing"  -ForegroundColor Yellow }
-                $noIndex[$url] = $true
+                $noIndexMetaTag = Select-String -InputObject $html -Pattern '<meta\s+name="robots"\s+content="noindex"' -AllMatches
+                if ($noIndexMetaTag -or $noIndexHeader) {
+                    if ($show) { Write-Host "Page $url is excluded from indexing"  -ForegroundColor Yellow }
+                    $noIndex[$url] = $true
+                }
             }
 
             # Get all links in document
