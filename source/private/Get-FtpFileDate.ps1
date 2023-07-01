@@ -72,10 +72,10 @@ function Get-FtpFileDate {
             $server = $ini['SFTP']['Server']
             $user = $ini['SFTP']['User']
             $result = Get-FtpFileDate -server $server -user $user -password $secure -remoteFile 'License.md'
-            Write-Host "$result seconds from today"
+            Write-Host "$result date of the file"
         }
 
-        # $result is a datetime value that indicates the file chang edate
+        # $result is a datetime value that indicates the file change date
         # The file 'License.md' example belongs to the ftp server test environment we recommend.
     #>
 }
