@@ -14,4 +14,3 @@ Describe "Convert-ToUTF7" {
         }
     }
 }
-
