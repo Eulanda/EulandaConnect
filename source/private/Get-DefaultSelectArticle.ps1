@@ -8,4 +8,9 @@ function Get-DefaultSelectArticle {
         'URSPRUNGSLAND, WARENNR, VOLUMEN, KURZTEXT1, KURZTEXT2, ULTRAKURZTEXT, LANGTEXT, INFO'
 
     Return $result
+
+    <# Test:
+        $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
+        & $Features {  Get-DefaultSelectArticle }
+    #>
 }
