@@ -33,9 +33,10 @@ function Get-ErrorFromConn {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
         Return $result
     }
-    # Because its private function the test is like this:
-    # Test:  $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
-    #        $myConn = Get-Conn -udl 'C:\temp\EULANDA_1 Truccamo.udl'
-    #        $myConn.execute("Select *") # force an error
-    #        & $Features {  Get-ErrorFromConn -conn $myConn -debug }
+    <# Test:
+        $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
+        $myConn = Get-Conn -udl '.\source\tests\EULANDA_1 Pester.udl'
+        $myConn.execute("Select *") # force an error
+        & $Features {  $result = Get-ErrorFromConn -conn $myConn; Write-Host "Result: $result"  }
+    #>
 }
