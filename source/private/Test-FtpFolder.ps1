@@ -40,11 +40,7 @@ Function Test-FtpFolder {
             $remoteFolder = '/'
         }
 
-        if ($remoteFolder -eq '/') {
-            $path = "/$remoteFile"
-        } else {
-            $path = "$remoteFolder/$remoteFile"
-        }
+        $path = $remoteFolder
 
         $ftpRequest = [System.Net.FtpWebRequest]::Create("ftp://$($server):$($port)$($path)")
         $ftpRequest.Credentials = New-Object System.Net.NetworkCredential($user, $password)
@@ -78,6 +74,24 @@ Function Test-FtpFolder {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
         Return $result
     }
+
+    <#
+
+        $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
+        & $Features {
+            $pesterFolder = Resolve-Path -path ".\source\tests"
+            $iniPath = Join-Path -path $pesterFolder "pester.ini"
+            $ini = Read-IniFile -path $iniPath
+            $path = $ini['SFTP']['SecurePasswordPath']
+            $path = $path -replace '\$home', $HOME
+            $secure = Import-Clixml -path $path
+            $server = $ini['SFTP']['Server']
+            $user = $ini['SFTP']['User']
+            $result = Test-FtpFolder -server $server -user $user -password $secure -remoteFolder '/inbox'
+            $result
+        }
+
+    #>
     # Test:  Test-FtpFolder -server 'mysftp.eulanda.eu' -user 'johndoe' -password 'secure' -remoteFolder '/EULANDA' -verbose -debug
 }
 
