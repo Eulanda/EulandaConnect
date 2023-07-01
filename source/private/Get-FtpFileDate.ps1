@@ -38,7 +38,7 @@ function Get-FtpFileDate {
     process {
         try {
             $result = [datetime]::MinValue
-            $ftpRequest = [System.Net.FtpWebRequest]::Create("ftp://$($erver):$($port)/$remoteFolder/$remoteFile")
+            $ftpRequest = [System.Net.FtpWebRequest]::Create("ftp://$($server):$($port)/$remoteFolder/$remoteFile")
             $ftpRequest.Credentials = New-Object System.Net.NetworkCredential($user, $password)
             $ftpRequest.Method = [System.Net.WebRequestMethods+Ftp]::GetDateTimestamp
 
@@ -58,5 +58,24 @@ function Get-FtpFileDate {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
         Return $result
     }
-    # Test: Get-FtpFileDate -server 'myftp.eulanda.eu' -user 'johndoe' -password 'secure' -remoteFolder '/EULANDA' -remoteFile 'test.txt' -verbose
+
+    <#
+
+        $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
+        & $Features {
+            $pesterFolder = Resolve-Path -path ".\source\tests"
+            $iniPath = Join-Path -path $pesterFolder "pester.ini"
+            $ini = Read-IniFile -path $iniPath
+            $path = $ini['SFTP']['SecurePasswordPath']
+            $path = $path -replace '\$home', $HOME
+            $secure = Import-Clixml -path $path
+            $server = $ini['SFTP']['Server']
+            $user = $ini['SFTP']['User']
+            $result = Get-FtpFileDate -server $server -user $user -password $secure -remoteFile 'License.md'
+            Write-Host "$result seconds from today"
+        }
+
+        # $result is a datetime value that indicates the file chang edate
+        # The file 'License.md' example belongs to the ftp server test environment we recommend.
+    #>
 }

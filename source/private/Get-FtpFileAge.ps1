@@ -81,10 +81,9 @@ function Get-FtpFileAge {
             $user = $ini['SFTP']['User']
             $result = Get-FtpFileAge -server $server -user $user -password $secure -remoteFile 'License.md'
             Write-Host "$result seconds from today"
-
-        # $result is a int value that indicates the file age until today
-        # The file 'License.md' example belongs to the ftp server test environment we recommend.
         }
 
+        # $result is a int32 value that indicates the file age until today
+        # The file 'License.md' example belongs to the ftp server test environment we recommend.
     #>
 }

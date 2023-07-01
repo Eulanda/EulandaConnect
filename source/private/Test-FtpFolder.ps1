@@ -89,9 +89,10 @@ Function Test-FtpFolder {
             $user = $ini['SFTP']['User']
             $result = Test-FtpFolder -server $server -user $user -password $secure -remoteFolder '/inbox'
             $result
-            # $result is a boolean value that indicates whether the folder exists.
-            # The 'inbox' example belongs to the ftp server test environment we recommend.
+
         }
 
+        # $result is a boolean value that indicates whether the folder exists.
+        # The 'inbox' example belongs to the ftp server test environment we recommend.
     #>
 }
