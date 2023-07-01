@@ -17,10 +17,31 @@ Describe "Send-FtpFile" -Tag 'Integration' {
         }
 
         It 'sends file and verifies its existence' {
-            Send-FtpFile -server $server -user $user -password $secure -remoteFolder '/inbox' -localFolder $pesterFolder -localFile 'Readme.md'
+            $remoteFolder = '/inbox'
+            $localFile = 'Readme.md'
 
-            $result = Get-FtpDir -server $server -user $user -password $secure -remoteFolder '/inbox'
-            $result | Should -Contain 'Readme.md'
+            Send-FtpFile -server $server -user $user -password $secure -remoteFolder $remoteFolder -localFolder $pesterFolder -localFile $localFile
+
+            $result = Get-FtpDir -server $server -user $user -password $secure -remoteFolder $remoteFolder
+
+            # if no file is there it is an error
+            $result | Should -Not -BeNullOrEmpty
+
+            # The file should exist now
+            if ($result) {
+                $result.Contains($localFile) | Should -Be $true
+            }
+
+            # Remove the file
+            Remove-FtpFile -server $server -user $user -password $secure -remoteFolder $remoteFolder -remoteFile $localFile
+
+            # Check if the file exists
+            $result = Get-FtpDir -server $server -user $user -password $secure -remoteFolder $remoteFolder
+
+            # The file should no longer exist
+            if ($result) {
+                $result.Contains($localFile) | Should -Be $false
+            }
         }
     }
 }

@@ -69,5 +69,22 @@ function Remove-FtpFolder {
     end {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
     }
-    # Test:  Remove-FtpFolder -server 'myftp.eulanda.eu' -user 'johndoe' -password 'secure' -remoteFolder '/EULANDA'
+
+    <#
+
+        $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
+        & $Features {
+            $pesterFolder = Resolve-Path -path ".\source\tests"
+            $iniPath = Join-Path -path $pesterFolder "pester.ini"
+            $ini = Read-IniFile -path $iniPath
+            $path = $ini['SFTP']['SecurePasswordPath']
+            $path = $path -replace '\$home', $HOME
+            $secure = Import-Clixml -path $path
+            $server = $ini['SFTP']['Server']
+            $user = $ini['SFTP']['User']
+
+            Remove-FtpFolder -server $server -user $user -password $secure -remoteFolder /inbox/pester
+        }
+
+    #>
 }
