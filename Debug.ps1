@@ -38,22 +38,6 @@ try {
     # $temp
 
 
-    $pesterFolder = Resolve-Path -path ".\source\tests"
-    $iniPath = Join-Path -path $pesterFolder "pester.ini"
-    $ini = Read-IniFile -path $iniPath
-    $path = $ini['SFTP']['SecurePasswordPath']
-    $path = $path -replace '\$home', $HOME
-    $secure = Import-Clixml -path $path
-    $server = $ini['SFTP']['Server']
-    $user = $ini['SFTP']['User']
-
-    $localFolder = Join-Path -path (Get-Location) source tests
-    # Send-FtpFile -server $server -user $user -password $secure -remoteFolder "/inbox" -localFolder "$localFolder" -localFile 'Readme.md'
-    Send-FtpFile -server $server -user $user -password $secure -remoteFolder '/inbox' -remoteFile 'test.txt' -localFolder 'C:\temp' -localFile 'text.txt'
-    $result = Get-FtpDir -server $server -user $user -password $secure -remoteFolder "/inbox"
-    Write-Host "'$result' are all files on ftp inbox folder"
-
-
 <#
     $datanorm.v
     Write-Host "A-Record" -ForegroundColor Yellow

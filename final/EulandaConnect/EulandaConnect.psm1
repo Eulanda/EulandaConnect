@@ -177,26 +177,6 @@ New-Variable -Name 'ecStartTime' -Scope 'Global'  -Option ReadOnly -Force -Value
 
 New-Variable -Name 'ecCulture' -Scope 'Global'  -Option ReadOnly -Force -Value ([string]([System.Threading.Thread]::CurrentThread.CurrentCulture.Name)) -Description 'User language like en-US of EulandaConnect module'
 
-# Save the original Write-Verbose function
-$originalWriteVerbose = Get-Command -Name Write-Verbose
-function Write-Verbose {
-    param(
-        [Parameter(Mandatory=$true, Position=0)]
-        [string]$Message
-    )
-
-    try {
-        $depth = (Get-PSCallStack).Count - 1  # -1 to not count the own write-verbose function
-    }
-    catch {
-        $depth = 0
-    }
-
-    $indent = " " * $depth
-
-    & $originalWriteVerbose -Message "${indent}${Message}"
-}
-
 
 
 
@@ -12016,7 +11996,7 @@ function Send-TelegramPhoto() {
 
         $pathToToken = "$home\.EulandaConnect\secureTelegramToken.xml"
         $chatId = "-713022389"
-        Send-TelegramPhoto -pathToToken $pathToToken -chatId $chatId -caption "My simple caption..." -uri 'c:\temp\logo.png'
+        Send-TelegramPhoto -pathToToken $pathToToken -chatId $chatId -caption "My simple öäüÖÄÜ caption..." -uri 'c:\temp\logo.png'
     #>
 }
 
@@ -13253,37 +13233,8 @@ function Test-Website {
         $url = $item.Url
         $parent = $item.Parent
 
-        # Normalize slash and remove hashtag fragment if exists
-        if ($url -match "#") {
-            # Test pattern for url
-            #   '#entwurf-die' -> ''
-            #   'entwurf-die#' -> 'entwurf-die/'
-            #   'entwurf-die' -> 'entwurf-die'
-            #   'entwurf-die-b&#xE4;nder-3' ->  'entwurf-die-b&#xE4;nder-3'
-            #   'entwurf-die-b&#xE4;nd#er-3' ->  'entwurf-die-b&#xE4;nd/'
-            #   'entwu#rf-die-b&#xE4;nder-3' ->  'entwu/'
-            #   'entwurf/' ->  'entwurf/'
-            #   '' ->  ''
-            #   '/' ->  '/'
-
-            # Search for the anchor from behind
-            $anchorIndex = $url.LastIndexOf("#")
-
-            if ($anchorIndex -ge 0) {
-                $startIndex = $anchorIndex - 1
-
-                while ($startIndex -ge 0 -and $url[$anchorIndex-1] -eq '&' ) {
-                    $anchorIndex = $url.LastIndexOf('#',$startIndex)
-                }
-
-                if ($anchorIndex -ge 0) {
-                    $url = $url.Substring(0, $anchorIndex)
-                    if ($url) {
-                        $url = $url.TrimEnd('/') + '/'
-                    }
-                }
-            }
-        }
+        # RRemove hashtag fragment if present, but ignore the hashtag &# for Unicode
+        $url = Remove-UrlFragment -url $url
 
         # If we have already visited this url, no need to process again
         if ($visitedUrls[$url]) {
@@ -13475,8 +13426,6 @@ function Test-Website {
     # Test-Website -url "https://www.wizz-software.nl/" -show | Out-Null
 }
 
-
-
 function Test-XmlSchema {
     [CmdletBinding()]
     param (
@@ -13605,6 +13554,7 @@ Function Use-Culture {
     [System.Threading.Thread]::CurrentThread.CurrentCulture = $oldCulture
 }
 
+# Test: Use-Culture -culture 'it-IT' -script { $(Get-Date) }
 function Write-XmlMetadata {
     [CmdletBinding()]
     param(
@@ -13829,7 +13779,18 @@ function Convert-ToMultipart() {
         Get-CurrentVariables -initialVariables $initialVariables -Debug:$DebugPreference
         Return $result
     }
-    # Test
+    <# Test:
+        $formParams = @{
+            chat_id                        = '454563'
+            caption                        = 'MyTestCaption'
+            parse_mode                     = 'markdown'
+            disable_content_type_detection = $false
+            disable_notification           = $false
+            photo                          = (Get-Item 'C:\temp\logo.png' -ErrorAction Stop)
+        }
+        $boundary = [System.Guid]::NewGuid().ToString()
+        $actualOutput = Convert-ToMultipart -params $formParams -boundary $boundary
+    #>
 }
 
 function Convert-ToUTF7 {
@@ -13844,8 +13805,17 @@ function Convert-ToUTF7 {
     }
 
     process {
-        $bytes = [System.Text.Encoding]::UTF8.GetBytes($value)
-        [string]$result = [System.Text.Encoding]::UTF7.GetString($bytes)
+        <#
+            # Used prior 2023-07-01
+            $bytes = [System.Text.Encoding]::UTF8.GetBytes($value)
+            [string]$result = [System.Text.Encoding]::UTF7.GetString($bytes)
+        #>
+        # New implementaion tested with Send-TelegramPhoto and special chars also with pester tests and seems to work in both
+        $utf8 = [System.Text.Encoding]::UTF8
+        $utf7 = [System.Text.Encoding]::UTF7
+        $bytes = $utf8.GetBytes($value)
+        $utf7Bytes = [System.Text.Encoding]::Convert($utf8, $utf7, $bytes)
+        [string]$result = $utf7.GetString($utf7Bytes)
     }
 
     end {
@@ -13879,9 +13849,10 @@ function Get-ConnFromStr {
     end {
         Return $conn
     }
-    # Because its private function the test is like this:
-    # Test:  $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
-    #        & $Features { Get-ConnFromStr -connStr 'Provider=SQLOLEDB.1;Integrated Security=SSPI;Persist Security Info=False;User ID=Eulanda;Initial Catalog=Eulanda_Truccamo;Data Source=.\SQL2019' }
+    <# Test:
+        $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
+        & $Features { $conn = Get-ConnFromStr -connStr 'Provider=SQLOLEDB.1;Integrated Security=SSPI;Persist Security Info=False;Initial Catalog=master;Data Source=.\PESTER'; $conn.State; $conn.close() }
+    #>
 }
 
 function Get-ConnFromUdl {
@@ -13908,82 +13879,11 @@ function Get-ConnFromUdl {
     end {
         Return $conn
     }
-    # Because its private function the test is like this:
-    # Test:  $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
-    #        & $Features {  Get-ConnFromUdl -udl 'C:\temp\Eulanda_1 Eulanda.udl' }
 
-}
-
-function Get-DatanormCuSurcharge {
-    [CmdletBinding()]
-    param (
-        [int]$divisionCode
-        ,
-        [double]$cuIncluded
-        ,
-        [double]$cuWeight
-        ,
-        [double]$cuDel = 879 # last official cuDel (Copper-DEL Notation) price 02/2022
-    )
-
-    <#
-        .SYNOPSIS
-        Calculates the copper surcharge for a product based on various parameters
-        including the copper weight, the division code, and the included and actual copper prices.
-
-        .DESCRIPTION
-        The `Get-DatanormCuSurcharge` function calculates the copper surcharge that applies to a product
-        in a Datanorm file. The calculation is based on the weight of copper in the product,
-        the division code that indicates how the weight is measured (per unit, per 100 units, or per 1000 units),
-        and the difference between the included and actual copper prices.
-
-        The copper weight must be specified in kilograms. The division code is an integer value where 0 indicates
-        no copper processing, 1 indicates that the weight is per 100 units,
-        and 2 indicates that the weight is per 1000 units.
-
-        The included copper price and actual copper price (known as `cuDel`) should be specified per 100 kg.
-        The function returns the calculated copper surcharge. If the surcharge would be
-        negative (i.e., the actual price is less than the included price), the function returns 0.
-
-        .PARAMETER divisionCode
-        The division code for the copper weight. Valid values are 0 (no copper processing),
-        1 (weight is per 100 units), and 2 (weight is per 1000 units).
-
-        .PARAMETER cuIncluded
-        The copper price already included in the base product price, specified per 100 kg.
-
-        .PARAMETER cuWeight
-        The weight of copper in the product, specified in kilograms but depends also on the devisionCode
-
-        .PARAMETER cuDel
-        The actual copper price, specified per 100 kg. The default value is 879.
-
-        .EXAMPLE
-        Get-DatanormCuSurcharge -cuWeight 2.5 -divisionCode 1 -cuDel 879 -cuIncluded 150
-
-        This example calculates the copper surcharge for a product with a copper weight of 2.5 kg,
-        a division code of 1 (indicating that the weight is per 100 units),
-        and an included copper price of 150 per 100 kg. The actual copper price (cuDel)
-        is assumed to be the default value of 879 per 100 kg.
-
-        The result is in this case: 0,18225 EUR
+    <# Test:
+        $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
+        & $Features {  $conn = Get-ConnFromUdl -udl '.\source\tests\pester.udl'; $conn.State; $conn.close() }
     #>
-
-    $copperSurcharge = 0
-
-    $weightPerUnit = Get-DatanormCuWeight -cuWeight $cuWeight -divisionCode $divisionCode
-
-    # Calculate the copper surcharge
-    if ($weightPerUnit -gt 0) {
-        $copperSurcharge = $weightPerUnit * ($cuDel - $cuIncluded) / 100
-        if ($copperSurcharge -lt 0.0) {
-            $copperSurcharge = [double]0.0
-        }
-    }
-
-    return $copperSurcharge
-
-    # Test: Get-DatanormCuSurcharge -cuWeight 2.5 -divisionCode 1 -cuDel 879 -cuIncluded 150
 }
 
 function Get-CurrentVariables {
@@ -14114,8 +14014,12 @@ function Get-CurrentVariables {
                     }
                     $privateVariableCode = "New-Variable -Name '$($variable.Name)' -Scope 'Private' -Value ($initValue)"
 
-                    if ($firstTime) { Write-Host (Get-ResStr 'NEW_VARIABLES') -ForegroundColor Yellow }
-                    Write-Host $privateVariableCode -ForegroundColor Yellow
+                    if ($firstTime) {
+                        # Write-Host (Get-ResStr 'NEW_VARIABLES') -ForegroundColor Yellow
+                        Write-Output 'New variables:' # english and with write-output, because it is paresed by pester test
+                    }
+                    # Write-Host $privateVariableCode -ForegroundColor Yellow
+                    Write-Output "$privateVariableCode"
                     $firstTime = $false
                 }
             }
@@ -14125,6 +14029,12 @@ function Get-CurrentVariables {
     } else {
         Return @()
     }
+
+    <# Test:
+        $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
+        & $Features { $initialVariables = Get-CurrentVariables -Debug:$true; $result = (Get-CurrentVariables -InitialVariables $initialVariables -Debug:$true); ($null -eq $result ) }
+        & $Features { $initialVariables = Get-CurrentVariables -Debug:$true; $dummy = 'Dummy'; $result = (Get-CurrentVariables -InitialVariables $initialVariables -Debug:$true); ($null -eq $result ) }
+    #>
 }
 
 function Get-DatanormConditionDecimals {
@@ -14173,6 +14083,93 @@ function Get-DatanormConditionDecimals {
         3 { return $condition.Insert($condition.Length - 2, ",") }
         default { Throw ((Get-ResStr 'INVALID_DATANORM_INDICATOR') -f $indicator, $myInvocation.Mycommand) }
     }
+
+    <# Test:
+        $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
+        & $Features { $result = Get-DatanormConditionDecimals -condition '1234' -indicator 3; $result }
+        # Result should be '12,34'
+        & $Features { $result = Get-DatanormConditionDecimals -condition '1234' -indicator 2; $result }
+        # Result should be '1,234'
+    #>
+}
+
+function Get-DatanormCuSurcharge {
+    [CmdletBinding()]
+    param (
+        [int]$divisionCode
+        ,
+        [double]$cuIncluded
+        ,
+        [double]$cuWeight
+        ,
+        [double]$cuDel = 879 # last official cuDel (Copper-DEL Notation) price 02/2022
+    )
+
+    <#
+        .SYNOPSIS
+        Calculates the copper surcharge for a product based on various parameters
+        including the copper weight, the division code, and the included and actual copper prices.
+
+        .DESCRIPTION
+        The `Get-DatanormCuSurcharge` function calculates the copper surcharge that applies to a product
+        in a Datanorm file. The calculation is based on the weight of copper in the product,
+        the division code that indicates how the weight is measured (per unit, per 100 units, or per 1000 units),
+        and the difference between the included and actual copper prices.
+
+        The copper weight must be specified in kilograms. The division code is an integer value where 0 indicates
+        no copper processing, 1 indicates that the weight is per 100 units,
+        and 2 indicates that the weight is per 1000 units.
+
+        The included copper price and actual copper price (known as `cuDel`) should be specified per 100 kg.
+        The function returns the calculated copper surcharge. If the surcharge would be
+        negative (i.e., the actual price is less than the included price), the function returns 0.
+
+        .PARAMETER divisionCode
+        The division code for the copper weight. Valid values are 0 (no copper processing),
+        1 (weight is per 100 units), and 2 (weight is per 1000 units).
+
+        .PARAMETER cuIncluded
+        The copper price already included in the base product price, specified per 100 kg.
+
+        .PARAMETER cuWeight
+        The weight of copper in the product, specified in kilograms but depends also on the devisionCode
+
+        .PARAMETER cuDel
+        The actual copper price, specified per 100 kg. The default value is 879.
+
+        .EXAMPLE
+        Get-DatanormCuSurcharge -cuWeight 2.5 -divisionCode 1 -cuDel 879 -cuIncluded 150
+
+        This example calculates the copper surcharge for a product with a copper weight of 2.5 kg,
+        a division code of 1 (indicating that the weight is per 100 units),
+        and an included copper price of 150 per 100 kg. The actual copper price (cuDel)
+        is assumed to be the default value of 879 per 100 kg.
+
+        The result is in this case: 0,18225 EUR
+    #>
+
+    $copperSurcharge = 0
+
+    $weightPerUnit = Get-DatanormCuWeight -cuWeight $cuWeight -divisionCode $divisionCode
+
+    # Calculate the copper surcharge
+    if ($weightPerUnit -gt 0) {
+        $copperSurcharge = $weightPerUnit * ($cuDel - $cuIncluded) / 100
+        if ($copperSurcharge -lt 0.0) {
+            $copperSurcharge = [double]0.0
+        }
+    }
+
+    return $copperSurcharge
+    <# Test:
+        $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
+
+        & $Features { Get-DatanormCuSurcharge -cuWeight 2.5 -divisionCode 1 -cuDel 879 -cuIncluded 150 }
+        # Result: 0,18225
+
+        & $Features { Get-DatanormCuSurcharge -cuWeight 2.5 -divisionCode 1 -cuDel 100 -cuIncluded 150 }
+        # Result: 0
+    #>
 }
 
 function Get-DatanormCuWeight {
@@ -14284,6 +14281,11 @@ function Get-DefaultSelectArticle {
         'URSPRUNGSLAND, WARENNR, VOLUMEN, KURZTEXT1, KURZTEXT2, ULTRAKURZTEXT, LANGTEXT, INFO'
 
     Return $result
+
+    <# Test:
+        $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
+        & $Features {  Get-DefaultSelectArticle }
+    #>
 }
 function Get-ErrorFromConn {
     [CmdletBinding()]
@@ -14320,11 +14322,12 @@ function Get-ErrorFromConn {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
         Return $result
     }
-    # Because its private function the test is like this:
-    # Test:  $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
-    #        $myConn = Get-Conn -udl 'C:\temp\EULANDA_1 Truccamo.udl'
-    #        $myConn.execute("Select *") # force an error
-    #        & $Features {  Get-ErrorFromConn -conn $myConn -debug }
+    <# Test:
+        $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
+        $myConn = Get-Conn -udl '.\source\tests\EULANDA_1 Pester.udl'
+        $myConn.execute("Select *") # force an error
+        & $Features {  $result = Get-ErrorFromConn -conn $myConn; Write-Host "Result: $result"  }
+    #>
 }
 
 Function Get-FtpDir {
@@ -14444,9 +14447,28 @@ Function Get-FtpDir {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
         Return $result
     }
-    # Test:  Get-FtpDir -server 'mysftp.eulanda.eu' -user 'johndoe' -password 'secure' -remoteFolder '/EULANDA' -mask '*.zip' -dirType file -verbose -debug
-}
+    <# Test:
 
+        $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
+        & $Features {
+            $pesterFolder = Resolve-Path -path ".\source\tests"
+            $iniPath = Join-Path -path $pesterFolder "pester.ini"
+            $ini = Read-IniFile -path $iniPath
+            $path = $ini['SFTP']['SecurePasswordPath']
+            $path = $path -replace '\$home', $HOME
+            $secure = Import-Clixml -path $path
+            $server = $ini['SFTP']['Server']
+            $user = $ini['SFTP']['User']
+            $result = Get-FtpDir -server $server -user $user -password $secure -remoteFolder '/' -dirType directory
+            $result
+        }
+
+        # Output or what ever is there
+        #  inbox
+        #  outbox
+    #>
+
+}
 
 function Get-FtpFileAge {
     [CmdletBinding()]
@@ -14516,7 +14538,26 @@ function Get-FtpFileAge {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
         Return $result
     }
-    # Test: Get-FtpFileAge -server 'myftp.eulanda.eu' -user 'johndoe' -password 'secure' -remoteFfolder '/EULANDA' -remoteFile 'test.txt' -verbose
+
+    <#
+
+        $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
+        & $Features {
+            $pesterFolder = Resolve-Path -path ".\source\tests"
+            $iniPath = Join-Path -path $pesterFolder "pester.ini"
+            $ini = Read-IniFile -path $iniPath
+            $path = $ini['SFTP']['SecurePasswordPath']
+            $path = $path -replace '\$home', $HOME
+            $secure = Import-Clixml -path $path
+            $server = $ini['SFTP']['Server']
+            $user = $ini['SFTP']['User']
+            $result = Get-FtpFileAge -server $server -user $user -password $secure -remoteFile 'License.md'
+            Write-Host "$result seconds from today"
+        }
+
+        # $result is a int32 value that indicates the file age until today
+        # The file 'License.md' example belongs to the ftp server test environment we recommend.
+    #>
 }
 
 function Get-FtpFileDate {
@@ -14559,7 +14600,7 @@ function Get-FtpFileDate {
     process {
         try {
             $result = [datetime]::MinValue
-            $ftpRequest = [System.Net.FtpWebRequest]::Create("ftp://$($erver):$($port)/$remoteFolder/$remoteFile")
+            $ftpRequest = [System.Net.FtpWebRequest]::Create("ftp://$($server):$($port)/$remoteFolder/$remoteFile")
             $ftpRequest.Credentials = New-Object System.Net.NetworkCredential($user, $password)
             $ftpRequest.Method = [System.Net.WebRequestMethods+Ftp]::GetDateTimestamp
 
@@ -14579,8 +14620,28 @@ function Get-FtpFileDate {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
         Return $result
     }
-    # Test: Get-FtpFileDate -server 'myftp.eulanda.eu' -user 'johndoe' -password 'secure' -remoteFolder '/EULANDA' -remoteFile 'test.txt' -verbose
+
+    <#
+
+        $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
+        & $Features {
+            $pesterFolder = Resolve-Path -path ".\source\tests"
+            $iniPath = Join-Path -path $pesterFolder "pester.ini"
+            $ini = Read-IniFile -path $iniPath
+            $path = $ini['SFTP']['SecurePasswordPath']
+            $path = $path -replace '\$home', $HOME
+            $secure = Import-Clixml -path $path
+            $server = $ini['SFTP']['Server']
+            $user = $ini['SFTP']['User']
+            $result = Get-FtpFileDate -server $server -user $user -password $secure -remoteFile 'License.md'
+            Write-Host "$result date of the file"
+        }
+
+        # $result is a datetime value that indicates the file change date
+        # The file 'License.md' example belongs to the ftp server test environment we recommend.
+    #>
 }
+
 function Get-FtpFileSize {
     [CmdletBinding()]
     param (
@@ -14652,9 +14713,26 @@ function Get-FtpFileSize {
         Return $result
     }
 
-    # Test: Get-FtpFileSize -server 'myftp.eulanda.eu'  -user 'johndoe' -password 'secure'  -remoteFolder '/EULANDA' -remoteFile 'Eulanda_JohnDoe.zip' -verbose
-}
+    <#
 
+        $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
+        & $Features {
+            $pesterFolder = Resolve-Path -path ".\source\tests"
+            $iniPath = Join-Path -path $pesterFolder "pester.ini"
+            $ini = Read-IniFile -path $iniPath
+            $path = $ini['SFTP']['SecurePasswordPath']
+            $path = $path -replace '\$home', $HOME
+            $secure = Import-Clixml -path $path
+            $server = $ini['SFTP']['Server']
+            $user = $ini['SFTP']['User']
+            $result = Get-FtpFileSize -server $server -user $user -password $secure -remoteFile 'License.md'
+            Write-Host "$result size of the file in bytes"
+        }
+
+        # $result is a int32 value that indicates the file size
+        # The file 'License.md' example belongs to the ftp server test environment we recommend.
+    #>
+}
 
 function Get-FtpNextFilename {
     [CmdletBinding()]
@@ -14787,7 +14865,26 @@ function Get-FtpNextFilename {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
         Return $result
     }
-    # Test:  Get-FtpNextFilename -server 'myftp.eulanda.eu' -user 'johndoe' -password 'secure' -mask '*.xml' -remoteFolder '/EULANDA'
+
+    <#
+
+        $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
+        & $Features {
+            $pesterFolder = Resolve-Path -path ".\source\tests"
+            $iniPath = Join-Path -path $pesterFolder "pester.ini"
+            $ini = Read-IniFile -path $iniPath
+            $path = $ini['SFTP']['SecurePasswordPath']
+            $path = $path -replace '\$home', $HOME
+            $secure = Import-Clixml -path $path
+            $server = $ini['SFTP']['Server']
+            $user = $ini['SFTP']['User']
+            $result = Get-FtpNextFilename -server $server -user $user -password $secure  -mask '*.md'
+            Write-Host "$result string of the next file name in queue"
+        }
+
+        # $result is a string  value that indicates the next file name to load
+        # The file 'License.md' example belongs to the ftp server test environment we recommend.
+    #>
 }
 
 function Get-MappingAddressKeys {
@@ -15728,7 +15825,27 @@ function New-FtpFolder {
     end {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
     }
-     # Test:  New-FtpFolder -server 'myftp.eulanda.eu'  -user 'johndoe' -password 'secure'  -remoteFolder '/EULANDA' -verbose -debug
+
+    <#
+
+        $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
+        & $Features {
+            $pesterFolder = Resolve-Path -path ".\source\tests"
+            $iniPath = Join-Path -path $pesterFolder "pester.ini"
+            $ini = Read-IniFile -path $iniPath
+            $path = $ini['SFTP']['SecurePasswordPath']
+            $path = $path -replace '\$home', $HOME
+            $secure = Import-Clixml -path $path
+            $server = $ini['SFTP']['Server']
+            $user = $ini['SFTP']['User']
+
+            $folderName = -join ((65..90) | Get-Random -Count 10 | % {[char]$_})
+            New-FtpFolder -server $server -user $user -password $secure -remoteFolder "/$folderName"
+            $result = Get-FtpDir -server $server -user $user -password $secure -dirType directory
+            Write-Host "'$result' are all folders on ftp including the new '$folderName' one which was created for pester tests"
+        }
+
+    #>
 }
 
 Function New-SftpFolder {
@@ -15943,7 +16060,22 @@ Function Receive-FtpFile {
     end {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
     }
-    # Test:  Receive-FtpFile -server 'myftp.eulanda.eu' -user 'johndoe' -password 'secure' -remoteFolder '/EULANDA' -remoteFile 'test.txt' -localFolder 'C:\temp' -localFile 'newText.txt'
+
+    <#
+        $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
+        & $Features {
+            $pesterFolder = Resolve-Path -path ".\source\tests"
+            $iniPath = Join-Path -path $pesterFolder "pester.ini"
+            $ini = Read-IniFile -path $iniPath
+            $path = $ini['SFTP']['SecurePasswordPath']
+            $path = $path -replace '\$home', $HOME
+            $secure = Import-Clixml -path $path
+            $server = $ini['SFTP']['Server']
+            $user = $ini['SFTP']['User']
+
+            Receive-FtpFile -server $server -user $user -password $secure  -remoteFile 'License.md' -localFolder $env:TEMP
+        }
+    #>
 }
 
 function Receive-SftpFile {
@@ -16134,7 +16266,24 @@ function Remove-FtpFile {
     end {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
     }
-    # Test:  Remove-FtpFile -server 'myftp.eulanda.eu' -user 'johndoe' -password 'secure' -remoteFolder '/EULANDA' -remoteFile 'test.txt'
+
+    <#
+
+        $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
+        & $Features {
+            $pesterFolder = Resolve-Path -path ".\source\tests"
+            $iniPath = Join-Path -path $pesterFolder "pester.ini"
+            $ini = Read-IniFile -path $iniPath
+            $path = $ini['SFTP']['SecurePasswordPath']
+            $path = $path -replace '\$home', $HOME
+            $secure = Import-Clixml -path $path
+            $server = $ini['SFTP']['Server']
+            $user = $ini['SFTP']['User']
+
+            Remove-FtpFile -server $server -user $user -password $secure -remoteFolder /inbox -remoteFile 'Readme.md'
+        }
+
+    #>
 }
 
 function Remove-FtpFolder {
@@ -16208,7 +16357,24 @@ function Remove-FtpFolder {
     end {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
     }
-    # Test:  Remove-FtpFolder -server 'myftp.eulanda.eu' -user 'johndoe' -password 'secure' -remoteFolder '/EULANDA'
+
+    <#
+
+        $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
+        & $Features {
+            $pesterFolder = Resolve-Path -path ".\source\tests"
+            $iniPath = Join-Path -path $pesterFolder "pester.ini"
+            $ini = Read-IniFile -path $iniPath
+            $path = $ini['SFTP']['SecurePasswordPath']
+            $path = $path -replace '\$home', $HOME
+            $secure = Import-Clixml -path $path
+            $server = $ini['SFTP']['Server']
+            $user = $ini['SFTP']['User']
+
+            Remove-FtpFolder -server $server -user $user -password $secure -remoteFolder /inbox/pester
+        }
+
+    #>
 }
 
 function Remove-SftpFile {
@@ -16356,6 +16522,40 @@ function Remove-SftpFolder {
     }
     # Test:  Remove-SftpFolder -server 'myftp.eulanda.eu' -user 'johndoe' -password 'secure' -remoteFolder '/EULANDA'
 }
+
+function Remove-UrlFragment {
+    [CmdletBinding()]
+    param(
+        [string]$url
+    )
+
+    $result = $url
+    # Remove the real hashtag fragment, if any, and append a slash in this case
+    if ($url -match "#") {
+        # Search for the anchor from behind
+        $anchorIndex = $url.LastIndexOf("#")
+
+        if ($anchorIndex -ge 0) {
+            $startIndex = $anchorIndex - 1
+
+            # When you have found a special character, the search continues to the left
+            while ($startIndex -ge 0 -and $url[$anchorIndex-1] -eq '&' ) {
+                $anchorIndex = $url.LastIndexOf('#',$startIndex)
+            }
+
+            if ($anchorIndex -ge 0) {
+                $result = $url.Substring(0, $anchorIndex)
+                if ($result) {
+                    $result = $result.TrimEnd('/') + '/'
+                }
+            }
+        }
+    }
+
+    Return $result
+    # Test: Remove-UrlFragment -url 'entwu#rf-die-b&#xE4;nder-3'
+}
+
 
 function Rename-FtpFile {
     [CmdletBinding()]
@@ -16923,15 +17123,22 @@ Function Send-FtpFile {
         while ($retryCount -lt $resumeRetries) {
             try {
                 # Delete old file if exists, if its a younger we try to resume upload
-                $fileAge = Get-FtpFileAge -server $server -protocol $protocol -port $port -activeMode:$activeMode -user $user -password $password -remoteFolder $remoteFolder -remoteFile $remoteFile
-                # Resume works only if not older then 3 hours
-                if ($fileAge -gt $resumeAge) {
-                    Remove-FtpFile -server $server -protocol $protocol -port $port -activeMode:$activeMode -user $user -password $password -remoteFolder $remoteFolder -remoteFile $remoteFile
-                    Write-Verbose ((Get-ResStr 'REMOTEFILE_TO_OLD_TO_RESUME') -f $remoteFile, $myInvocation.Mycommand)
+                if (Test-FtpFile -server $server -protocol $protocol -port $port -activeMode:$activeMode -user $user -password $password -remoteFolder $remoteFolder -remoteFile $remoteFile ) {
+                    $fileAge = Get-FtpFileAge -server $server -protocol $protocol -port $port -activeMode:$activeMode -user $user -password $password -remoteFolder $remoteFolder -remoteFile $remoteFile
+                    # Resume works only if not older then 3 hours
+                    if ($fileAge -gt $resumeAge) {
+                        Remove-FtpFile -server $server -protocol $protocol -port $port -activeMode:$activeMode -user $user -password $password -remoteFolder $remoteFolder -remoteFile $remoteFile
+                        Write-Verbose ((Get-ResStr 'REMOTEFILE_TO_OLD_TO_RESUME') -f $remoteFile, $myInvocation.Mycommand)
+                        $fileAge = 0
+                    }
+                } else {
                     $fileAge = 0
                 }
-
-                $remoteFileSize = Get-FtpFileSize -server $server -protocol $protocol -port $port -activeMode:$activeMode -user $user -password $password -remoteFolder $remoteFolder -remoteFile $remoteFile
+                if ($fileAge -gt 0) {
+                    $remoteFileSize = Get-FtpFileSize -server $server -protocol $protocol -port $port -activeMode:$activeMode -user $user -password $password -remoteFolder $remoteFolder -remoteFile $remoteFile
+                } else {
+                    $remoteFileSize = 0
+                }
                 $localFileSize = (Get-Item $fullLocalPath).Length
                 Write-Verbose "Local Filesize: $localFileSize"
                 Write-Verbose "Remote file size: $remoteFileSize"
@@ -17042,7 +17249,26 @@ Function Send-FtpFile {
     end {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
     }
-    # Test:  Send-FtpFile -server 'myftp.eulanda.eu' -user 'johndoe' -password 'secure' -remoteFolder '/EULANDA' -remoteFile 'test.txt' -localFolder 'C:\temp' -localFile 'text.txt'
+
+    <#
+
+        $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
+        & $Features {
+            $pesterFolder = Resolve-Path -path ".\source\tests"
+            $iniPath = Join-Path -path $pesterFolder "pester.ini"
+            $ini = Read-IniFile -path $iniPath
+            $path = $ini['SFTP']['SecurePasswordPath']
+            $path = $path -replace '\$home', $HOME
+            $secure = Import-Clixml -path $path
+            $server = $ini['SFTP']['Server']
+            $user = $ini['SFTP']['User']
+
+            Send-FtpFile -server $server -user $user -password $secure -remoteFolder "/inbox" -localFolder $pesterFolder -localFile 'Readme.md'
+            $result = Get-FtpDir -server $server -user $user -password $secure -remoteFolder "/inbox"
+            Write-Host "'$result' are all files on ftp inbox folder"
+        }
+
+    #>
 }
 
 function Send-SftpFile {
@@ -17308,11 +17534,7 @@ Function Test-FtpFolder {
             $remoteFolder = '/'
         }
 
-        if ($remoteFolder -eq '/') {
-            $path = "/$remoteFile"
-        } else {
-            $path = "$remoteFolder/$remoteFile"
-        }
+        $path = $remoteFolder
 
         $ftpRequest = [System.Net.FtpWebRequest]::Create("ftp://$($server):$($port)$($path)")
         $ftpRequest.Credentials = New-Object System.Net.NetworkCredential($user, $password)
@@ -17346,9 +17568,28 @@ Function Test-FtpFolder {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
         Return $result
     }
-    # Test:  Test-FtpFolder -server 'mysftp.eulanda.eu' -user 'johndoe' -password 'secure' -remoteFolder '/EULANDA' -verbose -debug
-}
 
+    <#
+
+        $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
+        & $Features {
+            $pesterFolder = Resolve-Path -path ".\source\tests"
+            $iniPath = Join-Path -path $pesterFolder "pester.ini"
+            $ini = Read-IniFile -path $iniPath
+            $path = $ini['SFTP']['SecurePasswordPath']
+            $path = $path -replace '\$home', $HOME
+            $secure = Import-Clixml -path $path
+            $server = $ini['SFTP']['Server']
+            $user = $ini['SFTP']['User']
+            $result = Test-FtpFolder -server $server -user $user -password $secure -remoteFolder '/inbox'
+            $result
+
+        }
+
+        # $result is a boolean value that indicates whether the folder exists.
+        # The 'inbox' example belongs to the ftp server test environment we recommend.
+    #>
+}
 
 Function Test-SftpFile {
     [CmdletBinding()]
@@ -17879,10 +18120,10 @@ function Test-ValidateUrl {
 
 
 # SIG # Begin signature block
-# MIIpiQYJKoZIhvcNAQcCoIIpejCCKXYCAQExDzANBglghkgBZQMEAgEFADB5Bgor
+# MIIpiAYJKoZIhvcNAQcCoIIpeTCCKXUCAQExDzANBglghkgBZQMEAgEFADB5Bgor
 # BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
-# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCCpmgqdM57s/MZe
-# vs0XNQCFb387Dz4zqmbn+w5UM5WXRqCCEngwggVvMIIEV6ADAgECAhBI/JO0YFWU
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCCR8xeowfWvqGUW
+# TH2EEfe3eEYrxMe9CTVuNqiNpJSFuqCCEngwggVvMIIEV6ADAgECAhBI/JO0YFWU
 # jTanyYqJ1pQWMA0GCSqGSIb3DQEBDAUAMHsxCzAJBgNVBAYTAkdCMRswGQYDVQQI
 # DBJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcMB1NhbGZvcmQxGjAYBgNVBAoM
 # EUNvbW9kbyBDQSBMaW1pdGVkMSEwHwYDVQQDDBhBQUEgQ2VydGlmaWNhdGUgU2Vy
@@ -17981,124 +18222,124 @@ function Test-ValidateUrl {
 # KNX5jSiwwUBrA8vNyCh6d8ZCorwimYkDyGtstF0D9UoU9dX66QrfTsK+zxO7/0QF
 # 1qIc5CTZe6Kcsuxe99p5UbPU665d5BvOwq0lJKg59k+6exo1Cc5awip+d4krfyWl
 # D1sMkS0eiRSN1UNVs3Hg5gbaEEBx98sQMBF45vv0DFgY/SQVRp9yaFayTyfbb/qk
-# jc8xghZnMIIWYwIBATBrMFcxCzAJBgNVBAYTAkdCMRgwFgYDVQQKEw9TZWN0aWdv
+# jc8xghZmMIIWYgIBATBrMFcxCzAJBgNVBAYTAkdCMRgwFgYDVQQKEw9TZWN0aWdv
 # IExpbWl0ZWQxLjAsBgNVBAMTJVNlY3RpZ28gUHVibGljIENvZGUgU2lnbmluZyBD
 # QSBFViBSMzYCEGilgQZhq4aQSRu7qELTizkwDQYJYIZIAWUDBAIBBQCgfDAQBgor
 # BgEEAYI3AgEMMQIwADAZBgkqhkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEE
-# AYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAvBgkqhkiG9w0BCQQxIgQgLGgveDciVFp4
-# Bnroh03GTUWATQTmjdKYRb+4ccEC9YQwDQYJKoZIhvcNAQEBBQAEggIAGfKU+fEM
-# Lat01kyYg3CavJB5LNo4SAwaHlSZtYrzRqf0A6OgGEbLh6kF8jeIf83ctDh45ci/
-# fjPLgBsP4vFdq3kL5cJ4lSkv2IHz8mXYhvO8n0HwcgQMIC4NB1QW6ogMpo87pbTB
-# I8lyUxo6kTDe4vde4A+XyW1S4pwnRwQgoDtafjOIT2920A9EJpQDLiBIpkVjA0po
-# HvEGbYjnwT8thEZf6aTfwH0RNPHiTjootZYkuVVvPFdKqz9iFiEVwwhg/cCO1SQh
-# cs+4nb62OHCn0U0BaIVyofeo/ON1kROMkpTnPHCpGAEx5bxyKvYy9PyX9QyQu7DH
-# dKfumUcwZS3t6qZy3aVSocAqsbQqBYBxR48vNi0TtNQpahOKRVxBIEn8D9KXE+Xs
-# tZ+iZqqtUxAZ6P1xMi8+oeC9BxccRSpVaV/Qc89f/jfPZCj/NvVLZX6/kqgpi0wT
-# JTfuiaXkCAhY78gVXHGuX9KsEJF0mdbkYQHx/+LQQiCEnHS44dv9lSKWi+F8lJB7
-# 66bm9MpAEveKRfqDjOmgEBsDJvORGGCZTAX/cmSk2GYkrRjgUWFIai5Awo5P/60a
-# 2J/XoUPKlzk0BBzR0Ro60aJNsmFHDGB+2Qkoqcviy3lZJhu0vo+t38DKpubXYIVY
-# doByYZu7eqtffIwFxJ/t9WbvOxD0pbprb9ihghNPMIITSwYKKwYBBAGCNwMDATGC
-# EzswghM3BgkqhkiG9w0BBwKgghMoMIITJAIBAzEPMA0GCWCGSAFlAwQCAgUAMIHw
-# BgsqhkiG9w0BCRABBKCB4ASB3TCB2gIBAQYKKwYBBAGyMQIBATAxMA0GCWCGSAFl
-# AwQCAQUABCC0JWN84hZOVmkJ7/T9mVNKYT1BMzBesw574DaiNPxCHgIVAPbTo8p8
-# yB7sdsA2TadGRO2gOL88GA8yMDIzMDYzMDA5NTcxOVqgbqRsMGoxCzAJBgNVBAYT
-# AkdCMRMwEQYDVQQIEwpNYW5jaGVzdGVyMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
-# ZWQxLDAqBgNVBAMMI1NlY3RpZ28gUlNBIFRpbWUgU3RhbXBpbmcgU2lnbmVyICM0
-# oIIN6TCCBvUwggTdoAMCAQICEDlMJeF8oG0nqGXiO9kdItQwDQYJKoZIhvcNAQEM
-# BQAwfTELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQ
-# MA4GA1UEBxMHU2FsZm9yZDEYMBYGA1UEChMPU2VjdGlnbyBMaW1pdGVkMSUwIwYD
-# VQQDExxTZWN0aWdvIFJTQSBUaW1lIFN0YW1waW5nIENBMB4XDTIzMDUwMzAwMDAw
-# MFoXDTM0MDgwMjIzNTk1OVowajELMAkGA1UEBhMCR0IxEzARBgNVBAgTCk1hbmNo
-# ZXN0ZXIxGDAWBgNVBAoTD1NlY3RpZ28gTGltaXRlZDEsMCoGA1UEAwwjU2VjdGln
-# byBSU0EgVGltZSBTdGFtcGluZyBTaWduZXIgIzQwggIiMA0GCSqGSIb3DQEBAQUA
-# A4ICDwAwggIKAoICAQCkkyhSS88nh3akKRyZOMDnDtTRHOxoywFk5IrNd7BxZYK8
-# n/yLu7uVmPslEY5aiAlmERRYsroiW+b2MvFdLcB6og7g4FZk7aHlgSByIGRBbMfD
-# CPrzfV3vIZrCftcsw7oRmB780yAIQrNfv3+IWDKrMLPYjHqWShkTXKz856vpHBYu
-# sLA4lUrPhVCrZwMlobs46Q9vqVqakSgTNbkf8z3hJMhrsZnoDe+7TeU9jFQDkdD8
-# Lc9VMzh6CRwH0SLgY4anvv3Sg3MSFJuaTAlGvTS84UtQe3LgW/0Zux88ahl7brst
-# RCq+PEzMrIoEk8ZXhqBzNiuBl/obm36Ih9hSeYn+bnc317tQn/oYJU8T8l58qbEg
-# Wimro0KHd+D0TAJI3VilU6ajoO0ZlmUVKcXtMzAl5paDgZr2YGaQWAeAzUJ1rPu0
-# kdDF3QFAaraoEO72jXq3nnWv06VLGKEMn1ewXiVHkXTNdRLRnG/kXg2b7HUm7v7T
-# 9ZIvUoXo2kRRKqLMAMqHZkOjGwDvorWWnWKtJwvyG0rJw5RCN4gghKiHrsO6I3J7
-# +FTv+GsnsIX1p0OF2Cs5dNtadwLRpPr1zZw9zB+uUdB7bNgdLRFCU3F0wuU1qi1S
-# Etklz/DT0JFDEtcyfZhs43dByP8fJFTvbq3GPlV78VyHOmTxYEsFT++5L+wJEwID
-# AQABo4IBgjCCAX4wHwYDVR0jBBgwFoAUGqH4YRkgD8NBd0UojtE1XwYSBFUwHQYD
-# VR0OBBYEFAMPMciRKpO9Y/PRXU2kNA/SlQEYMA4GA1UdDwEB/wQEAwIGwDAMBgNV
-# HRMBAf8EAjAAMBYGA1UdJQEB/wQMMAoGCCsGAQUFBwMIMEoGA1UdIARDMEEwNQYM
-# KwYBBAGyMQECAQMIMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20v
-# Q1BTMAgGBmeBDAEEAjBEBgNVHR8EPTA7MDmgN6A1hjNodHRwOi8vY3JsLnNlY3Rp
-# Z28uY29tL1NlY3RpZ29SU0FUaW1lU3RhbXBpbmdDQS5jcmwwdAYIKwYBBQUHAQEE
-# aDBmMD8GCCsGAQUFBzAChjNodHRwOi8vY3J0LnNlY3RpZ28uY29tL1NlY3RpZ29S
-# U0FUaW1lU3RhbXBpbmdDQS5jcnQwIwYIKwYBBQUHMAGGF2h0dHA6Ly9vY3NwLnNl
-# Y3RpZ28uY29tMA0GCSqGSIb3DQEBDAUAA4ICAQBMm2VY+uB5z+8VwzJt3jOR63dY
-# 4uu9y0o8dd5+lG3DIscEld9laWETDPYMnvWJIF7Bh8cDJMrHpfAm3/j4MWUN4Ott
-# UVemjIRSCEYcKsLe8tqKRfO+9/YuxH7t+O1ov3pWSOlh5Zo5d7y+upFkiHX/XYUW
-# NCfSKcv/7S3a/76TDOxtog3Mw/FuvSGRGiMAUq2X1GJ4KoR5qNc9rCGPcMMkeTqX
-# 8Q2jo1tT2KsAulj7NYBPXyhxbBlewoNykK7gxtjymfvqtJJlfAd8NUQdrVgYa2L7
-# 3mzECqls0yFGcNwvjXVMI8JB0HqWO8NL3c2SJnR2XDegmiSeTl9O048P5RNPWURl
-# S0Nkz0j4Z2e5Tb/MDbE6MNChPUitemXk7N/gAfCzKko5rMGk+al9NdAyQKCxGSoY
-# IbLIfQVxGksnNqrgmByDdefHfkuEQ81D+5CXdioSrEDBcFuZCkD6gG2UYXvIbrnI
-# Z2ckXFCNASDeB/cB1PguEc2dg+X4yiUcRD0n5bCGRyoLG4R2fXtoT4239xO07aAt
-# 7nMP2RC6nZksfNd1H48QxJTmfiTllUqIjCfWhWYd+a5kdpHoSP7IVQrtKcMf3jim
-# wBT7Mj34qYNiNsjDvgCHHKv6SkIciQPc9Vx8cNldeE7un14g5glqfCsIo0j1FfwE
-# T9/NIRx65fWOGtS5QDCCBuwwggTUoAMCAQICEDAPb6zdZph0fKlGNqd4LbkwDQYJ
-# KoZIhvcNAQEMBQAwgYgxCzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpOZXcgSmVyc2V5
-# MRQwEgYDVQQHEwtKZXJzZXkgQ2l0eTEeMBwGA1UEChMVVGhlIFVTRVJUUlVTVCBO
-# ZXR3b3JrMS4wLAYDVQQDEyVVU0VSVHJ1c3QgUlNBIENlcnRpZmljYXRpb24gQXV0
-# aG9yaXR5MB4XDTE5MDUwMjAwMDAwMFoXDTM4MDExODIzNTk1OVowfTELMAkGA1UE
-# BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2Fs
-# Zm9yZDEYMBYGA1UEChMPU2VjdGlnbyBMaW1pdGVkMSUwIwYDVQQDExxTZWN0aWdv
-# IFJTQSBUaW1lIFN0YW1waW5nIENBMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIIC
-# CgKCAgEAyBsBr9ksfoiZfQGYPyCQvZyAIVSTuc+gPlPvs1rAdtYaBKXOR4O168TM
-# STTL80VlufmnZBYmCfvVMlJ5LsljwhObtoY/AQWSZm8hq9VxEHmH9EYqzcRaydvX
-# XUlNclYP3MnjU5g6Kh78zlhJ07/zObu5pCNCrNAVw3+eolzXOPEWsnDTo8Tfs8Vy
-# rC4Kd/wNlFK3/B+VcyQ9ASi8Dw1Ps5EBjm6dJ3VV0Rc7NCF7lwGUr3+Az9ERCleE
-# yX9W4L1GnIK+lJ2/tCCwYH64TfUNP9vQ6oWMilZx0S2UTMiMPNMUopy9Jv/TUyDH
-# YGmbWApU9AXn/TGs+ciFF8e4KRmkKS9G493bkV+fPzY+DjBnK0a3Na+WvtpMYMyo
-# u58NFNQYxDCYdIIhz2JWtSFzEh79qsoIWId3pBXrGVX/0DlULSbuRRo6b83XhPDX
-# 8CjFT2SDAtT74t7xvAIo9G3aJ4oG0paH3uhrDvBbfel2aZMgHEqXLHcZK5OVmJyX
-# nuuOwXhWxkQl3wYSmgYtnwNe/YOiU2fKsfqNoWTJiJJZy6hGwMnypv99V9sSdvqK
-# QSTUG/xypRSi1K1DHKRJi0E5FAMeKfobpSKupcNNgtCN2mu32/cYQFdz8HGj+0p9
-# RTbB942C+rnJDVOAffq2OVgy728YUInXT50zvRq1naHelUF6p4MCAwEAAaOCAVow
-# ggFWMB8GA1UdIwQYMBaAFFN5v1qqK0rPVIDh2JvAnfKyA2bLMB0GA1UdDgQWBBQa
-# ofhhGSAPw0F3RSiO0TVfBhIEVTAOBgNVHQ8BAf8EBAMCAYYwEgYDVR0TAQH/BAgw
-# BgEB/wIBADATBgNVHSUEDDAKBggrBgEFBQcDCDARBgNVHSAECjAIMAYGBFUdIAAw
-# UAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2VydHJ1c3QuY29tL1VTRVJU
-# cnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUFBwEBBGow
-# aDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVz
-# dFJTQUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2Vy
-# dHJ1c3QuY29tMA0GCSqGSIb3DQEBDAUAA4ICAQBtVIGlM10W4bVTgZF13wN6Mgst
-# JYQRsrDbKn0qBfW8Oyf0WqC5SVmQKWxhy7VQ2+J9+Z8A70DDrdPi5Fb5WEHP8ULl
-# EH3/sHQfj8ZcCfkzXuqgHCZYXPO0EQ/V1cPivNVYeL9IduFEZ22PsEMQD43k+Thi
-# vxMBxYWjTMXMslMwlaTW9JZWCLjNXH8Blr5yUmo7Qjd8Fng5k5OUm7Hcsm1BbWfN
-# yW+QPX9FcsEbI9bCVYRm5LPFZgb289ZLXq2jK0KKIZL+qG9aJXBigXNjXqC72NzX
-# StM9r4MGOBIdJIct5PwC1j53BLwENrXnd8ucLo0jGLmjwkcd8F3WoXNXBWiap8k3
-# ZR2+6rzYQoNDBaWLpgn/0aGUpk6qPQn1BWy30mRa2Coiwkud8TleTN5IPZs0lpoJ
-# X47997FSkc4/ifYcobWpdR9xv1tDXWU9UIFuq/DQ0/yysx+2mZYm9Dx5i1xkzM3u
-# J5rloMAMcofBbk1a0x7q8ETmMm8c6xdOlMN4ZSA7D0GqH+mhQZ3+sbigZSo04N6o
-# +TzmwTC7wKBjLPxcFgCo0MR/6hGdHgbGpm0yXbQ4CStJB6r97DDa8acvz7f9+tCj
-# hNknnvsBZne5VhDhIG7GrrH5trrINV0zdo7xfCAMKneutaIChrop7rRaALGMq+P5
-# CslUXdS5anSevUiumDGCBCwwggQoAgEBMIGRMH0xCzAJBgNVBAYTAkdCMRswGQYD
-# VQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGDAWBgNV
-# BAoTD1NlY3RpZ28gTGltaXRlZDElMCMGA1UEAxMcU2VjdGlnbyBSU0EgVGltZSBT
-# dGFtcGluZyBDQQIQOUwl4XygbSeoZeI72R0i1DANBglghkgBZQMEAgIFAKCCAWsw
-# GgYJKoZIhvcNAQkDMQ0GCyqGSIb3DQEJEAEEMBwGCSqGSIb3DQEJBTEPFw0yMzA2
-# MzAwOTU3MTlaMD8GCSqGSIb3DQEJBDEyBDDWNyKoDRcWmLh/TVOBZK1cq1hhAkdH
-# Cir66ab8fvqkeA/GMqXhS0U6pqxeBO+m+Qgwge0GCyqGSIb3DQEJEAIMMYHdMIHa
-# MIHXMBYEFK5ir3UKDL1H1kYfdWjivIznyk+UMIG8BBQC1luV4oNwwVcAlfqI+SPd
-# k3+tjzCBozCBjqSBizCBiDELMAkGA1UEBhMCVVMxEzARBgNVBAgTCk5ldyBKZXJz
-# ZXkxFDASBgNVBAcTC0plcnNleSBDaXR5MR4wHAYDVQQKExVUaGUgVVNFUlRSVVNU
-# IE5ldHdvcmsxLjAsBgNVBAMTJVVTRVJUcnVzdCBSU0EgQ2VydGlmaWNhdGlvbiBB
-# dXRob3JpdHkCEDAPb6zdZph0fKlGNqd4LbkwDQYJKoZIhvcNAQEBBQAEggIAndjc
-# vgYyfr08BIjlHwCxIVhO4EcVP+H7Ab7eFxUllXO+dTpZa0/OeQ5JwxbyXWgKKOPS
-# qVfEqmgNXMJrvVPEw/L2PI9L7J99b/VTApv58uR+Yx+eYE7/zRSswh+K4fif+Pih
-# M8Oq3ZsYsvFKm/ryMhjsNfyqmUBGR/GSa5VIXVp1FZlJH8X3cUVRv8TbIE1DOoWm
-# INfmZIotaaSvIfB9zZZumLyiWtP7iWEG4Y9mlQspmr7yKq5WqjferCOG2cOuskRu
-# 1DEAZBhFxpJ8thSwhO7QZkD6+8LLb2L845cpYo2rnG8rH4kZamv1Jt4zczS+8wJE
-# zQ/L5ToTA53dVU8QEXIsRST1jlLRHGmY1AgC/n7ncu14Nmyuksm+vtqWJuvUHsny
-# FyUNbfKkkKP2aa6sZYvDkw5m/JbycsxgMugtl24CPl0XRVmyFuKtvAaYbez2Bt4j
-# ph7stQAL2veKR9pSjnKM+NRcmq2nNbaDwk978q5tkb+2CcIEtRlk3Ar76XrovMg3
-# LVsoc3t478eS9ZjXDcKIwNbY+F89SUOHGtyX+K7hRgqwe8MCKDDlsZIgE5GldWDO
-# 4IsySU/to9gX0B4LvbPVUdG0/f9JLX/UnAoqWIvbmiZvVTkNDNIqzZ8ubckWZix0
-# 3iJEwskbbFzrDx/4zCZoOeVfWflPCJf0Jhia07E=
+# AYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAvBgkqhkiG9w0BCQQxIgQgNm8mjpMbVYZ0
+# /c7OY2vngMUNHF8CXBfRt1fQEK23GkMwDQYJKoZIhvcNAQEBBQAEggIAomJHinGG
+# Ps2CemT+wh14H2J1Q4iXpNMhdCHGMC1BB0IESVsnyQBK36rr5Yk/c2gHS89plYeM
+# m4o3PZpcVIgI9qhNO5NtxtPpfuVPO+aTYPEYyyCl6xAQiczzPUEE/zWmx8dItoyJ
+# iD72sWlV14mREnZ8pP3ib17Enux201rkJQaWDycshgu0pqhRLzRky0uYyR2g2TOl
+# vt5lTFY6ZatrxLIeK3zc+Uy8824Ylp5cwZGHq9g19lEcdt/dUGImxvUP167QEPiH
+# l1StjtcJkzmps3OKM1bhuRSxgySFeHX1Qs6D/Cdxh3FXXxWmZ90vbbm+Gm/d3jV4
+# q1ApDSCek7gHdoH1V+RUvnWoJP+y8O6jt2OFfISsDCVH6R+Ko1vsO3oypdcNrSIQ
+# rhKtuKedC4qPIHLhrcG6DI5hUpCfiO5v864+wcVLTYgwjRPejfhE66fzbhoQBhHv
+# zcboWxE5zbGG2zOeGFKOdvkrvMUvv8uhvqCWNjGEinXtTpeKIpJgtLCYWBDCGxIN
+# ByLPMc3klrO75wXc7dZfHfqSv/osWYTjpbKZKOkcx6A9DtRO3C91SYupeOuh6sbk
+# 7lvFr1qEiBXW3cYxiC5rHZXClQk1eOKFN7Z3fK8qw9gv1F9Bo5ZCJYZVNDC5P/i4
+# ug3uMZ4kg56KgkuSQn4LACqPDsRi1fBPMLihghNOMIITSgYKKwYBBAGCNwMDATGC
+# EzowghM2BgkqhkiG9w0BBwKgghMnMIITIwIBAzEPMA0GCWCGSAFlAwQCAgUAMIHv
+# BgsqhkiG9w0BCRABBKCB3wSB3DCB2QIBAQYKKwYBBAGyMQIBATAxMA0GCWCGSAFl
+# AwQCAQUABCAWwDaDbpYfWfgqzymGI9XV+8M0gFebqg+1ZgwSi23/+AIUJA4+68c+
+# g+M1kyRT7f+OpZSHkVYYDzIwMjMwNzAxMjAzODA2WqBupGwwajELMAkGA1UEBhMC
+# R0IxEzARBgNVBAgTCk1hbmNoZXN0ZXIxGDAWBgNVBAoTD1NlY3RpZ28gTGltaXRl
+# ZDEsMCoGA1UEAwwjU2VjdGlnbyBSU0EgVGltZSBTdGFtcGluZyBTaWduZXIgIzSg
+# gg3pMIIG9TCCBN2gAwIBAgIQOUwl4XygbSeoZeI72R0i1DANBgkqhkiG9w0BAQwF
+# ADB9MQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAw
+# DgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxJTAjBgNV
+# BAMTHFNlY3RpZ28gUlNBIFRpbWUgU3RhbXBpbmcgQ0EwHhcNMjMwNTAzMDAwMDAw
+# WhcNMzQwODAyMjM1OTU5WjBqMQswCQYDVQQGEwJHQjETMBEGA1UECBMKTWFuY2hl
+# c3RlcjEYMBYGA1UEChMPU2VjdGlnbyBMaW1pdGVkMSwwKgYDVQQDDCNTZWN0aWdv
+# IFJTQSBUaW1lIFN0YW1waW5nIFNpZ25lciAjNDCCAiIwDQYJKoZIhvcNAQEBBQAD
+# ggIPADCCAgoCggIBAKSTKFJLzyeHdqQpHJk4wOcO1NEc7GjLAWTkis13sHFlgryf
+# /Iu7u5WY+yURjlqICWYRFFiyuiJb5vYy8V0twHqiDuDgVmTtoeWBIHIgZEFsx8MI
+# +vN9Xe8hmsJ+1yzDuhGYHvzTIAhCs1+/f4hYMqsws9iMepZKGRNcrPznq+kcFi6w
+# sDiVSs+FUKtnAyWhuzjpD2+pWpqRKBM1uR/zPeEkyGuxmegN77tN5T2MVAOR0Pwt
+# z1UzOHoJHAfRIuBjhqe+/dKDcxIUm5pMCUa9NLzhS1B7cuBb/Rm7HzxqGXtuuy1E
+# Kr48TMysigSTxleGoHM2K4GX+hubfoiH2FJ5if5udzfXu1Cf+hglTxPyXnypsSBa
+# KaujQod34PRMAkjdWKVTpqOg7RmWZRUpxe0zMCXmloOBmvZgZpBYB4DNQnWs+7SR
+# 0MXdAUBqtqgQ7vaNereeda/TpUsYoQyfV7BeJUeRdM11EtGcb+ReDZvsdSbu/tP1
+# ki9ShejaRFEqoswAyodmQ6MbAO+itZadYq0nC/IbSsnDlEI3iCCEqIeuw7ojcnv4
+# VO/4ayewhfWnQ4XYKzl021p3AtGk+vXNnD3MH65R0Hts2B0tEUJTcXTC5TWqLVIS
+# 2SXP8NPQkUMS1zJ9mGzjd0HI/x8kVO9urcY+VXvxXIc6ZPFgSwVP77kv7AkTAgMB
+# AAGjggGCMIIBfjAfBgNVHSMEGDAWgBQaofhhGSAPw0F3RSiO0TVfBhIEVTAdBgNV
+# HQ4EFgQUAw8xyJEqk71j89FdTaQ0D9KVARgwDgYDVR0PAQH/BAQDAgbAMAwGA1Ud
+# EwEB/wQCMAAwFgYDVR0lAQH/BAwwCgYIKwYBBQUHAwgwSgYDVR0gBEMwQTA1Bgwr
+# BgEEAbIxAQIBAwgwJTAjBggrBgEFBQcCARYXaHR0cHM6Ly9zZWN0aWdvLmNvbS9D
+# UFMwCAYGZ4EMAQQCMEQGA1UdHwQ9MDswOaA3oDWGM2h0dHA6Ly9jcmwuc2VjdGln
+# by5jb20vU2VjdGlnb1JTQVRpbWVTdGFtcGluZ0NBLmNybDB0BggrBgEFBQcBAQRo
+# MGYwPwYIKwYBBQUHMAKGM2h0dHA6Ly9jcnQuc2VjdGlnby5jb20vU2VjdGlnb1JT
+# QVRpbWVTdGFtcGluZ0NBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2Vj
+# dGlnby5jb20wDQYJKoZIhvcNAQEMBQADggIBAEybZVj64HnP7xXDMm3eM5Hrd1ji
+# 673LSjx13n6UbcMixwSV32VpYRMM9gye9YkgXsGHxwMkysel8Cbf+PgxZQ3g621R
+# V6aMhFIIRhwqwt7y2opF87739i7Efu347Wi/elZI6WHlmjl3vL66kWSIdf9dhRY0
+# J9Ipy//tLdr/vpMM7G2iDczD8W69IZEaIwBSrZfUYngqhHmo1z2sIY9wwyR5Opfx
+# DaOjW1PYqwC6WPs1gE9fKHFsGV7Cg3KQruDG2PKZ++q0kmV8B3w1RB2tWBhrYvve
+# bMQKqWzTIUZw3C+NdUwjwkHQepY7w0vdzZImdHZcN6CaJJ5OX07Tjw/lE09ZRGVL
+# Q2TPSPhnZ7lNv8wNsTow0KE9SK16ZeTs3+AB8LMqSjmswaT5qX010DJAoLEZKhgh
+# ssh9BXEaSyc2quCYHIN158d+S4RDzUP7kJd2KhKsQMFwW5kKQPqAbZRhe8huuchn
+# ZyRcUI0BIN4H9wHU+C4RzZ2D5fjKJRxEPSflsIZHKgsbhHZ9e2hPjbf3E7TtoC3u
+# cw/ZELqdmSx813UfjxDElOZ+JOWVSoiMJ9aFZh35rmR2kehI/shVCu0pwx/eOKbA
+# FPsyPfipg2I2yMO+AIccq/pKQhyJA9z1XHxw2V14Tu6fXiDmCWp8KwijSPUV/ARP
+# 380hHHrl9Y4a1LlAMIIG7DCCBNSgAwIBAgIQMA9vrN1mmHR8qUY2p3gtuTANBgkq
+# hkiG9w0BAQwFADCBiDELMAkGA1UEBhMCVVMxEzARBgNVBAgTCk5ldyBKZXJzZXkx
+# FDASBgNVBAcTC0plcnNleSBDaXR5MR4wHAYDVQQKExVUaGUgVVNFUlRSVVNUIE5l
+# dHdvcmsxLjAsBgNVBAMTJVVTRVJUcnVzdCBSU0EgQ2VydGlmaWNhdGlvbiBBdXRo
+# b3JpdHkwHhcNMTkwNTAyMDAwMDAwWhcNMzgwMTE4MjM1OTU5WjB9MQswCQYDVQQG
+# EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxm
+# b3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxJTAjBgNVBAMTHFNlY3RpZ28g
+# UlNBIFRpbWUgU3RhbXBpbmcgQ0EwggIiMA0GCSqGSIb3DQEBAQUAA4ICDwAwggIK
+# AoICAQDIGwGv2Sx+iJl9AZg/IJC9nIAhVJO5z6A+U++zWsB21hoEpc5Hg7XrxMxJ
+# NMvzRWW5+adkFiYJ+9UyUnkuyWPCE5u2hj8BBZJmbyGr1XEQeYf0RirNxFrJ29dd
+# SU1yVg/cyeNTmDoqHvzOWEnTv/M5u7mkI0Ks0BXDf56iXNc48RaycNOjxN+zxXKs
+# Lgp3/A2UUrf8H5VzJD0BKLwPDU+zkQGObp0ndVXRFzs0IXuXAZSvf4DP0REKV4TJ
+# f1bgvUacgr6Unb+0ILBgfrhN9Q0/29DqhYyKVnHRLZRMyIw80xSinL0m/9NTIMdg
+# aZtYClT0Bef9Maz5yIUXx7gpGaQpL0bj3duRX58/Nj4OMGcrRrc1r5a+2kxgzKi7
+# nw0U1BjEMJh0giHPYla1IXMSHv2qyghYh3ekFesZVf/QOVQtJu5FGjpvzdeE8Nfw
+# KMVPZIMC1Pvi3vG8Aij0bdonigbSlofe6GsO8Ft96XZpkyAcSpcsdxkrk5WYnJee
+# 647BeFbGRCXfBhKaBi2fA179g6JTZ8qx+o2hZMmIklnLqEbAyfKm/31X2xJ2+opB
+# JNQb/HKlFKLUrUMcpEmLQTkUAx4p+hulIq6lw02C0I3aa7fb9xhAV3PwcaP7Sn1F
+# NsH3jYL6uckNU4B9+rY5WDLvbxhQiddPnTO9GrWdod6VQXqngwIDAQABo4IBWjCC
+# AVYwHwYDVR0jBBgwFoAUU3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFBqh
+# +GEZIA/DQXdFKI7RNV8GEgRVMA4GA1UdDwEB/wQEAwIBhjASBgNVHRMBAf8ECDAG
+# AQH/AgEAMBMGA1UdJQQMMAoGCCsGAQUFBwMIMBEGA1UdIAQKMAgwBgYEVR0gADBQ
+# BgNVHR8ESTBHMEWgQ6BBhj9odHRwOi8vY3JsLnVzZXJ0cnVzdC5jb20vVVNFUlRy
+# dXN0UlNBQ2VydGlmaWNhdGlvbkF1dGhvcml0eS5jcmwwdgYIKwYBBQUHAQEEajBo
+# MD8GCCsGAQUFBzAChjNodHRwOi8vY3J0LnVzZXJ0cnVzdC5jb20vVVNFUlRydXN0
+# UlNBQWRkVHJ1c3RDQS5jcnQwJQYIKwYBBQUHMAGGGWh0dHA6Ly9vY3NwLnVzZXJ0
+# cnVzdC5jb20wDQYJKoZIhvcNAQEMBQADggIBAG1UgaUzXRbhtVOBkXXfA3oyCy0l
+# hBGysNsqfSoF9bw7J/RaoLlJWZApbGHLtVDb4n35nwDvQMOt0+LkVvlYQc/xQuUQ
+# ff+wdB+PxlwJ+TNe6qAcJlhc87QRD9XVw+K81Vh4v0h24URnbY+wQxAPjeT5OGK/
+# EwHFhaNMxcyyUzCVpNb0llYIuM1cfwGWvnJSajtCN3wWeDmTk5SbsdyybUFtZ83J
+# b5A9f0VywRsj1sJVhGbks8VmBvbz1kteraMrQoohkv6ob1olcGKBc2NeoLvY3NdK
+# 0z2vgwY4Eh0khy3k/ALWPncEvAQ2ted3y5wujSMYuaPCRx3wXdahc1cFaJqnyTdl
+# Hb7qvNhCg0MFpYumCf/RoZSmTqo9CfUFbLfSZFrYKiLCS53xOV5M3kg9mzSWmglf
+# jv33sVKRzj+J9hyhtal1H3G/W0NdZT1QgW6r8NDT/LKzH7aZlib0PHmLXGTMze4n
+# muWgwAxyh8FuTVrTHurwROYybxzrF06Uw3hlIDsPQaof6aFBnf6xuKBlKjTg3qj5
+# PObBMLvAoGMs/FwWAKjQxH/qEZ0eBsambTJdtDgJK0kHqv3sMNrxpy/Pt/360KOE
+# 2See+wFmd7lWEOEgbsausfm2usg1XTN2jvF8IAwqd661ogKGuinutFoAsYyr4/kK
+# yVRd1LlqdJ69SK6YMYIELDCCBCgCAQEwgZEwfTELMAkGA1UEBhMCR0IxGzAZBgNV
+# BAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYGA1UE
+# ChMPU2VjdGlnbyBMaW1pdGVkMSUwIwYDVQQDExxTZWN0aWdvIFJTQSBUaW1lIFN0
+# YW1waW5nIENBAhA5TCXhfKBtJ6hl4jvZHSLUMA0GCWCGSAFlAwQCAgUAoIIBazAa
+# BgkqhkiG9w0BCQMxDQYLKoZIhvcNAQkQAQQwHAYJKoZIhvcNAQkFMQ8XDTIzMDcw
+# MTIwMzgwNlowPwYJKoZIhvcNAQkEMTIEMArQtr5xp8VD3DsMMGLKhotKVCDblDHz
+# 5xpIPOUOgLDYzdK0U7qEAnOYXNxmdnHJnDCB7QYLKoZIhvcNAQkQAgwxgd0wgdow
+# gdcwFgQUrmKvdQoMvUfWRh91aOK8jOfKT5QwgbwEFALWW5Xig3DBVwCV+oj5I92T
+# f62PMIGjMIGOpIGLMIGIMQswCQYDVQQGEwJVUzETMBEGA1UECBMKTmV3IEplcnNl
+# eTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoTFVRoZSBVU0VSVFJVU1Qg
+# TmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0aW9uIEF1
+# dGhvcml0eQIQMA9vrN1mmHR8qUY2p3gtuTANBgkqhkiG9w0BAQEFAASCAgBLvcsv
+# nNwkgs5yHmEcuEgTgwjOflYa4tiWfHOV4WbPjr2GxpBY3rVvpe7rE2bWm+i5bS9A
+# 95wmlmIpEsUxuJ6TBIV1Kl6tL9OyHJvbBtCZfbStb3FmV58WlB6myBQU1dHBfJZT
+# Jiz5U9Fo3cuiwBdaZizDkWjwPcrHCogjTQsAv9FvASAHpBs7axIzsU75kTbTTweQ
+# 2m/49fpCqAgXyL1483p/Jvx0yiYwzogBeAdVWFH5MHXPEaANLk3feyw9FElpjzNQ
+# at9gpj/4H2LAj5umN3yQhGo+d++7G7YnrcXkjSuhBGUNJGgQL/Ek/UL+bvNjjJ4a
+# hRZ04bo6p2yg3AXKmhRGAh3bfNwnbEdQ39Qn/8Z6jzadlZ7U3yvvSTTPOX3VhuY+
+# 8aKvRDxxBW4nSQgzpbZuku7WR6332/jb5ChcXTzjLMnQTpk46Bwal5eaOyOnUYbM
+# K8roE2k/J93dd93qgjCfybKdFevzHrwKtBbhcpnO49bmovgVSbxW1OEo0++K1Iep
+# z0jIdpbn/M86DPv6xkp2bB0JD61bZZuWVSBIcUKdaJalkxMV5v0KekUlJuqGHfU+
+# T6ytmVmijuZQhymujwJfbZ/rt+IDnp19j5jdRK2kIEG1JX3zYwdzGa0PABWHitz+
+# emvwy6tZUGvXd0kuDSjMnJU1w+ROQ3zbFC/OEQ==
 # SIG # End signature block

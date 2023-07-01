@@ -5784,7 +5784,7 @@ PS C:\&gt; if ($rs) { Write-Host $rs.fields('ArtMatch').value }</dev:code>
       <command:verb>Get</command:verb>
       <command:noun>ArticleId</command:noun>
       <maml:description>
-        <maml:para>Returns the `Id` of the article based on its barcode or article number.</maml:para>
+        <maml:para>This PowerShell function the `Id` of the article based on its barcode or article number. This function requires an EULANDA ERP system. Source code on GitHub (https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Get-ArticleId.ps1).</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
@@ -6014,7 +6014,7 @@ PS C:\&gt; if ($rs) { Write-Host $rs.fields('ArtMatch').value }</dev:code>
       <command:verb>Get</command:verb>
       <command:noun>ArticleNo</command:noun>
       <maml:description>
-        <maml:para>Returns the article number based on an ID or barcode</maml:para>
+        <maml:para>This PowerShell function returns the article number based on an ID or barcode. This function requires an EULANDA ERP system. Source code on GitHub (https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Get-ArticleNo.ps1).</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
@@ -6242,7 +6242,7 @@ PS C:\&gt; if ($rs) { Write-Host $rs.fields('ArtMatch').value }</dev:code>
       <command:verb>Get</command:verb>
       <command:noun>ArticlePackingUnit</command:noun>
       <maml:description>
-        <maml:para>Returns the packaging unit based on the `ArticleId`</maml:para>
+        <maml:para>This PowerShell function returns the packaging unit based on the `ArticleId`. This function requires an EULANDA ERP system. Source code on GitHub (https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Get-ArticlePackingUnit.ps1).</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
@@ -6470,7 +6470,7 @@ PS C:\&gt; if ($rs) { Write-Host $rs.fields('ArtMatch').value }</dev:code>
       <command:verb>Get</command:verb>
       <command:noun>ArticleSql</command:noun>
       <maml:description>
-        <maml:para>Creates a SQL command to retrieve a articles</maml:para>
+        <maml:para>This PowerShell function creates an SQL command to retrieve a articles. This function requires an EULANDA ERP system. Source code on GitHub (https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Get-ArticleSql.ps1).</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
@@ -6752,7 +6752,7 @@ PS C:\&gt; if ($rs) { Write-Host $rs.fields('ArtMatch').value }</dev:code>
       <command:verb>Get</command:verb>
       <command:noun>Bool</command:noun>
       <maml:description>
-        <maml:para>Converts a string like 0, 1 Ture or False to a Boolean</maml:para>
+        <maml:para>This PowerShell function converts a string like 0, 1 Ture or False to a Boolean. Source code on GitHub (https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Get-Bool.ps1).</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
@@ -6841,7 +6841,7 @@ True</dev:code>
       <command:verb>Get</command:verb>
       <command:noun>BreadcrumbId</command:noun>
       <maml:description>
-        <maml:para>The `Get-BreadcrumbId` cmdlet retrieves the ID of the last breadcrumb element in a given property tree path.</maml:para>
+        <maml:para>This PowerShell function retrieves the ID of the last breadcrumb element in a given property tree path. This function requires an EULANDA ERP system. Source code on GitHub (https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Get-BreadcrumbId.ps1).</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
@@ -7023,7 +7023,7 @@ True</dev:code>
       <command:verb>Get</command:verb>
       <command:noun>BreadcrumbPath</command:noun>
       <maml:description>
-        <maml:para>Returns the breadcrumb path of a given breadcrumb ID.</maml:para>
+        <maml:para>This PowerShell function returns the breadcrumb path of a given breadcrumb ID. This function requires an EULANDA ERP system. Source code on GitHub (https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Get-BreadcrumbPath.ps1).</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
@@ -7181,7 +7181,7 @@ True</dev:code>
       <command:verb>Get</command:verb>
       <command:noun>BroadcastIp</command:noun>
       <maml:description>
-        <maml:para>Calculate the broadcast IP of a given network</maml:para>
+        <maml:para>This PowerShell function calculate the broadcast IP of a given network. Source code on GitHub (https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Get-BroadcastIp.ps1).</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
@@ -7341,7 +7341,7 @@ True</dev:code>
       <command:verb>Get</command:verb>
       <command:noun>Cidr</command:noun>
       <maml:description>
-        <maml:para>Calculates the CIDR based on the subnet</maml:para>
+        <maml:para>This PowerShellfunction calculates the CIDR based on the subnet. Source code on GitHub (https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Get-Cidr.ps1).</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
@@ -7454,7 +7454,7 @@ True</dev:code>
       <command:verb>Get</command:verb>
       <command:noun>Conn</command:noun>
       <maml:description>
-        <maml:para>Returns an open connection to a EULANDA database</maml:para>
+        <maml:para>This PowerShell function returns an open connection to a EULANDA database. This function requires an EULANDA ERP system. Source code on GitHub (https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Get-Conn.ps1).</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
@@ -7590,7 +7590,7 @@ True</dev:code>
       <command:verb>Get</command:verb>
       <command:noun>ConnItems</command:noun>
       <maml:description>
-        <maml:para>Returns all value pairs as a hash table</maml:para>
+        <maml:para>This PowerShell function returns all value pairs as a hash table. Source code on GitHub (https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Get-ConnItems.ps1).</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
@@ -7734,7 +7734,7 @@ Provider=SQLOLEDB.1;Data Source=.\EULANDA;USER ID=eulanda;PASSWORD=NoIdea;Initia
       <command:verb>Get</command:verb>
       <command:noun>ConnStr</command:noun>
       <maml:description>
-        <maml:para>Creates a connection string based on the specified parameters</maml:para>
+        <maml:para>This PowerShell function creates a connection string based on the specified parameters. Source code on GitHub (https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Get-ConnStr.ps1).</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
@@ -7963,7 +7963,7 @@ Provider=SQLOLEDB.1;Data Source=.\EULANDA;USER ID=eulanda;PASSWORD=NoIdea;Initia
       <command:verb>Get</command:verb>
       <command:noun>DataFromSql</command:noun>
       <maml:description>
-        <maml:para>Creates a PowerShell data structure based on an SQL select command</maml:para>
+        <maml:para>This PowerShell function creates a data structure based on an SQL select command. This function requires an EULANDA ERP system. Source code on GitHub (https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Get-DataFromSql.ps1).</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
@@ -30366,7 +30366,7 @@ PS C:\&gt; Set-TrackingNo -trackingNo $trackingNo -deliveryNo 430220 -udl "C:\te
       <command:verb>Test</command:verb>
       <command:noun>Website</command:noun>
       <maml:description>
-        <maml:para>The `Test-Website` function is a PowerShell script for comprehensive website exploration and analysis, designed to operate non-recursively for memory efficiency.</maml:para>
+        <maml:para>This PowerShell function is a script for comprehensive website exploration and analysis, designed to operate non-recursively for memory efficiency. Source code on GitHub (https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Test-Website.ps1).</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
