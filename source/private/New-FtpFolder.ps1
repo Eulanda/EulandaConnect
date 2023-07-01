@@ -66,5 +66,25 @@ function New-FtpFolder {
     end {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
     }
-     # Test:  New-FtpFolder -server 'myftp.eulanda.eu'  -user 'johndoe' -password 'secure'  -remoteFolder '/EULANDA' -verbose -debug
+
+    <#
+
+        $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
+        & $Features {
+            $pesterFolder = Resolve-Path -path ".\source\tests"
+            $iniPath = Join-Path -path $pesterFolder "pester.ini"
+            $ini = Read-IniFile -path $iniPath
+            $path = $ini['SFTP']['SecurePasswordPath']
+            $path = $path -replace '\$home', $HOME
+            $secure = Import-Clixml -path $path
+            $server = $ini['SFTP']['Server']
+            $user = $ini['SFTP']['User']
+
+            $folderName = -join ((65..90) | Get-Random -Count 10 | % {[char]$_})
+            New-FtpFolder -server $server -user $user -password $secure -remoteFolder "/$folderName"
+            $result = Get-FtpDir -server $server -user $user -password $secure -dirType directory
+            $result
+        }
+
+    #>
 }
