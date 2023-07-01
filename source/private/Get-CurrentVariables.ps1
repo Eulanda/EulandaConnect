@@ -128,10 +128,10 @@ function Get-CurrentVariables {
 
                     if ($firstTime) {
                         # Write-Host (Get-ResStr 'NEW_VARIABLES') -ForegroundColor Yellow
-                        Write-Output ('New variables:')
+                        Write-Output 'New variables:' # english and with write-output, because it is paresed by pester test
                     }
                     # Write-Host $privateVariableCode -ForegroundColor Yellow
-                    Write-Output $privateVariableCode
+                    Write-Output "$privateVariableCode"
                     $firstTime = $false
                 }
             }
