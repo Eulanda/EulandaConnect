@@ -10,8 +10,17 @@ function Convert-ToUTF7 {
     }
 
     process {
-        $bytes = [System.Text.Encoding]::UTF8.GetBytes($value)
-        [string]$result = [System.Text.Encoding]::UTF7.GetString($bytes)
+        <#
+            # Used prior 2023-07-01
+            $bytes = [System.Text.Encoding]::UTF8.GetBytes($value)
+            [string]$result = [System.Text.Encoding]::UTF7.GetString($bytes)
+        #>
+        # New implementaion tested with Send-TelegramPhoto and special chars also with pester tests and seems to work in both
+        $utf8 = [System.Text.Encoding]::UTF8
+        $utf7 = [System.Text.Encoding]::UTF7
+        $bytes = $utf8.GetBytes($value)
+        $utf7Bytes = [System.Text.Encoding]::Convert($utf8, $utf7, $bytes)
+        [string]$result = $utf7.GetString($utf7Bytes)
     }
 
     end {
