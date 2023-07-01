@@ -18,23 +18,3 @@ New-Variable -Name 'ecModuleLicenseUri' -Scope 'Global'  -Option ReadOnly -Force
 New-Variable -Name 'ecStartTime' -Scope 'Global'  -Option ReadOnly -Force -Value ([datetime](Get-Date)) -Description 'Start time of EulandaConnect module'
 
 New-Variable -Name 'ecCulture' -Scope 'Global'  -Option ReadOnly -Force -Value ([string]([System.Threading.Thread]::CurrentThread.CurrentCulture.Name)) -Description 'User language like en-US of EulandaConnect module'
-
-# Save the original Write-Verbose function
-$originalWriteVerbose = Get-Command -Name Write-Verbose
-function Write-Verbose {
-    param(
-        [Parameter(Mandatory=$true, Position=0)]
-        [string]$Message
-    )
-
-    try {
-        $depth = (Get-PSCallStack).Count - 1  # -1 to not count the own write-verbose function
-    }
-    catch {
-        $depth = 0
-    }
-
-    $indent = " " * $depth
-
-    & $originalWriteVerbose -Message "${indent}${Message}"
-}
