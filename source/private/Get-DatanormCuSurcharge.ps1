@@ -66,6 +66,13 @@ function Get-DatanormCuSurcharge {
     }
 
     return $copperSurcharge
+    <# Test:
+        $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
 
-    # Test: Get-DatanormCuSurcharge -cuWeight 2.5 -divisionCode 1 -cuDel 879 -cuIncluded 150
+        & $Features { Get-DatanormCuSurcharge -cuWeight 2.5 -divisionCode 1 -cuDel 879 -cuIncluded 150 }
+        # Result: 0,18225
+
+        & $Features { Get-DatanormCuSurcharge -cuWeight 2.5 -divisionCode 1 -cuDel 100 -cuIncluded 150 }
+        # Result: 0
+    #>
 }
