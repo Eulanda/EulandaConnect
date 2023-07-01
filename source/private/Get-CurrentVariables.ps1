@@ -141,11 +141,10 @@ function Get-CurrentVariables {
     } else {
         Return @()
     }
-  <# Test:
+
+    <# Test:
         $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
         & $Features { $initialVariables = Get-CurrentVariables -Debug:$true; $result = (Get-CurrentVariables -InitialVariables $initialVariables -Debug:$true); ($null -eq $result ) }
         & $Features { $initialVariables = Get-CurrentVariables -Debug:$true; $dummy = 'Dummy'; $result = (Get-CurrentVariables -InitialVariables $initialVariables -Debug:$true); ($null -eq $result ) }
-
     #>
-
 }
