@@ -214,7 +214,6 @@ Function Send-FtpFile {
             $user = $ini['SFTP']['User']
 
             Send-FtpFile -server $server -user $user -password $secure -remoteFolder "/inbox" -localFolder $pesterFolder -localFile 'Readme.md'
-            # Send-FtpFile -server $server -user $user -password $secure -remoteFolder '/inbox' -remoteFile 'test.txt' -localFolder 'C:\temp' -localFile 'text.txt'
             $result = Get-FtpDir -server $server -user $user -password $secure -remoteFolder "/inbox"
             Write-Host "'$result' are all files on ftp inbox folder"
         }
