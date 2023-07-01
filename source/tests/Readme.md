@@ -59,4 +59,4 @@ It is recommended after the installation and the call of the client once to carr
 
 To test the FTP functions you need a SFTP or FTP server. If only a FTP server is needed and no SFTP tests are to be made, the free FileZilla FTP server is sufficient, otherwise the commercial version of the FileZilla server is needed.
 
-The server should have two directories in the root (`inbox` and `outbox`), which are used by the pester test. The credentials are saved in root folder of pester tests.
+The server should have two directories in the root (`inbox` and `outbox`), which are used by the pester test. There must also be a `License.md` file in the root. This must be in the file date between 01.01.2023 and 10 minutes before now. The file is evaluated during FTP pester tests. The credentials are saved in root folder of pester tests.

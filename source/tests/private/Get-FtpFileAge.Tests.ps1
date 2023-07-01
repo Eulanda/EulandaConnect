@@ -1,5 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
+# ATTENTION: This integration test requires an installed FTP/SFTP server with some folders and files for performing pester tests
+
 Describe "Get-FtpFileAge" -Tag 'Integration' {
     InModuleScope 'EulandaConnect' {
         BeforeAll {

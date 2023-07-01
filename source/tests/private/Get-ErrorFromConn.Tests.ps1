@@ -1,5 +1,7 @@
 Import-Module -Name '.\EulandaConnect.psm1' -Force
 
+# ATTENTION: This integration test requires a locally installed MSSQL PESTER instance with built-in security
+
 Describe 'Get-ErrorFromConn' {
     InModuleScope 'EulandaConnect' {
         It 'should throw when trying to execute invalid query' {
