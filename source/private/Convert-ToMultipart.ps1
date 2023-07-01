@@ -48,5 +48,16 @@ function Convert-ToMultipart() {
         Get-CurrentVariables -initialVariables $initialVariables -Debug:$DebugPreference
         Return $result
     }
-    # Test
+    <# Test:
+        $formParams = @{
+            chat_id                        = '454563'
+            caption                        = 'MyTestCaption'
+            parse_mode                     = 'markdown'
+            disable_content_type_detection = $false
+            disable_notification           = $false
+            photo                          = (Get-Item 'C:\temp\logo.png' -ErrorAction Stop)
+        }
+        $boundary = [System.Guid]::NewGuid().ToString()
+        $actualOutput = Convert-ToMultipart -params $formParams -boundary $boundary
+    #>
 }
