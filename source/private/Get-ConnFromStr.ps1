@@ -22,7 +22,8 @@ function Get-ConnFromStr {
     end {
         Return $conn
     }
-    # Because its private function the test is like this:
-    # Test:  $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
-    #        & $Features { Get-ConnFromStr -connStr 'Provider=SQLOLEDB.1;Integrated Security=SSPI;Persist Security Info=False;Initial Catalog=master;Data Source=.\PESTER' }
+    <# Test:
+        $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
+        & $Features { $conn = Get-ConnFromStr -connStr 'Provider=SQLOLEDB.1;Integrated Security=SSPI;Persist Security Info=False;Initial Catalog=master;Data Source=.\PESTER'; $conn.State }
+    #>
 }
