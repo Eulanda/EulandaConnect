@@ -28,6 +28,23 @@ Update-Module -Name Pester
 
 
 
+## Pester.ini
+
+A pester ini-file is needed für special tests against sql and ftp. It is stored in the pester root folder of the project `(project)\source\tests`. Tokens and all security settings are under the home folder of the windows system. The user should be a special pester test user.
+
+```
+[SFTP]
+Server=192.168.42.1
+User=pester
+SecurePasswordPath=$home\.eulandaconnect\PesterSftp.xml
+
+[TELEGRAM]
+SecureToken=$home\.eulandaconnect\secureTelegramToken.xml
+
+```
+
+
+
 ## MSSQL-Server
 
 Some of the Pester tests require an SQL server. This must be installed locally in the PESTER instance. For pure tests that are not specific to EULANDA ERP, Windows authentication is sufficient. If tests are to be made also against a EULANDA database, then the mixed authentication should be selected with the installation.
@@ -42,3 +59,4 @@ It is recommended after the installation and the call of the client once to carr
 
 To test the FTP functions you need a SFTP or FTP server. If only a FTP server is needed and no SFTP tests are to be made, the free FileZilla FTP server is sufficient, otherwise the commercial version of the FileZilla server is needed.
 
+The server should have two directories in the root (`inbox` and `outbox`), which are used by the pester test. The credentials are saved in root folder of pester tests.

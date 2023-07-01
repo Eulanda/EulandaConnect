@@ -115,6 +115,25 @@ Function Get-FtpDir {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
         Return $result
     }
-    # Test:  Get-FtpDir -server 'mysftp.eulanda.eu' -user 'johndoe' -password 'secure' -remoteFolder '/EULANDA' -mask '*.zip' -dirType file -verbose -debug
-}
+    <# Test:
 
+        $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
+        & $Features {
+            $pesterFolder = Resolve-Path -path ".\source\tests"
+            $iniPath = Join-Path -path $pesterFolder "pester.ini"
+            $ini = Read-IniFile -path $iniPath
+            $path = $ini['SFTP']['SecurePasswordPath']
+            $path = $path -replace '\$home', $HOME
+            $secure = Import-Clixml -path $path
+            $server = $ini['SFTP']['Server']
+            $user = $ini['SFTP']['User']
+            $result = Get-FtpDir -server $server -user $user -password $secure -remoteFolder '/' -dirType directory
+            $result
+        }
+
+        # Output or what ever is there
+        #  inbox
+        #  outbox
+    #>
+
+}
