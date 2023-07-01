@@ -126,8 +126,12 @@ function Get-CurrentVariables {
                     }
                     $privateVariableCode = "New-Variable -Name '$($variable.Name)' -Scope 'Private' -Value ($initValue)"
 
-                    if ($firstTime) { Write-Host (Get-ResStr 'NEW_VARIABLES') -ForegroundColor Yellow }
-                    Write-Host $privateVariableCode -ForegroundColor Yellow
+                    if ($firstTime) {
+                        # Write-Host (Get-ResStr 'NEW_VARIABLES') -ForegroundColor Yellow
+                        Write-Output ('New variables:')
+                    }
+                    # Write-Host $privateVariableCode -ForegroundColor Yellow
+                    Write-Output $privateVariableCode
                     $firstTime = $false
                 }
             }
@@ -137,4 +141,11 @@ function Get-CurrentVariables {
     } else {
         Return @()
     }
+  <# Test:
+        $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
+        & $Features { $initialVariables = Get-CurrentVariables -Debug:$true; $result = (Get-CurrentVariables -InitialVariables $initialVariables -Debug:$true); ($null -eq $result ) }
+        & $Features { $initialVariables = Get-CurrentVariables -Debug:$true; $dummy = 'Dummy'; $result = (Get-CurrentVariables -InitialVariables $initialVariables -Debug:$true); ($null -eq $result ) }
+
+    #>
+
 }
