@@ -139,6 +139,6 @@ function Send-TelegramPhoto() {
 
         $pathToToken = "$home\.EulandaConnect\secureTelegramToken.xml"
         $chatId = "-713022389"
-        Send-TelegramPhoto -pathToToken $pathToToken -chatId $chatId -caption "My simple caption..." -uri 'c:\temp\logo.png'
+        Send-TelegramPhoto -pathToToken $pathToToken -chatId $chatId -caption "My simple öäüÖÄÜ caption..." -uri 'c:\temp\logo.png'
     #>
 }
