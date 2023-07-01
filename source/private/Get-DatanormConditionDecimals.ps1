@@ -44,4 +44,12 @@ function Get-DatanormConditionDecimals {
         3 { return $condition.Insert($condition.Length - 2, ",") }
         default { Throw ((Get-ResStr 'INVALID_DATANORM_INDICATOR') -f $indicator, $myInvocation.Mycommand) }
     }
+
+    <# Test:
+        $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
+        & $Features { $result = Get-DatanormConditionDecimals -condition '1234' -indicator 3; $result }
+        # Result should be '12,34'
+        & $Features { $result = Get-DatanormConditionDecimals -condition '1234' -indicator 2; $result }
+        # Result should be '1,234'
+    #>
 }
