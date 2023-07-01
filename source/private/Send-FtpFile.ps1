@@ -73,15 +73,22 @@ Function Send-FtpFile {
         while ($retryCount -lt $resumeRetries) {
             try {
                 # Delete old file if exists, if its a younger we try to resume upload
-                $fileAge = Get-FtpFileAge -server $server -protocol $protocol -port $port -activeMode:$activeMode -user $user -password $password -remoteFolder $remoteFolder -remoteFile $remoteFile
-                # Resume works only if not older then 3 hours
-                if ($fileAge -gt $resumeAge) {
-                    Remove-FtpFile -server $server -protocol $protocol -port $port -activeMode:$activeMode -user $user -password $password -remoteFolder $remoteFolder -remoteFile $remoteFile
-                    Write-Verbose ((Get-ResStr 'REMOTEFILE_TO_OLD_TO_RESUME') -f $remoteFile, $myInvocation.Mycommand)
+                if (Test-FtpFile -server $server -protocol $protocol -port $port -activeMode:$activeMode -user $user -password $password -remoteFolder $remoteFolder -remoteFile $remoteFile ) {
+                    $fileAge = Get-FtpFileAge -server $server -protocol $protocol -port $port -activeMode:$activeMode -user $user -password $password -remoteFolder $remoteFolder -remoteFile $remoteFile
+                    # Resume works only if not older then 3 hours
+                    if ($fileAge -gt $resumeAge) {
+                        Remove-FtpFile -server $server -protocol $protocol -port $port -activeMode:$activeMode -user $user -password $password -remoteFolder $remoteFolder -remoteFile $remoteFile
+                        Write-Verbose ((Get-ResStr 'REMOTEFILE_TO_OLD_TO_RESUME') -f $remoteFile, $myInvocation.Mycommand)
+                        $fileAge = 0
+                    }
+                } else {
                     $fileAge = 0
                 }
-
-                $remoteFileSize = Get-FtpFileSize -server $server -protocol $protocol -port $port -activeMode:$activeMode -user $user -password $password -remoteFolder $remoteFolder -remoteFile $remoteFile
+                if ($fileAge -gt 0) {
+                    $remoteFileSize = Get-FtpFileSize -server $server -protocol $protocol -port $port -activeMode:$activeMode -user $user -password $password -remoteFolder $remoteFolder -remoteFile $remoteFile
+                } else {
+                    $remoteFileSize = 0
+                }
                 $localFileSize = (Get-Item $fullLocalPath).Length
                 Write-Verbose "Local Filesize: $localFileSize"
                 Write-Verbose "Remote file size: $remoteFileSize"
@@ -192,5 +199,26 @@ Function Send-FtpFile {
     end {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
     }
-    # Test:  Send-FtpFile -server 'myftp.eulanda.eu' -user 'johndoe' -password 'secure' -remoteFolder '/EULANDA' -remoteFile 'test.txt' -localFolder 'C:\temp' -localFile 'text.txt'
+
+    <#
+
+        $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
+        & $Features {
+            $pesterFolder = Resolve-Path -path ".\source\tests"
+            $iniPath = Join-Path -path $pesterFolder "pester.ini"
+            $ini = Read-IniFile -path $iniPath
+            $path = $ini['SFTP']['SecurePasswordPath']
+            $path = $path -replace '\$home', $HOME
+            $secure = Import-Clixml -path $path
+            $server = $ini['SFTP']['Server']
+            $user = $ini['SFTP']['User']
+
+            $localFolder = Join-Path -path (Get-Location) source tests
+            # Send-FtpFile -server $server -user $user -password $secure -remoteFolder "/inbox" -localFolder "$localFolder" -localFile 'Readme.md'
+            Send-FtpFile -server $server -user $user -password $secure -remoteFolder '/inbox' -remoteFile 'test.txt' -localFolder 'C:\temp' -localFile 'text.txt'
+            $result = Get-FtpDir -server $server -user $user -password $secure -remoteFolder "/inbox"
+            Write-Host "'$result' are all files on ftp inbox folder"
+        }
+
+    #>
 }
