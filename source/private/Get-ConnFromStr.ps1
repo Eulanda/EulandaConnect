@@ -24,6 +24,6 @@ function Get-ConnFromStr {
     }
     <# Test:
         $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
-        & $Features { $conn = Get-ConnFromStr -connStr 'Provider=SQLOLEDB.1;Integrated Security=SSPI;Persist Security Info=False;Initial Catalog=master;Data Source=.\PESTER'; $conn.State }
+        & $Features { $conn = Get-ConnFromStr -connStr 'Provider=SQLOLEDB.1;Integrated Security=SSPI;Persist Security Info=False;Initial Catalog=master;Data Source=.\PESTER'; $conn.State; $conn.close() }
     #>
 }

@@ -22,8 +22,9 @@ function Get-ConnFromUdl {
     end {
         Return $conn
     }
-    # Because its private function the test is like this:
-    # Test:  $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
-    #        & $Features {  Get-ConnFromUdl -udl 'C:\temp\Eulanda_1 Eulanda.udl' }
 
+    <# Test:
+        $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
+        & $Features {  $conn = Get-ConnFromUdl -udl '.\source\tests\pester.udl'; $conn.State; $conn.close() }
+    #>
 }
