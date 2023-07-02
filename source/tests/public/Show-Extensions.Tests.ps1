@@ -1,6 +1,8 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe 'Show-Extensions' {
+# ATTENTION: This integration test requires MSSQL, FTP or something other
+
+Describe 'Show-Extensions' -Tag 'integration', 'registry' {
 
     $global:eul2RegistryPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced"
     $global:eul2RegistryProperty = "HideFileExt"
