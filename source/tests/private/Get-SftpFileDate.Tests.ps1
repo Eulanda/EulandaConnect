@@ -16,16 +16,16 @@ Describe 'Get-SftpFileDate' -Tag 'integration', 'sftp' {
             $server = $ini['SFTP']['Server']
             $user = $ini['SFTP']['User']
 
-            # Act
-            $result = Get-SftpFileDate -server $server -user $user -password $secure -remoteFile 'License.md'
-
             # Calculate the acceptable range
             $now = Get-Date
             $earliest = [DateTime]::new(2023, 1, 1)
             $latest = $now.AddMinutes(-10)
         }
 
-        It "Gets the change date of the file 'License.md' and checks if it's within an acceptable range" {
+        It "Gets the change date of the file 'License.md' and check acceptable range" {
+
+            # Act
+            $result = Get-SftpFileDate -server $server -user $user -password $secure -remoteFile 'License.md'
 
             # Check if the date of the file is older than 10 minutes from now.
             $result | Should -BeLessOrEqual $latest

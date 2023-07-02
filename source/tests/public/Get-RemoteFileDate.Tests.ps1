@@ -2,7 +2,7 @@ Import-Module -Name .\EulandaConnect.psd1
 
 # ATTENTION: This integration test requires MSSQL, FTP or something other
 
-Describe 'Get-FtpFileDate' -Tag 'integration', 'ftp' {
+Describe 'Get-RemoteFileDate' -Tag 'integration', 'ftp', 'sftp' {
     InModuleScope 'EulandaConnect' {
 
         BeforeAll {
@@ -22,10 +22,26 @@ Describe 'Get-FtpFileDate' -Tag 'integration', 'ftp' {
             $latest = $now.AddMinutes(-10)
         }
 
-        It "Gets the change date of the file 'License.md' and check acceptable range" {
-
+        # **********
+        # SFTP calls
+        # **********
+        It "Gets the change date of the file 'License.md' and check acceptable range via sftp" {
             # Act
-            $result = Get-FtpFileDate -server $server -user $user -password $secure -remoteFile 'License.md'
+            $result = Get-RemoteFileDate -server $server -protocol sftp -user $user -password $secure -remoteFile 'License.md'
+
+            # Check if the date of the file is older than 10 minutes from now.
+            $result | Should -BeLessOrEqual $latest
+
+            # Check if the date of the file is newer or equal to 01.01.2023
+            $result | Should -BeGreaterOrEqual $earliest
+        }
+
+        # **********
+        # FTP calls
+        # **********
+        It "Gets the change date of the file 'License.md' and check acceptable range via ftp" {
+            # Act
+            $result = Get-RemoteFileDate -server $server -protocol ftp -user $user -password $secure -remoteFile 'License.md'
 
             # Check if the date of the file is older than 10 minutes from now.
             $result | Should -BeLessOrEqual $latest

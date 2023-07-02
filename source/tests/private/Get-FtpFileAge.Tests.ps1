@@ -23,12 +23,11 @@ Describe 'Get-FtpFileAge' -Tag 'integration', 'ftp' {
 
             $earliestSeconds = ($now - $earliest).TotalSeconds
             $latestSeconds = ($now - $latest).TotalSeconds
-
-            # Act
-            $result = Get-FtpFileAge -server $server -user $user -password $secure -remoteFile 'License.md'
         }
 
-        It "Gets the age of the file 'License.md' in seconds and checks if it's within an acceptable range" {
+        It "Gets the age of the file 'License.md' in seconds and check acceptable range" {
+            # Act
+            $result = Get-FtpFileAge -server $server -user $user -password $secure -remoteFile 'License.md'
 
             # Check if the age of the file is less than the difference in seconds since 01.01.2023
             $result | Should -BeLessOrEqual $earliestSeconds

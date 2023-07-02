@@ -55,5 +55,21 @@ Function Get-RemoteFileDate {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
         Return $result
     }
-    # Test:  Get-RemoteFileDate -server 'myftp.eulanda.eu' -protocol 'sftp' -user 'johndoe' -password 'secure' -remoteFolder '/EULANDA' -remoteFile 'Eulanda_JohnDoe.zip' -verbose
+
+    <# Test:
+
+        $pesterFolder = Resolve-Path -path ".\source\tests"
+        $iniPath = Join-Path -path $pesterFolder "pester.ini"
+        $ini = Read-IniFile -path $iniPath
+        $path = $ini['SFTP']['SecurePasswordPath']
+        $path = $path -replace '\$home', $HOME
+        $secure = Import-Clixml -path $path
+        $server = $ini['SFTP']['Server']
+        $user = $ini['SFTP']['User']
+        $result = Get-RemoteFileDate -server $server -protocol sftp -user $user -password $secure -remoteFile 'License.md'
+        Write-Host "$result date of the file"
+
+        # $result is a datetime value that indicates the file change date
+        # The file 'License.md' example belongs to the ftp server test environment we recommend.
+    #>
 }
