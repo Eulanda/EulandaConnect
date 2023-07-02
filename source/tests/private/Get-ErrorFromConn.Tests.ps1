@@ -1,9 +1,10 @@
 Import-Module -Name '.\EulandaConnect.psm1' -Force
 
-# ATTENTION: This integration test requires a locally installed MSSQL PESTER instance with built-in security
+# ATTENTION: This integration test requires MSSQL, FTP or something other
 
-Describe 'Get-ErrorFromConn' {
+Describe 'Get-ErrorFromConn'  -Tag 'integration', 'sql' {
     InModuleScope 'EulandaConnect' {
+
         It 'should throw when trying to execute invalid query' {
             $pesterFolder = Resolve-Path ".\source\tests"
             $myConn = Get-Conn -udl "$pesterFolder\EULANDA_1 Pester.udl"

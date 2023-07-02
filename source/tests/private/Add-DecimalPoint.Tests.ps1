@@ -1,4 +1,4 @@
-Import-Module .\EulandaConnect.psd1
+Import-Module -Name .\EulandaConnect.psd1
 
 Describe "Add-DecimalPoint Tests" {
     InModuleScope EulandaConnect {

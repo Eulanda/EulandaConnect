@@ -2,6 +2,7 @@ Import-Module -Name .\EulandaConnect.psd1
 
 Describe 'Get-CurrentVariables' {
     InModuleScope 'EulandaConnect' {
+
         It 'should return no new variables' {
             # Arrange
             $outputPath = Join-Path -Path $env:TEMP 'output.txt'

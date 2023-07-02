@@ -2,6 +2,7 @@ Import-Module -Name .\EulandaConnect.psd1
 
 Describe 'Get-DatanormConditionDecimals' {
     InModuleScope 'EulandaConnect' {
+
         It 'should return correct decimals for indicator 0' {
             $result = Get-DatanormConditionDecimals -condition '10000' -indicator 0
             $result | Should -Be '10000'

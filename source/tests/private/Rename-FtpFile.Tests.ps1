@@ -1,9 +1,10 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-# ATTENTION: This integration test requires an installed FTP/SFTP server with some folders and files for performing pester tests
+# ATTENTION: This integration test requires MSSQL, FTP or something other
 
-Describe "Test-FtpFolder" -Tag 'Integration' {
+Describe "Test-FtpFolder" -Tag 'integration', 'ftp' {
     InModuleScope 'EulandaConnect' {
+
         BeforeAll {
             $pesterFolder = Resolve-Path -path ".\source\tests"
             $iniPath = Join-Path -path $pesterFolder "pester.ini"

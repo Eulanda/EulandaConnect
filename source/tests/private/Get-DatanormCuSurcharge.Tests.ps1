@@ -2,6 +2,7 @@ Import-Module -Name .\EulandaConnect.psd1
 
 Describe 'Get-DatanormCuSurcharge' {
     InModuleScope 'EulandaConnect' {
+
         It 'should calculate the copper surcharge correctly' {
             $result = Get-DatanormCuSurcharge -cuWeight 2.5 -divisionCode 1 -cuDel 879 -cuIncluded 150
             $expected = 0.18225

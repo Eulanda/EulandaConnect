@@ -1,9 +1,10 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-# ATTENTION: This integration test requires a locally installed MSSQL PESTER instance with built-in security
+# ATTENTION: This integration test requires MSSQL, FTP or something other
 
-Describe 'Get-ConnFromStr' {
+Describe 'Get-ConnFromStr' -Tag 'integration', 'sql' {
     InModuleScope 'EulandaConnect' {
+
         It 'should establish a connection to the MASTER database' {
             $connStr = 'Provider=SQLOLEDB.1;Integrated Security=SSPI;Persist Security Info=False;Initial Catalog=master;Data Source=.\PESTER'
             $conn = Get-ConnFromStr -connStr $connStr

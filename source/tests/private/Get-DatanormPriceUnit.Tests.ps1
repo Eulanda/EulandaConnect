@@ -1,7 +1,8 @@
-Import-Module .\EulandaConnect.psd1
+Import-Module -Name .\EulandaConnect.psd1
 
-InModuleScope EulandaConnect {
-    Describe 'Testing Get-DatanormPriceUnit' {
+Describe 'Testing Get-DatanormPriceUnit' {
+    InModuleScope 'EulandaConnect' {
+
         It 'Returns 1 for input 0' {
             Get-DatanormPriceUnit -priceUnitCode 0 | Should -Be 1
         }

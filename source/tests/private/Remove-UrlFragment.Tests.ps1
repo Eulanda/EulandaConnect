@@ -1,7 +1,8 @@
-Import-Module .\EulandaConnect.psd1
+Import-Module -Name .\EulandaConnect.psd1
 
 Describe 'Remove-UrlFragment' {
-    InModuleScope EulandaConnect   {
+    InModuleScope 'EulandaConnect'   {
+
         It 'Removes the hashtag at the start of the string' {
             $url = '#entwurf-die'
             $expected = ''
