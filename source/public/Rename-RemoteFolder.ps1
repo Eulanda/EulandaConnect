@@ -61,5 +61,19 @@ Function Rename-RemoteFolder {
     end {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
     }
-    # Test:  Rename-RemoteFolder -server 'myftp.eulanda.eu' -protocol 'sftp' -user 'johndoe' -password 'secure'  -remoteFolder '/EULANDA' -newFolder '/BELAND' -verbose
+
+    <# Test:
+
+        $pesterFolder = Resolve-Path -path ".\source\tests"
+        $iniPath = Join-Path -path $pesterFolder "pester.ini"
+        $ini = Read-IniFile -path $iniPath
+        $path = $ini['SFTP']['SecurePasswordPath']
+        $path = $path -replace '\$home', $HOME
+        $secure = Import-Clixml -path $path
+        $server = $ini['SFTP']['Server']
+        $user = $ini['SFTP']['User']
+        Rename-RemoteFolder -server $server -protocol sftp -user $user -password $secure -remoteFolder '/inbox' -newFolder '/inbox-new'
+
+        # The 'inbox' folder example belongs to the ftp server test environment we recommend.
+    #>
 }
