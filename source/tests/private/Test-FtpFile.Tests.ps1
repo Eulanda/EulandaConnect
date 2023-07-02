@@ -16,12 +16,12 @@ Describe 'Test-FtpFile' -Tag 'integration', 'ftp' {
             $user = $ini['SFTP']['User']
         }
 
-        It "Verifies if the FTP file 'License.md' exists in the ftp root returns true" {
+        It "Verifies if the remote file 'License.md' exists in root" {
             $result = Test-FtpFile -server $server -user $user -password $secure -remoteFile 'License.md'
             $result | Should -Be $true
         }
 
-        It "Verifies if the FTP directory '/inbox' exists a file like 'NotHere.md' and returns false" {
+        It "Verifies if the remote directory '/inbox' exists a file like 'NotHere.md'" {
             $result = Test-FtpFile -server $server -user $user -password $secure -remoteFolder '/inbox' -remoteFile 'NotHere.md'
             $result | Should -Be $false
         }

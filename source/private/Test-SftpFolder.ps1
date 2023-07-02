@@ -67,7 +67,7 @@ Function Test-SftpFolder {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
         Return $result
     }
-        <#
+        <# Test:
 
         $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
         & $Features {

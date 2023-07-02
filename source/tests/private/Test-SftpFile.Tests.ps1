@@ -16,12 +16,12 @@ Describe 'Test-SftpFile' -Tag 'integration', 'sftp' {
             $user = $ini['SFTP']['User']
         }
 
-        It "Verifies if the SFTP file 'License.md' exists in the sftp root returns true" {
+        It "Verifies if the remote file 'License.md' exists in root" {
             $result = Test-SftpFile -server $server -user $user -password $secure -remoteFile 'License.md'
             $result | Should -Be $true
         }
 
-        It "Verifies if the SFTP directory '/inbox' exists a file like 'NotHere.md' and returns false" {
+        It "Verifies if the remote directory '/inbox' exists a file like 'NotHere.md'" {
             $result = Test-SftpFile -server $server -user $user -password $secure -remoteFolder '/inbox' -remoteFile 'NotHere.md'
             $result | Should -Be $false
         }
