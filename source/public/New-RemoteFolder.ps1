@@ -51,6 +51,23 @@ Function New-RemoteFolder {
     end {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
     }
-    # Test:  New-RemoteFolder -server 'myftp.eulanda.eu' -protocol 'sftp' -user 'johndoe' -password 'secure' -remoteFolder '/EULANDA' -verbose
+
+    <# Test:
+
+        $pesterFolder = Resolve-Path -path ".\source\tests"
+        $iniPath = Join-Path -path $pesterFolder "pester.ini"
+        $ini = Read-IniFile -path $iniPath
+        $path = $ini['SFTP']['SecurePasswordPath']
+        $path = $path -replace '\$home', $HOME
+        $secure = Import-Clixml -path $path
+        $server = $ini['SFTP']['Server']
+        $user = $ini['SFTP']['User']
+
+        $folderName = -join ((65..90) | Get-Random -Count 10 | % {[char]$_})
+        New-RemoteFolder -server $server -protocol sftp -user $user -password $secure -remoteFolder "/$folderName"
+        $result = Get-RemoteDir -server $server -protocol sftp -user $user -password $secure -dirType directory
+        Write-Host "'$result' are all remote folders including the new '$folderName'"
+
+    #>
 }
 
