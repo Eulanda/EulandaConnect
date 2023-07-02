@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<desktop scan="62" scanned="20230628210039" built="20230628210126" lang="de-DE" pane="TLogPane" col="3" row=".\EulandaConnect.en-US.resx.NUMBERSERIES_WITHOUT_RESULT">
+<desktop scan="62" scanned="20230628210039" built="20230702173836" lang="de-DE" pane="TLogPane" col="3" row=".\EulandaConnect.en-US.resx.REMOTEFILE_IS_RESUMING">
   <language id="de-DE" autoime="0" autokeyboard="0"/>
   <triggers>
     <item class="TValidateTrigger" position="6" enabled="0"/>
@@ -13,6 +13,8 @@
       <item class="TRowCommentColumn" width="191"/>
     </columns>
     <params>
+      <findtext>REMOVE_TEMPFILES</findtext>
+      <findtext>remove_t</findtext>
       <findtext>one</findtext>
       <findtext>must</findtext>
       <findtext>empty</findtext>

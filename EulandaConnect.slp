@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<document created="20230218074329" version="4.0.374" date="20230628210121" scan="62" scanned="20230628210039">
+<document created="20230218074329" version="4.0.374" date="20230702173826" scan="62" scanned="20230628210039">
   <lang id="de-DE"/>
   <source class="TNetResourceSource" name=".\EulandaConnect.en-US.resx" original="en-US" date="20230628183252" usebom="1" options="[]" righttoleft="nrlNone">
     <outputfile dir="." localized="EulandaConnect.&lt;net&gt;.&lt;ext&gt;"/>
@@ -561,7 +561,7 @@
     </row>
     <row id="REMOVE_TEMPFILES" created="20230528113758">
       <native>Remove temp files '{0}'. Function: {1}</native>
-      <lang id="de-DE" date="20230528113821" status="3">Temporäre Dateien '{0}' entfernen. Funktion: {1</lang>
+      <lang id="de-DE" date="20230702173824" status="3">Temporäre Dateien '{0}' entfernen. Funktion: {1}</lang>
     </row>
     <row id="LOCALFILE_OR_FOLDER_DONT_EXISTS" created="20230528113758">
       <native>The local folder or file '{0}' does not exist. Function: {0}</native>

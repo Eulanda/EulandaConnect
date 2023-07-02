@@ -520,7 +520,7 @@
     <value>Der vollständige Upload der lokalen Datei '{0}' wird gestartet. Funktion {1}</value>
   </data>
   <data name="REMOVE_TEMPFILES" xml:space="preserve">
-    <value>Temporäre Dateien '{0}' entfernen. Funktion: {1</value>
+    <value>Temporäre Dateien '{0}' entfernen. Funktion: {1}</value>
   </data>
   <data name="LOCALFILE_OR_FOLDER_DONT_EXISTS" xml:space="preserve">
     <value>Der lokale Ordner oder die Datei '{0}' existiert nicht. Funktion: {0}</value>

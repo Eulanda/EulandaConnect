@@ -8,8 +8,8 @@ The most important changes to EulandaConnect can be found listed chronologically
 
 | Version | Date        | Description                                                  |
 | ------- | ----------- | ------------------------------------------------------------ |
-| 3.2.4 | coming soon | `Bugfixes`: In private function Test-FtpFolder which is used by Test-RemoteFolder. |
-| 3.2.4 | coming soon | `New`: A bunch of new pester tests, also for ftp. |
+| 3.2.5 | 07/02/2023 | `Bugfixes`:In the private function Test-FtpFolder, which is used by Test-RemoteFolder. Also in some ftp functions and in German resource files. For this reason the Backup-MssqlDatabase function triggered a format error in German. |
+| 3.2.5 | 07/02/2023 | `New`: A bunch of new pester tests (more then 100). |
 | 3.2.3 | 06/30/2023 | `New`: [Get-NewNumberFromSeries](../functions/Get-NewNumberFromSeries.md) Get the next number from series like OrderNo, OfferNo and so on, from EULANDA ERP system. [New-PurchaseOrder](../functions/New-PurchaseOrder.md) and [New-PurchaseOrderLineItem](../functions/New-PurchaseOrderLineItem.md) creates EULANDA Purchase order by API in PowerShell. [Get-SupplierId](../functions/Get-SupplierId.md) gets the supplierId for an -addressMatch. [Test-Website](../functions/Test-Website.md) checks broken links and more. |
 | 3.2.3 | 06/30/2023 | `Bugfixes`: for Get-ArticleId, Get-ArticleNo and Get-ArticlePackingUnit if the search criteria was not a string an exception was thrown. |
 | 3.2.2 | 06/25/2023 | Added a lot of new Pester-Tests |

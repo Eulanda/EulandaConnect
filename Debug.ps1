@@ -46,8 +46,7 @@ try {
     $secure = Import-Clixml -path $path
     $server = $ini['SFTP']['Server']
     $user = $ini['SFTP']['User']
-
-    Receive-SftpFile -server $server -user $user -password $secure  -remoteFile 'License.md' -localFolder $env:TEMP
+    Backup-MssqlDatabase -udl "$pesterFolder\Eulanda_1 Pester.udl" -storageFolder 'C:\store' -server $server -user $user -password $secure -remoteFolder '/inbox'
 
 
 

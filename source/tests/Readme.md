@@ -1,8 +1,12 @@
 # Pester installation
 
-Install Pester according to the instructions on the Pester website. Afterwards the old version of Pester can be uninstalled from Windows. This has advantages for future Pester updates.
+> **ATTENTION**
+>
+> This section is under active revision. In the upcoming weeks, we will be providing more detailed information on Pester installation and its prerequisites. Our current focus, however, is on completing Pester tests to ensure timely delivery of the module.
 
-> With admin account
+Follow the instructions on the Pester website for the installation process. Once installed, you may uninstall the old version of Pester from your Windows system. This will facilitate easier updates in the future.
+
+You must be logged in as an administrator to install Pester.
 
 ```powershell
 # This is for Windows 10 and above with PowerShell 5.x and above
@@ -30,7 +34,7 @@ Update-Module -Name Pester
 
 ## Pester.ini
 
-A pester ini-file is needed für special tests against sql and ftp. It is stored in the pester root folder of the project `(project)\source\tests`. Tokens and all security settings are under the home folder of the windows system. The user should be a special pester test user.
+For specific tests against SQL and FTP servers, a Pester ini-file is required. It is located in the Pester root folder of the project `(project)\source\tests`. Security tokens and settings are stored under the Windows system home folder. The user should be a designated Pester test user.
 
 ```
 [SFTP]
@@ -47,16 +51,18 @@ SecureToken=$home\.eulandaconnect\secureTelegramToken.xml
 
 ## MSSQL-Server
 
-Some of the Pester tests require an SQL server. This must be installed locally in the PESTER instance. For pure tests that are not specific to EULANDA ERP, Windows authentication is sufficient. If tests are to be made also against a EULANDA database, then the mixed authentication should be selected with the installation.
+Certain Pester tests require a SQL server. This server should be installed locally on the PESTER instance. For pure tests that do not specifically involve EULANDA ERP, Windows authentication is sufficient. If tests are to be conducted against an EULANDA database, mixed mode authentication should be enabled during installation.
 
 ## EULANDA-ERP
 
-Here only one EULANDA.exe is needed in the Pester test folder. After the SQL server was installed a PESTER client can be created directly. The EULANDA.exe is for this in the Pester tests root folder. The creation of the database generates locally to the EULANDA.exe a UDL file `EULANDA_1 Pester.udl`.
+Only the EULANDA.exe is required in the Pester test folder. Following the SQL server installation, a PESTER client can be directly created. For this, the EULANDA.exe should be placed in the Pester `tests` root folder. Creating the database generates a UDL file `EULANDA_1 Pester.udl` locally next to EULANDA.exe. The database is named `EULANDA_Pester`.
 
-It is recommended after the installation and the call of the client once to carry out a SQL data backup from EULANDA. Through this the database can be used after tests at any time again on the original state.
+After installation and running the client once, we recommend performing a SQL data backup from EULANDA. This backup allows you to restore the database to its original state after conducting tests.
+
+Currently, the Backup-MssqlBackup-Pestertest uses an EULANDA database. The test involves backing up the database, copying it to local storage, and transferring it via SFTP to the SFTP server. After the test, the data are removed. At present, an EULANDA database is necessary for this test, but efforts are underway to make this test more independent.
 
 ## SFTP and FTP Server
 
-To test the FTP functions you need a SFTP or FTP server. If only a FTP server is needed and no SFTP tests are to be made, the free FileZilla FTP server is sufficient, otherwise the commercial version of the FileZilla server is needed.
+Testing the FTP functions requires an SFTP or FTP server. If only FTP tests are needed and no SFTP tests will be conducted, the free version of the FileZilla FTP server is sufficient. For SFTP tests, you will need the commercial version of the FileZilla server.
 
-The server should have two directories in the root (`inbox` and `outbox`), which are used by the pester test. There must also be a `License.md` file in the root. This must be in the file date between 01.01.2023 and 10 minutes before now. The file is evaluated during FTP pester tests. The credentials are saved in root folder of pester tests.
+The server should contain two root directories (`inbox` and `outbox`), which are utilized by the Pester test. Additionally, a `License.md` file must be present in the root directory. This file's date should be between 01.01.2023 and 10 minutes before the current time. It will be assessed during FTP Pester tests. The credentials are stored in the root folder of the Pester tests.
