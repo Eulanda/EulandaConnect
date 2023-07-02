@@ -48,7 +48,9 @@ function Convert-ToMultipart() {
         Get-CurrentVariables -initialVariables $initialVariables -Debug:$DebugPreference
         Return $result
     }
+
     <# Test:
+
         $formParams = @{
             chat_id                        = '454563'
             caption                        = 'MyTestCaption'
@@ -59,5 +61,6 @@ function Convert-ToMultipart() {
         }
         $boundary = [System.Guid]::NewGuid().ToString()
         $actualOutput = Convert-ToMultipart -params $formParams -boundary $boundary
+
     #>
 }

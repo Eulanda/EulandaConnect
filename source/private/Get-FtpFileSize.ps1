@@ -69,7 +69,7 @@ function Get-FtpFileSize {
         Return $result
     }
 
-    <#
+    <# Test:
 
         $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
         & $Features {

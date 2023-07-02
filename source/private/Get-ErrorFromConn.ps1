@@ -33,10 +33,13 @@ function Get-ErrorFromConn {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
         Return $result
     }
+
     <# Test:
+
         $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
         $myConn = Get-Conn -udl '.\source\tests\EULANDA_1 Pester.udl'
         $myConn.execute("Select *") # force an error
         & $Features {  $result = Get-ErrorFromConn -conn $myConn; Write-Host "Result: $result"  }
+
     #>
 }
