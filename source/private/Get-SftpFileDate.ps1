@@ -72,5 +72,24 @@ Function Get-SftpFileDate {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
         Return $result
     }
-    # Test:  Get-SftpFileDate -server 'myftp.eulanda.eu' -user 'johndoe' -password 'secure'  -remoteFolder '/EULANDA' -remoteFile 'Eulanda_JohnDoe.zip' -verbose
+
+    <# Test:
+
+        $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
+        & $Features {
+            $pesterFolder = Resolve-Path -path ".\source\tests"
+            $iniPath = Join-Path -path $pesterFolder "pester.ini"
+            $ini = Read-IniFile -path $iniPath
+            $path = $ini['SFTP']['SecurePasswordPath']
+            $path = $path -replace '\$home', $HOME
+            $secure = Import-Clixml -path $path
+            $server = $ini['SFTP']['Server']
+            $user = $ini['SFTP']['User']
+            $result = Get-SftpFileDate -server $server -user $user -password $secure -remoteFile 'License.md'
+            Write-Host "$result date of the file"
+        }
+
+        # $result is a datetime value that indicates the file change date
+        # The file 'License.md' example belongs to the ftp server test environment we recommend.
+    #>
 }
