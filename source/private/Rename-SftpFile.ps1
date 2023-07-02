@@ -136,5 +136,22 @@ function Rename-SftpFile {
     end {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
     }
-    # Test:  Rename-SftpFile -server 'myftp.eulanda.eu' -user 'johndoe' -password 'secure' -remoteFolder '/EULANDA' -remoteFile 'test.txt' newFile 'newTest.txt'
+
+    <# Test:
+
+        $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
+        & $Features {
+            $pesterFolder = Resolve-Path -path ".\source\tests"
+            $iniPath = Join-Path -path $pesterFolder "pester.ini"
+            $ini = Read-IniFile -path $iniPath
+            $path = $ini['SFTP']['SecurePasswordPath']
+            $path = $path -replace '\$home', $HOME
+            $secure = Import-Clixml -path $path
+            $server = $ini['SFTP']['Server']
+            $user = $ini['SFTP']['User']
+            Rename-SftpFile -server $server -user $user -password $secure -remoteFile 'License.md' -newFile 'License.txt'
+        }
+
+        # The 'License.md' example belongs to the ftp server test environment we recommend.
+    #>
 }

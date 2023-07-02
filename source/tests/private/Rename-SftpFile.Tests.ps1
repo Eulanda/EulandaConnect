@@ -2,7 +2,7 @@ Import-Module -Name .\EulandaConnect.psd1
 
 # ATTENTION: This integration test requires MSSQL, FTP or something other
 
-Describe 'Rename-FtpFile' -Tag 'integration', 'ftp' {
+Describe 'Rename-SftpFile' -Tag 'integration', 'sftp' {
     InModuleScope 'EulandaConnect' {
 
         BeforeAll {
@@ -16,35 +16,35 @@ Describe 'Rename-FtpFile' -Tag 'integration', 'ftp' {
             $user = $ini['SFTP']['User']
         }
 
-        It "Verifies if the remote file 'License.md' exists at the beginning" {
-            $result = Test-FtpFile -server $server -user $user -password $secure -remoteFile 'License.md'
+        It "Verifies if the remote  file 'License.md' exists at the beginning" {
+            $result = Test-SftpFile -server $server -user $user -password $secure -remoteFile 'License.md'
             $result | Should -Be $true
         }
 
         It "Verifies if the remote file 'License.txt' does not exists at beginning" {
-            $result = Test-FtpFile -server $server -user $user -password $secure -remoteFile 'License.txt'
+            $result = Test-SftpFile -server $server -user $user -password $secure -remoteFile 'License.txt'
             $result | Should -Not -Be $true
         }
 
         It "Verifies if renaming the file to txt works without exception" {
             {
-                Rename-FtpFile -server $server -user $user -password $secure -remoteFile 'License.md' -newFile 'License.txt'
+                Rename-SftpFile -server $server -user $user -password $secure -remoteFile 'License.md' -newFile 'License.txt'
             } | Should -Not -Throw
         }
 
         It "Verifies if renamed remote file 'License.txt' exists" {
-            $result = Test-FtpFile -server $server -user $user -password $secure -remoteFile 'License.txt'
+            $result = Test-SftpFile -server $server -user $user -password $secure -remoteFile 'License.txt'
             $result | Should -Be $true
         }
 
         It "Verifies if renaming back the file works without exception" {
             {
-                Rename-FtpFile -server $server -user $user -password $secure -remoteFile 'License.txt' -newFile 'License.md'
+                Rename-SftpFile -server $server -user $user -password $secure -remoteFile 'License.txt' -newFile 'License.md'
             } | Should -Not -Throw
         }
 
         It "Verifies if the remote file 'License.md' exists like at beginning" {
-            $result = Test-FtpFile -server $server -user $user -password $secure -remoteFile 'License.md'
+            $result = Test-SftpFile -server $server -user $user -password $secure -remoteFile 'License.md'
             $result | Should -Be $true
         }
 

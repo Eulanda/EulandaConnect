@@ -140,7 +140,7 @@ function Rename-FtpFile {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
     }
 
-    <#
+    <# Test:
 
         $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
         & $Features {
