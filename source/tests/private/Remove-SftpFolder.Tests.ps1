@@ -2,7 +2,7 @@ Import-Module -Name .\EulandaConnect.psd1
 
 # ATTENTION: This integration test requires MSSQL, FTP or something other
 
-Describe 'Remove-FtpFolder' -Tag 'integration', 'ftp' {
+Describe 'Remove-SftpFolder' -Tag 'integration', 'sftp' {
     InModuleScope 'EulandaConnect' {
 
         BeforeAll {
@@ -23,17 +23,17 @@ Describe 'Remove-FtpFolder' -Tag 'integration', 'ftp' {
             $folderName = -join ((65..90) | Get-Random -Count 10 | ForEach-Object {[char]$_})
 
             # Create a random folder so that we can test the remove folder function.
-            New-FtpFolder -server $server -user $user -password $secure -remoteFolder "/$folderName"
+            New-SftpFolder -server $server -user $user -password $secure -remoteFolder "/$folderName"
 
             # Check if the file exists
-            $result = Get-FtpDir -server $server -user $user -password $secure -dirType directory
+            $result = Get-SftpDir -server $server -user $user -password $secure -dirType directory
             $result | Should -Contain $folderName
 
             # Remove the new folder
-            Remove-FtpFolder -server $server -user $user -password $secure -remoteFolder "/$folderName"
+            Remove-SftpFolder -server $server -user $user -password $secure -remoteFolder "/$folderName"
 
             # Re-Read the directory for folder
-            $result = Get-FtpDir -server $server -user $user -password $secure -dirType directory
+            $result = Get-SftpDir -server $server -user $user -password $secure -dirType directory
 
             # The file should no longer exist
             if ($result) {
