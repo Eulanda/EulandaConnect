@@ -2,7 +2,7 @@ Import-Module -Name .\EulandaConnect.psd1
 
 # ATTENTION: This integration test requires MSSQL, FTP or something other
 
-Describe 'Rename-FtpFolder' -Tag 'integration', 'ftp' {
+Describe 'Rename-SftpFolder' -Tag 'integration', 'sftp' {
     InModuleScope 'EulandaConnect' {
 
         BeforeAll {
@@ -20,37 +20,37 @@ Describe 'Rename-FtpFolder' -Tag 'integration', 'ftp' {
         }
 
         It "Verifies if the old remote folder exists at the beginning" {
-            $result = Test-FtpFolder -server $server -user $user -password $secure -remoteFolder $folderOld
+            $result = Test-SftpFolder -server $server -user $user -password $secure -remoteFolder $folderOld
             $result | Should -Be $true
         }
 
 
         It "Verifies if the new remote folder does not exists at beginning" {
-            $result = Test-FtpFolder -server $server -user $user -password $secure -remoteFolder $folderNew
+            $result = Test-SftpFolder -server $server -user $user -password $secure -remoteFolder $folderNew
             $result | Should -Not -Be $true
         }
 
         It "Verifies if renaming the folder works without exception" {
             {
-                Rename-FtpFolder -server $server -user $user -password $secure -remoteFolder $folderOld -newFolder $folderNew
+                Rename-SftpFolder -server $server -user $user -password $secure -remoteFolder $folderOld -newFolder $folderNew
             } | Should -Not -Throw
         }
 
 
         It "Verifies if renamed folder exists" {
-            $result = Test-FtpFolder -server $server -user $user -password $secure -remoteFolder $folderNew
+            $result = Test-SftpFolder -server $server -user $user -password $secure -remoteFolder $folderNew
             $result | Should -Be $true
         }
 
 
         It "Verifies if renaming back the folder works without exception" {
             {
-                Rename-FtpFolder -server $server -user $user -password $secure -remoteFolder $folderNew -newFolder $folderOld
+                Rename-SftpFolder -server $server -user $user -password $secure -remoteFolder $folderNew -newFolder $folderOld
             } | Should -Not -Throw
         }
 
         It "Verifies if the remote folder exists like at beginning" {
-            $result = Test-FtpFolder -server $server -user $user -password $secure -remoteFolder $folderOld
+            $result = Test-SftpFolder -server $server -user $user -password $secure -remoteFolder $folderOld
             $result | Should -Be $true
         }
     }
