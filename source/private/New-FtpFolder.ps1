@@ -67,7 +67,7 @@ function New-FtpFolder {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
     }
 
-    <#
+    <# Test:
 
         $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
         & $Features {
@@ -83,8 +83,7 @@ function New-FtpFolder {
             $folderName = -join ((65..90) | Get-Random -Count 10 | % {[char]$_})
             New-FtpFolder -server $server -user $user -password $secure -remoteFolder "/$folderName"
             $result = Get-FtpDir -server $server -user $user -password $secure -dirType directory
-            Write-Host "'$result' are all folders on ftp including the new '$folderName' one which was created for pester tests"
+            Write-Host "'$result' are all remote folders including the new '$folderName'"
         }
-
     #>
 }
