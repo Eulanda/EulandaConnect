@@ -51,5 +51,4 @@ Describe 'Get-RemoteFileAge' -Tag 'integration', 'ftp', 'sftp' {
         # Check if the age of the file is greater than 10 minutes
         $result | Should -BeGreaterOrEqual $latestSeconds
     }
-
 }
