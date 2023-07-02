@@ -16,12 +16,12 @@ Describe 'Test-FtpFolder' -Tag 'integration', 'ftp' {
             $user = $ini['SFTP']['User']
         }
 
-        It "Verifies if the FTP directory '/inbox' exists and returns true" {
+        It "Verifies if the remote directory '/inbox' exists" {
             $result = Test-FtpFolder -server $server -user $user -password $secure -remoteFolder '/inbox'
             $result | Should -Be $true
         }
 
-        It "Verifies if the FTP directory '/inboxSomethingElse' exists and returns false" {
+        It "Verifies if the remote directory '/inboxSomethingElse' not exists" {
             $result = Test-FtpFolder -server $server -user $user -password $secure -remoteFolder '/inboxSomethingElse'
             $result | Should -Be $false
         }

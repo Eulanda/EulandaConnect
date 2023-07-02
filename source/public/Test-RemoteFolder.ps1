@@ -59,6 +59,22 @@ Function Test-RemoteFolder {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
         Return $result
     }
-    # Test:  Test-RemoteFolder -server 'myftp.eulanda.eu' -protocol 'sftp' -user 'johndoe' -password 'secure' -remoteFolder '/EULANDA' -verbose
+
+    <# Test:
+
+        $pesterFolder = Resolve-Path -path ".\source\tests"
+        $iniPath = Join-Path -path $pesterFolder "pester.ini"
+        $ini = Read-IniFile -path $iniPath
+        $path = $ini['SFTP']['SecurePasswordPath']
+        $path = $path -replace '\$home', $HOME
+        $secure = Import-Clixml -path $path
+        $server = $ini['SFTP']['Server']
+        $user = $ini['SFTP']['User']
+        $result = Test-RemoteFolder -server $server -protocol sftp -user $user -password $secure -remoteFolder '/inbox'
+        $result
+
+        # $result is a boolean value that indicates whether the folder exists.
+        # The 'inbox' example belongs to the sftp server test environment we recommend.
+    #>
 }
 
