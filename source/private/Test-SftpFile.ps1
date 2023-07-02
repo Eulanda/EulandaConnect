@@ -97,6 +97,6 @@ Function Test-SftpFile {
         }
 
         # $result is a boolean value that indicates whether the file exists.
-        # The 'inbox' example belongs to the ftp server test environment we recommend.
+        # The 'inbox' example belongs to the sftp server test environment we recommend.
     #>
 }
