@@ -81,6 +81,25 @@ Function Test-FtpFile {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
         Return $result
     }
-    # Test:  Test-FtpFile -server 'mysftp.eulanda.eu' -user 'johndoe' -password 'secure' -remoteFolder '/EULANDA' -remoteFile 'test.txt' -verbose -debug
+
+    <#
+
+        $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
+        & $Features {
+            $pesterFolder = Resolve-Path -path ".\source\tests"
+            $iniPath = Join-Path -path $pesterFolder "pester.ini"
+            $ini = Read-IniFile -path $iniPath
+            $path = $ini['SFTP']['SecurePasswordPath']
+            $path = $path -replace '\$home', $HOME
+            $secure = Import-Clixml -path $path
+            $server = $ini['SFTP']['Server']
+            $user = $ini['SFTP']['User']
+            $result = Test-FtpFile -server $server -user $user -password $secure -remoteFile 'License.md'
+            $result
+        }
+
+        # $result is a boolean value that indicates whether the file exists.
+        # The 'inbox' example belongs to the ftp server test environment we recommend.
+    #>
 }
 
