@@ -15,7 +15,7 @@ Describe "Test-FtpFolder" -Tag 'Integration' {
             $user = $ini['SFTP']['User']
         }
 
-        It "Verifies if the FTP file 'License.md' exists in teh ftp root returns true" {
+        It "Verifies if the FTP file 'License.md' exists in the ftp root returns true" {
             $result = Test-FtpFile -server $server -user $user -password $secure -remoteFile 'License.md'
             $result | Should -Be $true
         }
