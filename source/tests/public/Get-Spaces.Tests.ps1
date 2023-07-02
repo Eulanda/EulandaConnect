@@ -1,7 +1,6 @@
-Import-Module .\EulandaConnect.psd1
+Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Testing Get-Spaces function" {
-    Mock Get-ResStr { return " " }
+Describe 'Get-Spaces' {
 
     It "should return one space character when called without parameters" {
         Get-Spaces | Should -Be " "

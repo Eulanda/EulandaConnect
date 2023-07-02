@@ -1,6 +1,7 @@
-Import-Module .\EulandaConnect.psd1
+Import-Module -Name .\EulandaConnect.psd1
 
-Describe 'Unprotect-String Tests' {
+Describe 'Unprotect-String' {
+
     BeforeAll {
         $plainText = 'Hello, I am John, John Doe!'
         $key = 'MySpecialKey'

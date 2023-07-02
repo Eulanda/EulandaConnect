@@ -1,7 +1,7 @@
-Import-Module .\EulandaConnect.psd1
+Import-Module -Name .\EulandaConnect.psd1
 
-# Pester Test für Resize-Image
-Describe 'Resize-Image Tests' {
+Describe 'Resize-Image' {
+
     BeforeAll {
         # Create a new image with a width and height of 500 pixels.
         $image = New-Object System.Drawing.Bitmap(500, 500)

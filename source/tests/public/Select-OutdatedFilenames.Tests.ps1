@@ -1,6 +1,6 @@
-Import-Module .\EulandaConnect.psd1
+Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Select-OutdatedFilenames function Test" {
+Describe 'Select-OutdatedFilenames' {
 
     BeforeAll {
         # Set temp directory

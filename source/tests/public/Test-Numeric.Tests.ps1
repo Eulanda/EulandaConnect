@@ -1,6 +1,7 @@
-Import-Module .\EulandaConnect.psd1
+Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Test-Numeric" {
+Describe 'Test-Numeric' {
+
     # Positive Tests
     It "Returns true for a numeric string" {
         Test-Numeric -value '12345' | Should -Be $true

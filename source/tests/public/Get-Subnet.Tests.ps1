@@ -1,6 +1,7 @@
-Import-Module .\EulandaConnect.psd1
+Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Get-Subnet" {
+Describe 'Get-Subnet' {
+
     It "returns the correct subnet mask for a CIDR value" {
         $result = Get-Subnet -cidr 24
         $result | Should -Be "255.255.255.0"

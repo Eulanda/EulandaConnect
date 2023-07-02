@@ -1,6 +1,7 @@
-Import-Module .\EulandaConnect.psd1
+Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Test-PrivateIp" {
+Describe 'Test-PrivateIp' {
+
     It "returns true for a private IP address" {
         $result = Test-PrivateIp -ip '192.168.178.2'
         $result | Should -Be $true

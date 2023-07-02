@@ -1,6 +1,7 @@
-Import-Module .\EulandaConnect.psd1
+Import-Module -Name .\EulandaConnect.psd1
 
-Describe 'Read-VersionFromSynopsis Tests' {
+Describe 'Read-VersionFromSynopsis' {
+
     BeforeAll {
         $testFileContent = @'
 <#

@@ -1,6 +1,7 @@
-Import-Module .\EulandaConnect.psd1
+Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Test-HasProperty" {
+Describe 'Test-HasProperty' {
+
     BeforeAll {
         $testObj = New-Object PSObject -Property @{
             TestProp = "TestValue"

@@ -1,6 +1,6 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe 'Testing Get-DatanormPricePerUnit' {
+Describe 'Get-DatanormPricePerUnit' {
     InModuleScope 'EulandaConnect' {
 
         It 'Returns correct price for input price 10 and priceUnitCode 0' {

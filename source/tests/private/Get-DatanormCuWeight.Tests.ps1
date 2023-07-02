@@ -1,6 +1,6 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Get-DatanormCuWeight Tests" {
+Describe 'Get-DatanormCuWeight' {
     InModuleScope 'EulandaConnect' {
 
         It "Returns 0 if divisionCode is 0" {

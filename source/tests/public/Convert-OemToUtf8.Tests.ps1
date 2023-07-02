@@ -1,6 +1,7 @@
-Import-Module .\EulandaConnect.psd1
+Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Convert-OemToUtf8" {
+Describe 'Convert-OemToUtf8' {
+
     It "Converts OEM-encoded string to UTF-8 string" {
         $inputString = "R" + [char]129 + "ckfahrt"
         $expectedOutput = "Rückfahrt"

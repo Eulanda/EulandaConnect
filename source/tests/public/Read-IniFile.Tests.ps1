@@ -1,6 +1,6 @@
-Import-Module .\EulandaConnect.psd1
+Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Read-IniFile Tests" {
+Describe 'Read-IniFile' {
 
     BeforeAll {
         $testIniContent = @"

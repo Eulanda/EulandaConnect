@@ -1,6 +1,7 @@
-Import-Module .\EulandaConnect.psd1
+Import-Module -Name .\EulandaConnect.psd1
 
-Describe "HelpSystemContent" {
+Describe 'Requirements HelpSystemContent' {
+
     BeforeAll {
         $ModuleName = 'EulandaConnect'
         $PathToManifest = Resolve-Path([System.IO.Path]::Combine($PSScriptRoot, '..', '..', '..', "$ModuleName.psd1"))
@@ -10,6 +11,7 @@ Describe "HelpSystemContent" {
         Import-Module $PathToManifest -Force
         $moduleExported = Get-Command -Module $ModuleName | Select-Object -ExpandProperty Name
     }
+
     It "Commands should have proper help content" {
         foreach ($command in $moduleExported) {
             $help = Get-Help -Name $command -Full

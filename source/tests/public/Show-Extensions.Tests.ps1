@@ -1,6 +1,7 @@
-Import-Module .\EulandaConnect.psd1
+Import-Module -Name .\EulandaConnect.psd1
 
 Describe 'Show-Extensions' {
+
     $global:eul2RegistryPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced"
     $global:eul2RegistryProperty = "HideFileExt"
     $global:eul2OriginalValue = (Get-ItemProperty -Path $global:eul2RegistryPath).$global:eul2RegistryProperty

@@ -1,9 +1,6 @@
-Import-Module .\EulandaConnect.psd1
+Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Get-Distance Tests" {
-
-    BeforeAll {
-    }
+Describe 'Get-Distance' {
 
     It "Should return the correct distance between Berlin and Paris" {
         try {
@@ -15,7 +12,6 @@ Describe "Get-Distance Tests" {
             Write-Host "Exception: $_"
         }
     }
-
 
     It "Should throw exception when latitude or longitude parameters are not within correct range" {
         { Get-Distance -startLatitude 92 -startLongitude 13.405 -endLatitude 48.8566 -endLongitude 2.3522 } | Should -Throw

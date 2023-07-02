@@ -1,6 +1,7 @@
-Import-Module .\EulandaConnect.psd1
+Import-Module -Name .\EulandaConnect.psd1
 
-Describe 'Remove-ItemWithRetry Tests' {
+Describe 'Remove-ItemWithRetry' {
+
     BeforeAll {
         $tempFilePath = Join-Path -Path $env:TEMP -ChildPath 'TestFile.txt'
         Set-Content -Path $tempFilePath -Value 'This is a test file'

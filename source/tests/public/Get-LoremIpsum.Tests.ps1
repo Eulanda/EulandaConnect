@@ -1,6 +1,6 @@
-Import-Module .\EulandaConnect.psd1
+Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Get-LoremIpsum Tests" {
+Describe 'Get-LoremIpsum' {
 
     It "Returns at least minimum specified paragraphs" {
         $minParagraphs = 2

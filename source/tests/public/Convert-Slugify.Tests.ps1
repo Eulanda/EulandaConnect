@@ -1,6 +1,6 @@
-Import-Module .\EulandaConnect.psd1
+Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Convert-Slugify" {
+Describe 'Convert-Slugify' {
 
     It "should correctly convert input string with default parameters" {
         $value = 'This is Österreich where you pan pay in € or $ but all in m³ and never in m²'

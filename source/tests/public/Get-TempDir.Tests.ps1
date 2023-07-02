@@ -1,6 +1,6 @@
-Import-Module .\EulandaConnect.psd1
+Import-Module -Name .\EulandaConnect.psd1
 
-Describe 'Testing Get-TempDir function' {
+Describe 'Get-TempDir' {
 
     It 'should return path to Temp directory' {
         $result = Get-TempDir

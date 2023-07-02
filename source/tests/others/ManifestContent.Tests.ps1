@@ -1,6 +1,7 @@
-Import-Module .\EulandaConnect.psd1
+Import-Module -Name .\EulandaConnect.psd1
 
-Describe "ManifestContent" {
+Describe 'Requirements ManifestContent' {
+
     BeforeAll {
         $moduleName = 'EulandaConnect'
         $PathToManifest = Resolve-Path([System.IO.Path]::Combine($PSScriptRoot, '..', '..', '..', "$ModuleName.psd1"))

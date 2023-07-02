@@ -1,6 +1,6 @@
-Import-Module .\EulandaConnect.psd1
+Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Convert-Accent Tests" {
+Describe 'Convert-Accent' {
 
     It "Should replace special characters and convert to uppercase" {
         $value = 'Der Caffè ist übergut in Österreich!'

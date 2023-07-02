@@ -1,9 +1,6 @@
-Import-Module .\EulandaConnect.psd1
+Import-Module -Name .\EulandaConnect.psd1
 
 Describe 'Use-Culture' {
-    BeforeAll {
-
-    }
 
     It 'Formats date in German correctly' {
         $result = Use-Culture -culture 'de-DE' -script { (Get-Date "2023-01-01").ToString("MMMM") }

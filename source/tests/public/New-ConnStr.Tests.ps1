@@ -1,6 +1,7 @@
-Import-Module .\EulandaConnect.psd1
+Import-Module -Name .\EulandaConnect.psd1
 
-Describe 'Test New-ConnStr' {
+Describe 'New-ConnStr' {
+
     It 'returns the correct connection string for integrated security' {
         $result = New-ConnStr -database 'TestDB' -server 'TestServer'
         $expectedResult = "Provider=SQLOLEDB.1;Data Source=TestServer;Initial Catalog=TestDB;Integrated Security=SSPI"

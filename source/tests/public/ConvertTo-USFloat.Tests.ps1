@@ -1,6 +1,7 @@
-Import-Module .\EulandaConnect.psd1
+Import-Module -Name .\EulandaConnect.psd1
 
-Describe "ConvertTo-USFloat" {
+Describe 'ConvertTo-USFloat' {
+
     It "Converts European style float string to US style" {
         $inputString = "2.561,12"
         $expectedOutput = "2561.12"

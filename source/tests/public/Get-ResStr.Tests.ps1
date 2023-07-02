@@ -1,8 +1,6 @@
-Import-Module .\EulandaConnect.psd1
+Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Get-ResStr Tests" {
-    BeforeAll {
-    }
+Describe 'Get-ResStr' {
 
     It "Returns a key in brackets with a preceding question mark when the key does not exist" {
         $result = Get-ResStr -key 'kjhlkjl'

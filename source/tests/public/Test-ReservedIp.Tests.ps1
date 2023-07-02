@@ -1,6 +1,7 @@
-Import-Module .\EulandaConnect.psd1
+Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Test-ReservedIp" {
+Describe 'Test-ReservedIp' {
+
     # Positive Tests
     It "Returns true for a reserved IP"  {
         Test-ReservedIp -ip '127.0.0.1' | Should -Be $true
@@ -18,5 +19,4 @@ Describe "Test-ReservedIp" {
     It "Throws an exception for a non-IP string"  {
         { Test-ReservedIp -ip 'Hello World' } | Should -Throw
     }
-
 }

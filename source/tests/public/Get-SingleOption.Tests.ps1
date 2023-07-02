@@ -1,6 +1,7 @@
-Import-Module .\EulandaConnect.psd1
+Import-Module -Name .\EulandaConnect.psd1
 
 Describe 'Get-SingleOption' {
+
     It 'returns the same value when it is in the list' {
         $result = Get-SingleOption -value 'bravo' -list @('default','bravo','charlie','delta','echo')
         $result | Should -Be 'bravo'

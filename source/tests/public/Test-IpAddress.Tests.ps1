@@ -1,6 +1,7 @@
-Import-Module .\EulandaConnect.psd1
+Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Test-IpAddress" {
+Describe 'Test-IpAddress' {
+
     It "returns true for a valid IP address" {
         $result = Test-IpAddress -ip '192.168.178.2'
         $result | Should -Be $true

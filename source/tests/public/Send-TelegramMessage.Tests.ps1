@@ -1,9 +1,6 @@
-Import-Module .\EulandaConnect.psd1
+Import-Module -Name .\EulandaConnect.psd1
 
-Describe 'Testing Send-TelegramMessage function' {
-    BeforeAll {
-        # $noTelegram = $true
-    }
+Describe 'Send-TelegramMessage' {
 
     It 'should send message without throwing exceptions' {
         if (-not $noTelegram) {
