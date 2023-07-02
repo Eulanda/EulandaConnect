@@ -143,7 +143,7 @@ function Get-FtpNextFilename {
             $server = $ini['SFTP']['Server']
             $user = $ini['SFTP']['User']
             $result = Get-FtpNextFilename -server $server -user $user -password $secure  -mask '*.md'
-            Write-Host "$result string of the next file name in queue"
+            Write-Host "'$result' is the next file name in the queue folder"
         }
 
         # $result is a string  value that indicates the next file name to load
