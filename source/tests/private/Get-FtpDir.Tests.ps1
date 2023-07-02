@@ -18,7 +18,7 @@ Describe 'Get-FtpDir' -Tag 'integration', 'ftp' {
             $expectedOutput = @('inbox', 'outbox') # Update this to reflect the actual output
         }
 
-        It "returns the expected root directory list from FTP server" {
+        It "returns the expected root directory list from remote server" {
             # Act
             $result = Get-FtpDir -server $server -user $user -password $secure -remoteFolder '/' -dirType directory
 
@@ -26,7 +26,7 @@ Describe 'Get-FtpDir' -Tag 'integration', 'ftp' {
             $result | Should -Be $expectedOutput
         }
 
-        It "returns directory (default root) list from FTP server" {
+        It "returns directory (default root) list from remote server" {
             # Act
             $result = Get-FtpDir -server $server -user $user -password $secure -dirType directory
 
