@@ -43,19 +43,7 @@ function Receive-SftpFile {
         if ([bool](Get-Module -ListAvailable -Name POSH-SSH)) {
             Import-Module -Name POSH-SSH -global
 
-
-            if ($remoteFolder) {
-                [string]$remoteFolder = "$($remoteFolder.TrimEnd('/'))"
-                if (! $remoteFolder) { $remoteFolder = '/'}
-            } else {
-                $remoteFolder = '/'
-            }
-
-            if ($remoteFolder -eq '/') {
-                $fullRemotePath = "/$remoteFolder/$remoteFile"
-            } else {
-                $fullRemotePath = "$remoteFolder/$remoteFile"
-            }
+            $fullRemotePath = Join-PathUri -base $remoteFolder -path $remoteFile
 
             if (! $localFile) {
                 $localFile = $remoteFile
@@ -68,7 +56,9 @@ function Receive-SftpFile {
             }
 
             if ($localFile -ne $remoteFile) {
-                # Create Tempfolder with (local) file name
+                # Create a temp folder with identical remote file name.
+                # This is a limitation of the SSH implementation,
+                # which expects the same filename at the destination.
                 [string]$tempFolder = $(New-TempDir)
             } else {
                 [string]$tempFolder = $localFolder
@@ -113,5 +103,22 @@ function Receive-SftpFile {
     end {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
     }
-    # Test:  Receive-SftpFile -server 'myftp.eulanda.eu' -user 'johndoe' -password 'secure' -remoteFolder '/EULANDA' -remoteFile 'test.txt' -localFolder 'C:\temp' -localFile 'newTest.txt'
+
+    <# Test:
+
+        $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
+        & $Features {
+            $pesterFolder = Resolve-Path -path ".\source\tests"
+            $iniPath = Join-Path -path $pesterFolder "pester.ini"
+            $ini = Read-IniFile -path $iniPath
+            $path = $ini['SFTP']['SecurePasswordPath']
+            $path = $path -replace '\$home', $HOME
+            $secure = Import-Clixml -path $path
+            $server = $ini['SFTP']['Server']
+            $user = $ini['SFTP']['User']
+
+            Receive-SftpFile -server $server -user $user -password $secure  -remoteFile 'License.md' -localFolder $env:TEMP
+        }
+
+    #>
 }

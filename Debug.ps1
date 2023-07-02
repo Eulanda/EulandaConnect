@@ -38,6 +38,19 @@ try {
     # $temp
 
 
+    $pesterFolder = Resolve-Path -path ".\source\tests"
+    $iniPath = Join-Path -path $pesterFolder "pester.ini"
+    $ini = Read-IniFile -path $iniPath
+    $path = $ini['SFTP']['SecurePasswordPath']
+    $path = $path -replace '\$home', $HOME
+    $secure = Import-Clixml -path $path
+    $server = $ini['SFTP']['Server']
+    $user = $ini['SFTP']['User']
+
+    Receive-SftpFile -server $server -user $user -password $secure  -remoteFile 'License.md' -localFolder $env:TEMP
+
+
+
 <#
     $datanorm.v
     Write-Host "A-Record" -ForegroundColor Yellow
