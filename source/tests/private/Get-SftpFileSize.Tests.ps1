@@ -2,7 +2,7 @@ Import-Module -Name .\EulandaConnect.psd1
 
 # ATTENTION: This integration test requires MSSQL, FTP or something other
 
-Describe 'Get-SftpFileSize' -Tag 'integration','sftp' {
+Describe 'Get-SftpFileSize' -Tag 'integration', 'sftp' {
     InModuleScope 'EulandaConnect' {
 
         BeforeAll {
@@ -16,18 +16,19 @@ Describe 'Get-SftpFileSize' -Tag 'integration','sftp' {
             $server = $ini['SFTP']['Server']
             $user = $ini['SFTP']['User']
 
-            # Act
-            $result = Get-SftpFileSize -server $server -user $user -password $secure -remoteFile 'License.md'
-
             # Define the acceptable range
             $lowerBound = 512
             $upperBound = 2048
         }
 
-        It "Gets the size of the file 'License.md' and checks if it's within an acceptable range" {
-             # Check if the file size is within the expected range
-             $result | Should -BeGreaterOrEqual $lowerBound
-             $result | Should -BeLessOrEqual $upperBound
+        It "Gets the size of the file 'License.md' and check acceptable range" {
+
+            # Act
+            $result = Get-SftpFileSize -server $server -user $user -password $secure -remoteFile 'License.md'
+
+            # Check if the file size is within the expected range
+            $result | Should -BeGreaterOrEqual $lowerBound
+            $result | Should -BeLessOrEqual $upperBound
         }
     }
 }
