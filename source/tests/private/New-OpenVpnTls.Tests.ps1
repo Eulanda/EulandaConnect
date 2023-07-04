@@ -45,11 +45,11 @@ Describe 'New-OpenVpnTls' -Tag 'integration', 'openvpn' {
 
         AfterAll {
             if (Test-Path $testDestination) {
-                # Remove-Item $testDestination -Recurse -Force
+                Remove-Item $testDestination -Recurse -Force
             }
 
             if ((Test-Path $path) -and ((Get-ChildItem $path | Measure-Object).Count -eq 0)) {
-               # [System.IO.Directory]::Delete($path)
+               [System.IO.Directory]::Delete($path)
             }
 
         }
