@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<document created="20230218074329" version="4.0.374" date="20230702173826" scan="62" scanned="20230628210039">
+<document created="20230218074329" version="4.0.374" date="20230704173038" scan="63" scanned="20230704173015">
   <lang id="de-DE"/>
-  <source class="TNetResourceSource" name=".\EulandaConnect.en-US.resx" original="en-US" date="20230628183252" usebom="1" options="[]" righttoleft="nrlNone">
+  <source class="TNetResourceSource" name=".\EulandaConnect.en-US.resx" original="en-US" date="20230704152958" usebom="1" options="[]" righttoleft="nrlNone">
     <outputfile dir="." localized="EulandaConnect.&lt;net&gt;.&lt;ext&gt;"/>
     <excludeddatatypes>
       <class>TBinaryData</class>
@@ -699,6 +699,14 @@
     <row id="NO_PURCHASEORDER_CREATED" state="0" created="20230628210039">
       <native>No Purchase Order could be created. Function: {0}</native>
       <lang id="de-DE" date="20230628210120" status="3">Es konnte keine Bestellung erstellt werden. Funktion: {0}</lang>
+    </row>
+    <row id="ERROR_OPENVPN_ON_TLS_CREATION" state="0" created="20230704173015">
+      <native>An error occurred while creating a TLS key. Error number {0} with {1}. Function: {2}</native>
+      <lang id="de-DE" date="20230704173029" status="3">Bei der Erstellung eines TLS-Schlüssels ist ein Fehler aufgetreten. Fehlernummer {0} mit {1}. Funktion: {2}</lang>
+    </row>
+    <row id="OPENVPN_NOT_FOUND" state="0" created="20230704173015">
+      <native>openVPN not found in its folder '{0}'. Function: {1}</native>
+      <lang id="de-DE" date="20230704173035" status="3">openVPN nicht in seinem Ordner '{0}' gefunden. Funktion: {1}</lang>
     </row>
   </source>
 </document>

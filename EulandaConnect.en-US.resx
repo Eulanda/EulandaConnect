@@ -793,4 +793,12 @@
     <value>No Purchase Order could be created. Function: {0}</value>
     <comment/>
   </data>
+  <data name="ERROR_OPENVPN_ON_TLS_CREATION" xml:space="preserve">
+    <value>An error occurred while creating a TLS key. Error number {0} with {1}. Function: {2}</value>
+    <comment/>
+  </data>
+  <data name="OPENVPN_NOT_FOUND" xml:space="preserve">
+    <value>openVPN not found in its folder '{0}'. Function: {1}</value>
+    <comment/>
+  </data>
 </root>

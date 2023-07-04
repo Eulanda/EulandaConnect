@@ -20434,6 +20434,114 @@ try {
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
+      <command:name>New-OpenVpnTls</command:name>
+      <command:verb>New</command:verb>
+      <command:noun>OpenVpnTls</command:noun>
+      <maml:description>
+        <maml:para>Generates an OpenVPN TLS key in a specified directory.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>The `New-OpenVpnTls` function generates an OpenVPN TLS key and places it in a specified directory. If the key already exists, it won't overwrite the existing key.  This function is designed to work with both older (prior to version 2.5, installed via .exe files) and newer versions of OpenVPN (version 2.5 and later, installed via MSI files).  It is part of a larger suite of functions aimed at automating the installation and configuration of OpenVPN in various environments.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>New-OpenVpnTls</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>openVpnPath</maml:name>
+          <maml:description>
+            <maml:para>The path to the OpenVPN installation directory.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+          <maml:name>destination</maml:name>
+          <maml:description>
+            <maml:para>The destination directory where the OpenVPN TLS key will be placed.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+        <maml:name>destination</maml:name>
+        <maml:description>
+          <maml:para>The destination directory where the OpenVPN TLS key will be placed.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>openVpnPath</maml:name>
+        <maml:description>
+          <maml:para>The path to the OpenVPN installation directory.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Make sure that the OpenVPN installation directory and the destination directory are correctly specified. If the key already exists in the destination directory, this function will not overwrite the existing key.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>------------ Example 1: Generate an OpenVPN TLS Key ------------</maml:title>
+        <dev:code>PS C:\&gt; New-OpenVpnTls -openVpnPath "C:\Program Files\OpenVPN" -destination "C:\Users\john\.eulandaconnect\OpenVPN"</dev:code>
+        <dev:remarks>
+          <maml:para>In this example, an OpenVPN TLS key is generated using the OpenVPN installation at "C:\Program Files\OpenVPN" and is placed in the directory `C:\Users\user.eulandaconnect\OpenVPN`.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version:</maml:linkText>
+        <maml:uri>https://github.com/Eulanda/EulandaConnect/blob/master/docs/New-OpenVpnTls.md</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
       <command:name>New-PurchaseOrder</command:name>
       <command:verb>New</command:verb>
       <command:noun>PurchaseOrder</command:noun>

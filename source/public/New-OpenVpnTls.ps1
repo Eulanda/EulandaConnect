@@ -41,9 +41,9 @@ function New-OpenVpnTls {
 
                 if ($process.ExitCode -ne 0) {
                     $errorMessage = $process.StandardError.ReadToEnd()
-                    Write-Error ("Creating an tsl key an error occured. Error number {0} with {1}. Function: {2}" -f $process.ExitCode, $errorMessage, $myInvocation.Mycommand) -ErrorAction stop
+                    Write-Error ( Get-ResStr('ERROR_OPENVPN_ON_TLS_CREATION') -f $process.ExitCode, $errorMessage, $myInvocation.Mycommand) -ErrorAction stop
                 }
-            } else { Write-Error ("Not found openVPN in its folder '{0}'. Function: {1}" -f $openVpnPath, $myInvocation.Mycommand) -ErrorAction Stop }
+            } else { Write-Error ( Get-ResStr('OPENVPN_NOT_FOUND') -f $openVpnPath, $myInvocation.Mycommand) -ErrorAction Stop }
         }
     }
 
@@ -52,13 +52,9 @@ function New-OpenVpnTls {
         Return
     }
 
-  <# Test:
+    <# Test:
 
-        $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
-        & $Features {
-           New-OpenVpnTls -openVpnPath  "$($env:ProgramFiles)\OpenVPN" -destination "$($home)\.eulandaconnect\pester\OpenVPN"
-        }
+           New-OpenVpnTls
 
-        # The 'License.md' example belongs to the ftp server test environment we recommend.
     #>
 }

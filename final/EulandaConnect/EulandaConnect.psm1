@@ -9656,6 +9656,67 @@ function New-EulLog {
     return [EulLog]::New($name, $path)
 }
 
+function New-OpenVpnTls {
+    [CmdletBinding()]
+    param(
+        [string]$openVpnPath = "$($env:ProgramFiles)\OpenVPN"
+        ,
+        [string]$destination = "$($home)\.eulandaconnect\OpenVPN"
+    )
+
+    begin {
+        Write-Verbose -Message ((Get-ResStr 'STARTING_FUNCTION') -f $myInvocation.Mycommand)
+        $initialVariables = Get-CurrentVariables -Debug:$DebugPreference
+    }
+
+    process {
+        $requiredVersion = "2.5"
+        $exePath = Join-Path -Path $openVpnPath -ChildPath "bin\openvpn.exe"
+        $keyPath = Join-Path -Path $destination -ChildPath "tls\ta.key"
+
+        if (! (Test-Path $keyPath)) {
+            if (Test-Path $exePath) {
+                if ([version](Get-Item $exePath).VersionInfo.FileVersion -gt [version]$requiredVersion) {
+                    $arguments = "--genkey secret `"$keyPath`""
+                } else {
+                    $arguments = "--genkey --secret `"$keyPath`""
+                }
+
+                $folderPath = Split-Path -Path $keyPath -Parent
+                if (-not (Test-Path $folderPath -PathType Container)) {
+                    New-Item -ItemType Directory -Path $folderPath | Out-Null
+                }
+
+                $psi = New-Object System.Diagnostics.ProcessStartInfo
+                $psi.FileName = $exePath
+                $psi.WorkingDirectory = (Join-Path -Path $openVpnPath 'bin')
+                $psi.Arguments = $arguments
+                $psi.CreateNoWindow = $true
+                $psi.UseShellExecute = $false
+                $psi.RedirectStandardError = $true
+
+                $process = Start-Process -Wait -PassThru -NoNewWindow -FilePath $psi.FileName -ArgumentList $psi.Arguments
+
+                if ($process.ExitCode -ne 0) {
+                    $errorMessage = $process.StandardError.ReadToEnd()
+                    Write-Error ( Get-ResStr('ERROR_OPENVPN_ON_TLS_CREATION') -f $process.ExitCode, $errorMessage, $myInvocation.Mycommand) -ErrorAction stop
+                }
+            } else { Write-Error ( Get-ResStr('OPENVPN_NOT_FOUND') -f $openVpnPath, $myInvocation.Mycommand) -ErrorAction Stop }
+        }
+    }
+
+    end {
+        Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
+        Return
+    }
+
+    <# Test:
+
+           New-OpenVpnTls
+
+    #>
+}
+
 function New-PurchaseOrder {
     [CmdletBinding()]
     param(
@@ -15419,6 +15480,17 @@ function Get-SetStringCase {
     param()
 
     return @('none', 'upper', 'lower', 'capital')
+
+    <# Test:
+
+        $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
+        & $Features {
+            $result = Get-SetStringCase
+            Write-Host "'$result' are all valid options"
+        }
+
+    #>
+
 }
 
 function Get-SftpDir {
@@ -18698,8 +18770,8 @@ function Test-ValidateUrl {
 # SIG # Begin signature block
 # MIIpiQYJKoZIhvcNAQcCoIIpejCCKXYCAQExDzANBglghkgBZQMEAgEFADB5Bgor
 # BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
-# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCBMudWICr+UVuJQ
-# pXIrRoIGek3xyVlSNa37Jtcx7sxWlKCCEngwggVvMIIEV6ADAgECAhBI/JO0YFWU
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCBVfvL1rEd9qzXi
+# EZZv9xup7eqNP6Afn58ZcaD4V1kpn6CCEngwggVvMIIEV6ADAgECAhBI/JO0YFWU
 # jTanyYqJ1pQWMA0GCSqGSIb3DQEBDAUAMHsxCzAJBgNVBAYTAkdCMRswGQYDVQQI
 # DBJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcMB1NhbGZvcmQxGjAYBgNVBAoM
 # EUNvbW9kbyBDQSBMaW1pdGVkMSEwHwYDVQQDDBhBQUEgQ2VydGlmaWNhdGUgU2Vy
@@ -18802,23 +18874,23 @@ function Test-ValidateUrl {
 # IExpbWl0ZWQxLjAsBgNVBAMTJVNlY3RpZ28gUHVibGljIENvZGUgU2lnbmluZyBD
 # QSBFViBSMzYCEGilgQZhq4aQSRu7qELTizkwDQYJYIZIAWUDBAIBBQCgfDAQBgor
 # BgEEAYI3AgEMMQIwADAZBgkqhkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEE
-# AYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAvBgkqhkiG9w0BCQQxIgQgvfa7exx6n52k
-# 83mUWmiUMrEXKPemy0hVzyhVUgZiQT4wDQYJKoZIhvcNAQEBBQAEggIAm9XzbkMa
-# /utt+ePeG/2xvwP76nVYrC9SGKE2dbC1PfF2l4aKGQZ0I+aLYRSUvEq9FZbHNsAI
-# JemHCFjvIYFE9mi2/cKp9sp9P5JkQ0qYcdK/QfCA8GZQDct2Gpy4iQjPkICSEjmt
-# +84OJaT6wb7Yw3vpW80F/99YPvBjWiDI6Ig2D8kb8a4h4NJd8b5ZfDeQ9NoG1QBj
-# VrfaipPFl+pUCTUgmGHzRzpDagrc9fUJgQ212CSKNDSmMjfqW+S9NLt3X7EQpOT6
-# kwCKwXoi9pa3ShpASNr3mmJLy8f6KZhMhtHX+yfoIzmnKngUwod//GIBg1OtSHW0
-# SIerQADQlp3sJalbBz8UIOdyn04fDrmiRt0pvfIkaG3XVjrREz+gniOV03wtCqfe
-# fIgeZv5O3zd9M10Qg5jwKZwbOydTOGbgVr+/bl6rdnqWjzUtLCZWu2gIj/QObfdq
-# nrj8ASwOLErrbXuxhV+1tfPqsuWa3aFafKr7lXQTwCo6cUtCCan0+fXQj3/mPPTg
-# mu+vd/isiHdVq8G4K75gj2GSge+cKn1XpLoQl/yGvYKxRSSvxNeEsvZOFSrOCggz
-# uxqIC5cdTIPYEBhh6nb47a8fhcucQcu89i3XnAhDFZErQfGKULPZ78IwYpCV/fcM
-# ekp0WAIHDw86nSrHtevRSzquFRUJHlNo9sehghNPMIITSwYKKwYBBAGCNwMDATGC
+# AYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAvBgkqhkiG9w0BCQQxIgQgZPqrWSfy1iCO
+# rc1Z3WjfqSFrqbPRgTzVlbqx0LBtb8AwDQYJKoZIhvcNAQEBBQAEggIAxfcQuVpy
+# jN4ESLJvESTgbEaQGZ4U2/Ricdjwu0ygh/Zf4Vr/Jpr7kb262WPoTRqyWZ4jXgct
+# wBweuRiWXSaPHMsVEU43D6KIuqQzLxjezdhmW9dQuJxRIuqMncDIZZLZykwOeOgn
+# wh+5rpUiTYZby4o+z6pd4MEZOERfSGU2VcAHUgv8Hj3uNhMsPJKLDfN45mlRs1pe
+# Z9l8xpL0GfBbDHAKRyTIBR6B8PmYhdFVssh3TIxaRNNfElT1rWn34EBvVtoevBFs
+# kulM/VPBpSl5yG6AWybDZcMBNXzsQjRPK3OcqlpJNxa7P6LeDxGbBb19MpljJUmO
+# W6TJBhiNbDZRSe8bI546t0ByIWQE0PLLxe8iOVAsuQXl5YAiV6P69rHi8u+auq12
+# XImDDKwfzluIi/pqvhqsZx1eE/+1c9lbnIuh9jIMxAyddU9yVHMvGhMyU8OuY7oa
+# fpbmzo11hhy4C4L5jlNZjg8uLIDNGMkYx79iSa+/QtMiCwt0xG9/dpCO9Ox0Okf+
+# +WBOf5IpEv1da5/TvFOip8mGWmxzb0r4FiDJdixeK/lRMkdJemVtfNx4r14yDLjH
+# A4xSXUYH7S8JfZEEGzuv78+hA2JsLa97jn+lNv7C9VQmBE0mWMhUq0Fj4T4O6jiT
+# CFHznrbTfoMOBhRc4E/ZV0wb+8/UzGCSyByhghNPMIITSwYKKwYBBAGCNwMDATGC
 # EzswghM3BgkqhkiG9w0BBwKgghMoMIITJAIBAzEPMA0GCWCGSAFlAwQCAgUAMIHw
 # BgsqhkiG9w0BCRABBKCB4ASB3TCB2gIBAQYKKwYBBAGyMQIBATAxMA0GCWCGSAFl
-# AwQCAQUABCCQbOAXRTmqHcMokNDb3uEXTS/0jyPZWEL2s/jHAgirYgIVAKG0CRe9
-# 4n8stbDdJo5RlAVRIGn8GA8yMDIzMDcwMjE3MTQyN1qgbqRsMGoxCzAJBgNVBAYT
+# AwQCAQUABCDx0wrrmBs48trCqYmoAxAq6eTg3i8EBEwejqJFqm3rcwIVAJqYlr3i
+# FEphZpMuBOdpOdbd51dcGA8yMDIzMDcwNDE1NDYxMlqgbqRsMGoxCzAJBgNVBAYT
 # AkdCMRMwEQYDVQQIEwpNYW5jaGVzdGVyMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
 # ZWQxLDAqBgNVBAMMI1NlY3RpZ28gUlNBIFRpbWUgU3RhbXBpbmcgU2lnbmVyICM0
 # oIIN6TCCBvUwggTdoAMCAQICEDlMJeF8oG0nqGXiO9kdItQwDQYJKoZIhvcNAQEM
@@ -18900,22 +18972,22 @@ function Test-ValidateUrl {
 # BAoTD1NlY3RpZ28gTGltaXRlZDElMCMGA1UEAxMcU2VjdGlnbyBSU0EgVGltZSBT
 # dGFtcGluZyBDQQIQOUwl4XygbSeoZeI72R0i1DANBglghkgBZQMEAgIFAKCCAWsw
 # GgYJKoZIhvcNAQkDMQ0GCyqGSIb3DQEJEAEEMBwGCSqGSIb3DQEJBTEPFw0yMzA3
-# MDIxNzE0MjdaMD8GCSqGSIb3DQEJBDEyBDCboz/Qenlkg5iqOh3TYalU54K1Efcj
-# SXyMnkGjH22VLMOCP/lVyUekB6h5IxhiKGIwge0GCyqGSIb3DQEJEAIMMYHdMIHa
+# MDQxNTQ2MTJaMD8GCSqGSIb3DQEJBDEyBDB0KgIWPmo9+kHnsmVl21yYpeYlsDR8
+# Xr3MLjg55CzwQbL383LlRw/nrMNxYHFOIxgwge0GCyqGSIb3DQEJEAIMMYHdMIHa
 # MIHXMBYEFK5ir3UKDL1H1kYfdWjivIznyk+UMIG8BBQC1luV4oNwwVcAlfqI+SPd
 # k3+tjzCBozCBjqSBizCBiDELMAkGA1UEBhMCVVMxEzARBgNVBAgTCk5ldyBKZXJz
 # ZXkxFDASBgNVBAcTC0plcnNleSBDaXR5MR4wHAYDVQQKExVUaGUgVVNFUlRSVVNU
 # IE5ldHdvcmsxLjAsBgNVBAMTJVVTRVJUcnVzdCBSU0EgQ2VydGlmaWNhdGlvbiBB
-# dXRob3JpdHkCEDAPb6zdZph0fKlGNqd4LbkwDQYJKoZIhvcNAQEBBQAEggIACbL2
-# TWBS4IBdC/Sq8l12mz1KlwuMtTBjj/zM3D/wRBA1K98iRwmU2nNJyQPcUW8ESh/R
-# 5HhxbwTWaGVrqGsGWobeq4MYCBuZk+Try/L0/XvsCkuAXthTVXtfvbPV3iP8YUtb
-# O2nL5zGK6FSsJ0grr5hPbSchzESgLBShANmKTLTEpmX5J+SwNMSYIFrizWC0EqKo
-# /58hMzkh8NJ0wFa1LHNQ7qwDcZ2u+vzz69DopB7NcUhABknIDAjL9duhsBORiee9
-# BSoVpy2VZXGOK9zV78iEnG0VxvDYOykem0B2hXcmVN3Zc7+ML3COrxykVVxnE3ab
-# tIODQlaCcySkPMJXsguMp4DA8STicM9rINTgunL7J425qQyr6Fwk8BCn6PA9ndTa
-# 6+QbHaDjDmDUro0vR1FS3Eig2JfzclxPpkzPd8+X+UG7lEikUq8dA2FaWsYvTYGu
-# LcUuRI7b9ZjyEAy4gX/qs4/H/3FN6v6t+l9CJ03kgaZE+a579MFX9Ucszoa25sM5
-# jKa5sdwtVfSez+WExhQLRuYN4ywdoNfvojROhnWuxlwRffiHBCpL6GwONb/K85kh
-# 5az85QZWocTQwkZ3egQcOu79WEPsRQZ7/PH9IVbsjm1ud9FOT7VzHGgBifxKGfHI
-# ZWS5zJzgcS/TZIxoRHMV/sgE6xG/oAf4LaSafqk=
+# dXRob3JpdHkCEDAPb6zdZph0fKlGNqd4LbkwDQYJKoZIhvcNAQEBBQAEggIAKIvC
+# 7/1XHl5XUNBGhtZ4y1KS0wUx83AP4NzOvWCMuGe/xoNWBrSfM3WyV09O0dR5a59Q
+# gID+rlB9/MssAraven9dCtNWMUzhyjYOFyT94t3iwufHv8juo6nVAJZZM3Q7L5Q8
+# F9zXJ/6IZW1DFSayh7W3VvanrraZKxN9sVlNwVJbuzoFeUSiVMSdnm8U/5qiWGiE
+# BSPssWlq6hZRxarCzyZqLE/09DODLioGQ/GU/9ZBLdkx7Mb/BXE90POXe8cYXitn
+# C0E+LFP6kDc0i6k07mSg7W4EuqL0ZB/ZRx1P9rXfxmr7iqLLZD9iHWexx/dEH4Pu
+# Wv21EFQvNm1m9zGmhy+P5zLk6l0m6R3OwD6HBq7TdXkZVLXNhGmu/BXP7S0vR8rg
+# 9KnX6Mx6I//ZYPLcIkZHBP9tPBmkObAJP4B8AmBwLA5DIZ+F0dLSNXiH4TutAHoj
+# PEOQjbz7EGHFKDKk6lm55G1spOV7Co9eoYozX7hCAMfLJd8mS65Xk33g2yazyX/P
+# gin3BHvTAE7/ggIu7D8ys/A3OvBg5hVNummsKowLHFkdCSnOixCmIgUYvKQSNeYD
+# DinlfJkcR577/Is0LFZgnFDDGmMwDLhQEOvHrUWD/pTIG4pYSgGkM2mQzNPP/Q3/
+# 8N3GIdQJJmalQwih9S+N7IIfIDFuE/UtltgFMpA=
 # SIG # End signature block

@@ -624,4 +624,10 @@
   <data name="NO_PURCHASEORDER_CREATED" xml:space="preserve">
     <value>Es konnte keine Bestellung erstellt werden. Funktion: {0}</value>
   </data>
+  <data name="ERROR_OPENVPN_ON_TLS_CREATION" xml:space="preserve">
+    <value>Bei der Erstellung eines TLS-Schlüssels ist ein Fehler aufgetreten. Fehlernummer {0} mit {1}. Funktion: {2}</value>
+  </data>
+  <data name="OPENVPN_NOT_FOUND" xml:space="preserve">
+    <value>openVPN nicht in seinem Ordner '{0}' gefunden. Funktion: {1}</value>
+  </data>
 </root>
