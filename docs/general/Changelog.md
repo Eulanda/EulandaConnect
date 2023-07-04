@@ -8,7 +8,7 @@ The most important changes to EulandaConnect can be found listed chronologically
 
 | Version | Date        | Description                                                  |
 | ------- | ----------- | ------------------------------------------------------------ |
-| 3.2.6 | coming soon | nothing done |
+| 3.2.6 | coming soon | `New`: New-OpenVpnTls, ConvertTo-WindowsLineEndingFile, ConvertTo-UnixLineEndingFile in preparation for OpenVpn-Autoinstaller. |
 | 3.2.5 | 07/02/2023 | `Bugfixes`:In the private function Test-FtpFolder, which is used by Test-RemoteFolder. Also in some ftp functions and in German resource files. For this reason the Backup-MssqlDatabase function triggered a format error in German. |
 | 3.2.5 | 07/02/2023 | `New`: A bunch of new pester tests (more then 100). |
 | 3.2.3 | 06/30/2023 | `New`: [Get-NewNumberFromSeries](../functions/Get-NewNumberFromSeries.md) Get the next number from series like OrderNo, OfferNo and so on, from EULANDA ERP system. [New-PurchaseOrder](../functions/New-PurchaseOrder.md) and [New-PurchaseOrderLineItem](../functions/New-PurchaseOrderLineItem.md) creates EULANDA Purchase order by API in PowerShell. [Get-SupplierId](../functions/Get-SupplierId.md) gets the supplierId for an -addressMatch. [Test-Website](../functions/Test-Website.md) checks broken links and more. |
