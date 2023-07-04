@@ -187,6 +187,7 @@ FunctionsToExport = @(
     'New-DeliveryPropertyItem',
     'New-EulException',
     'New-EulLog',
+    'New-OpenVpnServerConfig',
     'New-OpenVpnTls',
     'New-PurchaseOrder',
     'New-PurchaseOrderLineItem',
