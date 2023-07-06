@@ -8,6 +8,7 @@ The most important changes to EulandaConnect can be found listed chronologically
 
 | Version | Date        | Description                                                  |
 | ------- | ----------- | ------------------------------------------------------------ |
+| 3.2.6 | coming soon | `New`: Get-LatestOpenVPNVersion retrieves the newest version number of the OpenVPN MSI client software from the community website, e.g., `2.5.6`. Install-LatestOpenVPN downloads and installs the latest MSI in unattended mode with the option to install Easy-RSA. Test-OpenVPNInstalled checks if OpenVPN is already installed. |
 | 3.2.6 | coming soon | `New`: New-OpenVpnTls, ConvertTo-WindowsLineEndingFile, ConvertTo-UnixLineEndingFile in preparation for OpenVpn-Autoinstaller. |
 | 3.2.5 | 07/02/2023 | `Bugfixes`:In the private function Test-FtpFolder, which is used by Test-RemoteFolder. Also in some ftp functions and in German resource files. For this reason the Backup-MssqlDatabase function triggered a format error in German. |
 | 3.2.5 | 07/02/2023 | `New`: A bunch of new pester tests (more then 100). |

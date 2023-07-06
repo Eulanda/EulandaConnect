@@ -180,6 +180,7 @@ FunctionsToExport = @(
     'Hide-Extensions',
     'Import-ArticleFromXml',
     'Import-TieredPrices',
+    'Install-LatestOpenVPN',
     'Install-SignTool',
     'Merge-IpGeoInfo',
     'New-ConnStr',

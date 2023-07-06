@@ -50,7 +50,6 @@ b08dca8e1291865d1833684318785135
 1a5ce8b81400b0d1abc57d81c25119c1
 9ac8a13309d6b62f2173bbabaf7b2a28
 -----END OpenVPN Static key V1-----
-
 ```
 
 In this example, an OpenVPN TLS key is generated using the OpenVPN installation at "C:\Program Files\OpenVPN" and is placed in the directory `C:\Users\user.eulandaconnect\OpenVPN`.
