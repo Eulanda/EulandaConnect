@@ -9205,6 +9205,49 @@ function Import-TieredPrices {
     # Test: Import-TieredPrices -path 'C:\temp\test.xslx' -articleNo 'ArticleNo' -price1 'SalesPrice' -priceList 'Retail' -udl 'C:\temp\Eulanda_1 JohnDoe.udl'
 }
 
+function Install-LatestOpenVPN {
+    [CmdletBinding()]
+    param(
+        [string]$downloadPath = "$env:USERPROFILE\Downloads",
+        [switch]$install,
+        [switch]$full,
+        [string]$openVpnMsi
+    )
+
+    if ($install -and (Test-OpenVPNInstalled)) {
+        Write-Warning "OpenVPN is already installed."
+        return
+    }
+
+    if ($openVpnMsi -and !(Test-Path -Path $openVpnMsi -PathType Leaf)) {
+        throw "Invalid openVpnMsi path: $openVpnMsi"
+    }
+
+    $version = Get-LatestOpenVPNVersion
+    $downloadUrl = "https://swupdate.openvpn.org/community/releases/OpenVPN-$($version)-I001-amd64.msi"
+    $outputFilePath = Join-Path -Path $downloadPath -ChildPath "OpenVPN-$($version)-I001-amd64.msi"
+
+    if (!$openVpnMsi) {
+        $ProgressPreference = 'SilentlyContinue'
+        $version = Get-LatestOpenVPNVersion
+        $downloadUrl = "https://swupdate.openvpn.org/community/releases/OpenVPN-$($version)-I001-amd64.msi"
+        $outputFilePath = Join-Path -Path $downloadPath -ChildPath "OpenVPN-$($version)-I001-amd64.msi"
+        Invoke-WebRequest -Uri $downloadUrl -OutFile $outputFilePath
+        Write-Host "Downloaded: $outputFilePath"
+        $openVpnMsi = $outputFilePath
+    }
+
+
+
+    if ($install) {
+        $options = "OpenVPN.GUI,OpenVPN.Service,OpenVPN.Documentation,OpenVPN.SampleCfg,Drivers.OvpnDco,OpenVPN,OpenVPN.GUI.OnLogon,OpenVPN.PLAP.Register,Drivers,Drivers.TAPWindows6,Drivers.Wintun"
+        if ($full) {
+            $options += ",OpenSSL,EasyRSA"
+        }
+        Start-Process -FilePath "msiexec.exe" -ArgumentList "/i `"$openVpnMsi`" ADDLOCAL=$options /passive" -NoNewWindow -Wait
+    }
+}
+
 Function Install-SignTool {
     [CmdletBinding()]
     param(
@@ -9654,6 +9697,139 @@ function New-EulLog {
     )
     Write-Verbose -Message ((Get-ResStr 'STARTING_FUNCTION') -f $myInvocation.Mycommand)
     return [EulLog]::New($name, $path)
+}
+
+function New-OpenVpnCa {
+    param(
+        [string]$openVpnPath = "$($env:ProgramFiles)\OpenVPN"
+        ,
+        [string]$destination = "$($home)\.eulandaconnect\OpenVPN"
+        ,
+        [string]$hostname = [System.Net.Dns]::GetHostname()
+        ,
+        [string]$country = "DE"
+        ,
+        [string]$province = "HE"
+        ,
+        [string]$city = "Huenstetten"
+        ,
+        [string]$organisation = "EULANDA"
+        ,
+        [string]$unit = "eCommerce"
+        ,
+        [string]$passphrase = "eulen"
+
+    )
+
+    begin {
+        # Write-Verbose -Message ((Get-ResStr 'STARTING_FUNCTION') -f $myInvocation.Mycommand)
+        # $initialVariables = Get-CurrentVariables -Debug:$DebugPreference
+    }
+
+    process {
+
+        Push-Location
+        try {
+            Set-Location -Path (Join-Path -path $openVpnPath 'bin')
+
+            [string]$keyDir = Join-Path -path $destination "server"
+
+            if (-not (Test-Path $keyDir -PathType Container)) {
+                New-Item -ItemType Directory -Path $keyDir | Out-Null
+            }
+
+            # for OpenVPN 2.5 and up
+            $argumentString = "genrsa -aes256 -out ""$keyDir\ca.key"" -passout pass:$passphrase"
+            Start-Process `
+                        -NoNewWindow `
+                        -LoadUserProfile `
+                        -Wait `
+                        -FilePath "openssl" `
+                        -ArgumentList $argumentString
+
+            Set-Location -Path (Join-Path -path $openVpnPath 'bin')
+            $argumentString = "req -x509 -new -nodes -key ""$keyDir\ca.key"" -passin pass:$passphrase -sha256 -days 3650 -out ""$keyDir\ca.crt"" -subj ""/C=$country/ST=$province/L=$city/O=$organisation/CN=$organisatiom-ca/OU=$unit"""
+            Start-Process `
+                        -NoNewWindow `
+                        -LoadUserProfile `
+                        -Wait `
+                        -FilePath "openssl" `
+                        -ArgumentList $argumentString
+
+        }
+        finally {
+            Pop-Location
+        }
+    }
+
+    end {
+        # Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
+        Return
+    }
+
+}
+
+
+Function New-OpenVpnServerConfig {
+    [CmdletBinding()]
+    param(
+        [string]$openVpnPath = "$($env:ProgramFiles)\OpenVPN"
+        ,
+        [string]$destination = "$($home)\.eulandaconnect\OpenVPN"
+        ,
+        [string]$hostname = [System.Net.Dns]::GetHostname()
+        ,
+        [string]$networkAddress = '192.168.40.0'
+    )
+
+    begin {
+        Write-Verbose -Message ((Get-ResStr 'STARTING_FUNCTION') -f $myInvocation.Mycommand)
+        $initialVariables = Get-CurrentVariables -Debug:$DebugPreference
+    }
+
+    process {
+        $openVpnConfigPath = Join-Path -path $openVpnPath "sample-config\server.ovpn"
+        [string[]]$lines = Get-Content $openVpnConfigPath
+        [System.Collections.ArrayList]$outLines = @()
+        foreach ($line in $lines) {
+            if ($line -match "^ca ") {
+                $outlines.Add("ca `"ca.crt`"") | out-null
+            } elseif ($line -match "^cert ") {
+                $outlines.Add("cert `"$hostname.crt`"") | out-null
+            } elseif ($line -match "^key ") {
+                $outlines.Add("key `"$hostname.key`"  # This file should be kept secret") | out-null
+            } elseif ($line -match "^dh ") {
+                $outlines.Add("dh `"dh2048.pem`"") | out-null
+            } elseif ($line -match "^server ") {
+                $outlines.Add("server $networkAddress 255.255.255.0") | out-null
+            } else {
+                $outlines.Add($line) | out-null
+            }
+        }
+
+        $openVpnConfigPath = Join-Path -path $destination "server\$hostname.ovpn"
+
+        $folderPath = Split-Path -Path $openVpnConfigPath -Parent
+        if (-not (Test-Path $folderPath -PathType Container)) {
+            New-Item -ItemType Directory -Path $folderPath | Out-Null
+        }
+
+        [array]$outlines = $outlines -Join "`r`n"
+        [IO.File]::WriteAllText($openVpnConfigPath, $outlines, [System.Text.Encoding]::Utf8)
+
+        ConvertTo-UnixLineEndingsFile $openVpnConfigPath
+    }
+
+    end {
+        Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
+        Return
+    }
+
+    <#
+
+        New-OpenVpnServerConfig -networkAddress = '192.168.42.0' -hostname MYSERVER
+
+    #>
 }
 
 function New-OpenVpnTls {
@@ -14119,6 +14295,35 @@ function Convert-ToUTF7 {
     # Test: Convert-ToUTF7
 }
 
+Function ConvertTo-UnixLineEndingsFile {
+    [CmdletBinding()]
+    param(
+        [string]$path
+    )
+
+    $content = Get-Content -Path $path -Raw
+    $unixLineEnding = "`n"
+
+    # Check if the line break format is CRLF
+    if ($content -match "`r`n") {
+        # If yes, convert it to LF
+        $content = $content -replace "`r`n", $unixLineEnding
+    }
+
+    $content | Set-Content -Path $path -NoNewline
+}
+
+Function ConvertTo-WindowsLineEndingsFile {
+    [CmdletBinding()]
+    param(
+        [string]$path
+    )
+
+    $content = Get-Content -Path $path -Raw
+    $content = $content -replace "`r`n","`n" -replace "`n","`r`n"
+    $content | Set-Content -Path $path -NoNewline
+}
+
 function Get-ConnFromStr {
     [CmdletBinding()]
     param (
@@ -15183,6 +15388,31 @@ function Get-FtpNextFilename {
 
         # $result is a string  value that indicates the next file name to load
         # The file 'License.md' example belongs to the ftp server test environment we recommend.
+    #>
+}
+
+function Get-LatestOpenVPNVersion {
+    [CmdletBinding()]
+    param()
+
+    $url = "https://openvpn.net/community-downloads/"
+    $webPage = Invoke-WebRequest -Uri $url
+
+    # Extract the version from the downloaded HTML
+    $versionPattern = "(?<=OpenVPN-)\d+\.\d+\.\d+"
+    $versions = $webPage.Content | Select-String -Pattern $versionPattern -AllMatches | ForEach-Object { $_.Matches.Value }
+
+    # Sorting the versions and selecting the latest version
+    $maxVersion = $versions | Sort-Object {[version]$_} -Descending | Select-Object -First 1
+    return $maxVersion
+
+   <# Test:
+
+        $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
+        & $Features {
+            Get-LatestOpenVPNVersion
+        }
+
     #>
 }
 
@@ -18202,6 +18432,13 @@ Function Test-FtpFolder {
     #>
 }
 
+function Test-OpenVPNInstalled {
+    [CmdletBinding()]
+    param()
+    $openvpnExePath = 'C:\Program Files\OpenVPN\bin\openvpn.exe'
+    return Test-Path -Path $openvpnExePath
+}
+
 Function Test-SftpFile {
     [CmdletBinding()]
     param (
@@ -18770,8 +19007,8 @@ function Test-ValidateUrl {
 # SIG # Begin signature block
 # MIIpiQYJKoZIhvcNAQcCoIIpejCCKXYCAQExDzANBglghkgBZQMEAgEFADB5Bgor
 # BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
-# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCBVfvL1rEd9qzXi
-# EZZv9xup7eqNP6Afn58ZcaD4V1kpn6CCEngwggVvMIIEV6ADAgECAhBI/JO0YFWU
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCC9YVU8LmCDfQmT
+# OxEmEeMGXNNIPILixLjuAcWLul82ZaCCEngwggVvMIIEV6ADAgECAhBI/JO0YFWU
 # jTanyYqJ1pQWMA0GCSqGSIb3DQEBDAUAMHsxCzAJBgNVBAYTAkdCMRswGQYDVQQI
 # DBJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcMB1NhbGZvcmQxGjAYBgNVBAoM
 # EUNvbW9kbyBDQSBMaW1pdGVkMSEwHwYDVQQDDBhBQUEgQ2VydGlmaWNhdGUgU2Vy
@@ -18874,23 +19111,23 @@ function Test-ValidateUrl {
 # IExpbWl0ZWQxLjAsBgNVBAMTJVNlY3RpZ28gUHVibGljIENvZGUgU2lnbmluZyBD
 # QSBFViBSMzYCEGilgQZhq4aQSRu7qELTizkwDQYJYIZIAWUDBAIBBQCgfDAQBgor
 # BgEEAYI3AgEMMQIwADAZBgkqhkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEE
-# AYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAvBgkqhkiG9w0BCQQxIgQgZPqrWSfy1iCO
-# rc1Z3WjfqSFrqbPRgTzVlbqx0LBtb8AwDQYJKoZIhvcNAQEBBQAEggIAxfcQuVpy
-# jN4ESLJvESTgbEaQGZ4U2/Ricdjwu0ygh/Zf4Vr/Jpr7kb262WPoTRqyWZ4jXgct
-# wBweuRiWXSaPHMsVEU43D6KIuqQzLxjezdhmW9dQuJxRIuqMncDIZZLZykwOeOgn
-# wh+5rpUiTYZby4o+z6pd4MEZOERfSGU2VcAHUgv8Hj3uNhMsPJKLDfN45mlRs1pe
-# Z9l8xpL0GfBbDHAKRyTIBR6B8PmYhdFVssh3TIxaRNNfElT1rWn34EBvVtoevBFs
-# kulM/VPBpSl5yG6AWybDZcMBNXzsQjRPK3OcqlpJNxa7P6LeDxGbBb19MpljJUmO
-# W6TJBhiNbDZRSe8bI546t0ByIWQE0PLLxe8iOVAsuQXl5YAiV6P69rHi8u+auq12
-# XImDDKwfzluIi/pqvhqsZx1eE/+1c9lbnIuh9jIMxAyddU9yVHMvGhMyU8OuY7oa
-# fpbmzo11hhy4C4L5jlNZjg8uLIDNGMkYx79iSa+/QtMiCwt0xG9/dpCO9Ox0Okf+
-# +WBOf5IpEv1da5/TvFOip8mGWmxzb0r4FiDJdixeK/lRMkdJemVtfNx4r14yDLjH
-# A4xSXUYH7S8JfZEEGzuv78+hA2JsLa97jn+lNv7C9VQmBE0mWMhUq0Fj4T4O6jiT
-# CFHznrbTfoMOBhRc4E/ZV0wb+8/UzGCSyByhghNPMIITSwYKKwYBBAGCNwMDATGC
+# AYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAvBgkqhkiG9w0BCQQxIgQgl7qiCSFkKmUy
+# rhBOkXdq8Xlko/e6Bf95wmHM4dcqyscwDQYJKoZIhvcNAQEBBQAEggIAx/+fZ9vl
+# 70Wn+8Pr4tthafG+PzjA+fjWhXTHDQB4lcPeaHhhEfgkr2wDE2TRqfNigb1tkRlf
+# btQBIrIZXnS93zM4b+UAd6CI1Aext6H/YxUcAE8EIcPsp2kob5K2wY/fsmBnjBMy
+# PBkxbi31eYXeBPHhgOWEJCddK/VywN42b02mAWTvZMnJ0IvoW4EPbxn4+6yjUXyn
+# A0bST6Lpfka0Uf9TaQjPkxZo5BB6hz4S8wD0KV6XHL4I4dNzL83h4sb4MMejbRKA
+# 3lGd9sA67QOhZ4rjthwWoGzmko+NlYkWSxAlG9SJ1OGHP+NZ8mz50TuQ798GEf4P
+# hceqBxWwGBaHN8Kp5jm8XsYM+E51e//hQMXE7TsBhCeM/9p5b6uBam4Cj265030I
+# kRHMNchRuehlhlWe0yVgIGLiL6fAF7v9E76GU/0IncxQYhZcdrdLm08GYRJ/mam2
+# JesMRhRyY2LRomIJAI1r5Djwk45sLx9d5nnNSqspiceGCTm8Bak/pIkwKp6XhYiq
+# 5BQNnSqdaCIeBwT3ADYSDPTwvQPnx9+LejfM8yM+r5Dkl3QOdfRl6QTkViuN2Ngy
+# ++tq98LYZmqSF4XXTdDcrSWacEr34kxJqL9n6duI3uTgCf5snDJFJhpSkHRhuroM
+# HdeDTdHyxKBd9JBxgLNYdWJdVsgg4ULdHeuhghNPMIITSwYKKwYBBAGCNwMDATGC
 # EzswghM3BgkqhkiG9w0BBwKgghMoMIITJAIBAzEPMA0GCWCGSAFlAwQCAgUAMIHw
 # BgsqhkiG9w0BCRABBKCB4ASB3TCB2gIBAQYKKwYBBAGyMQIBATAxMA0GCWCGSAFl
-# AwQCAQUABCDx0wrrmBs48trCqYmoAxAq6eTg3i8EBEwejqJFqm3rcwIVAJqYlr3i
-# FEphZpMuBOdpOdbd51dcGA8yMDIzMDcwNDE1NDYxMlqgbqRsMGoxCzAJBgNVBAYT
+# AwQCAQUABCDbVjMCy4NRvnLM9e8IOqt1/w7Du/jZR6iqEiu+12eBmAIVANHHG+XS
+# xtcMHdixKrTyR3mrpVnCGA8yMDIzMDcwNjAzMjQxOVqgbqRsMGoxCzAJBgNVBAYT
 # AkdCMRMwEQYDVQQIEwpNYW5jaGVzdGVyMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
 # ZWQxLDAqBgNVBAMMI1NlY3RpZ28gUlNBIFRpbWUgU3RhbXBpbmcgU2lnbmVyICM0
 # oIIN6TCCBvUwggTdoAMCAQICEDlMJeF8oG0nqGXiO9kdItQwDQYJKoZIhvcNAQEM
@@ -18972,22 +19209,22 @@ function Test-ValidateUrl {
 # BAoTD1NlY3RpZ28gTGltaXRlZDElMCMGA1UEAxMcU2VjdGlnbyBSU0EgVGltZSBT
 # dGFtcGluZyBDQQIQOUwl4XygbSeoZeI72R0i1DANBglghkgBZQMEAgIFAKCCAWsw
 # GgYJKoZIhvcNAQkDMQ0GCyqGSIb3DQEJEAEEMBwGCSqGSIb3DQEJBTEPFw0yMzA3
-# MDQxNTQ2MTJaMD8GCSqGSIb3DQEJBDEyBDB0KgIWPmo9+kHnsmVl21yYpeYlsDR8
-# Xr3MLjg55CzwQbL383LlRw/nrMNxYHFOIxgwge0GCyqGSIb3DQEJEAIMMYHdMIHa
+# MDYwMzI0MTlaMD8GCSqGSIb3DQEJBDEyBDCX0pdL77SAMIzI2urPzK3Rug6o5FnA
+# 1Jb9TsbSB7HO8ffKqxnUbJaSdRSAA3yiVgcwge0GCyqGSIb3DQEJEAIMMYHdMIHa
 # MIHXMBYEFK5ir3UKDL1H1kYfdWjivIznyk+UMIG8BBQC1luV4oNwwVcAlfqI+SPd
 # k3+tjzCBozCBjqSBizCBiDELMAkGA1UEBhMCVVMxEzARBgNVBAgTCk5ldyBKZXJz
 # ZXkxFDASBgNVBAcTC0plcnNleSBDaXR5MR4wHAYDVQQKExVUaGUgVVNFUlRSVVNU
 # IE5ldHdvcmsxLjAsBgNVBAMTJVVTRVJUcnVzdCBSU0EgQ2VydGlmaWNhdGlvbiBB
-# dXRob3JpdHkCEDAPb6zdZph0fKlGNqd4LbkwDQYJKoZIhvcNAQEBBQAEggIAKIvC
-# 7/1XHl5XUNBGhtZ4y1KS0wUx83AP4NzOvWCMuGe/xoNWBrSfM3WyV09O0dR5a59Q
-# gID+rlB9/MssAraven9dCtNWMUzhyjYOFyT94t3iwufHv8juo6nVAJZZM3Q7L5Q8
-# F9zXJ/6IZW1DFSayh7W3VvanrraZKxN9sVlNwVJbuzoFeUSiVMSdnm8U/5qiWGiE
-# BSPssWlq6hZRxarCzyZqLE/09DODLioGQ/GU/9ZBLdkx7Mb/BXE90POXe8cYXitn
-# C0E+LFP6kDc0i6k07mSg7W4EuqL0ZB/ZRx1P9rXfxmr7iqLLZD9iHWexx/dEH4Pu
-# Wv21EFQvNm1m9zGmhy+P5zLk6l0m6R3OwD6HBq7TdXkZVLXNhGmu/BXP7S0vR8rg
-# 9KnX6Mx6I//ZYPLcIkZHBP9tPBmkObAJP4B8AmBwLA5DIZ+F0dLSNXiH4TutAHoj
-# PEOQjbz7EGHFKDKk6lm55G1spOV7Co9eoYozX7hCAMfLJd8mS65Xk33g2yazyX/P
-# gin3BHvTAE7/ggIu7D8ys/A3OvBg5hVNummsKowLHFkdCSnOixCmIgUYvKQSNeYD
-# DinlfJkcR577/Is0LFZgnFDDGmMwDLhQEOvHrUWD/pTIG4pYSgGkM2mQzNPP/Q3/
-# 8N3GIdQJJmalQwih9S+N7IIfIDFuE/UtltgFMpA=
+# dXRob3JpdHkCEDAPb6zdZph0fKlGNqd4LbkwDQYJKoZIhvcNAQEBBQAEggIAlwLE
+# YoH2RD3aN6r6ugQnsRjPj+Z8SR30WuEU7dgHYCgP/5JNCPm6by8V+1LnHzvR3Sn6
+# gtn5PBEIiR21HK/h1q5ebrf/AOMEGO5ODeK0QVGIWJT0lysZDQ0tcWUe4gkgUzJw
+# itNrqGf7aMFLswEh72UQSqhRfP/p1Mwvu0KzTtcF5Yx4pUxvkONUOcm5MQqamYSG
+# +OpWQsNZIwvkl4h3XVyVkbxdPj1uBwvdcTRLQL25xTl+SlWe10uDsQ+gae+457Av
+# yk6BLdIvQHX/hn9xvvX1pS6dBRV5Mtdq59CIu2X2R+gWW/4dnhnNMTfwyk7ma03Q
+# zsvJoX+ksNm2NGXcX8emEXEZOV0kC5Msnkjs8JsSz6f9VSHjjNkPEzcCxqe2Z2KZ
+# F8EgXLm0J/wYKxB40rGdNf3A1pFIAko11ACT3XSBY7jGK+9EjFuLA1fh1J09l4gX
+# y9FMWtdZ3+t08oC09fjCfKnocTjCMQ0rp9FbS9Jw2V4MilqJoBFCrElXXyalt9eD
+# O/EyMeYEe2jo5QaK+YUiwJI+ZqARKw7c+HBBzGqQwkEIgoOC6eoDN4f1QP3aD0qo
+# dGjVqsn3JFV29MZdiKe7JctwkX0VzKTAIrc+ina8iBVGOW6tY/NbhceonvrXbAQR
+# /LQ4CfLJbUqFj6lUrkS6jDHqESfzC9dEiIy2x3o=
 # SIG # End signature block

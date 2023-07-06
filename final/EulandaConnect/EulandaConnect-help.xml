@@ -19286,6 +19286,160 @@ ArticleNo;EAN;SalesPreis
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
+      <command:name>Install-LatestOpenVPN</command:name>
+      <command:verb>Install</command:verb>
+      <command:noun>LatestOpenVPN</command:noun>
+      <maml:description>
+        <maml:para>Downloads and installs the latest version of OpenVPN.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>This function downloads and installs the latest version of OpenVPN. If the `-install` switch is specified, it checks if OpenVPN is already installed. If it is, a warning is displayed and the installation is skipped. If the `-openVpnMsi` parameter is specified, it installs OpenVPN using the provided MSI file instead of downloading a new one. The function also supports an optional `-full` switch, which installs additional components required for certificate creation on servers. When downloading the client from the community website, the latest client for Windows 64 bit AMD systems is always used.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Install-LatestOpenVPN</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>downloadPath</maml:name>
+          <maml:description>
+            <maml:para>The path where the OpenVPN MSI file will be downloaded. The default location is the user's Downloads folder.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+          <maml:name>openVpnMsi</maml:name>
+          <maml:description>
+            <maml:para>The path to a pre-downloaded OpenVPN MSI file. If specified, the function will install OpenVPN using the provided MSI file instead of downloading a new one.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>full</maml:name>
+          <maml:description>
+            <maml:para>If specified, additional components required for certificate creation on servers will be installed along with OpenVPN.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>install</maml:name>
+          <maml:description>
+            <maml:para>If specified, the function will attempt to install OpenVPN. If OpenVPN is already installed, a warning will be displayed, and the installation will be skipped.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>downloadPath</maml:name>
+        <maml:description>
+          <maml:para>The path where the OpenVPN MSI file will be downloaded. The default location is the user's Downloads folder.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>full</maml:name>
+        <maml:description>
+          <maml:para>If specified, additional components required for certificate creation on servers will be installed along with OpenVPN.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>install</maml:name>
+        <maml:description>
+          <maml:para>If specified, the function will attempt to install OpenVPN. If OpenVPN is already installed, a warning will be displayed, and the installation will be skipped.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+        <maml:name>openVpnMsi</maml:name>
+        <maml:description>
+          <maml:para>The path to a pre-downloaded OpenVPN MSI file. If specified, the function will install OpenVPN using the provided MSI file instead of downloading a new one.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para></maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- Example 1 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Install-LatestOpenVPN -install</dev:code>
+        <dev:remarks>
+          <maml:para>Downloads and installs the latest version of OpenVPN.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version:</maml:linkText>
+        <maml:uri>https://github.com/Eulanda/EulandaConnect/blob/master/docs/Install-LatestOpenVPN.md</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
       <command:name>Install-SignTool</command:name>
       <command:verb>Install</command:verb>
       <command:noun>SignTool</command:noun>
@@ -20434,6 +20588,451 @@ try {
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
+      <command:name>New-OpenVpnCa</command:name>
+      <command:verb>New</command:verb>
+      <command:noun>OpenVpnCa</command:noun>
+      <maml:description>
+        <maml:para>Generates a new OpenVPN certificate authority (CA) for server certificates.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>This function generates a new OpenVPN certificate authority (CA) for server certificates. It uses OpenSSL to generate the CA key and certificate files. The generated files are stored in the specified destination folder. The function accepts various parameters to customize the CA generation process, such as country, province, city, organization, and unit.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>New-OpenVpnCa</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>openVpnPath</maml:name>
+          <maml:description>
+            <maml:para>The path to the OpenVPN installation directory. The default path is "$($env:ProgramFiles)\OpenVPN".</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+          <maml:name>destination</maml:name>
+          <maml:description>
+            <maml:para>The destination folder where the generated CA key and certificate files will be stored. The default location is "$($home)\.eulandaconnect\OpenVPN".</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+          <maml:name>hostname</maml:name>
+          <maml:description>
+            <maml:para>The hostname used to identify the certificate authority. By default, it retrieves the hostname from the system using [System.Net.Dns]::GetHostname().</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
+          <maml:name>country</maml:name>
+          <maml:description>
+            <maml:para>The country code for the certificate authority. The default value is "DE" (Germany).</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="4" aliases="none">
+          <maml:name>province</maml:name>
+          <maml:description>
+            <maml:para>The province or state for the certificate authority. The default value is "HE" (Hesse).</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="5" aliases="none">
+          <maml:name>city</maml:name>
+          <maml:description>
+            <maml:para>The city for the certificate authority. The default value is "Huenstetten".</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="6" aliases="none">
+          <maml:name>organisation</maml:name>
+          <maml:description>
+            <maml:para>The organization name for the certificate authority. The default value is "EULANDA".</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="7" aliases="none">
+          <maml:name>unit</maml:name>
+          <maml:description>
+            <maml:para>The organizational unit for the certificate authority. The default value is "eCommerce".</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="8" aliases="none">
+          <maml:name>passphrase</maml:name>
+          <maml:description>
+            <maml:para>The passphrase used to protect the CA key file. The default value is "bond".</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="5" aliases="none">
+        <maml:name>city</maml:name>
+        <maml:description>
+          <maml:para>The city for the certificate authority. The default value is "Huenstetten".</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
+        <maml:name>country</maml:name>
+        <maml:description>
+          <maml:para>The country code for the certificate authority. The default value is "DE" (Germany).</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+        <maml:name>destination</maml:name>
+        <maml:description>
+          <maml:para>The destination folder where the generated CA key and certificate files will be stored. The default location is "$($home)\.eulandaconnect\OpenVPN".</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+        <maml:name>hostname</maml:name>
+        <maml:description>
+          <maml:para>The hostname used to identify the certificate authority. By default, it retrieves the hostname from the system using [System.Net.Dns]::GetHostname().</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>openVpnPath</maml:name>
+        <maml:description>
+          <maml:para>The path to the OpenVPN installation directory. The default path is "$($env:ProgramFiles)\OpenVPN".</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="6" aliases="none">
+        <maml:name>organisation</maml:name>
+        <maml:description>
+          <maml:para>The organization name for the certificate authority. The default value is "EULANDA".</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="8" aliases="none">
+        <maml:name>passphrase</maml:name>
+        <maml:description>
+          <maml:para>The passphrase used to protect the CA key file. The default value is "bond".</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="4" aliases="none">
+        <maml:name>province</maml:name>
+        <maml:description>
+          <maml:para>The province or state for the certificate authority. The default value is "HE" (Hesse).</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="7" aliases="none">
+        <maml:name>unit</maml:name>
+        <maml:description>
+          <maml:para>The organizational unit for the certificate authority. The default value is "eCommerce".</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para></maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>------- Example 1: Generates a new certificate authority -------</maml:title>
+        <dev:code>PS C:\&gt; New-OpenVpnCa</dev:code>
+        <dev:remarks>
+          <maml:para>Generates a new OpenVPN certificate authority (CA) using default settings.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version:</maml:linkText>
+        <maml:uri>https://github.com/Eulanda/EulandaConnect/blob/master/docs/New-OpenVpnCa.md</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>New-OpenVpnServerConfig</command:name>
+      <command:verb>New</command:verb>
+      <command:noun>OpenVpnServerConfig</command:noun>
+      <maml:description>
+        <maml:para>Generates a new OpenVPN server configuration file.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>The `New-OpenVpnServerConfig` function generates a new OpenVPN server configuration file based on a template file. The function customizes the default template by inserting specific values such as the server's hostname and network address. The generated file can then serve as a basis for creating OpenVPN server and client certificates.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>New-OpenVpnServerConfig</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>openVpnPath</maml:name>
+          <maml:description>
+            <maml:para>Specifies the path to the OpenVPN installation. The default is "$($env:ProgramFiles)\OpenVPN".</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+          <maml:name>destination</maml:name>
+          <maml:description>
+            <maml:para>Specifies the destination folder where the new configuration file will be written. The default is "$($home)\.eulandaconnect\OpenVPN".</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+          <maml:name>hostname</maml:name>
+          <maml:description>
+            <maml:para>Specifies the hostname of the server. The default is the hostname of the current machine.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
+          <maml:name>networkAddress</maml:name>
+          <maml:description>
+            <maml:para>Specifies the network address of the remote server. The default is '192.168.40.0'.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+        <maml:name>destination</maml:name>
+        <maml:description>
+          <maml:para>Specifies the destination folder where the new configuration file will be written. The default is "$($home)\.eulandaconnect\OpenVPN".</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+        <maml:name>hostname</maml:name>
+        <maml:description>
+          <maml:para>Specifies the hostname of the server. The default is the hostname of the current machine.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
+        <maml:name>networkAddress</maml:name>
+        <maml:description>
+          <maml:para>Specifies the network address of the remote server. The default is '192.168.40.0'.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>openVpnPath</maml:name>
+        <maml:description>
+          <maml:para>Specifies the path to the OpenVPN installation. The default is "$($env:ProgramFiles)\OpenVPN".</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para></maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>--- Example 1: Generates a new OpenVPN server configuration ---</maml:title>
+        <dev:code>PS C:\&gt; New-OpenVpnServerConfig -openVpnPath "C:\Program Files\OpenVPN" -destination "$home\.eulandaconnect\OpenVPN" -hostname "myserver" -networkAddress '192.168.40.0'
+
+# CONFIGURED SERVER myserver.ovpn
+...
+# The server will take 10.8.0.1 for itself,
+# the rest will be made available to clients.
+# Each client will be able to reach the server
+# on 10.8.0.1. Comment this line out if you are
+# ethernet bridging. See the man page for more info.
+server 192.168.40.0 255.255.255.0
+
+# Maintain a record of client &lt;-&gt; virtual IP address
+# associations in this file.  If OpenVPN goes down or
+...</dev:code>
+        <dev:remarks>
+          <maml:para>Generates a new OpenVPN server configuration file with the specified path, destination folder, hostname, and network address.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version:</maml:linkText>
+        <maml:uri>https://github.com/Eulanda/EulandaConnect/blob/master/docs/New-OpenVpnServerConfig.md</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
       <command:name>New-OpenVpnTls</command:name>
       <command:verb>New</command:verb>
       <command:noun>OpenVpnTls</command:noun>
@@ -20527,7 +21126,31 @@ try {
     <command:examples>
       <command:example>
         <maml:title>------------ Example 1: Generate an OpenVPN TLS Key ------------</maml:title>
-        <dev:code>PS C:\&gt; New-OpenVpnTls -openVpnPath "C:\Program Files\OpenVPN" -destination "C:\Users\john\.eulandaconnect\OpenVPN"</dev:code>
+        <dev:code>PS C:\&gt; New-OpenVpnTls -openVpnPath "C:\Program Files\OpenVPN" -destination "$home\.eulandaconnect\OpenVPN"
+
+# TLS CERT ta.key
+
+#
+# 2048 bit OpenVPN static key
+#
+-----BEGIN OpenVPN Static key V1-----
+b1b4a3d27648df4e4a9ad20538c67a02
+a59a771c7761957fdf3c0250da48f9a8
+9f8b9d822420add3e10c6149d8ed733b
+bbf801b2ccdf7d736ff4c13c817c304c
+a5837de2273e0604ebb60abf11d2c526
+8377290b5e7b977f6b999aa6a9b285e9
+dfd535c721d91f8c39c9dfa97cef002e
+5c37986949bdaea71196b2a57529f4e3
+3de0e7298b27c268682bf6064319d20f
+dea5830de593c20f417bda40ca46fe59
+b08dca8e1291865d1833684318785135
+76bf5190d3fb5addc7d768e8d72f1ed1
+2b3eb3ef0479408cd275507b40de7e32
+07dd00d605b010c935f157db6dfc27ab
+1a5ce8b81400b0d1abc57d81c25119c1
+9ac8a13309d6b62f2173bbabaf7b2a28
+-----END OpenVPN Static key V1-----</dev:code>
         <dev:remarks>
           <maml:para>In this example, an OpenVPN TLS key is generated using the OpenVPN installation at "C:\Program Files\OpenVPN" and is placed in the directory `C:\Users\user.eulandaconnect\OpenVPN`.</maml:para>
         </dev:remarks>
