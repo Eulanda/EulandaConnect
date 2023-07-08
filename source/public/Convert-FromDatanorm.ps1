@@ -291,11 +291,18 @@ function Convert-FromDatanorm {
         }
 
         # Create a new object that contains all supported record types of ol processed files
-        $datanorm = New-Object PSObject -Property @{
-            a = $a
-            b = $b
-            v = $v
-            p = $p
+        if ($a -and $a.Count -gt 0 -or
+            $b -and $b.Count -gt 0 -or
+            $v -and $v.Count -gt 0 -or
+            $p -and $p.Count -gt 0) {
+            $datanorm = New-Object PSObject -Property @{
+                a = $a
+                b = $b
+                v = $v
+                p = $p
+            }
+        } else {
+            $datanorm = $null
         }
     }
 
