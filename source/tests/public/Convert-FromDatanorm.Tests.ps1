@@ -33,6 +33,11 @@ Describe "Convert-FromDatanorm" {
         # Assert
         $result | Should -BeOfType [System.Management.Automation.PSCustomObject]
 
+        # Assert the specific object
+        $specificObject = $result.$datanorm.a["8241335"]
+        $specificObject | Should -Not -BeNull
+        $specificObject.ArtikelNummer | Should -Be "8241335"
+
         Remove-Item -Path $tempFolder -Force -Recurse
     }
 
