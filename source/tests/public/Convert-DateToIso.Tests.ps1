@@ -1,3 +1,5 @@
+Import-Module -Name .\EulandaConnect.psd1
+
 Describe 'Convert-DateToIso' {
 
     It 'converts a datetime object to ISO format correctly with no option' {
