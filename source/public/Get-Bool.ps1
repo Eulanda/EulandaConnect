@@ -13,7 +13,7 @@ function Get-Bool {
 
     process {
         $boolStr = $boolStr.ToUpper()
-        if (($boolStr -eq "1") -or ($boolStr -eq "$TRUE") -or ($boolStr -eq "TRUE")) {
+        if (($boolStr -eq "1") -or ($boolStr -eq "$TRUE") -or ($boolStr -eq '$TRUE') -or ($boolStr -eq "TRUE")) {
             [bool]$result = $true
         } else {
             [bool]$result = $false

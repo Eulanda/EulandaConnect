@@ -687,7 +687,7 @@ function Publish-ToPsGallery {
 # *****************************************************************************
 # Step 6
 # *****************************************************************************
-function Invoke-Pester {
+function Invoke-BuildPester {
     param ()
 
     Write-Verbose -Message ('Starting: {0}' -f $myInvocation.Mycommand)
@@ -805,7 +805,7 @@ function Invoke-Main {
         } elseif ($updateOnlineDocs) {
             Update-OnlineDocs               # Sync to CMS, Compile Size, Upload
         } elseif ($invokePester) {
-            Invoke-Pester                   # Pester tests
+            Invoke-BuildPester                   # Pester tests
         } elseif ($publishToPsGallery) {
             Publish-ToPsGallery             # Publishes to PowerShell Gallery
         }
