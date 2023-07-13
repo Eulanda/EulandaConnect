@@ -13,6 +13,4 @@ Describe 'Get-FirstIp' {
     It 'Get-FirstIp should return the first IP in a new subnet' {
         Get-FirstIp -cidr 8 -NetworkId '192.168.3.0' | Should -Be '192.168.3.1'
     }
-
 }
-
