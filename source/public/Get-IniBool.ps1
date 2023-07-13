@@ -27,5 +27,29 @@ function Get-IniBool {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
         Return $result
     }
-    # Test:  Get-IniBool -section 'Settings' -variable 'Name'
+
+    <# Test:
+
+        $pesterFolder = Resolve-Path -path ".\source\tests"
+        $iniPath = Join-Path -path $pesterFolder "pester.ini"
+        $ini = Read-IniFile -path $iniPath
+
+        # Should be all true
+        $testBool = Get-IniBool -section 'PESTERTEST' -variable 'TrueBool'
+        # or
+        $testBool = Get-IniBool -section 'PESTERTEST' -variable 'TrueOne'
+        # or
+        $testBool = Get-IniBool -section 'PESTERTEST' -variable 'TrueDollarBool'
+
+        # Should be all false
+        $testBool = Get-IniBool -section 'PESTERTEST' -variable 'FalseBool'
+        # or
+        $testBool = Get-IniBool -section 'PESTERTEST' -variable 'FalseZero'
+        # or
+        $testBool = Get-IniBool -section 'PESTERTEST' -variable 'FalseDollarBool'
+
+        # General
+        Get-IniBool -section 'Settings' -variable 'Name'
+
+    #>
 }
