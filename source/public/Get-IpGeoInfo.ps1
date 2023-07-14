@@ -43,6 +43,8 @@ function Get-IpGeoInfo {
                 $global:geoHashTable = Import-Clixml -Path $xmlGeoPath
 
                 <#
+                    # On The Fly Update if the format changes
+
                     # Check and update the existing entries to use the new structure
                     # We have added createdate and changedate
                     $keys = $global:geoHashTable.Keys
@@ -63,6 +65,7 @@ function Get-IpGeoInfo {
                     $global:geoHashTable = $tempHashTable
                     $global:geoHashTable | Export-Clixml -Path $xmlGeoPath
                 #>
+
             } else {
                 $global:geoHashTable = @{}
             }
