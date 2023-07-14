@@ -47,6 +47,7 @@ function Get-IpGeoInfo {
 
                     # Check and update the existing entries to use the new structure
                     # We have added createdate and changedate
+
                     $keys = $global:geoHashTable.Keys
                     $tempHashTable = @{}
                     foreach ($key in $keys) {
