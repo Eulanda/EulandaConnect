@@ -21,8 +21,6 @@ Describe 'New-EulLog' {
         $logContent.Where({ $_ -like "*$message*" }) | Should -Not -BeNullOrEmpty
     }
 
-
-
     # Cleanup after tests
     AfterAll {
         Remove-Item -Path "$global:TestPath\events\LOG_$global:TestName`_*.txt" -Force -ErrorAction SilentlyContinue
