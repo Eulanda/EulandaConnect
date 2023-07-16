@@ -28,7 +28,7 @@ function New-SymbolicLink {
                 throw New-Object System.ComponentModel.Win32Exception -ArgumentList @([System.Runtime.InteropServices.Marshal]::GetLastWin32Error())
             }
         } else {
-            throw (Get-ResStr('ADMIN_RIGHTS_NEEDED') -f $myInvocation.MyCommand)
+            throw ((Get-ResStr 'ADMIN_RIGHTS_NEEDED') -f $myInvocation.MyCommand)
         }
     }
 
