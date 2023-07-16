@@ -8,6 +8,9 @@ Describe 'TestsExistence' {
         $privatePath = '.\source\private\'
         $privateTestPath = '.\source\tests\private\'
 
+        $othersTestPath = '.\source\tests\others\'
+
+
         function Test-Existence {
             param(
                 [Parameter(Mandatory = $true)]
@@ -17,8 +20,9 @@ Describe 'TestsExistence' {
                 [string]$testPath
             )
 
-            $srcFiles = Get-ChildItem -Path $srcPath -Filter '*.ps1' -Recurse
-            $testFiles = Get-ChildItem -Path $testPath -Filter '*.ps1' -Recurse
+            $srcFiles = Get-ChildItem -Path $srcPath -Filter '*.*' -Recurse
+            $testFiles = Get-ChildItem -Path $testPath -Filter '*.*' -Recurse
+
 
             $missingTests = @()
 
@@ -31,6 +35,27 @@ Describe 'TestsExistence' {
 
             return $missingTests
         }
+
+        function Test-DuplicateNamesAndNamingConvention {
+            param(
+                [Parameter(Mandatory = $true)]
+                [string[]]$testPaths
+            )
+
+            $allTestFiles = $testPaths | ForEach-Object {
+                Get-ChildItem -Path $_ -Filter '*.*' -Recurse
+            }
+
+            $duplicates = $allTestFiles | Group-Object -Property BaseName | Where-Object { $_.Count -gt 1 }
+            $invalidNames = $allTestFiles | Where-Object { ($_.Extension -eq '.ps1' -and $_.Name -notmatch '.+\.Tests\.ps1$') -or ($_.Extension -ne '.ps1') }
+
+            return @{
+                Duplicates = $duplicates
+                InvalidNames = $invalidNames
+            }
+        }
+
+
     }
 
     It 'Public functions have Pester tests' {
@@ -59,5 +84,20 @@ Describe 'TestsExistence' {
             Write-Warning "All private functions have an Pester test"
         }
     }
+
+
+    It 'Test files in tests directories do not have duplicate names and follow naming convention' {
+        $allPaths = $publicTestPath, $privateTestPath, $othersTestPath
+        $result = Test-DuplicateNamesAndNamingConvention -testPath $allPaths
+        if ($result.Duplicates.Count -gt 0) {
+            Write-Warning "The following files have duplicate names:`r`n$($result.Duplicates | ForEach-Object { $_.Group.Name -join "`r`n" })"
+        }
+        if ($result.InvalidNames.Count -gt 0) {
+            Write-Warning "The following files have invalid names:`r`n$($result.InvalidNames.Name -join "`r`n")"
+        }
+        $result.Duplicates | Should -BeNullOrEmpty
+        $result.InvalidNames | Should -BeNullOrEmpty
+    }
+
 }
 
