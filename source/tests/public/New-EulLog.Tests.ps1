@@ -26,5 +26,6 @@ Describe 'New-EulLog' {
     # Cleanup after tests
     AfterAll {
         Remove-Item -Path "$global:TestPath\events\LOG_$global:TestName`_*.txt" -Force -ErrorAction SilentlyContinue
+        Remove-Variable -Name TestName -Scope Global -ErrorAction SilentlyContinue
     }
 }
