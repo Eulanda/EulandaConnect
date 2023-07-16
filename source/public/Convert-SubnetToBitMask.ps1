@@ -17,19 +17,26 @@ function Convert-SubnetToBitmask {
 
     process {
         try {
-            if ((! $subnet) -and (! $Cidr)) {
-                $subnet = Get-Subnet # get it fron local ip
+            <#
+            if (($null -eq $subnet) -and ($null -eq $cidr)) {
+                $subnet = Get-Subnet # get it from local ip
             }
-
-            if (! $cidr) {
+#>
+            if ($null -eq $cidr) {
                 $cidr = Get-Cidr -subnet $subnet
             }
+
+            if ($cidr -lt 0 -or $cidr -gt 32) {
+                throw "CIDR value ($cidr) is out of the valid range (0-32)"
+            }
+
             $result = ('1' * $cidr).PadRight(32, '0')
         }
         catch {
-            $result= [string]"0".PadRight(32, '0')
+            throw $_  # Propagate the error
         }
     }
+
 
     end {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
