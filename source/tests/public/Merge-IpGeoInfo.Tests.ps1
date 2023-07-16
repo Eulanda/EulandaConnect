@@ -15,7 +15,7 @@ Describe "Merge-IpGeoInfo" {
                 countryCode = "US"
             }
         }
-        $ipGeoInfo1['8.8.8.8'] = $entry
+        $ipGeoInfo1['8.8.8.8'] = $entry1
 
         $ipGeoInfo2 = @{}
         $entry2 = New-Object PSObject -Property @{
@@ -25,7 +25,7 @@ Describe "Merge-IpGeoInfo" {
                 countryCode = "US"
             }
         }
-        $ipGeoInfo2['8.8.4.4'] = $entry
+        $ipGeoInfo2['8.8.4.4'] = $entry2
 
 
         $ipGeoInfo1 | Export-Clixml -Path $xmlFile1.FullName

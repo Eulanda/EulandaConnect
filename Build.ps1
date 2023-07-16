@@ -693,7 +693,7 @@ function Invoke-BuildPester {
     Write-Verbose -Message ('Starting: {0}' -f $myInvocation.Mycommand)
 
     # Import the module
-    Import-Module .\EulandaConnect.psd1
+    Import-Module .\EulandaConnect.psd1 -force
 
     # Run all Pester tests
     # Pester with no variables
