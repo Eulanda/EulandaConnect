@@ -74,10 +74,11 @@ function Out-Welcome {
             New-Variable -Name 'ecProjectVersion' -Scope 'Global' -Option ReadOnly -Force -Value ([version](Read-VersionFromSynopsis -path $projectScript)) -Description 'Project version using for the EulandaConnect module'
         }
 
-        Write-Verbose "$myInvocation.Mycommand $((get-module -Name EulandaConnect).path)"
+        Write-Verbose "$($myInvocation.Mycommand) $((get-module -Name EulandaConnect).path)"
 
         if (! $noInfo) {
             Write-Host  ( (Get-ResStr 'OUT_WELCOME_VERSION') -f $ecModuleName, $($ecModuleVersion.ToString()))  -ForegroundColor Blue
+            Write-Verbose  ( (Get-ResStr 'OUT_WELCOME_VERSION') -f $ecModuleName, $($ecModuleVersion.ToString()))
             Write-Host  ( (Get-ResStr 'OUT_WELCOME_COPYRIGHT') -f $($ecModuleCopyright))  -ForegroundColor Blue
             Write-Host  ( (Get-ResStr 'OUT_WELCOME_LICENSEURI') -f $($ecModuleLicenseURI)) -ForegroundColor Blue
             Write-Host  ( (Get-ResStr 'OUT_WELCOME_PATH') -f $($ecModulePath)) -ForegroundColor Blue
