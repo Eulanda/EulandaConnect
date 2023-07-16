@@ -21,8 +21,14 @@ function Out-Goodbye {
         write-host ((Get-ResStr 'OUT_GOODBYE_ENDTIME') -f $(Use-Culture -culture $ecCulture -script {$($ecEndTime.toString())})) -ForegroundColor Blue
         Write-Host ((Get-ResStr 'OUT_GOODBYE_DURATION') -f $duration.TotalSeconds)  -ForegroundColor "blue"
 
-        if ($normally) { Write-Host (Get-ResStr 'OUT_GOODBYE_NORMALLY') -ForegroundColor "blue" }
-        if ($abnormally) { Write-Host (Get-ResStr 'OUT_GOODBYE_ABNORMALLY') -ForegroundColor "red" }
+        if ($normally) {
+            Write-Host (Get-ResStr 'OUT_GOODBYE_NORMALLY') -ForegroundColor "blue"
+            Write-Verbose (Get-ResStr 'OUT_GOODBYE_NORMALLY')  # For Pester test
+        }
+        if ($abnormally) {
+            Write-Host (Get-ResStr 'OUT_GOODBYE_ABNORMALLY') -ForegroundColor "red"
+            Write-Verbose (Get-ResStr 'OUT_GOODBYE_ABNORMALLY')  # For Pester test
+        }
     }
 
     end {
