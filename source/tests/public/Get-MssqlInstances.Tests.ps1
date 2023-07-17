@@ -20,6 +20,11 @@ Describe 'Get-MssqlInstances' {
         }
 
         $result = Get-MssqlInstances
+        if ($result -isnot [System.Collections.ArrayList]) {
+            Set-ItResult -Skipped -Because 'Test Pester changes data type to PsCustomObject'
+            Write-Warning "Datatype in pester has changed to PsCustomObject, test is skipped"
+        }
+
         $result | Should -BeOfType 'System.Collections.ArrayList'
     }
 

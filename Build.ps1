@@ -700,7 +700,7 @@ function Invoke-BuildPester {
     # $testResults = Invoke-Pester -Path .\tests -Output Detailed -PassThru
 
     [bool]$noTelegram = $pesterNoTelegram
-    $container = New-PesterContainer -Path .\source\tests -Data @{ NoTelegram = $noTelegram; additionalVariable = $noTelegram }
+    $container = New-PesterContainer -Path .\source\test -Data @{ NoTelegram = $noTelegram; additionalVariable = $noTelegram }
     $testResults = Invoke-Pester -Container $container -Output Detailed -PassThru
 
 
