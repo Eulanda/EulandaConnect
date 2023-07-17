@@ -46,15 +46,17 @@ Describe 'TestsExistence' {
                 Get-ChildItem -Path $_ -Filter '*.*' -Recurse
             }
 
-            $duplicates = $allTestFiles | Group-Object -Property BaseName | Where-Object { $_.Count -gt 1 }
-            $invalidNames = $allTestFiles | Where-Object { ($_.Extension -eq '.ps1' -and $_.Name -notmatch '.+\.Tests\.ps1$') -or ($_.Extension -ne '.ps1') }
+            $duplicates = @()
+            $duplicates += $allTestFiles | Group-Object -Property BaseName | Where-Object { $_.Count -gt 1 }
+
+            $invalidNames = @()
+            $invalidNames += $allTestFiles | Where-Object { ($_.Extension -eq '.ps1' -and $_.Name -notmatch '.+\.Tests\.ps1$') -or ($_.Extension -ne '.ps1') }
 
             return @{
                 Duplicates = $duplicates
                 InvalidNames = $invalidNames
             }
         }
-
 
     }
 
