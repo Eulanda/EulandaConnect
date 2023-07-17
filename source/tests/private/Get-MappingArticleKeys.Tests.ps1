@@ -1,4 +1,3 @@
-# Import the module
 Import-Module -Name .\EulandaConnect.psd1
 
 Describe 'Get-MappingArticleKeys' {
