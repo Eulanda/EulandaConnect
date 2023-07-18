@@ -57,5 +57,49 @@ Describe 'Get-TranslateIsDelim' {
             # Assert
             $result | Should -Be $false
         }
+
+        It 'should return $false for an invalid language tag line' {
+            # Arrange
+            $inputValue = "xy [DE]"
+
+            # Act
+            $result = Get-TranslateIsDelim -value $inputValue
+
+            # Assert
+            $result | Should -Be $false
+        }
+
+        It 'should return $false for round brackets' {
+            # Arrange
+            $inputValue = "(DE)"
+
+            # Act
+            $result = Get-TranslateIsDelim -value $inputValue
+
+            # Assert
+            $result | Should -Be $false
+        }
+
+        It 'should return $false not closing bracket' {
+            # Arrange
+            $inputValue = "[DE"
+
+            # Act
+            $result = Get-TranslateIsDelim -value $inputValue
+
+            # Assert
+            $result | Should -Be $false
+        }
+
+        It 'should return $false not opening bracket' {
+            # Arrange
+            $inputValue = "DE]"
+
+            # Act
+            $result = Get-TranslateIsDelim -value $inputValue
+
+            # Assert
+            $result | Should -Be $false
+        }
     }
 }
