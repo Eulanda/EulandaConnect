@@ -12,6 +12,9 @@ Function Find-MssqlServer {
         ,
         [Parameter(Mandatory = $false)]
         [int]$timeoutSeconds = 2
+        ,
+        [Parameter(Mandatory = $false)]
+        [switch]$force
      )
 
     begin {
@@ -40,7 +43,28 @@ Function Find-MssqlServer {
     }
 
     process {
-        # $result = New-Object System.Collections.ArrayList
+
+        if (($localIp -eq (Get-LocalIp)) -or ($localIp = '127.0.0.1')) {
+            $service = Get-Service -Name SQLBrowser
+            if ($service.Status -ne 'Running') {
+                if ($force) {
+                    if ($service.StartType -eq 'Disabled') {
+                        Throw "The SQL Server Browser service is disabled and cannot be started"
+                    }
+                    if (Test-Administrator) {
+                        Start-Service -Name SQLBrowser
+                        do {
+                            $service.Refresh()
+                            Start-Sleep -Seconds 1
+                        } while ($service.Status -ne 'Running')
+                    } else {
+                        Throw "To start this service, you need administrative rights. The rights of the current session are not sufficient."
+                    }
+                } else {
+                    Throw "Local SQL Server Browser service is not running"
+                }
+            }
+        }
 
         # Create UDP client
         $udpClient = New-Object System.Net.Sockets.UdpClient

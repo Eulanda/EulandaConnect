@@ -69,7 +69,7 @@ Describe 'TestsExistence' {
             Write-Host "PUBLIC: $percentageMissing% ( $($missingTests.Count) from  $totalPublicFunctions units) of public functions are missing Pester tests." -ForegroundColor Green
             Set-ItResult -Skipped -Because 'Some public functions are missing Pester tests'
         } else {
-            Write-Host "PUBLIC: 100% ($totalPublicFunctions units) public functions have an Pester test."  -ForegroundColor Green
+            Write-Host "PUBLIC: 0% (0 from $totalPublicFunctions units) of public functions are missing Pester tests."  -ForegroundColor Green
         }
     }
 
@@ -84,7 +84,7 @@ Describe 'TestsExistence' {
             Write-Host "PRIVATE: $percentageMissing% ( $($missingTests.Count)  from  $totalPrivateFunctions units) of private functions are missing Pester tests."   -ForegroundColor Green
             Set-ItResult -Skipped -Because 'Some private functions are missing Pester tests'
         } else {
-            Write-Host "PRIVATE: 100% ($totalPrivateFunctions units) private functions have an Pester test."  -ForegroundColor Green
+            Write-Host "PRIVATE: 0% (0 from $totalPrivateFunctions units) of private functions are missing Pester tests."  -ForegroundColor Green
         }
     }
 
