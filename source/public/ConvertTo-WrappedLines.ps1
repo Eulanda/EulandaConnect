@@ -75,10 +75,22 @@ function ConvertTo-WrappedLines {
 
         if ($asString) {
             if ($useCrLf) {
-                [string]$result = $result -join "`r`n"
+                [string]$result = $result.trim() -join "`r`n"
             } else {
-                [string]$result = $result -join "`n"
+                [string]$result = $result.trim() -join "`n"
             }
+        } else {
+            $result = ,$result
+            try {
+                if ($result[0].Count -gt 1)  {
+                    if ($result[0][0] -eq "") {
+                        $result[0].RemoveAt(0)
+                    }
+                }
+            }
+            catch {
+            }
+
         }
     }
 
