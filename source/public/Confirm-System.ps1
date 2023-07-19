@@ -22,6 +22,7 @@ function Confirm-System {
 
     begin {
         Write-Verbose -Message ((Get-ResStr 'STARTING_FUNCTION') -f $myInvocation.Mycommand)
+        Test-SpecificParameters -BoundParameters $PSBoundParameters -CommandName $MyInvocation.MyCommand.Name
         New-Variable -Name 'item' -Scope 'Private' -Value ([PSCustomObject]@{})
         New-Variable -Name 'i' -Scope 'Private' -Value ([int]0)
         New-Variable -Name 'diskModel' -Scope 'Private' -Value ''
@@ -44,42 +45,6 @@ function Confirm-System {
     }
 
     process {
-
-        # ***************************************************
-        # START ERROR HANDLING MISSING ET LEATS ONE PARAMETER
-        # ***************************************************
-        # List of general parameters to be excluded
-        $commonParameters = @(
-            'Verbose',
-            'Debug',
-            'ErrorAction',
-            'WarningAction',
-            'InformationAction',
-            'ErrorVariable',
-            'WarningVariable',
-            'InformationVariable',
-            'OutVariable',
-            'OutBuffer',
-            'PipelineVariable'
-        )
-
-        # Filter PSBoundParameters to get only the specific parameters
-        $specificBoundParameters = @($PSBoundParameters.Keys | Where-Object { $_ -notin $commonParameters })
-
-        # Raise an error if no specific parameters were passed
-        if ($specificBoundParameters.Count -eq 0) {
-            # Extract the names of the specific parameters
-            $specificParameters = (Get-Command $MyInvocation.MyCommand).Parameters.Keys | Where-Object { $_ -notin $commonParameters }
-            # Convert the parameter list into a formatted string
-            $parameterList = ($specificParameters | ForEach-Object { "-$_" }) -join ', '
-            Throw ((Get-ResStr 'PARAMS_AT_LEAST_ONE') -f $parameterList, $myInvocation.Mycommand)
-        }
-
-        # ***************************************************
-        # END ERROR HANDLING
-        # ***************************************************
-
-
         $result = New-Object System.Collections.ArrayList
 
         if ($all -or $administrator) {
