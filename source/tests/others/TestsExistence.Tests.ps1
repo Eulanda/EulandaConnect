@@ -62,28 +62,59 @@ Describe 'TestsExistence' {
 
     It 'Public functions have Pester tests' {
         $missingTests = Test-Existence -srcPath $publicPath -testPath $publicTestPath
+        $totalPublicFunctions = (Get-ChildItem -Path $publicPath -Filter '*.ps1' -Recurse).Count
         if ($missingTests.Count -gt 0) {
-            $totalPublicFunctions = (Get-ChildItem -Path $publicPath -Filter '*.ps1' -Recurse).Count
             $percentageMissing = [int](($missingTests.Count / $totalPublicFunctions) * 100)
             Write-Warning "The following public functions are missing Pester tests:`r`n$($missingTests -join "`r`n")"
-            Write-Warning "$percentageMissing% of public functions are missing tests."
+            Write-Host "PUBLIC: $percentageMissing% ( $($missingTests.Count) from  $totalPublicFunctions units) of public functions are missing Pester tests." -ForegroundColor Green
             Set-ItResult -Skipped -Because 'Some public functions are missing Pester tests'
         } else {
-            Write-Host "All public functions have an Pester test"
+            Write-Host "PUBLIC: 100% ($totalPublicFunctions units) public functions have an Pester test."  -ForegroundColor Green
         }
     }
 
     It 'Private functions have Pester tests' {
         $missingTests = Test-Existence -srcPath $privatePath -testPath $privateTestPath
+        $totalPrivateFunctions = (Get-ChildItem -Path $privatePath -Filter '*.ps1' -Recurse).Count
         if ($missingTests.Count -gt 0) {
-            $totalPrivateFunctions = (Get-ChildItem -Path $privatePath -Filter '*.ps1' -Recurse).Count
+
             $percentageMissing = [int](($missingTests.Count / $totalPrivateFunctions) * 100)
             Write-Host
             Write-Warning "The following private functions are missing Pester tests:`r`n$($missingTests -join "`r`n")"
-            Write-Warning "$percentageMissing% of private functions are missing tests."
+            Write-Host "PRIVATE: $percentageMissing% ( $($missingTests.Count)  from  $totalPrivateFunctions units) of private functions are missing Pester tests."   -ForegroundColor Green
             Set-ItResult -Skipped -Because 'Some private functions are missing Pester tests'
         } else {
-            Write-Warning "All private functions have an Pester test"
+            Write-Host "PRIVATE: 100% ($totalPrivateFunctions units) private functions have an Pester test."  -ForegroundColor Green
+        }
+    }
+
+    It 'Total functions have Pester tests' {
+        $missingPublicTests = Test-Existence -srcPath $publicPath -testPath $publicTestPath
+        $missingPrivateTests = Test-Existence -srcPath $privatePath -testPath $privateTestPath
+        try {
+            $missingPublicCount = $missingPublicTests.Count
+        }
+        catch {
+            $missingPublicCount = 0
+        }
+        try {
+            $missingPrivateCount = $missingPrivateTests.Count
+        }
+        catch {
+            $missingPrivateCount = 0
+        }
+
+        $missingCount = $missingPrivateCount + $missingPublicCount
+        if ($missingCount -gt 0)  {
+            $totalPublicFunctions = (Get-ChildItem -Path $publicPath -Filter '*.ps1' -Recurse).Count
+            $totalPrivateFunctions = (Get-ChildItem -Path $privatePath -Filter '*.ps1' -Recurse).Count
+            $totalFunctions = $totalPublicFunctions + $totalPrivateFunctions
+
+            $percentageMissing = [int](($missingCount / $totalFunctions) * 100)
+            Write-Host "TOTAL: $percentageMissing% ( $($missingCount) from  $totalFunctions units) of functions are missing Pester tests." -ForegroundColor Green
+            Set-ItResult -Skipped -Because 'Some functions are missing Pester tests'
+        } else {
+            Write-Host "TOTAL: All functions have an Pester test." -ForegroundColor Green
         }
     }
 
@@ -102,4 +133,3 @@ Describe 'TestsExistence' {
     }
 
 }
-
