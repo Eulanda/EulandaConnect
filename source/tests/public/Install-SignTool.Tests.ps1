@@ -9,7 +9,7 @@ InModuleScope EulandaConnect {
                     Headers = @{}
                 }
             }
-            { Install-SignTool -url "https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/" } | Should -Throw -ExceptionType ([System.Management.Automation.RuntimeException]) # Geändert, um den tatsächlich geworfenen Fehlertyp wiederzugeben
+            { Install-SignTool -url "https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/" } | Should -Throw -ExceptionType ([System.Management.Automation.RuntimeException])
         }
     }
 }
