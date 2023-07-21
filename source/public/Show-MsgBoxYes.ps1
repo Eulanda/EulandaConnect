@@ -13,6 +13,10 @@ function Show-MsgBoxYes {
     }
 
     process {
+        if ($env:PESTER_TEST_RUN -eq "1") {
+            throw "Test environment detected, aborting Show-MsgBoxYes"
+        }
+
         [int]$answer = Show-MsgBox -prompt $prompt -title 'Info' -icon $mbNone -btnDef $mbNone
         if ($answer -eq $mbrYes) {
             [bool]$result = $true
