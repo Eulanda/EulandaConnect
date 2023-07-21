@@ -27,6 +27,10 @@ function Show-MsgBox {
     }
 
     process {
+        if ($env:PESTER_TEST_RUN -eq "1") {
+            throw "Test environment detected, aborting Show-MsgBox"
+        }
+
         Add-Type -AssemblyName PresentationFramework | Out-Null
         [int]$result = [System.Windows.MessageBox]::Show((new-object System.Windows.Window -Property @{TopMost = $True}), $prompt, $title, $btn, $icon, $btnDef)
     }
