@@ -637,8 +637,6 @@ function New-FinalImage {
     ConvertTo-Maml
     Approve-Signature "$finalFolder\EulandaConnect.psm1"
     Approve-Signature "$finalFolder\EulandaConnect.psd1"
-
-    # Good place to run pester
 }
 
 
@@ -700,25 +698,55 @@ function Publish-ToPsGallery {
 # Step 6
 # *****************************************************************************
 function Invoke-BuildPester {
-    param ()
+    param (
+        [string[]]$tag,
+        [string[]]$excludeTag
+    )
 
     Write-Verbose -Message ('Starting: {0}' -f $myInvocation.Mycommand)
 
-    # Import the module
+    # Auto-exclude tags
+
+     if ((-not (Test-TokenAvailable)) -and $excludeTag -notcontains 'token') {
+        # If no SmartCard is available add 'token' to $excludeTag
+        $excludeTag += 'token'
+     }
+
+     # $noTelegram is set in taks.json
+     if ($noTelegram  -and $excludeTag -notcontains 'telegram') {
+        $excludeTag += 'telegram'
+     }
+
+    # Show tags which are used or excluded
+    if ($tag -or $excludeTag) {
+        Write-Host "************************************************"
+    }
+
+    if ($tag) {
+        Write-Host "Only Testcaes with the following tag's are used:"
+        $tag
+    }
+
+    if ($excludeTag) {
+        Write-Host "Testcaes with the following tag's are excluded:"
+        $excludeTag
+    }
+
+    if ($tag -or $excludeTag) {
+        Write-Host "************************************************"
+    }
+
+
     Import-Module .\EulandaConnect.psd1 -force
 
-    # Run all Pester tests
-    # Pester with no variables
-    # $testResults = Invoke-Pester -Path .\tests -Output Detailed -PassThru
-
-    [bool]$noToken = (-not (Test-TokenAvailable))
-    $container = New-PesterContainer -Path .\source\test -Data @{noTelegram = $noTelegram; noToken = $noToken }
-    $testResults = Invoke-Pester -Container $container -Output Detailed -PassThru
-
+    # Add variables as a hashtable to the container
+    $container = New-PesterContainer -Path .\source\test -Data @{noTelegram = $noTelegram}
+    $testResults = Invoke-Pester -Container $container -Output Detailed -Tag $tag -ExcludeTag $excludeTag -PassThru
 
     # Print summary of test results
     $testResults | Format-List -Property *
 }
+
 
 
 # *****************************************************************************
@@ -817,7 +845,7 @@ function Invoke-Main {
         } elseif ($updateOnlineDocs) {
             Update-OnlineDocs               # Sync to CMS, Compile Size, Upload
         } elseif ($invokePester) {
-            Invoke-BuildPester                   # Pester tests
+            Invoke-BuildPester              # Pester tests
         } elseif ($publishToPsGallery) {
             Publish-ToPsGallery             # Publishes to PowerShell Gallery
         }
