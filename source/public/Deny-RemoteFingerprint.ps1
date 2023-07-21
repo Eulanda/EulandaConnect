@@ -48,5 +48,5 @@ function Deny-RemoteFingerprint {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
         Return $result
     }
-    # Test:  Deny-RemoteFingerprint -server 'myftp.eulanda.eu'
+    # Test:  Deny-RemoteFingerprint -server '192.168.42.1'
 }

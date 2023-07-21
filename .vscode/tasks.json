@@ -78,7 +78,7 @@
                 "-File",
                 "${workspaceFolder}\\Build.ps1",
                 "-invokePester",
-                "-pesterNoTelegram"
+                "-noTelegram"
             ]
         },
         {

@@ -19,7 +19,7 @@
     ,
     [switch]$publishToPsGallery  # 7
     ,
-    [switch]$pesterNoTelegram    # Parameter
+    [switch]$noTelegram    # Parameter
     )
 
 
@@ -317,7 +317,19 @@ function Get-AssetsFileList {
     Return $result
 }
 
-
+function Test-TokenAvailable {
+    $iniPath = Resolve-Path ".\source\tests\pester.ini"
+    $ini = Read-IniFile -path $iniPath.Path
+    $output = certutil -scinfo -silent 2>&1 | Out-String
+    $snExists = $output -match $ini['TOKEN']['sn']
+    $cnExists = $output -match $ini['TOKEN']['cn']
+    if ($snExists -and $cnExists) {
+        return $true
+    }
+    else {
+        return $false
+    }
+}
 
 function Update-FrontMatter {
     param(
@@ -699,8 +711,8 @@ function Invoke-BuildPester {
     # Pester with no variables
     # $testResults = Invoke-Pester -Path .\tests -Output Detailed -PassThru
 
-    [bool]$noTelegram = $pesterNoTelegram
-    $container = New-PesterContainer -Path .\source\test -Data @{ NoTelegram = $noTelegram; additionalVariable = $noTelegram }
+    [bool]$noToken = (-not (Test-TokenAvailable))
+    $container = New-PesterContainer -Path .\source\test -Data @{noTelegram = $noTelegram; noToken = $noToken }
     $testResults = Invoke-Pester -Container $container -Output Detailed -PassThru
 
 
