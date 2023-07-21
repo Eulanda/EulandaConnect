@@ -2,7 +2,7 @@ Import-Module -Name .\EulandaConnect.psd1
 
 # ATTENTION: This integration test requires MSSQL, FTP or something other
 
-Describe 'Get-RemoteFileSize' -Tag 'integration', 'sftp', 'sftp' {
+Describe 'Get-RemoteFileSize' -Tag 'integration', 'sftp' {
 
     BeforeAll {
         # Arrange
