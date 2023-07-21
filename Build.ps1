@@ -331,6 +331,24 @@ function Test-TokenAvailable {
     }
 }
 
+
+function Test-SftpPort {
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$ip,
+        [int]$port = 22,
+        [int]$timeoutMilliseconds = 2000  # 2 Sekunden Timeout
+    )
+
+    $tcpclient = New-Object Net.Sockets.TcpClient
+    $connect = $tcpclient.BeginConnect($ip, $port, $null, $null)
+
+    $result = $connect.AsyncWaitHandle.WaitOne($timeoutMilliseconds, $true)
+    $tcpclient.Close()
+    return $result
+}
+
+
 function Update-FrontMatter {
     param(
         [Parameter(Mandatory=$true)]
@@ -705,19 +723,37 @@ function Invoke-BuildPester {
 
     Write-Verbose -Message ('Starting: {0}' -f $myInvocation.Mycommand)
 
+    Remove-Module EulandaConnect -ErrorAction SilentlyContinue
+    Import-Module .\EulandaConnect.psd1 -force
+    $iniPath = Resolve-Path ".\source\tests\pester.ini"
+    $ini = Read-IniFile -path $iniPath.Path
+
+
     # Auto-exclude tags
 
-     if ((-not (Test-TokenAvailable)) -and $excludeTag -notcontains 'token') {
+    $ip = $ini['SFTP']['server']
+    $progressPreference = 'silentlyContinue'
+    [bool]$noSftp = (-not (Test-SftpPort -ip $ip))
+    $progressPreference = 'Continue'
+    if ($noSftp -and $excludeTag -notcontains 'sftp') {
+        # If no sftp server is available
+        $excludeTag += 'sftp'
+    }
+
+    [bool]$noToken = -not (Test-TokenAvailable)
+    if ($noToken -and $excludeTag -notcontains 'token') {
         # If no SmartCard is available add 'token' to $excludeTag
         $excludeTag += 'token'
-     }
+    }
 
-     # $noTelegram is set in taks.json
-     if ($noTelegram  -and $excludeTag -notcontains 'telegram') {
+    if ($noTelegram  -and $excludeTag -notcontains 'telegram') {
+        # $noTelegram is set in taks.json
         $excludeTag += 'telegram'
-     }
+    }
+
 
     # Show tags which are used or excluded
+
     if ($tag -or $excludeTag) {
         Write-Host "************************************************"
     }
@@ -737,7 +773,19 @@ function Invoke-BuildPester {
     }
 
 
-    Import-Module .\EulandaConnect.psd1 -force
+    # Check if there are any tags or excluded tags
+    if ($tag -or $excludeTag) {
+        Write-Host "Tags or excluded tags detected:"
+        if ($tag) { Write-Host "Tags: $tag" }
+        if ($excludeTag) { Write-Host "Excluded tags: $excludeTag" }
+
+        $userResponse = Read-Host "Do you wish to continue with these settings? (y/n)"
+        if ($userResponse.Substring(0,1).ToUpper() -ne 'Y') {
+            Write-Host "Exiting function due to user response."
+            return
+        }
+    }
+
 
     # Add variables as a hashtable to the container
     $container = New-PesterContainer -Path .\source\test -Data @{noTelegram = $noTelegram}
