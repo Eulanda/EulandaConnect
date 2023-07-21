@@ -2,7 +2,6 @@ Import-Module -Name .\EulandaConnect.psd1
 
 Describe "Test-XmlSchema" {
     BeforeAll {
-        # Prepare XML and XSD file paths
         $xmlFile = Join-Path -Path $env:TEMP -ChildPath "simple.xml"
         $schemaFile = Join-Path -Path $env:TEMP -ChildPath "simple.xsd"
 
@@ -40,15 +39,12 @@ Describe "Test-XmlSchema" {
     }
 
     It "returns no error when the XML file matches the schema" {
-        # Call the function and check that no error was thrown
         { Test-XmlSchema -xmlFile $xmlFile -schemaFile $schemaFile } | Should -Not -Throw
     }
 
     It "throws an error when the XML file does not match the schema" {
         # Modify the XML file to make it invalid
         (Get-Content -Path $xmlFile) -replace "5.20", "invalid" | Set-Content -Path $xmlFile
-
-        # Call the function and check that an error was thrown
         { Test-XmlSchema -xmlFile $xmlFile -schemaFile $schemaFile } | Should -Throw
     }
 
