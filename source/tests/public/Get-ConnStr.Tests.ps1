@@ -20,4 +20,12 @@ Describe 'Get-ConnStr' -Tag 'integration' {
         $result | Should -Match "Persist Security Info=True"
         $result | Should -Match "User ID=eulanda"
     }
+
+    It "Throws an exception when no database parameter is provided" {
+        # Arrange
+        Mock Get-ResStr { return "Missing database parameter" }
+
+        # Act
+        { Get-ConnStr -udl $udl } | Should -Throw
+    }
 }
