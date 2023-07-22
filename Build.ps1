@@ -753,7 +753,7 @@ function Publish-ToPsGallery {
 
 
 # *****************************************************************************
-# Step 6
+# Step 6a+6b
 # *****************************************************************************
 function Invoke-BuildPester {
     param (
@@ -876,14 +876,17 @@ function Invoke-BuildPester {
 
 
     # ************************
-    # Start test container
+    # Start Pester container
     # ************************
 
     # Add variables as a hashtable to the container
     $container = New-PesterContainer -Path .\source\test -Data @{noTelegram = $noTelegram}
     $testResults = Invoke-Pester -Container $container -Output Detailed -Tag $tag -ExcludeTag $excludeTag -PassThru
 
-    # Print summary of test results
+
+    # ************************
+    # Summary
+    # ************************
     $testResults | Format-List -Property *
     $endDate = Get-Date
     $duration = $endDate - $startDate
