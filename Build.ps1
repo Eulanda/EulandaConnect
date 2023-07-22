@@ -721,6 +721,10 @@ function Invoke-BuildPester {
         [string[]]$excludeTag
     )
 
+    # Allowed tags:
+    #   admin, eulanda, helper, https, hugo, input, integration, mock
+    #   openvpn, registry, sql, sftp, telegram, token
+
     Write-Verbose -Message ('Starting: {0}' -f $myInvocation.Mycommand)
 
     Remove-Module EulandaConnect -ErrorAction SilentlyContinue
