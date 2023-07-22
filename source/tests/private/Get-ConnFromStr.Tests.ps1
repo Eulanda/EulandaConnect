@@ -1,4 +1,5 @@
 Import-Module -Name .\EulandaConnect.psd1
+Set-StrictMode -version latest
 
 Describe 'Get-ConnFromStr' -Tag 'integration', 'sql' {
     InModuleScope EulandaConnect {

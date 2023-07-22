@@ -1,5 +1,6 @@
 # Import the module
 Import-Module -Name .\EulandaConnect.psd1
+Set-StrictMode -version latest
 
 Describe 'Get-RandomWords' {
     InModuleScope EulandaConnect {

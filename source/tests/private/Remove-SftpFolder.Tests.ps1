@@ -1,4 +1,5 @@
 Import-Module -Name .\EulandaConnect.psd1
+Set-StrictMode -version latest
 
 Describe 'Remove-SftpFolder' -Tag 'integration', 'sftp' {
     InModuleScope EulandaConnect {
