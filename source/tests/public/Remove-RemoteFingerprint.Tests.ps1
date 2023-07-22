@@ -1,4 +1,5 @@
 Import-Module -Name .\EulandaConnect.psd1
+Set-StrictMode -version latest
 
 Describe 'Remove-RemoteFingerprint' -Tag 'integration', 'ftp', 'sftp' {
 
@@ -49,7 +50,14 @@ Describe 'Remove-RemoteFingerprint' -Tag 'integration', 'ftp', 'sftp' {
 
         # Check if the fingerprint was removed
         $content = Get-Content -Path $originalFilePath | ConvertFrom-Json
-        $content.Keys.$server | Should -BeNull
+        $propertyExists = $true
+        try {
+            $null = $content.Keys.$server
+        }
+        catch {
+            $propertyExists = $false
+        }
+        $propertyExists | Should -BeFalse
     }
 
     AfterAll {
