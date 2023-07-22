@@ -1,7 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe 'Get-TranslateIsDelim' {
-    InModuleScope 'EulandaConnect' {
+Describe 'Get-TranslateIsDelim' -Tag 'eulanda' {
+    InModuleScope EulandaConnect {
 
         It 'should return $true for a valid ISO tag without subtag' {
             # Arrange

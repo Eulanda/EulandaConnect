@@ -1,7 +1,8 @@
 Import-Module -Name .\EulandaConnect.psd1
 
 Describe 'Test-ValidateId' {
-    InModuleScope 'EulandaConnect' {
+    InModuleScope EulandaConnect {
+
         It 'should throw an exception when the id is less than 1' {
             { Test-ValidateId -id 0 -name 'TestID' } | Should -Throw
         }

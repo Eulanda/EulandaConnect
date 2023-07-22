@@ -1,7 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
 Describe 'Get-PunctuationIdxByChar' {
-    InModuleScope 'EulandaConnect' {
+    InModuleScope EulandaConnect {
 
         # Test if the function returns correct index of punctuation
         It 'should return correct index of punctuation' {

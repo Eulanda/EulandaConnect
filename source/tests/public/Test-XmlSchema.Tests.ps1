@@ -1,6 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Test-XmlSchema" {
+Describe 'Test-XmlSchema' {
+
     BeforeAll {
         $xmlFile = Join-Path -Path $env:TEMP -ChildPath "simple.xml"
         $schemaFile = Join-Path -Path $env:TEMP -ChildPath "simple.xsd"

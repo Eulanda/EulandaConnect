@@ -1,6 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
 Describe 'ConvertTo-WrappedLines' {
+
     It 'should correctly wrap a single line shorter than the width' {
         $result = ConvertTo-WrappedLines -text 'Hello, world!' -width 20
         $result.Count | Should -Be 1

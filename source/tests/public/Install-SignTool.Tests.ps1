@@ -1,7 +1,8 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-InModuleScope EulandaConnect {
-    Describe 'Install-SignTool' {
+Describe 'Install-SignTool' -Tag 'mock' {
+    InModuleScope EulandaConnect {
+
         It 'should throw an exception if the download link is not found' {
             Mock Invoke-WebRequest -MockWith {
                 return @{

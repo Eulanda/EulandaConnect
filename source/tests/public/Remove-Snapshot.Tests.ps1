@@ -1,6 +1,6 @@
-Import-Module ./EulandaConnect.psm1
+Import-Module -Name .\EulandaConnect.psm1
 
-Describe 'Remove-Snapshot' {
+Describe 'Remove-Snapshot' -Tag 'admin' {
 
     BeforeAll {
         $isAdmin = Test-Administrator

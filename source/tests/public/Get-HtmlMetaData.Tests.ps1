@@ -1,6 +1,6 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe 'Get-HtmlMetaData' {
+Describe 'Get-HtmlMetaData' -Tag 'eulanda' {
 
     It 'should return a hashtable with default values when no parameters are provided' {
         $metaData = Get-HtmlMetaData

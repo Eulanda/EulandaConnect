@@ -1,7 +1,8 @@
-Import-Module ./EulandaConnect.psm1
+Import-Module -Name .\EulandaConnect.psd1
 
-InModuleScope EulandaConnect {
-    Describe "Remove-SymbolicLink" {
+Describe 'Remove-SymbolicLink' -Tag 'mock' {
+    InModuleScope EulandaConnect {
+
         It "removes symbolic link when run as administrator and link exists" {
             Mock Get-ResStr { return [string]$args[0] }
             Mock Test-Administrator { return $true }

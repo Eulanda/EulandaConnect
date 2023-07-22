@@ -1,6 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Convert-SubnetToBitmask" {
+Describe 'Convert-SubnetToBitmask' {
+
     It "returns expected output for known input" {
         $result = Convert-SubnetToBitmask -cidr 24
         $expected = '11111111111111111111111100000000'

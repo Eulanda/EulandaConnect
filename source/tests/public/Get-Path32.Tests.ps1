@@ -1,6 +1,6 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Get-Path32" {
+Describe 'Get-Path32' {
 
     It "Returns the correct path for 32-bit program files" {
 

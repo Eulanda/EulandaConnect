@@ -1,7 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
 Describe 'Get-MappingSalesOrderKeys' {
-    InModuleScope 'EulandaConnect' {
+    InModuleScope EulandaConnect {
 
         # Test if the function returns correct hash table
         It 'should return correct hash table' {

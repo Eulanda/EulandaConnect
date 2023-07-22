@@ -1,6 +1,6 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Get-MultipleOptions" {
+Describe 'Get-MultipleOptions' {
 
     It "Runs without throwing" {
         { Get-MultipleOptions -values 'alpha,bravo,charlie' -list @('default','bravo','charlie','delta','echo') } | Should -Not -Throw

@@ -1,6 +1,3 @@
-# Importieren Sie das Modul, falls es noch nicht importiert wurde
-# Import-Module -Name 'EulandaConnect'
-
 Import-Module -Name .\EulandaConnect.psd1
 
 Describe 'Get-MaxHosts' {

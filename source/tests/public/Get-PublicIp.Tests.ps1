@@ -1,6 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Get-PublicIp" {
+Describe 'Get-PublicIp' {
+
     It "Returns a valid public IP address" {
         # Invoke function
         $result = Get-PublicIp

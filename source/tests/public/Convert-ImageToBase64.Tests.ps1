@@ -1,6 +1,6 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Convert-ImageToBase64" {
+Describe 'Convert-ImageToBase64' {
 
     BeforeAll {
         $imageFile = 'PesterTest.png'

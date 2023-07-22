@@ -1,6 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Get-LastIp" {
+Describe 'Get-LastIp' {
+
     It "Runs without throwing" {
         { Get-LastIp } | Should -Not -Throw
     }

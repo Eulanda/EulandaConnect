@@ -1,7 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe 'Get-TranslateExtractTag' {
-    InModuleScope 'EulandaConnect' {
+Describe 'Get-TranslateExtractTag' -Tag 'eulanda' {
+    InModuleScope EulandaConnect {
 
         It 'should return correct iso when no subtag is given' {
             # Arrange

@@ -1,8 +1,6 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-# ATTENTION: This integration test requires MSSQL, FTP or something other
-
-Describe 'Backup-MssqlDatabase' -Tag 'integration', 'ftp' {
+Describe 'Backup-MssqlDatabase' -Tag 'integration', 'sql', 'ftp', 'sftp' {
 
     BeforeAll {
         $tempFolder = Join-Path -Path $env:TEMP -ChildPath (Get-Random)

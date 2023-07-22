@@ -1,6 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Get-DeliverySql" {
+Describe 'Get-DeliverySql' -Tag 'eulanda' {
+
     Context "With deliveryId and deliveryNo parameters" {
         It "Should return an array of SQL queries" {
             # Arrange

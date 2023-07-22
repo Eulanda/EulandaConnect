@@ -1,7 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
 Describe 'Get-DatanormPricePerUnit' {
-    InModuleScope 'EulandaConnect' {
+    InModuleScope EulandaConnect {
 
         It 'Returns correct price for input price 10 and priceUnitCode 0' {
             $actual = Get-DatanormPricePerUnit -price 10 -priceUnitCode 0

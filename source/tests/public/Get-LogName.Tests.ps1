@@ -1,4 +1,3 @@
-
 Import-Module -Name .\EulandaConnect.psd1
 
 Describe 'Get-LogName' {

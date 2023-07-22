@@ -1,7 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe 'Get-DefaultSelectArticle' {
-    InModuleScope 'EulandaConnect' {
+Describe 'Get-DefaultSelectArticle' -Tag 'eulanda' {
+    InModuleScope EulandaConnect {
 
         It 'should always contain unique key string "ARTNUMMER"' {
             $result = Get-DefaultSelectArticle

@@ -1,7 +1,5 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-# ATTENTION: This integration test requires MSSQL, FTP or something other
-
 Describe 'Receive-RemoteFile' -Tag 'integration', 'ftp', 'sftp' {
 
     BeforeAll {

@@ -1,7 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Get-LatestOpenVPNVersion" {
-    InModuleScope 'EulandaConnect' {
+Describe 'Get-LatestOpenVPNVersion' -Tag 'openvpn' {
+    InModuleScope EulandaConnect {
 
         It "Does not throw exceptions" {
             {

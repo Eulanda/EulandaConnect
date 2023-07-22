@@ -1,6 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe 'New-SymbolicLink' {
+Describe 'New-SymbolicLink' -Tag 'admin' {
+
     BeforeAll {
         $isAdmin = Test-Administrator
         if (-not $isAdmin) {

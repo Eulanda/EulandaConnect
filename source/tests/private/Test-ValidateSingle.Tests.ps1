@@ -1,7 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Test-ValidateSingle" {
-    InModuleScope 'EulandaConnect' {
+Describe 'Test-ValidateSingle' {
+    InModuleScope EulandaConnect {
 
         It "Throws an error when more than one valid parameter is provided" {
             {

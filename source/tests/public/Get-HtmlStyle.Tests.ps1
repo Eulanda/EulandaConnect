@@ -1,6 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
 Describe 'Get-HtmlStyle' {
+
     It 'should return the predefined CSS style' {
         $style = Get-HtmlStyle
 

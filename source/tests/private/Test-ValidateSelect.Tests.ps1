@@ -1,7 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Test-ValidateSelect" {
-    InModuleScope 'EulandaConnect' {
+Describe 'Test-ValidateSelect' {
+    InModuleScope EulandaConnect {
 
         It "Should throw an exception" {
             { Test-ValidateSelect -strParam "" } | Should -Throw

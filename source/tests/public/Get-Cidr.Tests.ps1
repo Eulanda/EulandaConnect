@@ -1,6 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
 Describe 'Get-Cidr' {
+
     Context 'when provided subnet is 255.255.255.0' {
         It 'returns 24' {
             Get-Cidr -subnet '255.255.255.0' | Should -Be 24

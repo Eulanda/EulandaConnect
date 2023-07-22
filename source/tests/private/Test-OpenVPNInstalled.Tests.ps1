@@ -1,7 +1,8 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Test-OpenVPNInstalled" {
-    InModuleScope 'EulandaConnect' {
+Describe 'Test-OpenVPNInstalled' -Tag 'integration', 'openvpn' {
+    InModuleScope EulandaConnect {
+
         It "Should test the correct path" {
             Mock Test-Path { $true } -ParameterFilter { $Path -eq 'C:\Program Files\OpenVPN\bin\openvpn.exe' }
             Test-OpenVPNInstalled | Should -BeTrue

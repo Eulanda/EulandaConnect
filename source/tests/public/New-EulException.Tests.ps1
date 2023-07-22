@@ -1,6 +1,5 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-
 Describe 'New-EulException' {
 
     It 'New-EulException creates EulException' {

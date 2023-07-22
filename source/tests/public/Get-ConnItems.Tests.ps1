@@ -1,6 +1,6 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Get-ConnItems" {
+Describe 'Get-ConnItems' {
 
     It "returns a Hashtable with connection items" {
         # Arrange

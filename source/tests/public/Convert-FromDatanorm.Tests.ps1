@@ -1,6 +1,6 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Convert-FromDatanorm" {
+Describe 'Convert-FromDatanorm' {
 
     BeforeAll {
         $randomName = [System.IO.Path]::GetRandomFileName()

@@ -1,6 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Approve-Signature" -Tag 'integration', 'token' {
+Describe 'Approve-Signature' -Tag 'integration', 'token' {
+
     # Prepare test
     BeforeAll {
         # Creating a Temp Folder

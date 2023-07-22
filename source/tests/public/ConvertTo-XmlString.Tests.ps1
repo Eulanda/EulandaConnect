@@ -1,6 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe "ConvertTo-XmlString" {
+Describe 'ConvertTo-XmlString' {
+
     It "Should convert a string field to an XML compatible string" {
         # Arrange
         $rs = New-Object -ComObject ADODB.Recordset

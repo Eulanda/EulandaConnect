@@ -1,6 +1,6 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe 'Get-XmlEulandaMetadata' {
+Describe 'Get-XmlEulandaMetadata' -Tag 'eulanda' {
 
     It 'returns valid XML with USERNAME and PCNAME when no switch is set' {
         $result = Get-XmlEulandaMetadata

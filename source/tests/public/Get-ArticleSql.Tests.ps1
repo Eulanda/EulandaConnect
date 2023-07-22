@@ -1,6 +1,6 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Get-ArticleSql" {
+Describe 'Get-ArticleSql' -Tag 'eulanda' {
 
     It "generates valid SQL without parameters" {
         $sql = Get-ArticleSql

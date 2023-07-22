@@ -1,6 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Get-SignToolPath" {
+Describe 'Get-SignToolPath' {
+
     It "Returns a valid SignTool path or throws an exception if not found" {
         try {
             # Invoke function

@@ -1,6 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Deny-RemoteFingerprint" -Tag 'integration', 'sftp' {
+Describe 'Deny-RemoteFingerprint' -Tag 'integration', 'sftp' {
+
     $backupFilePath = $null
 
     BeforeAll {

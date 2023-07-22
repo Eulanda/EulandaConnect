@@ -1,6 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
 Describe 'Convert-StringCase' {
+
     It 'converts to uppercase' {
         Convert-StringCase -value 'Der Caffè ist übergut in Österreich!' -strCase 'upper' | Should -Be 'DER CAFFÈ IST ÜBERGUT IN ÖSTERREICH!'
     }

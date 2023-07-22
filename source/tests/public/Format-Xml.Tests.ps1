@@ -1,6 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
 Describe 'Format-Xml' {
+
     BeforeAll {
         # Prepare a simple XML file for testing
         $testXml = @"

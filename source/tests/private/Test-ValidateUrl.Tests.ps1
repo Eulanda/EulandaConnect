@@ -1,7 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Test-ValidateUrl" {
-    InModuleScope 'EulandaConnect' {
+Describe 'Test-ValidateUrl' -Tag 'http' {
+    InModuleScope EulandaConnect {
 
         # Arrange
         $testCases = @(

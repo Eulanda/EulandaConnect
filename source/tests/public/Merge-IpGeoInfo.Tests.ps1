@@ -1,6 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Merge-IpGeoInfo" {
+Describe 'Merge-IpGeoInfo' {
+
     It "Merges IP geolocation information correctly" {
         # Arrange
         $xmlFile1 = New-TemporaryFile

@@ -1,7 +1,6 @@
-
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe 'Find-MssqlServer' {
+Describe 'Find-MssqlServer' -Tag 'integration', 'admin', 'sql' {
 
     BeforeAll {
         $isAdmin = Test-Administrator

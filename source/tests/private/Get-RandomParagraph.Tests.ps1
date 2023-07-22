@@ -1,8 +1,8 @@
 Import-Module -Name .\EulandaConnect.psd1
 
 Describe 'Get-RandomParagraph' {
-    # Use InModuleScope to access private functions
-    InModuleScope 'EulandaConnect' {
+    InModuleScope EulandaConnect {
+
         Context 'when generating a paragraph' {
 
             It 'should return a string with a sentence count within the specified range' {

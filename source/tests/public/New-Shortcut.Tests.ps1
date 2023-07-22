@@ -3,16 +3,8 @@ Import-Module -Name .\EulandaConnect.psd1
 Describe 'New-Shortcut' {
 
     BeforeAll {
-        # Set test parameters
         $TestFile = 'C:\Windows\System32\notepad.exe'
         $TestLink = "$(Get-DesktopDir)\NotePadTest.lnk"
-    }
-
-    AfterEach {
-        # Cleanup: Delete test link
-        if (Test-Path $TestLink) {
-            Remove-Item -Path $TestLink -ErrorAction SilentlyContinue
-        }
     }
 
     It 'Creates a shortcut if the destination file exists' {
@@ -23,5 +15,11 @@ Describe 'New-Shortcut' {
 
     It 'Throws an error if the destination file does not exist' {
         { New-Shortcut -file 'NonExistentFile' -link $TestLink -ErrorAction Stop } | Should -Throw
+    }
+
+    AfterEach {
+        if (Test-Path $TestLink) {
+            Remove-Item -Path $TestLink -ErrorAction SilentlyContinue
+        }
     }
 }

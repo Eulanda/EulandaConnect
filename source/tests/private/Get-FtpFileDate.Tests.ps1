@@ -1,9 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-# ATTENTION: This integration test requires MSSQL, FTP or something other
-
 Describe 'Get-FtpFileDate' -Tag 'integration', 'ftp' {
-    InModuleScope 'EulandaConnect' {
+    InModuleScope EulandaConnect {
 
         BeforeAll {
             # Arrange

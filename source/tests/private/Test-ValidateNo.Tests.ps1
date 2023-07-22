@@ -1,7 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Test-ValidateNo" {
-    InModuleScope 'EulandaConnect' {
+Describe 'Test-ValidateNo' {
+    InModuleScope EulandaConnect {
 
         It "Returns the transaction number when it is valid" {
             $result = Test-ValidateNo -transactionNo 1234 -name "Transaction Number"

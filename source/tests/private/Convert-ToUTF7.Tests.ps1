@@ -1,7 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
 Describe 'Convert-ToUTF7' {
-    InModuleScope 'EulandaConnect' {
+    InModuleScope EulandaConnect {
 
         It "should convert string to UTF7 and back to UTF8" {
             $inputString = "ä"

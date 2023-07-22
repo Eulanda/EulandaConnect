@@ -1,6 +1,6 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe 'Get-XmlEulandaRoot' {
+Describe 'Get-XmlEulandaRoot' -Tag 'eulanda' {
 
     It 'returns valid XML' {
         $result = Get-XmlEulandaRoot

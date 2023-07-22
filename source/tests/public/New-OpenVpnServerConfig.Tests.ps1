@@ -1,6 +1,6 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe "New-OpenVpnServerConfig" {
+Describe 'New-OpenVpnServerConfig' -Tag 'integration', 'openvpn' {
 
     BeforeAll {
         $openVpnPath = "$($env:ProgramFiles)\OpenVPN"

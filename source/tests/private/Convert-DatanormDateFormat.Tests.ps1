@@ -1,7 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
 Describe 'Convert-DatanormDateFormat' {
-    InModuleScope 'EulandaConnect' {
+    InModuleScope EulandaConnect {
 
         It 'converts Datanorm date format to ISO 8601 format correctly' {
             # Arrange

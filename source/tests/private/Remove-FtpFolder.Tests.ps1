@@ -1,9 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-# ATTENTION: This integration test requires MSSQL, FTP or something other
-
 Describe 'Remove-FtpFolder' -Tag 'integration', 'ftp' {
-    InModuleScope 'EulandaConnect' {
+    InModuleScope EulandaConnect {
 
         BeforeAll {
             # Arrange

@@ -1,7 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
 Describe 'Get-CurrentVariables' {
-    InModuleScope 'EulandaConnect' {
+    InModuleScope EulandaConnect {
 
         It 'should return no new variables' {
             # Arrange

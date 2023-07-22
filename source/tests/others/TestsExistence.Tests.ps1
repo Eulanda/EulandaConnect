@@ -1,6 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe 'TestsExistence' {
+Describe 'TestsExistence' -Tag 'helper' {
+
     BeforeAll {
         $publicPath = '.\source\public\'
         $publicTestPath = '.\source\tests\public\'

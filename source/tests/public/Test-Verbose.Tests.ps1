@@ -1,6 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Test-Verbose" {
+Describe 'Test-Verbose' {
+
     It "Runs without throwing" {
         { Test-Verbose } | Should -Not -Throw
     }

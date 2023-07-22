@@ -1,9 +1,8 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe 'Get-SingleDeliveryKeys' {
-    InModuleScope 'EulandaConnect' {
+Describe 'Get-SingleDeliveryKeys' -Tag 'eulanda' {
+    InModuleScope EulandaConnect {
 
-        # Test if the function returns correct array
         It 'should return correct array' {
             $result = Get-SingleDeliveryKeys
 

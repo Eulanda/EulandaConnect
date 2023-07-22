@@ -1,6 +1,6 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Get-IpGeoInfo" {
+Describe 'Get-IpGeoInfo' -Tag 'integration', 'https' {
 
     BeforeAll {
         # Clear the global variable before running tests

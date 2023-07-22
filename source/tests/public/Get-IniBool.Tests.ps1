@@ -1,6 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
 Describe 'Get-IniBool' {
+
     BeforeAll {
         $ini = @{
             PESTERTEST = @{

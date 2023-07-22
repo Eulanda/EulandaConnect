@@ -1,8 +1,6 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-# ATTENTION: This integration test requires MSSQL, FTP or something other
-
-Describe 'Test-Website' -Tag 'integration', 'hugo' {
+Describe 'Test-Website' -Tag 'integration', 'https' {
 
     BeforeAll {
         $result = Test-Website -url "https://eulandaconnect.eulanda.eu/"

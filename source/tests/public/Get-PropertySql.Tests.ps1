@@ -1,10 +1,10 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Get-PropertySql" {
+Describe 'Get-PropertySql' -Tag 'eulanda' {
+
     It "Generates correct SQL for given breadcrumb path and tablename" {
-        # Define parameters
         $breadcrumbPath = '\Shop'
-        $tablename = 'Artikel' # test only german, the substitution is already tested
+        $tablename = 'Artikel' # Test only german, the substitution is already tested
 
         # Invoke function
         $result = Get-PropertySql -breadcrumbPath $breadcrumbPath -tablename $tablename

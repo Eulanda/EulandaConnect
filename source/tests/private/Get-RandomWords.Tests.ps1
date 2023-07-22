@@ -2,8 +2,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
 Describe 'Get-RandomWords' {
-    # Put all your tests inside the InModuleScope block
-    InModuleScope 'EulandaConnect' {
+    InModuleScope EulandaConnect {
 
         # Test if the function is working
         It 'should return string of words' {

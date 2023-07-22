@@ -1,6 +1,6 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Get-NetworkId" {
+Describe 'Get-NetworkId' {
 
     It "Runs without throwing" {
         { Get-NetworkId -ip '192.168.178.9' -cidr 30 } | Should -Not -Throw

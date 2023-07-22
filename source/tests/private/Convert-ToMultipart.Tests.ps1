@@ -1,7 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
 Describe 'Convert-ToMultipart' {
-    InModuleScope 'EulandaConnect' {
+    InModuleScope EulandaConnect {
 
         BeforeAll {
             # Create a simple image

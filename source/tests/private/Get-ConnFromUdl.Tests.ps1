@@ -1,9 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-# ATTENTION: This integration test requires MSSQL, FTP or something other
-
 Describe 'Get-ConnFromUdl' -Tag 'integration', 'sql' {
-    InModuleScope 'EulandaConnect' {
+    InModuleScope EulandaConnect {
 
         It 'should establish a connection to the MASTER database via udl' {
             $pesterFolder = Resolve-Path ".\source\tests"

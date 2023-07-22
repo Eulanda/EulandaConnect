@@ -1,6 +1,6 @@
-Import-Module -Name .\EulandaConnect.psm1
+Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Get-Conn" {
+Describe 'Get-Conn' {
 
     It "Checks if Get-Conn returns the correct object when given a udl parameter" {
         $udl = Resolve-Path '.\source\tests\EULANDA_1 Pester.udl'

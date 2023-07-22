@@ -1,8 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe 'Get-ReadOnlyFields' {
-    # Use InModuleScope to access private functions
-    InModuleScope 'EulandaConnect' {
+Describe 'Get-ReadOnlyFields' -Tag 'eulanda' {
+    InModuleScope EulandaConnect {
 
         BeforeAll {
             # Initialize a test connection, udl, or connStr

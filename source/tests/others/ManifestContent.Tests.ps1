@@ -1,6 +1,6 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe 'Requirements ManifestContent' {
+Describe 'ManifestContent' -Tag 'helper' {
 
     BeforeAll {
         $moduleName = 'EulandaConnect'

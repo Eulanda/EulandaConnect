@@ -1,6 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Convert-ToDecimalDegrees" {
+Describe 'Convert-ToDecimalDegrees' {
+
     It "Converts degrees, minutes, and seconds to decimal format" {
         # Arrange
         $degrees = 40

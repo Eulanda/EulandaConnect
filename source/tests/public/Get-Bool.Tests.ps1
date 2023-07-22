@@ -1,6 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Testing Get-Bool" {
+Describe 'Get-Bool' {
+
     Context "Positive Tests" {
         It "Should return $true for 1" {
             Get-Bool -boolStr '1' | Should -Be $true

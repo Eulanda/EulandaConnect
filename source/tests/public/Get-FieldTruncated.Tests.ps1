@@ -1,6 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Get-FieldTruncated" {
+Describe 'Get-FieldTruncated' {
+
     It "Should truncate the field value based on maxLen" {
         # Arrange
         $rs = New-Object -ComObject ADODB.Recordset

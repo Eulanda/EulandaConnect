@@ -1,7 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe 'Get-MappingTablename' {
-    InModuleScope 'EulandaConnect' {
+Describe 'Get-MappingTablename' -Tag 'eulanda' {
+    InModuleScope EulandaConnect {
 
         # Test if the function returns correct hash table
         It 'should return correct hash table' {

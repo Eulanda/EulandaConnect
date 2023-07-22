@@ -1,7 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Test-ValidatePathXML" {
-    InModuleScope 'EulandaConnect' {
+Describe 'Test-ValidatePathXML' {
+    InModuleScope EulandaConnect {
 
         BeforeAll {
             $tempDir = [System.IO.Path]::GetTempPath()

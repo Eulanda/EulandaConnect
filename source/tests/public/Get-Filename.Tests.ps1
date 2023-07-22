@@ -1,6 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
 Describe 'Get-Filename' {
+
     It 'returns the correct filename from a valid path' {
         $filePath = Join-Path -Path 'C:\temp' -ChildPath 'test.txt'
         Get-Filename -path $filePath | Should -Be 'test.txt'

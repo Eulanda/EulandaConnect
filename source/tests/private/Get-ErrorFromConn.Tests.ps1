@@ -1,9 +1,7 @@
-Import-Module -Name '.\EulandaConnect.psm1' -Force
+Import-Module -Name .\EulandaConnect.psd1
 
-# ATTENTION: This integration test requires MSSQL, FTP or something other
-
-Describe 'Get-ErrorFromConn'  -Tag 'integration', 'sql' {
-    InModuleScope 'EulandaConnect' {
+Describe 'Get-ErrorFromConn' -Tag 'integration', 'sql' {
+    InModuleScope EulandaConnect {
 
         It 'should throw when trying to execute invalid query' {
             $pesterFolder = Resolve-Path ".\source\tests"

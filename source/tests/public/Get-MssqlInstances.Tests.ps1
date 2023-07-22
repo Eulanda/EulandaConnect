@@ -1,6 +1,6 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe 'Get-MssqlInstances' {
+Describe 'Get-MssqlInstances' -Tag 'integration', 'admin', 'registry' {
 
     BeforeAll {
         $isAdmin = Test-Administrator

@@ -1,7 +1,8 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Install-LatestOpenVPN" {
+Describe 'Install-LatestOpenVPN' -Tag 'mock' {
     InModuleScope 'EulandaConnect' {
+
         BeforeAll {
             $downloadPath = Join-Path -Path ([System.IO.Path]::GetTempPath()) -ChildPath ([System.IO.Path]::GetRandomFileName())
             New-Item -Path $downloadPath -ItemType Directory | Out-Null

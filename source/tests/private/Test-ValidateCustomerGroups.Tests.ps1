@@ -1,8 +1,8 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-# Describe the group of tests
 Describe 'Test-ValidateCustomerGroups' {
-    InModuleScope 'EulandaConnect' {
+    InModuleScope EulandaConnect {
+
         # Test with valid input
         It 'Should not throw an exception with valid customerGroups' {
             $validCustomerGroups = "Group1,Group2,Group 3"

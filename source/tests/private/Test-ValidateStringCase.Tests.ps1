@@ -1,7 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Test-ValidateStringCase" {
-    InModuleScope 'EulandaConnect' {
+Describe 'Test-ValidateStringCase' {
+    InModuleScope EulandaConnect {
 
         $testCases = @(
             @{ Value = "none"; IsValid = $true },

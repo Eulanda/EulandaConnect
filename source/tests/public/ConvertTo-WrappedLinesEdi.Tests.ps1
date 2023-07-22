@@ -1,6 +1,6 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe "ConvertTo-WrappedLinesEdi" {
+Describe 'ConvertTo-WrappedLinesEdi' {
 
     It "Test with normal text and width 40" {
         $text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed porttitor lacus sed augue commodo dapibus. Suspendisse potenti.'

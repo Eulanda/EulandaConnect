@@ -1,9 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-# ATTENTION: This integration test requires MSSQL, FTP or something other
-
 Describe 'Get-SftpDir' -Tag 'integration', 'sftp' {
-    InModuleScope 'EulandaConnect' {
+    InModuleScope EulandaConnect {
 
         BeforeAll {
             $pesterFolder = Resolve-Path -Path ".\source\tests"

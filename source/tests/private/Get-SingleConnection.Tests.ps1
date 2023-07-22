@@ -1,7 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
 Describe 'Get-SingleConnection' {
-    InModuleScope 'EulandaConnect' {
+    InModuleScope EulandaConnect {
 
         # Test if the function returns correct array
         It 'should return correct array' {

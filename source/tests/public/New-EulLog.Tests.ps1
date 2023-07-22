@@ -1,6 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
 Describe 'New-EulLog' {
+
     BeforeAll {
         $global:TestPath = "Path\To\Test"
         $global:TestName = "TestLog"

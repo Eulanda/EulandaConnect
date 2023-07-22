@@ -1,7 +1,8 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Test-SpecificParameters" {
-    InModuleScope 'EulandaConnect' {
+Describe 'Test-SpecificParameters' {
+    InModuleScope EulandaConnect {
+
         Context "When at least one specific parameter is passed" {
             It "Should not throw any error" {
                 { Test-SpecificParameters -BoundParameters @{administrator = $true} -CommandName 'Confirm-System' } | Should -Not -Throw

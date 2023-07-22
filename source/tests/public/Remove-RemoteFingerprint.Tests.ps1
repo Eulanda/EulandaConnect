@@ -1,9 +1,9 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Remove-RemoteFingerprint" -Tag 'integration', 'sftp' {
-    $backupFilePath = $null
+Describe 'Remove-RemoteFingerprint' -Tag 'integration', 'ftp', 'sftp' {
 
     BeforeAll {
+        $backupFilePath = $null
         $pesterFolder = Resolve-Path -path ".\source\tests"
         $iniPath = Join-Path -path $pesterFolder "pester.ini"
         $ini = Read-IniFile -path $iniPath

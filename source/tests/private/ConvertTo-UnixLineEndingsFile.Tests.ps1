@@ -1,7 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe "ConvertTo-UnixLineEndingsFile" {
-    InModuleScope 'EulandaConnect' {
+Describe 'ConvertTo-UnixLineEndingsFile' {
+    InModuleScope EulandaConnect {
 
         BeforeAll {
             $tempFolder = [System.IO.Path]::GetTempPath()

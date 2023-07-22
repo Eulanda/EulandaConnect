@@ -1,7 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
 Describe 'Test-ValidateConn' {
-    InModuleScope 'EulandaConnect' {
+    InModuleScope EulandaConnect {
 
         # Test case when $conn is a valid COM object
         It 'should return true when $conn is a valid COM object' {

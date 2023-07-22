@@ -1,6 +1,6 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe 'Requirements MarkdownComplete' {
+Describe 'MarkdownComplete' -Tag 'helper' {
 
     It "Should not contain curly braces in markdown files" {
         $PathToMarkDown = Resolve-Path([System.IO.Path]::Combine($psScriptRoot, '..', '..', '..', 'docs', 'functions'))

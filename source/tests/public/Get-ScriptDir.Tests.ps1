@@ -1,6 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Get-ScriptDir" {
+Describe 'Get-ScriptDir' {
+
     It "Returns a valid script directory" {
         # Invoke function
         $result = Get-ScriptDir

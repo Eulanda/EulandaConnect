@@ -1,6 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Show-MsgBoxYes" {
+Describe 'Show-MsgBoxYes' -Tag 'input' {
+
     BeforeAll {
         $env:PESTER_TEST_RUN = "1"
     }

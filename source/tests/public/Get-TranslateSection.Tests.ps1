@@ -1,6 +1,6 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe 'Get-TranslateSection' {
+Describe 'Get-TranslateSection' -Tag 'eulanda' {
 
     BeforeAll {
         $testText = "This is my default text, It is used when no language is found`r`n[EN]`r`nThe moon always has the same face`r`n[DE]`r`nDer Mond hat immer das selbe Gesicht`r`n[IT]`r`nLa luna ha sempre la stessa faccia"

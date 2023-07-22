@@ -1,6 +1,6 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe 'Get-StockSql' {
+Describe 'Get-StockSql' -Tag 'eulanda' {
 
     # Test 1: Check if the output array has 3 elements
     It 'returns an array with 3 elements' {

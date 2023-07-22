@@ -1,7 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
 Describe 'Get-ProtectedKey' {
-    InModuleScope 'EulandaConnect' {
+    InModuleScope EulandaConnect {
 
         It 'should return byte array when the key length is less than 16' {
             $result = Get-ProtectedKey -key 'test'

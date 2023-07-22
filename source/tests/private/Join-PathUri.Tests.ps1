@@ -1,8 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
 Describe 'Join-PathUri Function' {
-
-    InModuleScope 'EulandaConnect' {
+    InModuleScope EulandaConnect {
 
         It 'Should return correct URL when base and path are provided without slashes' {
             $base = "http://example.com"

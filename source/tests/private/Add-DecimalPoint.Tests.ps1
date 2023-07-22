@@ -1,7 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
 Describe 'Add-DecimalPoint' {
-    InModuleScope 'EulandaConnect' {
+    InModuleScope EulandaConnect {
 
         It "Adds decimal points to an integer number" {
             $systemDecimalSeparator = [System.Globalization.CultureInfo]::CurrentCulture.NumberFormat.NumberDecimalSeparator

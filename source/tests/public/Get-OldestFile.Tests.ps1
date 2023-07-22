@@ -1,6 +1,6 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Get-OldestFile" {
+Describe 'Get-OldestFile' {
 
     BeforeAll {
         # Create a temporary path

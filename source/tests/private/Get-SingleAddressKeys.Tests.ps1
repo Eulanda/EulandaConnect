@@ -1,8 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe 'Get-SingleAddressKeys' {
-    # Use InModuleScope to access private functions
-    InModuleScope 'EulandaConnect' {
+Describe 'Get-SingleAddressKeys' -Tag 'eulanda' {
+    InModuleScope EulandaConnect {
 
         It 'should return correct keys' {
             # Act

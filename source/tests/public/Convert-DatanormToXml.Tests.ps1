@@ -1,7 +1,6 @@
-Import-Module ./EulandaConnect.psm1
+Import-Module -Name .\EulandaConnect.psd1
 
-Describe 'Convert-DatanormToXml Integration Test' {
-
+Describe 'Convert-DatanormToXml' {
 
     BeforeAll {
         $datanorm = @{

@@ -1,4 +1,4 @@
-Import-Module ./EulandaConnect.psm1
+Import-Module -Name .\EulandaConnect.psd1
 
 Describe 'Confirm-System' {
 

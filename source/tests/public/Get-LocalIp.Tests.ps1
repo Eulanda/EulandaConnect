@@ -1,6 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Get-LocalIp" {
+Describe 'Get-LocalIp' {
+
     It "Runs without throwing" {
         { Get-LocalIp } | Should -Not -Throw
     }

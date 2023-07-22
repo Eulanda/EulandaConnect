@@ -1,7 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe "Test-ValidateMapping" {
-    InModuleScope 'EulandaConnect' {
+Describe 'Test-ValidateMapping' {
+    InModuleScope EulandaConnect {
 
         BeforeAll {
             # Definieren Sie das Mapping, das in den Tests verwendet wird

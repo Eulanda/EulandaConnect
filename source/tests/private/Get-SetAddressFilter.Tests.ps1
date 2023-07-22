@@ -1,9 +1,8 @@
 Import-Module -Name .\EulandaConnect.psd1
 
-Describe 'Get-SetAddressFilter' {
-    InModuleScope 'EulandaConnect' {
+Describe 'Get-SetAddressFilter' -Tag 'eulanda' {
+    InModuleScope EulandaConnect {
 
-        # Test if the function returns correct array
         It 'should return correct array' {
             $result = Get-SetAddressFilter
 
