@@ -10,23 +10,33 @@ Describe 'Get-MssqlInstances' -Tag 'integration', 'admin', 'registry' {
         }
     }
 
-    It 'Runs without throwing' {
-        { Get-MssqlInstances } | Should -Not -Throw
-    }
-
-    It 'Returns an ArrayList'  {
+    It 'Returns expected type'  {
         if (-not $isAdmin) {
             Set-ItResult -Skipped -Because 'Test requires administrator rights'
             return
         }
 
         $result = Get-MssqlInstances
-        if ($result -isnot [System.Collections.ArrayList]) {
-            Set-ItResult -Skipped -Because 'Test Pester changes data type to PsCustomObject'
-            Write-Warning "Datatype in pester has changed to PsCustomObject, test is skipped"
+
+        # If the result is array, every element should be PSCustomObject
+        if ($result -is [array]) {
+            $result | ForEach-Object {
+                $_ | Should -BeOfType 'PSCustomObject'
+            }
+        }
+        # Else the result itself should be PSCustomObject
+        else {
+            $result | Should -BeOfType 'PSCustomObject'
         }
 
-        $result | Should -BeOfType 'System.Collections.ArrayList'
+    }
+}
+
+
+Describe 'Get-MssqlInstances' -Tag 'integration', 'registry' {
+
+    It 'Runs without throwing' {
+        { Get-MssqlInstances } | Should -Not -Throw
     }
 
     It 'Returns correct object structure' {

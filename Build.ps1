@@ -349,6 +349,18 @@ function Test-SftpPort {
 }
 
 
+function Test-TokenPassword {
+    Write-Host "Signing dummy file to force password on beginning..."
+    $tempFolder = Join-Path $env:TEMP 'EulandaConnect'
+    New-Item -ItemType Directory -Force -Path $tempFolder | Out-Null
+    $testFilePath = Join-Path $tempFolder 'test.ps1'
+    'Write-Host "Hello, World!"' | Out-File -FilePath $testFilePath
+    Approve-Signature -Path $testFilePath
+    Remove-Item -Path $testFilePath
+    Remove-Item -Path $tempFolder -Force -Recurse
+}
+
+
 function Remove-PesterSftpFolder {
     $pesterFolder = Resolve-Path -path ".\source\tests"
     $iniPath = Join-Path -path $pesterFolder "pester.ini"
@@ -749,11 +761,22 @@ function Invoke-BuildPester {
         [string[]]$excludeTag
     )
 
-    # Allowed tags:
+    Write-Verbose -Message ('Starting: {0}' -f $myInvocation.Mycommand)
+
+
+    # *****************
+    # Allowed tags
+    # *****************
     #   admin, eulanda, helper, https, hugo, input, integration, mock
     #   openvpn, registry, sql, sftp, telegram, token
 
-    Write-Verbose -Message ('Starting: {0}' -f $myInvocation.Mycommand)
+
+    # *****************
+    # Prepare
+    # *****************
+
+    Clear-Host
+    Write-Host "Preparation..."
 
     Remove-Module EulandaConnect -ErrorAction SilentlyContinue
     Import-Module .\EulandaConnect.psd1 -force
@@ -793,7 +816,24 @@ function Invoke-BuildPester {
     }
 
 
-    # Show tags which are used or excluded
+    # ************************
+    # Prepare test environment
+    # ************************
+
+    if ((! $excludeTag) -or $excludeTag -notcontains 'sftp') {
+        # Remove all under sftp /inbox
+        Remove-PesterSftpFolder
+    }
+
+    if ((! $excludeTag) -or $excludeTag -notcontains 'token') {
+        # Request passwordm first time only
+        Test-TokenPassword
+    }
+
+
+    # *****************
+    # Show used tags
+    # *****************
 
     if ($tag -or $excludeTag) {
         Write-Host "************************************************"
@@ -819,6 +859,10 @@ function Invoke-BuildPester {
     }
 
 
+    # *****************
+    # Accept used tags
+    # *****************
+
     # Check if there are any tags or excluded tags
     if ($tag -or $excludeTag) {
         $userResponse = Read-Host "Do you wish to continue with these tag settings? (y/n)"
@@ -828,12 +872,10 @@ function Invoke-BuildPester {
         }
     }
 
-    # Prepare test environment
-    if ((! $excludeTag) -or $excludeTag -notcontains 'sftp') {
-        # Remove all under sftp /inbox
-        Remove-PesterSftpFolder
-    }
 
+    # ************************
+    # Start test container
+    # ************************
 
     # Add variables as a hashtable to the container
     $container = New-PesterContainer -Path .\source\test -Data @{noTelegram = $noTelegram}
