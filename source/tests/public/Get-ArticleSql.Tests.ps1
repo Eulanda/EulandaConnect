@@ -9,7 +9,6 @@ Describe 'Get-ArticleSql' -Tag 'eulanda' {
         $sql | Should -Match $expectedSql
     }
 
-
     It "applies filter correctly" {
         $sql = Get-ArticleSql -filter "ArtNummer='130100'"
         $sql | Should -Match "WHERE \( RTrim\(LTrim\(IsNull\(ArtNummer,''\)\)\)  <> ''\) AND ArtNummer='130100'"
