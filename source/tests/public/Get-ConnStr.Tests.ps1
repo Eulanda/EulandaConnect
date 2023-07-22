@@ -1,7 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 Set-StrictMode -version latest
 
-Describe 'Get-ConnStr' -Tag 'integration' {
+Describe 'Get-ConnStr' -Tag 'integration', 'mock' {
 
     BeforeAll {
         $udl = Resolve-Path '.\source\tests\EULANDA_1 Pester.udl'
