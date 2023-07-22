@@ -51,7 +51,7 @@
             "type": "PowerShell",
             "request": "launch",
             "script": "${workspaceFolder}\\Build.ps1",
-            "args": ["-invokePester -pesterNoTelegram -verbose"]
+            "args": ["-invokePester -noTelegram"]
         },
         {
             "name": "[DBG]:7 Publish to PsGallery",

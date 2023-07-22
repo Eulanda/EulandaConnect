@@ -19,23 +19,6 @@ Describe 'Backup-MssqlDatabase' -Tag 'integration', 'sql', 'ftp', 'sftp' {
 
         $remoteFolder = '/inbox/PESTER'
 
-        # Delete all content from /inbox  including PESTER folder
-        try {
-            if (Test-RemoteFolder -server $server -protocol sftp -user $user -password $secure -remoteFolder $remoteFolder ) {
-                $files = Get-RemoteDir -server $server -protocol sftp -user $user -password $secure -remoteFolder $remoteFolder
-                if ($files) {
-                    foreach ($file in $files) {
-                        Remove-RemoteFile -server $server -protocol sftp -user $user -password $secure -remoteFolder $remoteFolder -remoteFile $file
-                    }
-                }
-                Remove-RemoteFolder -server $server -protocol sftp -user $user -password $secure -remoteFolder $remoteFolder
-            }
-        }
-        catch {
-            Write-Host "Some"
-        }
-
-
 
         # Act
         $backupPath = Backup-MssqlDatabase `

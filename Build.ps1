@@ -349,6 +349,34 @@ function Test-SftpPort {
 }
 
 
+function Remove-PesterSftpFolder {
+    $pesterFolder = Resolve-Path -path ".\source\tests"
+    $iniPath = Join-Path -path $pesterFolder "pester.ini"
+    $ini = Read-IniFile -path $iniPath
+    $path = $ini['SFTP']['SecurePasswordPath']
+    $path = $path -replace '\$home', $HOME
+    $secure = Import-Clixml -path $path
+    $server = $ini['SFTP']['Server']
+    $user = $ini['SFTP']['User']
+
+    $remoteFolder = '/inbox/PESTER'
+
+    # Delete all content from /inbox  including PESTER folder
+    try {
+        if (Test-RemoteFolder -server $server -protocol sftp -user $user -password $secure -remoteFolder $remoteFolder ) {
+            $files = Get-RemoteDir -server $server -protocol sftp -user $user -password $secure -remoteFolder $remoteFolder
+            if ($files) {
+                foreach ($file in $files) {
+                    Remove-RemoteFile -server $server -protocol sftp -user $user -password $secure -remoteFolder $remoteFolder -remoteFile $file
+                }
+            }
+            Remove-RemoteFolder -server $server -protocol sftp -user $user -password $secure -remoteFolder $remoteFolder
+        }
+    }
+    catch {
+    }
+}
+
 function Update-FrontMatter {
     param(
         [Parameter(Mandatory=$true)]
@@ -798,6 +826,12 @@ function Invoke-BuildPester {
             Write-Host "Exiting pester tests due to user response"
             return
         }
+    }
+
+    # Prepare test environment
+    if ((! $excludeTag) -or $excludeTag -notcontains 'sftp') {
+        # Remove all under sftp /inbox
+        Remove-PesterSftpFolder
     }
 
 
