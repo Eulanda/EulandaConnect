@@ -729,26 +729,35 @@ function Invoke-BuildPester {
     $ini = Read-IniFile -path $iniPath.Path
 
 
+    # *****************
     # Auto-exclude tags
+    # *****************
 
+    # No sftp server available
     $ip = $ini['SFTP']['server']
     $progressPreference = 'silentlyContinue'
     [bool]$noSftp = (-not (Test-SftpPort -ip $ip))
     $progressPreference = 'Continue'
     if ($noSftp -and $excludeTag -notcontains 'sftp') {
-        # If no sftp server is available
         $excludeTag += 'sftp'
     }
 
+    # No SmartCard or Token for signing available
     [bool]$noToken = -not (Test-TokenAvailable)
     if ($noToken -and $excludeTag -notcontains 'token') {
-        # If no SmartCard is available add 'token' to $excludeTag
         $excludeTag += 'token'
     }
 
+    # No telegram send on normal builds flag is set in tasks.json
     if ($noTelegram  -and $excludeTag -notcontains 'telegram') {
-        # $noTelegram is set in taks.json
         $excludeTag += 'telegram'
+    }
+
+
+    # No admin rights
+    $noAdmin = -not (Test-Administrator)
+    if ($noAdmin  -and $excludeTag -notcontains 'admin') {
+        $excludeTag += 'admin'
     }
 
 
@@ -758,13 +767,18 @@ function Invoke-BuildPester {
         Write-Host "************************************************"
     }
 
+    Write-Host "Including following test-cases:"
+
     if ($tag) {
-        Write-Host "Only Testcaes with the following tag's are used:"
         $tag
+    } else
+    {
+        Write-Host 'all'
     }
+    Write-Host
 
     if ($excludeTag) {
-        Write-Host "Testcaes with the following tag's are excluded:"
+        Write-Host "Excluding following test-cases:"
         $excludeTag
     }
 
@@ -775,13 +789,9 @@ function Invoke-BuildPester {
 
     # Check if there are any tags or excluded tags
     if ($tag -or $excludeTag) {
-        Write-Host "Tags or excluded tags detected:"
-        if ($tag) { Write-Host "Tags: $tag" }
-        if ($excludeTag) { Write-Host "Excluded tags: $excludeTag" }
-
-        $userResponse = Read-Host "Do you wish to continue with these settings? (y/n)"
+        $userResponse = Read-Host "Do you wish to continue with these tag settings? (y/n)"
         if ($userResponse.Substring(0,1).ToUpper() -ne 'Y') {
-            Write-Host "Exiting function due to user response."
+            Write-Host "Exiting pester tests due to user response"
             return
         }
     }
