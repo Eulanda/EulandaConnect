@@ -775,7 +775,9 @@ function Invoke-BuildPester {
     # Prepare
     # *****************
 
-    Clear-Host
+    1..24 | ForEach-Object { Write-Host "" }
+    $startDate = Get-Date
+    Write-Host "Started at: $startDate"
     Write-Host "Preparation..."
 
     Remove-Module EulandaConnect -ErrorAction SilentlyContinue
@@ -883,6 +885,12 @@ function Invoke-BuildPester {
 
     # Print summary of test results
     $testResults | Format-List -Property *
+    $endDate = Get-Date
+    $duration = $endDate - $startDate
+    $minutes = [math]::Truncate($duration.TotalMinutes)
+    $seconds = [math]::Truncate($duration.TotalSeconds) % 60
+    Write-Host "Finished at: $($endDate)"
+    Write-Host "Duration (minutes): $minutes`:$seconds"
 }
 
 

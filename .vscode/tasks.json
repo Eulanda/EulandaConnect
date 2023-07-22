@@ -68,7 +68,7 @@
             ]
         },
         {
-            "label": "6. Invoke Pester",
+            "label": "6a. Invoke Pester without Telegram",
             "type": "shell",
             "group": "build",
             "command": "pwsh.exe",
@@ -79,6 +79,19 @@
                 "${workspaceFolder}\\Build.ps1",
                 "-invokePester",
                 "-noTelegram"
+            ]
+        },
+        {
+            "label": "6b. Invoke Pester",
+            "type": "shell",
+            "group": "build",
+            "command": "pwsh.exe",
+            "args": [
+                "-ExecutionPolicy",
+                "Unrestricted",
+                "-File",
+                "${workspaceFolder}\\Build.ps1",
+                "-invokePester"
             ]
         },
         {
