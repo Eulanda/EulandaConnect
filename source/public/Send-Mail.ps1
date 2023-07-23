@@ -66,6 +66,23 @@ function Send-Mail {
     )
 
     begin {
+
+        function Get-Encoding ([string]$encodingName) {
+            switch ($encodingName.ToLower()) {
+                'utf8nobom' { return New-Object System.Text.UTF8Encoding $false }
+                'ascii' { return [System.Text.Encoding]::ASCII }
+                'bigendianunicode' { return [System.Text.Encoding]::BigEndianUnicode }
+                'bigendianutf32' { return [System.Text.Encoding]::GetEncoding("utf-32BE") }
+                'oem' { return [System.Text.Encoding]::GetEncoding(850) } # OEM-Multilingual Latin 1; Western European (DOS)
+                'unicode' { return [System.Text.Encoding]::Unicode }
+                'utf7' { return [System.Text.Encoding]::UTF7 }
+                'utf8' { return [System.Text.Encoding]::UTF8 }
+                'utf8bom' { return New-Object System.Text.UTF8Encoding $true }
+                'utf32' { return [System.Text.Encoding]::UTF32 }
+                default { throw "Invalid encoding name: $encodingName" }
+            }
+        }
+
         Write-Verbose -Message ((Get-ResStr 'STARTING_FUNCTION') -f $myInvocation.Mycommand)
         New-Variable -Name 'mailParams' -Scope 'Private' -Value ([System.Collections.Hashtable]@{})
         New-Variable -Name 'message' -Scope 'Private' -Value ([string]'')
@@ -85,13 +102,14 @@ function Send-Mail {
             $credential = New-Object System.Management.Automation.PSCredential ($user, $secPassword)
         }
 
+        $enc = Get-Encoding $encoding
         $mailParams = @{
             From = $from
             To = $to.Split(',')
             Subject = $subject
             Port = $port
             Priority = $priority
-            Encoding = $encoding
+            Encoding = $enc
             SmtpServer = $smtpServer
             DeliveryNotificationOption = $deliveryNotificationOption
         }
@@ -125,7 +143,7 @@ function Send-Mail {
         }
 
         catch {
-            write-host ((Get-ResStr 'EMAIL_SENT_ERROR') -f $to, $subject, $_) -foregroundcolor Red
+            write-host ((Get-ResStr 'EMAIL_SENT_ERROR') -f [string]($to -join(',')), $subject, $_) -foregroundcolor Red
         }
 
         Start-Sleep -Seconds 1
@@ -135,5 +153,5 @@ function Send-Mail {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
         Return
     }
-    # Test: Send-Mail -from 'cn@eulanda.de' -to 'info@eulanda.de' -server '192.168.41.1' -user 'noreply@eulanda.eu' -password 'JohnDoe' -subject 'One Testmail' -body 'Is better then nothing'
+    # Test: Send-Mail -from 'johne@doe.eu' -to 'info@doe.eu' -server '192.168.88.1' -user 'noreply@doe.eu' -password 'JohnDoe' -subject 'One Testmail' -body 'Is better then nothing' -usessl
 }
