@@ -19,8 +19,6 @@ Describe 'Send-Mail' -Tag 'mock' {
                 User = "user"
                 Password = "password"
                 UseSSL = $true
-                Port = 587
-
             }
 
             Send-Mail @mailParams
