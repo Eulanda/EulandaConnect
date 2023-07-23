@@ -767,7 +767,7 @@ function Invoke-BuildPester {
     # *****************
     # Allowed tags
     # *****************
-    #   admin, eulanda, helper, https, hugo, input, integration, mock
+    #   admin, sqladmin, eulanda, helper, https, hugo, input, integration, mock
     #   openvpn, registry, sql, sftp, telegram, token
 
 
@@ -784,7 +784,7 @@ function Invoke-BuildPester {
     Import-Module .\EulandaConnect.psd1 -force
     $iniPath = Resolve-Path ".\source\tests\pester.ini"
     $ini = Read-IniFile -path $iniPath.Path
-
+    $udl =  Resolve-Path ".\source\tests\Eulanda_1 Pester.udl"
 
     # *****************
     # Auto-exclude tags
@@ -799,11 +799,23 @@ function Invoke-BuildPester {
         $excludeTag += 'sftp'
     }
 
+
+    # No ftp server available
+    $ip = $ini['SFTP']['server']
+    $progressPreference = 'silentlyContinue'
+    [bool]$noFtp = (-not (Test-SftpPort -ip $ip -port 21))
+    $progressPreference = 'Continue'
+    if ($noFtp -and $excludeTag -notcontains 'ftp') {
+        $excludeTag += 'ftp'
+    }
+
+
     # No SmartCard or Token for signing available
     [bool]$noToken = -not (Test-TokenAvailable)
     if ($noToken -and $excludeTag -notcontains 'token') {
         $excludeTag += 'token'
     }
+
 
     # No telegram send on normal builds flag is set in tasks.json
     if ($noTelegram  -and $excludeTag -notcontains 'telegram') {
@@ -816,6 +828,18 @@ function Invoke-BuildPester {
     if ($noAdmin  -and $excludeTag -notcontains 'admin') {
         $excludeTag += 'admin'
     }
+
+
+    # No admin rights on sql server
+    $conn = Get-Conn -udl $udl
+    $sql = "SELECT IS_SRVROLEMEMBER('sysadmin')"
+    $result = $conn.Execute($sql)
+    if ($result.Fields.Item(0).Value -ne 1) {
+        if ($excludeTag -notcontains 'sqladmin') {
+            $excludeTag += 'sqladmin'
+        }
+    }
+    $conn.close()
 
 
     # ************************

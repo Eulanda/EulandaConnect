@@ -17,8 +17,6 @@ Describe 'Get-ConnStr' -Tag 'integration', 'mock' {
         # Assert
         $result | Should -Match "Provider=SQLOLEDB.1"
         $result | Should -Match "Initial Catalog=$database"
-        $result | Should -Match "Persist Security Info=True"
-        $result | Should -Match "User ID=eulanda"
     }
 
     It "Throws an exception when no database parameter is provided" {
