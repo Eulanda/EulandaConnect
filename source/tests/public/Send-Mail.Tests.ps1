@@ -1,31 +1,33 @@
 Import-Module -Name .\EulandaConnect.psd1
 Set-StrictMode -version latest
 
-InModuleScope 'EulandaConnect' {
-    Describe 'Send-Mail' -Tag 'mock' {
 
-        BeforeEach {
-            Mock Send-MailMessage { }
-            Mock Get-ResStr { return "Mocked Resource String" }
-            Mock Start-Sleep { }
-        }
+Describe 'Send-Mail' -Tag 'mock' {
+    InModuleScope EulandaConnect {
 
         It "Sends an email with the correct parameters" {
-
-            # Arrange
-            $from = "test@test.com"
-            $to = "test2@test.com"
-            $smtpServer = "smtp.test.com"
-            $subject = "Test Email"
-            $body = "Test Body"
-            $user = "user"
-            $password = "password"
+            Mock Send-MailMessage { }
+            Mock Start-Sleep { }
 
             # Act
-            Send-Mail -from $from -to $to -smtpServer $smtpServer -subject $subject -body $body -user $user -password $password
+            $mailParams = @{
+                From = "test@test.com"
+                To = "test2@test.com","test3@test.com"
+                SmtpServer = "smtp.test.com"
+                Subject = "Test Email"
+                Body = "Test Body"
+                User = "user"
+                Password = "password"
+                UseSSL = $true
+                Port = 587
+
+            }
+
+            Send-Mail @mailParams
 
             # Assert
             Assert-MockCalled Send-MailMessage -Exactly -Times 1 -Scope It
+
         }
 
         It "Throws an error when no From parameter is provided" {
