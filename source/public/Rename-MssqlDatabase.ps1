@@ -128,10 +128,12 @@ function Rename-MssqlDatabase {
             "ALTER DATABASE [$newName] MODIFY FILE (NAME = [$newLogicalLdf], FILENAME = '$path\$newPhysicalLdf')", `
             "ALTER DATABASE [$newName] SET online"
         $myConn.Execute($sql) | Out-Null
+
+        $myConn.Close()
     }
 
     end {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
     }
-    # Test:  Rename-MssqlDatabase -oldName 'Eulanda_Truccamo' -newName 'Eulanda_MyTruccamo' -udl 'C:\temp\EULANDA_1 Truccamo.udl'
+    # Test:  Rename-MssqlDatabase -oldName 'Eulanda_Pester' -newName 'Eulanda_PesterNew' -server ".\PESTER"
 }

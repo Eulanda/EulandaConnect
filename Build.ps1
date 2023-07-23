@@ -767,8 +767,22 @@ function Invoke-BuildPester {
     # *****************
     # Allowed tags
     # *****************
-    #   admin, sqladmin, eulanda, helper, https, hugo, input, integration, mock
-    #   openvpn, registry, sql, sftp, telegram, token
+    #   admin       Tests that needs admin rights
+    #   eulanda     Tests that uses Eulanda specific functions
+    #   ftp         Tests that needs an ftp configured in pester.ini
+    #   helper      Tests from others folder
+    #   https       Tests that uses a internet connection for http or https
+    #   hugo        Tests that needs in installed hugo cms system
+    #   input       Tests that uses gui or read-host input
+    #   integration Tests that general needs something installed
+    #   mock        Tests that uses mock and therefor the InModuleScope block
+    #   openvpn     Tests specific for openVPN
+    #   registry    Tests that uses the widnows registry
+    #   sftp        Tests that needs an sftp configured in pester.ini and installed PWSH-SSH module
+    #   sql         Tests that uses an local mssql server
+    #   sqladmin    Tests that needs sysadmin role for sql databse
+    #   telegram    Tests that uses telegram API and sends real messages
+    #   token       Tests that uses an local EV-Signing tokem (USB-Stick)
 
 
     # *****************
@@ -776,8 +790,6 @@ function Invoke-BuildPester {
     # *****************
 
     1..24 | ForEach-Object { Write-Host "" }
-    $startDate = Get-Date
-    Write-Host "Started at: $startDate"
     Write-Host "Preparation..."
 
     Remove-Module EulandaConnect -ErrorAction SilentlyContinue
@@ -903,20 +915,24 @@ function Invoke-BuildPester {
     # Start Pester container
     # ************************
 
+    $startDate = Get-Date
+    Write-Host "Started at: $startDate"
+
     # Add variables as a hashtable to the container
     $container = New-PesterContainer -Path .\source\test -Data @{noTelegram = $noTelegram}
     $testResults = Invoke-Pester -Container $container -Output Detailed -Tag $tag -ExcludeTag $excludeTag -PassThru
 
+    $endDate = Get-Date
+    Write-Host "Finished at: $($endDate)"
+    1..3 | ForEach-Object { Write-Host "" }
 
     # ************************
     # Summary
     # ************************
     $testResults | Format-List -Property *
-    $endDate = Get-Date
     $duration = $endDate - $startDate
     $minutes = [math]::Truncate($duration.TotalMinutes)
     $seconds = [math]::Truncate($duration.TotalSeconds) % 60
-    Write-Host "Finished at: $($endDate)"
     Write-Host "Duration (minutes): $minutes`:$seconds"
 }
 
