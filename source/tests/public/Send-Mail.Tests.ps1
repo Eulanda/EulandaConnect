@@ -11,7 +11,6 @@ Describe 'Send-Mail' -Tag 'mock' {
         }
 
         It "Sends an email with the correct parameters" {
-            # Act
             $mailParams = @{
                 From = "test@test.com"
                 To = "test2@test.com","test3@test.com"
@@ -25,7 +24,6 @@ Describe 'Send-Mail' -Tag 'mock' {
 
             Send-Mail @mailParams
 
-            # Assert
             Assert-MockCalled Send-MailMessage -Exactly -Times 1 -Scope It
         }
 
