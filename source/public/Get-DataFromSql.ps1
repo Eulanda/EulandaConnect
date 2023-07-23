@@ -33,6 +33,7 @@ function Get-DataFromSql {
     }
 
     process {
+        if (! $conn) { $closeConn = $true } else { $closeConn = $false }
         $myConn = Get-Conn -conn $conn -udl $udl -connStr $connStr
         $result = New-Object System.Collections.ArrayList
         $rs = $Null
@@ -59,11 +60,14 @@ function Get-DataFromSql {
                 $rs.MoveNext() | Out-Null
             }
         }
+        if ($closeConn) {
+            $myConn.close()
+        }
     }
 
     end {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
         Return $result
     }
-    # Test:  Get-DataFromSql -sql @('SELECT TOP 10 ArtNummer, Vk, Kurztext1 FROM Artikel')  -udl 'C:\temp\Eulanda_1 Eulanda.udl'
+    # Test:  Get-DataFromSql -sql @('SELECT TOP 10 ArtNummer, Vk, Kurztext1 FROM Artikel')  -udl '.\source\tests\Eulanda_1 Pester.udl'
 }
