@@ -1,7 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 Set-StrictMode -version latest
 
-Describe 'Get-AdoRs' {
+Describe 'Get-AdoRs' -Tag 'mock' {
     InModuleScope EulandaConnect {
 
         It 'Throws an error when no parameter is passed' {
