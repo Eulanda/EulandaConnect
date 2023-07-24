@@ -14,7 +14,7 @@ function Get-ConnFromUdl {
     process {
         $conn = new-object -comObject ADODB.Connection
         $conn.CursorLocation = $adUseClient
-        $conn.ConnectionString = "File Name=$udl"
+        $conn.ConnectionString = "File Name=$(Resolve-Path $udl)"
         $conn.CommandTimeout = $adTimeout
         $conn.open()
     }
