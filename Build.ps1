@@ -15,11 +15,11 @@
     ,
     [switch]$updateOnlineDocs    # 5
     ,
-    [switch]$invokePester        # 6
+    [switch]$invokePester        # 6a + 6b
     ,
     [switch]$publishToPsGallery  # 7
     ,
-    [switch]$noTelegram    # Parameter
+    [switch]$noTelegram          # Parameter to modify 'invokePester' to 6a
     )
 
 
