@@ -16,17 +16,9 @@ Describe 'Get-DataFromSql' -Tag 'integration', 'sql', 'sqladmin' {
         BeforeAll {
             $udl = Resolve-Path ".\source\tests\Eulanda_1 Pester.udl"
 
-            $conn = Get-Conn -udl $udl
-            $sql = "SELECT IS_SRVROLEMEMBER('sysadmin')"
-            $result = $conn.Execute($sql)
-            if ($result.Fields.Item(0).Value -ne 1) {
-                $conn.close()
-                $skipThis = $true
-            } else {
-                $skipThis = $false
-            }
+            $skipTest = -not (Test-MssqlAdministrator -udl $udl)
 
-            if (! $skipThis) {
+            if (! $skipTest) {
                 # Backup the database
                 $sql = "BACKUP DATABASE [Eulanda_Pester] TO  DISK = 'Eulanda_Pester.bak' WITH NOFORMAT, NOINIT,  NAME = 'Eulanda_Pester-Backup', SKIP, NOREWIND, NOUNLOAD,  STATS = 10"
                 $conn.Execute($sql)
@@ -39,7 +31,7 @@ Describe 'Get-DataFromSql' -Tag 'integration', 'sql', 'sqladmin' {
         }
 
         AfterAll {
-            if (! $skipThis) {
+            if (! $skipTest) {
                 # Restore the database
                 $conn = Get-Conn -udl $udl
                 $sql = @(
@@ -54,7 +46,7 @@ Describe 'Get-DataFromSql' -Tag 'integration', 'sql', 'sqladmin' {
         }
 
         It 'Fetches data from the database' {
-            if ($skipThis) {
+            if ($skipTest) {
                 Set-ItResult -Skipped -Because 'This test should be skipped due to user not in sysadmin role'
                 Return
             }

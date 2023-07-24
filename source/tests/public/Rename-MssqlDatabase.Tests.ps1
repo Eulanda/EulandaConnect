@@ -56,15 +56,7 @@ Describe 'Rename-MssqlDatabase' -Tag 'integration', 'sql', 'sqladmin' {
 
 
         # This is only required if this test is called manually as a single test from the console prompt
-        $conn = Get-Conn -udl $udl
-        $sql = "SELECT IS_SRVROLEMEMBER('sysadmin')"
-        $result = $conn.Execute($sql)
-        if ($result.Fields.Item(0).Value -ne 1) {
-            $skipThis = $true
-        } else {
-            $skipThis = $false
-        }
-        $conn.close()
+        $skipTest = -not (Test-MssqlAdministrator -connStr $masterConnStr)
     }
 
     It 'Rename database without oldname should throw' {
@@ -80,7 +72,7 @@ Describe 'Rename-MssqlDatabase' -Tag 'integration', 'sql', 'sqladmin' {
     }
 
     It 'Rename database with all parameters should not throw' {
-        if ($skipThis) {
+        if ($skipTest) {
             Set-ItResult -Skipped -Because 'This test should be skipped due to user not in sysadmin role'
             Return
         }
@@ -100,7 +92,7 @@ Describe 'Rename-MssqlDatabase' -Tag 'integration', 'sql', 'sqladmin' {
     }
 
     AfterAll {
-        if (! $skipThis) {
+        if (! $skipTest) {
             $conn = Get-Conn -connStr $masterConnStr
             $sql = "SELECT name FROM sys.databases WHERE name = '$newName'"
             $rs = $conn.Execute($sql)

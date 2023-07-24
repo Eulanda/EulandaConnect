@@ -9,19 +9,10 @@ Describe 'Get-ArticleId' -Tag 'integration', 'sql', 'sqladmin', 'eulanda' {
         $wrongArticleNo = '0815'
 
         # Test-MssqlAdministartor rights
-        $conn = Get-Conn -udl $udl
-        $sql = "SELECT IS_SRVROLEMEMBER('sysadmin')"
-        $result = $conn.Execute($sql)
-        if ($result.Fields.Item(0).Value -ne 1) {
-            $conn.close()
-            $skipThis = $true
-        } else {
-            $skipThis = $false
-        }
-        $conn.Close()
+        $skipTest = -not (Test-MssqlAdministrator -udl $udl)
 
         # Skip backup because for restoring you need special rights
-        if (! $skipThis) {
+        if (! $skipTest) {
             # Backup the database
             $conn = Get-Conn -udl $udl
             $connItems = Get-ConnItems -udl $udl
@@ -39,7 +30,7 @@ Describe 'Get-ArticleId' -Tag 'integration', 'sql', 'sqladmin', 'eulanda' {
 
     AfterAll {
         # Skip restore because for restoring you need special rights
-        if (! $skipThis) {
+        if (! $skipTest) {
             $conn = Get-Conn -udl $udl
             $connItems = Get-ConnItems -udl $udl
             $database = $connItems.'Initial Catalog'
@@ -56,7 +47,7 @@ Describe 'Get-ArticleId' -Tag 'integration', 'sql', 'sqladmin', 'eulanda' {
 
 
     It 'Retrieves the ID of an existing article' {
-        if ($skipThis) {
+        if ($skipTest) {
             Set-ItResult -Skipped -Because 'This test should be skipped due to user not in sysadmin role'
             Return
         }
@@ -67,7 +58,7 @@ Describe 'Get-ArticleId' -Tag 'integration', 'sql', 'sqladmin', 'eulanda' {
 
 
     It 'Retrieves the ID of an non existing article' {
-        if ($skipThis) {
+        if ($skipTest) {
             Set-ItResult -Skipped -Because 'This test should be skipped due to user not in sysadmin role'
             Return
         }
@@ -78,7 +69,7 @@ Describe 'Get-ArticleId' -Tag 'integration', 'sql', 'sqladmin', 'eulanda' {
 
 
     It 'Handles connection errors and missing UDL file appropriately' {
-        if ($skipThis) {
+        if ($skipTest) {
             Set-ItResult -Skipped -Because 'This test should be skipped due to user not in sysadmin role'
             Return
         }
@@ -89,7 +80,7 @@ Describe 'Get-ArticleId' -Tag 'integration', 'sql', 'sqladmin', 'eulanda' {
 
 
     It 'Handles invalid connection object' {
-        if ($skipThis) {
+        if ($skipTest) {
             Set-ItResult -Skipped -Because 'This test should be skipped due to user not in sysadmin role'
             Return
         }
@@ -100,7 +91,7 @@ Describe 'Get-ArticleId' -Tag 'integration', 'sql', 'sqladmin', 'eulanda' {
 
 
     It 'Handles closed database connection appropriately' {
-        if ($skipThis) {
+        if ($skipTest) {
             Set-ItResult -Skipped -Because 'This test should be skipped due to user not in sysadmin role'
             Return
         }
