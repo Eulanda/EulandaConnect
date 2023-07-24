@@ -51,7 +51,7 @@ try {
     $secure = Import-Clixml -path $path
     $server = $ini['SFTP']['Server']
     $user = $ini['SFTP']['User']
-    Backup-MssqlDatabase -udl "$pesterFolder\Eulanda_1 Pester.udl" -storageFolder 'C:\store' -server $server -user $user -password $secure -remoteFolder '/inbox'
+    Restore-MssqlDatabase -udl "$pesterFolder\Eulanda_1 Pester.udl"
 
 
 <#

@@ -219,6 +219,7 @@ FunctionsToExport = @(
     'Rename-RemoteFile',
     'Rename-RemoteFolder',
     'Resize-Image',
+    'Restore-MssqlDatabase',
     'Select-OutdatedFilenames',
     'Send-Mail',
     'Send-RemoteFile',

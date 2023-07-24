@@ -13,17 +13,13 @@ Describe 'Get-ArticleId' -Tag 'integration', 'sql', 'sqladmin', 'eulanda' {
 
         # Skip backup because for restoring you need special rights
         if (! $skipTest) {
-            # Backup the database
-            $conn = Get-Conn -udl $udl
-            $connItems = Get-ConnItems -udl $udl
-            $database = $connItems.'Initial Catalog'
-            $sql = "BACKUP DATABASE [$database] TO  DISK = '$database.bak' WITH NOFORMAT, NOINIT,  NAME = 'Pester-Backup', SKIP, NOREWIND, NOUNLOAD,  STATS = 10"
-            $conn.Execute($sql)
+            Backup-MssqlDatabase -udl $udl
 
             # Insert the necessary data into the database
-            $sql = "INSERT INTO Artikel (ArtNummer, Vk, Kurztext1) VALUES ('$articleNo', 42.50, 'Some Info')"
+            $conn = Get-Conn -udl $udl
+            $sql = "INSERT INTO Artikel (ArtNummer, Vk, Kurztext1) VALUES ($articleNo, 42.50, 'Some Info')"
             $conn.Execute($sql)
-            $conn.Close()
+            $conn.close()
         }
     }
 
@@ -97,7 +93,7 @@ Describe 'Get-ArticleId' -Tag 'integration', 'sql', 'sqladmin', 'eulanda' {
         }
 
         $closedConn = Get-Conn -udl $udl
-        $closedConn.close()
+        $closedConn.close() # close it
         $id = Get-ArticleId -articleNo $articleNo -conn $closedConn
         $id | should -BeGreaterThan 0
     }

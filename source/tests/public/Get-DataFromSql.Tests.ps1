@@ -16,18 +16,17 @@ Describe 'Get-DataFromSql' -Tag 'integration', 'sql', 'sqladmin' {
         BeforeAll {
             $udl = Resolve-Path ".\source\tests\Eulanda_1 Pester.udl"
 
+            # Test-MssqlAdministartor rights
             $skipTest = -not (Test-MssqlAdministrator -udl $udl)
 
+            # Skip backup because for restoring you need special rights
             if (! $skipTest) {
-                # Backup the database
-                $sql = "BACKUP DATABASE [Eulanda_Pester] TO  DISK = 'Eulanda_Pester.bak' WITH NOFORMAT, NOINIT,  NAME = 'Eulanda_Pester-Backup', SKIP, NOREWIND, NOUNLOAD,  STATS = 10"
-                $conn.Execute($sql)
-
-                # Insert the necessary data into the database
-                $sql = "INSERT INTO Artikel (ArtNummer, Vk, Kurztext1) VALUES ('4711', 42.50, 'Some Info')"
-                $conn.Execute($sql)
-                $conn.Close()
+                Backup-MssqlDatabase -udl $udl
             }
+
+            # Insert the necessary data into the database
+            $sql = "INSERT INTO Artikel (ArtNummer, Vk, Kurztext1) VALUES ('4711', 42.50, 'Some Info')"
+            $conn.Execute($sql)
         }
 
         AfterAll {
