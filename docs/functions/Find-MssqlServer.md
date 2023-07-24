@@ -14,7 +14,7 @@ This PowerShell function searches for all SQL-Servers in a specified IP range. S
 
 ```
 Find-MssqlServer [[-localIp] <String>] [[-remoteIp] <String>] [[-udpPort] <Int32>] [[-timeoutSeconds] <Int32>]
- [<CommonParameters>]
+ [-force] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -120,6 +120,21 @@ Aliases:
 
 Required: False
 Position: 2
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -force
+If the parameter is set, the SQL browser service will be started if it was not started. However, if the service is disabled, then an exception is thrown.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

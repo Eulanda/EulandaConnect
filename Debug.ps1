@@ -38,10 +38,12 @@ try {
     # $temp
 
 
-    $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
-    & $Features {
-     New-OpenVpnTls -openVpnPath  "$($env:ProgramFiles)\OpenVPN" -destination "$($home)\.eulandaconnect\pester\OpenVPN"
-    }
+    # $Features = Import-Module -Name '.\EulandaConnect.psm1' -PassThru -Force
+    # & $Features {
+    #  New-OpenVpnTls -openVpnPath  "$($env:ProgramFiles)\OpenVPN" -destination "$($home)\.eulandaconnect\pester\OpenVPN"
+    # }
+
+    Test-MssqlAdministrator -udl '.\source\tests\Eulanda_1 Pester.udl'
 
 <#
     $datanorm.v

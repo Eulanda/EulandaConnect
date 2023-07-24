@@ -13,7 +13,7 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Merge-IpGeoInfo [[-xmlFile1] <String>] [[-xmlFile2] <String>] [[-outputFile] <String>] [<CommonParameters>]
+Merge-IpGeoInfo [-xmlFile1] <String> [-xmlFile2] <String> [-outputFile] <String> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -40,7 +40,7 @@ Type: String
 Parameter Sets: (All)
 Aliases:
 
-Required: False
+Required: True
 Position: 2
 Default value: None
 Accept pipeline input: False
@@ -55,7 +55,7 @@ Type: String
 Parameter Sets: (All)
 Aliases:
 
-Required: False
+Required: True
 Position: 0
 Default value: None
 Accept pipeline input: False
@@ -70,7 +70,7 @@ Type: String
 Parameter Sets: (All)
 Aliases:
 
-Required: False
+Required: True
 Position: 1
 Default value: None
 Accept pipeline input: False
