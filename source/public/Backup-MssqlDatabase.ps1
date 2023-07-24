@@ -65,6 +65,10 @@ function Backup-MssqlDatabase {
         # Get connection and open it
         $myConn = Get-Conn -conn $conn -ConnStr $connStr -udl $udl
 
+        # Create time stamp to enhance the filename to be stored
+        [string]$timeStamp = Get-Date -Format "yyyy-MM-dd-HH-mm-ss-ffff"
+
+
         # Extract parameters from connection
         $connItems = Get-ConnItems -conn $myConn
         [string]$datasource = $connItems['Data Source']
@@ -81,28 +85,25 @@ function Backup-MssqlDatabase {
         Get-MssqlInstances | ForEach-Object { $instances[$_.Instance] = $_ }
         [string]$backupPath = $instances[$instance].BackupPath
 
+
         # Backup database from connection
         $backupFile = "$backupPath\$database.bak"
         $sql = "BACKUP DATABASE [$database] TO  DISK = N'$backupFile' WITH FORMAT, INIT,  NAME = N'Full Database Backup', SKIP, NOREWIND, NOUNLOAD, NO_COMPRESSION,  STATS = 10"
         Write-Verbose ((Get-ResStr 'VERBOSE_BACKUP_DATABASE_TO_FILE') -f $database, $backupFile)
         $myConn.Execute($sql) | Out-Null
 
+
         # Zip the database backup file
         $zipFile = "$backupPath\$database.zip"
-        $result = $zipFile
-        $sourcePath = $backupFile
-        $sourceFiles = Get-ChildItem -Path $sourcePath -Recurse
-        Write-Verbose "Zip database as '$zipFile'"
-        $sourceFiles | ForEach-Object {
-            $currentFile = $_
-            Compress-Archive -Path $currentFile.FullName -DestinationPath $zipFile -CompressionLevel Optimal -Update
+        if (($storageFolder) -or ($server) -or ($removeBak)) {
+            Compress-Archive -Path $backupFile -DestinationPath $zipFile -CompressionLevel Optimal -Update
+            $result = $zipFile
+        } else {
+            $result = $backupFile
         }
 
-        # Create time stamp to enhance the filename to be stored
-        [string]$timeStamp = Get-Date -Format "yyyy-MM-dd-HH-mm-ss-ffff"
 
-
-        # Filesystem is used for storeing zip file
+        # File system or NAS is used to store zip file
         if ($storageFolder) {
             Write-Verbose ((Get-ResStr 'VERBOSE_COPY_ZIP_TO_FILE') -f  "$storageFolder\$database-$timeStamp.zip")
             Copy-Item -Path $zipFile -Destination "$storageFolder\$database-$timeStamp.zip" -Force
@@ -115,7 +116,8 @@ function Backup-MssqlDatabase {
             }
         }
 
-        # Remote server (ftp/sftp) is used for storeing zip file
+
+        # A remote server (ftp/sftp) is used to store the zip file
         if ($server) {
             if ($password.GetType().Name -eq 'String') {
                 [securestring]$password = ConvertTo-SecureString -String $password -AsPlainText -Force
@@ -150,11 +152,13 @@ function Backup-MssqlDatabase {
             }
         }
 
+
         # Clean-Up mssql backup folder
         if ($removeBak) {
             Remove-Item $backupFile -force
             Write-Verbose ((Get-ResStr 'VERBOSE_DELETED_BACKUP_FROM_SQL') -f "$backupFile")
         }
+
     }
 
     end {

@@ -43,7 +43,16 @@ try {
     #  New-OpenVpnTls -openVpnPath  "$($env:ProgramFiles)\OpenVPN" -destination "$($home)\.eulandaconnect\pester\OpenVPN"
     # }
 
-    Test-MssqlAdministrator -udl '.\source\tests\Eulanda_1 Pester.udl'
+    $pesterFolder = Resolve-Path -path ".\source\tests"
+    $iniPath = Join-Path -path $pesterFolder "pester.ini"
+    $ini = Read-IniFile -path $iniPath
+    $path = $ini['SFTP']['SecurePasswordPath']
+    $path = $path -replace '\$home', $HOME
+    $secure = Import-Clixml -path $path
+    $server = $ini['SFTP']['Server']
+    $user = $ini['SFTP']['User']
+    Backup-MssqlDatabase -udl "$pesterFolder\Eulanda_1 Pester.udl" -storageFolder 'C:\store' -server $server -user $user -password $secure -remoteFolder '/inbox'
+
 
 <#
     $datanorm.v
