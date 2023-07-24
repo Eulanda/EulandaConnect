@@ -4,8 +4,6 @@ Set-StrictMode -version latest
 Describe 'Rename-MssqlDatabase' -Tag 'integration', 'sql', 'sqladmin' {
 
     BeforeAll {
-        $oldName = 'Eulanda_Pester'
-        $newName = 'Eulanda_PesterNew'
         $udl = Resolve-Path '.\source\tests\Eulanda_1 Pester.udl'
 
         $connItems = Get-ConnItems -udl $udl
@@ -18,6 +16,8 @@ Describe 'Rename-MssqlDatabase' -Tag 'integration', 'sql', 'sqladmin' {
         if ($connItems.ContainsKey("User ID")) {
             $user = $connItems."User ID"
         }
+        $oldName = $connItems.'Initial Catalog'
+        $newName = "$($oldName)New"
 
         # Build params for Rename-MssqlDatabase
         $connParams = @{
