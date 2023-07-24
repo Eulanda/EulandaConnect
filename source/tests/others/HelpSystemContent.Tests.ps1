@@ -15,6 +15,7 @@ Describe 'HelpSystemContent' -Tag 'helper' {
 
     It "Commands should have proper help content" {
         foreach ($command in $moduleExported) {
+            Write-Verbose "Function: $command"
             $help = Get-Help -Name $command -Full
             $help.Synopsis | Should -Not -BeNullOrEmpty -Because "$command should have a synopsis"
             $help.description.Text | Should -Not -BeNullOrEmpty -Because "$command should have a description"

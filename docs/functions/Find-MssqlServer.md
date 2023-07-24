@@ -65,6 +65,21 @@ Displays the local instances found through the SQL Browser service. The local IP
 
 ## PARAMETERS
 
+### -force
+If the parameter is set, the SQL browser service will be started if it was not started. However, if the service is disabled, then an exception is thrown.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -localIp
 If the local IP is not specified, the SQL servers are searched on the local PC, if you specify 0.0.0.0, the local network is searched. The network interface assigned to the default gateway is used here.
 
@@ -120,21 +135,6 @@ Aliases:
 
 Required: False
 Position: 2
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -force
-If the parameter is set, the SQL browser service will be started if it was not started. However, if the service is disabled, then an exception is thrown.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

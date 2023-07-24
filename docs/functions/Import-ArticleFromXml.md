@@ -107,6 +107,21 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -cuSurcharge
+The XML import is a general approach to import data natively into the EULANDA ERP system. The format is as far as possible compatible to the EULANDA-ERP software from the year 2000. The copper processing uses a user field UserN3, which contains the copper added value of the article. This is added to the purchase and sales price during import. The price unit of the item is taken into account. If the price unit is specified as more than 1, the value in UserN3 is multiplied by this factor. The UserN3 field, in turn, is maintained by the Datanorm import function and always refers to a unit of the article, so it is independent of the price unit.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -path
 The path to the XML file containing the article data.
 
@@ -117,6 +132,21 @@ Aliases:
 
 Required: False
 Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -show
+Displays a progress bar during execution.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -147,36 +177,6 @@ Aliases:
 
 Required: False
 Position: 0
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -cuSurcharge
-The XML import is a general approach to import data natively into the EULANDA ERP system. The format is as far as possible compatible to the EULANDA-ERP software from the year 2000. The copper processing uses a user field UserN3, which contains the copper added value of the article. This is added to the purchase and sales price during import. The price unit of the item is taken into account. If the price unit is specified as more than 1, the value in UserN3 is multiplied by this factor. The UserN3 field, in turn, is maintained by the Datanorm import function and always refers to a unit of the article, so it is independent of the price unit.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -show
-Displays a progress bar during execution.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

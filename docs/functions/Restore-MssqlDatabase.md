@@ -91,4 +91,4 @@ This function requires the SQL Server module and relies on the `Get-Conn` functi
 
 ## RELATED LINKS
 
-Backup-MssqlDatabase
+[Backup-MssqlDatabase](./functions/Backup-MssqlDatabase.md)

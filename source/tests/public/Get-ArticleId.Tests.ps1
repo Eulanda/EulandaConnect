@@ -27,17 +27,7 @@ Describe 'Get-ArticleId' -Tag 'integration', 'sql', 'sqladmin', 'eulanda' {
     AfterAll {
         # Skip restore because for restoring you need special rights
         if (! $skipTest) {
-            $conn = Get-Conn -udl $udl
-            $connItems = Get-ConnItems -udl $udl
-            $database = $connItems.'Initial Catalog'
-            $sql = @(
-                "USE [master]",
-                "ALTER DATABASE [$database] SET SINGLE_USER WITH ROLLBACK IMMEDIATE",
-                "RESTORE DATABASE [$database] FROM DISK = '$database.BAK' WITH FILE = 2, NOUNLOAD, REPLACE, STATS = 5",
-                "ALTER DATABASE [$database] SET MULTI_USER"
-            )
-            $conn.Execute($sql)
-            $conn.Close()
+            Restore-MssqlDatabase -udl $udl
         }
     }
 

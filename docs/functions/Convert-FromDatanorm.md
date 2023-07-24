@@ -13,7 +13,7 @@ This PowerShell function converts a Datanorm 4.0 file into a structured PowerShe
 ## SYNTAX
 
 ```
-Convert-FromDatanorm [[-path] <String>] [-vat <Double>] [-cuDel <Double>] [-utf8] [-show]
+Convert-FromDatanorm [[-path] <String>] [[-vat] <Double>] [[-cuDel] <Double>] [-utf8] [-show]
  [[-decimalSeparator] <String>] [<CommonParameters>]
 ```
 
@@ -94,6 +94,21 @@ Via `$datanorm.a` the individual field values can be retrieved and also addresse
 
 ## PARAMETERS
 
+### -cuDel
+Copper-DEL Notation, the price is in EUR per 100 kg copper. The price was in 02/2022 879 EUR for 100 kg copper.
+
+```yaml
+Type: Double
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 2
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -decimalSeparator
 The decimal separator used in the Datanorm file. The default value is the current culture's number decimal separator.
 
@@ -103,7 +118,7 @@ Parameter Sets: (All)
 Aliases: decimal
 
 Required: False
-Position: 2
+Position: 3
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -119,36 +134,6 @@ Aliases:
 
 Required: False
 Position: 0
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -cuDel
-Copper-DEL Notation, the price is in EUR per 100 kg copper. The price was in 02/2022 879 EUR for 100 kg copper.
-
-```yaml
-Type: Double
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -vat
-The value-added tax rate. The default value is 19.0 %.
-
-```yaml
-Type: Double
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -179,6 +164,21 @@ Aliases:
 
 Required: False
 Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -vat
+The value-added tax rate. The default value is 19.0 %.
+
+```yaml
+Type: Double
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 1
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

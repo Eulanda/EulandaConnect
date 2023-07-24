@@ -15,6 +15,7 @@ Describe 'Get-DataFromSql' -Tag 'integration', 'sql', 'sqladmin' {
 
         BeforeAll {
             $udl = Resolve-Path ".\source\tests\Eulanda_1 Pester.udl"
+            $articleNo = '4711'
 
             # Test-MssqlAdministartor rights
             $skipTest = -not (Test-MssqlAdministrator -udl $udl)
@@ -22,25 +23,18 @@ Describe 'Get-DataFromSql' -Tag 'integration', 'sql', 'sqladmin' {
             # Skip backup because for restoring you need special rights
             if (! $skipTest) {
                 Backup-MssqlDatabase -udl $udl
-            }
 
-            # Insert the necessary data into the database
-            $sql = "INSERT INTO Artikel (ArtNummer, Vk, Kurztext1) VALUES ('4711', 42.50, 'Some Info')"
-            $conn.Execute($sql)
+                # Insert the necessary data into the database
+                $conn = Get-Conn -udl $udl
+                $sql = "INSERT INTO Artikel (ArtNummer, Vk, Kurztext1) VALUES ('$articleNo', 42.50, 'Some Info')"
+                $conn.Execute($sql)
+                $conn.close()
+            }
         }
 
         AfterAll {
             if (! $skipTest) {
-                # Restore the database
-                $conn = Get-Conn -udl $udl
-                $sql = @(
-                    "USE [master]",
-                    "ALTER DATABASE [Eulanda_Pester] SET SINGLE_USER WITH ROLLBACK IMMEDIATE",
-                    "RESTORE DATABASE [Eulanda_Pester] FROM DISK = 'Eulanda_Pester.BAK' WITH FILE = 2, NOUNLOAD, REPLACE, STATS = 5",
-                    "ALTER DATABASE [Eulanda_Pester] SET MULTI_USER"
-                )
-                $conn.Execute($sql)
-                $conn.Close()
+                Restore-MssqlDatabase -udl $udl
             }
         }
 
@@ -51,11 +45,11 @@ Describe 'Get-DataFromSql' -Tag 'integration', 'sql', 'sqladmin' {
             }
 
             $conn = Get-Conn -udl $udl
-            $sql = @("SELECT ArtNummer, Vk, Kurztext1 FROM Artikel WHERE ArtNummer = '4711'")
+            $sql = @("SELECT ArtNummer, Vk, Kurztext1 FROM Artikel WHERE ArtNummer = '$articleNo'")
             $result = Get-DataFromSql -sql $sql -conn $conn
 
             $result.Count | Should -Be 3
-            $result.ArtNummer | Should -BeExactly '4711'
+            $result.ArtNummer | Should -BeExactly "$articleNo"
             $result.Vk | Should -BeExactly 42.50
             $result.Kurztext1 | Should -BeExactly 'Some Info'
             $conn.Close()

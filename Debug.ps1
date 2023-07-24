@@ -44,13 +44,6 @@ try {
     # }
 
     $pesterFolder = Resolve-Path -path ".\source\tests"
-    $iniPath = Join-Path -path $pesterFolder "pester.ini"
-    $ini = Read-IniFile -path $iniPath
-    $path = $ini['SFTP']['SecurePasswordPath']
-    $path = $path -replace '\$home', $HOME
-    $secure = Import-Clixml -path $path
-    $server = $ini['SFTP']['Server']
-    $user = $ini['SFTP']['User']
     Restore-MssqlDatabase -udl "$pesterFolder\Eulanda_1 Pester.udl"
 
 
