@@ -49,7 +49,11 @@ function Get-XmlEulandaProperty {
 
             [string[]]$sql= Get-PropertySql -breadcrumbPath $breadcrumbPath -tablename $tablename
             [System.Object]$data = Get-DataFromSql -sql $sql -conn $myConn
-            [xml]$xmlFlat = Convert-DataToXml -data $data -root 'EULANDA' -arrRoot 'MERKMALLISTE' -arrSubRoot 'MERKMAL'
+            if ($data) {
+                [xml]$xmlFlat = Convert-DataToXml -data $data -root 'EULANDA' -arrRoot 'MERKMALLISTE' -arrSubRoot 'MERKMAL'
+            } else {
+                [xml]$xmlFlat = '<MERKMALBAUM><ARTIKEL /></MERKMALBAUM>'
+            }
 
             # Create a hash map with all ID values
             # MERKMAL (engl. =Property)
@@ -111,3 +115,4 @@ function Get-XmlEulandaProperty {
     }
     # Test:  Get-XmlEulandaProperty -breadcrumbPath '\Produkte' -tablename 'Adresse' -udl 'C:\temp\Eulanda_1 Eulanda.udl'
 }
+
