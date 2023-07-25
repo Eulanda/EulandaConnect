@@ -70,20 +70,18 @@ function Get-ArticleSql {
             }
 
             if ($order) {
-                [string[]]$arrOrder = $order -split ','
-                for ($i=0; $i -lt $arrOrder.count-1; $i++) {
-                    # Delete ASC and DESC
-                    $arrOrder[$i] = $arrOrder[$i].Split(' ')[0]
-                    if ($SqlSelect.Contains($arrOrder[$i], [System.StringComparison]::InvariantCultureIgnoreCase)) {
-                        $arrOrder[$i] = ''
-                    }
-                }
-                $arrOrder = $arrOrder | Where-Object { $_ -ne "" }
-                $fieldList = $arrOrder -join ','
+                [string[]]$arrOrder = $order -split ',' | ForEach-Object { $_.Trim() }
+                [string[]]$arrSelect = $select -split ',' | ForEach-Object { $_.Trim() }
+
+                $arrOrderNoDup = $arrOrder | Where-Object { !($arrSelect -contains $_) }
+                $arrSelectNoDup = $arrSelect | Where-Object { !($arrOrder -contains $_) }
+
+                $fieldList = $arrOrderNoDup -join ','
                 if ($fieldList) {
-                    $sqlSelect = "$fieldlist,$SqlSelect"
+                    $sqlSelect = "$fieldList, $($arrSelectNoDup -join ',')"
                 }
             }
+
         }
 
         if (! ($null -eq $limit)) {
