@@ -6,7 +6,6 @@ Describe 'Restore-MssqlDatabase' -Tag 'integration', 'sql', 'sqladmin' {
     BeforeAll {
         $pesterFolder = Resolve-Path -path ".\source\tests"
         $udl = "$pesterFolder\Eulanda_1 Pester.udl"
-        $articleNo = '4711'
 
         # SQL needs sysadmin rights
         $skipTest = -not (Test-MssqlAdministrator -udl $udl)
@@ -15,11 +14,7 @@ Describe 'Restore-MssqlDatabase' -Tag 'integration', 'sql', 'sqladmin' {
         if (! $skipTest) {
             Backup-MssqlDatabase -udl $udl
 
-             # Insert the necessary data into the database
-             $conn = Get-Conn -udl $udl
-             $sql = "INSERT INTO Artikel (ArtNummer, Vk, Kurztext1) VALUES ('$articleNo', 42.50, 'Some Info')"
-             $conn.Execute($sql)
-             $conn.close()
+            . source\tests\include\Include-InsertArticle.ps1
         }
     }
 

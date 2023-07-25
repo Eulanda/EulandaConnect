@@ -5,7 +5,6 @@ Describe 'Get-AddressId' -Tag 'integration', 'sql', 'sqladmin', 'eulanda' {
 
     BeforeAll {
         $udl = Resolve-Path ".\source\tests\Eulanda_1 Pester.udl"
-        $match = 'JOHN'
 
         # Test-MssqlAdministartor rights
         $skipTest = -not (Test-MssqlAdministrator -udl $udl)
@@ -14,12 +13,7 @@ Describe 'Get-AddressId' -Tag 'integration', 'sql', 'sqladmin', 'eulanda' {
         if (! $skipTest) {
             Backup-MssqlDatabase -udl $udl
 
-            # Insert the necessary data into the database
-            $conn = Get-Conn -udl $udl
-            $sql =  "INSERT INTO Adresse ([Match], Name1, Strasse, Plz, Ort, Karteikarte) " + `
-                    "VALUES ('$match', 'John Doe', 'Star Avenue 42', '12345', 'Fantasy Town', 'Some Info')"
-            $conn.Execute($sql)
-            $conn.close()
+          . source\tests\include\Include-InsertAddress.ps1
         }
     }
 

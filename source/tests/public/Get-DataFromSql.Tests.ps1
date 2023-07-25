@@ -15,7 +15,6 @@ Describe 'Get-DataFromSql' -Tag 'integration', 'sql', 'sqladmin' {
 
         BeforeAll {
             $udl = Resolve-Path ".\source\tests\Eulanda_1 Pester.udl"
-            $articleNo = '4711'
 
             # Test-MssqlAdministartor rights
             $skipTest = -not (Test-MssqlAdministrator -udl $udl)
@@ -24,11 +23,7 @@ Describe 'Get-DataFromSql' -Tag 'integration', 'sql', 'sqladmin' {
             if (! $skipTest) {
                 Backup-MssqlDatabase -udl $udl
 
-                # Insert the necessary data into the database
-                $conn = Get-Conn -udl $udl
-                $sql = "INSERT INTO Artikel (ArtNummer, Vk, Kurztext1) VALUES ('$articleNo', 42.50, 'Some Info')"
-                $conn.Execute($sql)
-                $conn.close()
+                . source\tests\include\Include-InsertArticle.ps1
             }
         }
 

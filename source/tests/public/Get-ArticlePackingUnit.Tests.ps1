@@ -5,11 +5,6 @@ Describe 'Get-ArticlePackingUnit' -Tag 'integration', 'sql', 'sqladmin', 'euland
 
     BeforeAll {
         $udl = Resolve-Path ".\source\tests\Eulanda_1 Pester.udl"
-        $articleNo = '4711'
-        $wrongArticleNo = '0815'
-        $barcode = '1234567890123'
-        $packingUnit = 12
-
 
         # Test-MssqlAdministartor rights
         $skipTest = -not (Test-MssqlAdministrator -udl $udl)
@@ -18,11 +13,7 @@ Describe 'Get-ArticlePackingUnit' -Tag 'integration', 'sql', 'sqladmin', 'euland
         if (! $skipTest) {
             Backup-MssqlDatabase -udl $udl
 
-            # Insert the necessary data into the database
-            $conn = Get-Conn -udl $udl
-            $sql = "INSERT INTO Artikel (ArtNummer, Barcode, Vk, VerpackEH, Kurztext1) VALUES ($articleNo, $barcode, 42.50, $packingUnit, 'Some Info')"
-            $conn.Execute($sql)
-            $conn.close()
+            . source\tests\include\Include-InsertArticle.ps1
         }
     }
 
@@ -52,7 +43,7 @@ Describe 'Get-ArticlePackingUnit' -Tag 'integration', 'sql', 'sqladmin', 'euland
             Return
         }
 
-        $unit = Get-ArticlePackingUnit -articleNo $wrongArticleNo -udl $udl
+        $unit = Get-ArticlePackingUnit -articleNo '0815' -udl $udl
         $unit | should -Be 0
     }
 

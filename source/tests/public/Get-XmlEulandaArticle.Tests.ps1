@@ -5,9 +5,6 @@ Describe 'Get-XmlEulandaArticle' -Tag 'integration', 'sql', 'sqladmin', 'eulanda
 
     BeforeAll {
         $udl = Resolve-Path ".\source\tests\Eulanda_1 Pester.udl"
-        $articleNo = '4711'
-        $barcode = '1234567890123'
-        $packingUnit = 12
 
         # Test-MssqlAdministartor rights
         $skipTest = -not (Test-MssqlAdministrator -udl $udl)
@@ -16,11 +13,7 @@ Describe 'Get-XmlEulandaArticle' -Tag 'integration', 'sql', 'sqladmin', 'eulanda
         if (! $skipTest) {
             Backup-MssqlDatabase -udl $udl
 
-            # Insert the necessary data into the database
-            $conn = Get-Conn -udl $udl
-            $sql = "INSERT INTO Artikel (ArtNummer, Barcode, Vk, VerpackEH, Kurztext1) VALUES ($articleNo, $barcode, 42.50, $packingUnit, 'Some Info')"
-            $conn.Execute($sql)
-            $conn.close()
+            . source\tests\include\Include-InsertArticle.ps1
         }
     }
 

@@ -5,9 +5,6 @@ Describe 'Get-ArticleNo' -Tag 'integration', 'sql', 'sqladmin', 'eulanda' {
 
     BeforeAll {
         $udl = Resolve-Path ".\source\tests\Eulanda_1 Pester.udl"
-        $articleNo = '4711'
-        $barcode = '1234567890123'
-        $wrongBarcode = '3210987654321'
 
         # Test-MssqlAdministartor rights
         $skipTest = -not (Test-MssqlAdministrator -udl $udl)
@@ -16,11 +13,7 @@ Describe 'Get-ArticleNo' -Tag 'integration', 'sql', 'sqladmin', 'eulanda' {
         if (! $skipTest) {
             Backup-MssqlDatabase -udl $udl
 
-            # Insert the necessary data into the database
-            $conn = Get-Conn -udl $udl
-            $sql = "INSERT INTO Artikel (ArtNummer, Barcode, Vk, Kurztext1) VALUES ($articleNo, $barcode, 42.50, 'Some Info')"
-            $conn.Execute($sql)
-            $conn.close()
+            . source\tests\include\Include-InsertArticle.ps1
         }
     }
 
@@ -50,7 +43,7 @@ Describe 'Get-ArticleNo' -Tag 'integration', 'sql', 'sqladmin', 'eulanda' {
             Return
         }
 
-        $artNo = Get-ArticleNo -barcode $wrongBarcode -udl $udl
+        $artNo = Get-ArticleNo -barcode '3210987654321' -udl $udl
         $artNo | should -BeNullOrEmpty
     }
 
