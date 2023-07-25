@@ -114,12 +114,14 @@ function Export-ArticleToXml {
         }
 
         if ($xmlArticle) {
-            if ($xmlArticle.OuterXml) {
-                $newNode = $xmlArticle.SelectSingleNode("//ARTIKELLISTE")
-                $node = $xml.ImportNode($newNode, $true)
-                $xml.DocumentElement.AppendChild($node) | Out-Null
-            }
+            [xml]$xmlArticle = '<ARTIKELLISTE />'
+        } elseif (! $xmlArticle.OuterXml) {
+            [xml]$xmlArticle = '<ARTIKELLISTE />'
         }
+        $newNode = $xmlArticle.SelectSingleNode("//ARTIKELLISTE")
+        $node = $xml.ImportNode($newNode, $true)
+        $xml.DocumentElement.AppendChild($node) | Out-Null
+
 
         if ($path) {
             Format-Xml -xmlString $xml.OuterXml -pathOut $path
