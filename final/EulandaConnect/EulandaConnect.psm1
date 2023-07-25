@@ -2405,11 +2405,15 @@ function Export-ArticleToXml {
             $xml.DocumentElement.AppendChild($node) | Out-Null
         }
 
-        if ($xmlArticle) {
-            $newNode = $xmlArticle.SelectSingleNode("//ARTIKELLISTE")
-            $node = $xml.ImportNode($newNode, $true)
-            $xml.DocumentElement.AppendChild($node) | Out-Null
+        if (! $xmlArticle) {
+            [xml]$xmlArticle = '<ARTIKELLISTE />'
+        } elseif (! $xmlArticle.OuterXml) {
+            [xml]$xmlArticle = '<ARTIKELLISTE />'
         }
+        $newNode = $xmlArticle.SelectSingleNode("//ARTIKELLISTE")
+        $node = $xml.ImportNode($newNode, $true)
+        $xml.DocumentElement.AppendChild($node) | Out-Null
+
 
         if ($path) {
             Format-Xml -xmlString $xml.OuterXml -pathOut $path
@@ -3500,20 +3504,18 @@ function Get-ArticleSql {
             }
 
             if ($order) {
-                [string[]]$arrOrder = $order -split ','
-                for ($i=0; $i -lt $arrOrder.count-1; $i++) {
-                    # Delete ASC and DESC
-                    $arrOrder[$i] = $arrOrder[$i].Split(' ')[0]
-                    if ($SqlSelect.Contains($arrOrder[$i], [System.StringComparison]::InvariantCultureIgnoreCase)) {
-                        $arrOrder[$i] = ''
-                    }
-                }
-                $arrOrder = $arrOrder | Where-Object { $_ -ne "" }
-                $fieldList = $arrOrder -join ','
+                [string[]]$arrOrder = $order -split ',' | ForEach-Object { $_.Trim() }
+                [string[]]$arrSelect = $select -split ',' | ForEach-Object { $_.Trim() }
+
+                $arrOrderNoDup = $arrOrder | Where-Object { !($arrSelect -contains $_) }
+                $arrSelectNoDup = $arrSelect | Where-Object { !($arrOrder -contains $_) }
+
+                $fieldList = $arrOrderNoDup -join ','
                 if ($fieldList) {
-                    $sqlSelect = "$fieldlist,$SqlSelect"
+                    $sqlSelect = "$fieldList, $($arrSelectNoDup -join ',')"
                 }
             }
+
         }
 
         if (! ($null -eq $limit)) {
@@ -8239,7 +8241,11 @@ function Get-XmlEulandaProperty {
 
             [string[]]$sql= Get-PropertySql -breadcrumbPath $breadcrumbPath -tablename $tablename
             [System.Object]$data = Get-DataFromSql -sql $sql -conn $myConn
-            [xml]$xmlFlat = Convert-DataToXml -data $data -root 'EULANDA' -arrRoot 'MERKMALLISTE' -arrSubRoot 'MERKMAL'
+            if ($data) {
+                [xml]$xmlFlat = Convert-DataToXml -data $data -root 'EULANDA' -arrRoot 'MERKMALLISTE' -arrSubRoot 'MERKMAL'
+            } else {
+                [xml]$xmlFlat = '<MERKMALBAUM><ARTIKEL /></MERKMALBAUM>'
+            }
 
             # Create a hash map with all ID values
             # MERKMAL (engl. =Property)
@@ -8301,6 +8307,7 @@ function Get-XmlEulandaProperty {
     }
     # Test:  Get-XmlEulandaProperty -breadcrumbPath '\Produkte' -tablename 'Adresse' -udl 'C:\temp\Eulanda_1 Eulanda.udl'
 }
+
 
 Function Get-XmlEulandaRoot {
     [CmdletBinding()]
@@ -19315,8 +19322,8 @@ function Test-ValidateUrl {
 # SIG # Begin signature block
 # MIIpiQYJKoZIhvcNAQcCoIIpejCCKXYCAQExDzANBglghkgBZQMEAgEFADB5Bgor
 # BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
-# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCClbchsaKpcFsdW
-# tMzby6dI/rwN8oKKwY5bzFODcs+C6aCCEngwggVvMIIEV6ADAgECAhBI/JO0YFWU
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCDLSRHQKrAbJqIg
+# scpwEuTdE62rRnqNghBDRx1jfq3uDaCCEngwggVvMIIEV6ADAgECAhBI/JO0YFWU
 # jTanyYqJ1pQWMA0GCSqGSIb3DQEBDAUAMHsxCzAJBgNVBAYTAkdCMRswGQYDVQQI
 # DBJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcMB1NhbGZvcmQxGjAYBgNVBAoM
 # EUNvbW9kbyBDQSBMaW1pdGVkMSEwHwYDVQQDDBhBQUEgQ2VydGlmaWNhdGUgU2Vy
@@ -19419,23 +19426,23 @@ function Test-ValidateUrl {
 # IExpbWl0ZWQxLjAsBgNVBAMTJVNlY3RpZ28gUHVibGljIENvZGUgU2lnbmluZyBD
 # QSBFViBSMzYCEGilgQZhq4aQSRu7qELTizkwDQYJYIZIAWUDBAIBBQCgfDAQBgor
 # BgEEAYI3AgEMMQIwADAZBgkqhkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEE
-# AYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAvBgkqhkiG9w0BCQQxIgQg5QGCU/7t1RFE
-# aEpfh46xfd9hhdStVZWkExr6hVxCiFIwDQYJKoZIhvcNAQEBBQAEggIAU2CtHw7P
-# 7euBDH8YNyXFy11AGLmOp3q+Vh7aPo8KHgT6cSzU8qsnJVgL5XuTuvzjE/Uzqx3Z
-# YBjxrNLEJmCoAmJ1IR1/0McSFiaYr5eavybDXvGI6RN5/uilbVuU/L+9jr+KUo4S
-# DxT/YS2hz6Nqy59y5A6p7Ma50kFBwEcDgHZf7QV4WMm9YW59zAQSH/qVol2H16U+
-# uhzkH1FxBFJJ1vqIjS9xBkXACDMVuqpAEZ1t9zT6tvRuku34VE2rpq4HKB4OB7mV
-# YR00YRen2+RSQCkOIGXj2tefFHFosoEWChKc4yi10kOqToNpWCv3K88TSH52quxP
-# EuctyPw9HDIAUzfYAF2ZsKc8rWUT2yQgEqyzQqR0GGL2jorLtDqydMack2teFtbD
-# HLji3/51KLwE/wwz26fT2c3z24kjq4IfxUg/tT2FiZQZxm6UYf7VxfpxdTZgFY2V
-# vGd0DPvmfASXs2pzp/CZT2/p5fvMCEUK1OryhqOIObx8ffLL8HVT7csB58Kh/Kll
-# djG/2Nos+ou/FbrIvg5b4KKE+du/FDPFg+fyfRwV9lx0zw8lwf7rbGda29qcrPzW
-# aF5/g44dHYPJQScCspm+vcQnI5j0IWBh+JF1cIVYwLlkJOfK+Z6vdCRTplRNZlML
-# UkfriVymjgiafrku6KUrm9POUZYU0beM2jOhghNPMIITSwYKKwYBBAGCNwMDATGC
+# AYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAvBgkqhkiG9w0BCQQxIgQgsrp6KdbFcEuT
+# 1ARGLyxxhubzkTp5d/2lBWEh9P8d2ZowDQYJKoZIhvcNAQEBBQAEggIAanVXZLzY
+# iMeZ7Spxw1Zim5wajCs5rnYLCLEndJXY6rtXr4albo6s+Zt016Iu6qSFUOHXzTxA
+# LEaGb0QDT/mLiU92E4UywYnCZ3a8s2HcydZRpK99tXX8Gvzz6u+QBYDx/KKNI979
+# nmGb9B+x4swaE7L5xEFXrqOIDW4YxurchkCkTrhcROBeEzrksvYgB6DOQiVcJnKe
+# 5VbKrH+C3Ejk9wqaPc4jrwjEyB5W9iX+84xWhT81kc+oWvUVMhMLAjzM0EHDUmZc
+# qWsnJbpb30WLgQEAgyoKNPUcmW/grHKuR/ejC8yjJNySySSTqSRPjc9RxNGh911B
+# TDPhu+VuiwxBmUQGmZQ3UDHKG5Qu9twTkbatzJgSjWlPOUKNBbKQG19poEil+jdw
+# 4b8x59uIGogpqFFFONy4pYyfuK4h4nZXMoDC4CQE7/F0500hnOPR+eVDueY9tctm
+# yY9TT+lptCdFZhdZpzUgDBJ4bBNcID03YoLflY2/U55UBxoxqhGeCQFXFVXBhObL
+# 5bbH5b6gMMEy0hpl5fnLkLBsjT/6Tt3O9oPRvCzyZXEyMwB9ybD2fkD7T6vq+JoF
+# hWP9f1kV2XtiaBG5kuvPsj+9EacgRHeBm1UAo7DoaK74tXwWkWDibEiZ064SiN7j
+# twsNBKATFLNiwP2N0mBqr4YxKzhG9AInhuGhghNPMIITSwYKKwYBBAGCNwMDATGC
 # EzswghM3BgkqhkiG9w0BBwKgghMoMIITJAIBAzEPMA0GCWCGSAFlAwQCAgUAMIHw
 # BgsqhkiG9w0BCRABBKCB4ASB3TCB2gIBAQYKKwYBBAGyMQIBATAxMA0GCWCGSAFl
-# AwQCAQUABCDEUrPfTml8a+N+Z+iRw3oqxpV78YsJA/Mdts1xnm6DZAIVAN0DjSyJ
-# T+lSd1GOt8D8P7OXUcN3GA8yMDIzMDcyNTAzMTYxOFqgbqRsMGoxCzAJBgNVBAYT
+# AwQCAQUABCBuav21zxv/uZLjdsriDYQuj9/7WZ/KpDhJdPY2DF66YQIVAMwlmFG4
+# ZDmmm2uq7LNN5z3nbRCXGA8yMDIzMDcyNTE0NTgzNFqgbqRsMGoxCzAJBgNVBAYT
 # AkdCMRMwEQYDVQQIEwpNYW5jaGVzdGVyMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
 # ZWQxLDAqBgNVBAMMI1NlY3RpZ28gUlNBIFRpbWUgU3RhbXBpbmcgU2lnbmVyICM0
 # oIIN6TCCBvUwggTdoAMCAQICEDlMJeF8oG0nqGXiO9kdItQwDQYJKoZIhvcNAQEM
@@ -19517,22 +19524,22 @@ function Test-ValidateUrl {
 # BAoTD1NlY3RpZ28gTGltaXRlZDElMCMGA1UEAxMcU2VjdGlnbyBSU0EgVGltZSBT
 # dGFtcGluZyBDQQIQOUwl4XygbSeoZeI72R0i1DANBglghkgBZQMEAgIFAKCCAWsw
 # GgYJKoZIhvcNAQkDMQ0GCyqGSIb3DQEJEAEEMBwGCSqGSIb3DQEJBTEPFw0yMzA3
-# MjUwMzE2MThaMD8GCSqGSIb3DQEJBDEyBDBpfPfJ5idZZhD6hwXi/KGWTzmmQJs2
-# beWT1DUv3IqxxlQJF0uHtZaKAk+iMVxJBxUwge0GCyqGSIb3DQEJEAIMMYHdMIHa
+# MjUxNDU4MzRaMD8GCSqGSIb3DQEJBDEyBDC52jwoOSZuUtHWaXHYNO5GyttX7Hrl
+# woT7goVzaPx2QIGzQNbFrOUcnfUB4+9hqVcwge0GCyqGSIb3DQEJEAIMMYHdMIHa
 # MIHXMBYEFK5ir3UKDL1H1kYfdWjivIznyk+UMIG8BBQC1luV4oNwwVcAlfqI+SPd
 # k3+tjzCBozCBjqSBizCBiDELMAkGA1UEBhMCVVMxEzARBgNVBAgTCk5ldyBKZXJz
 # ZXkxFDASBgNVBAcTC0plcnNleSBDaXR5MR4wHAYDVQQKExVUaGUgVVNFUlRSVVNU
 # IE5ldHdvcmsxLjAsBgNVBAMTJVVTRVJUcnVzdCBSU0EgQ2VydGlmaWNhdGlvbiBB
-# dXRob3JpdHkCEDAPb6zdZph0fKlGNqd4LbkwDQYJKoZIhvcNAQEBBQAEggIALM36
-# +Igs+nDhYbdc4mi2JRKi+jPSd8anBJZZCwZefXlIBjnhEAwO3T3UGuDbkQ9jAPgE
-# 0r1WO7ty/VNtIsav9vgLWIB/0HxW22VVJAYTCV8fuJmZf8PTMz4EohWMX3Q5ECuq
-# fcc2oIH5O4mSOmRlxu3kktgxhHXzngHc3OHdNd+qNQuFkSMCPoXt3/EJPfFr5lj0
-# GhcKe42SP+G2yUhiGVEF6feVo/5eAwjw2we+HozhFxIDtPYyJNsNFcfsTaVbsHPx
-# 2JHyHRgUo+8aeSP+hVMjFdaQ4i7H42r3AuAa4w+MFaX9SRe7VwHChLYATSHolLxG
-# xHQRbpSLObGKxdzYVR+5XnM9Ea5imWlzOxMCJCNQV+3/2eFJtTXeQZkyi2Ag7tY/
-# bNYaS2nW9WDQmmcb5X64szURVUTaSQ8SLsw74k0eZK+uFmJaTptFYpnJCv2rwGKm
-# U5YE0Me3gQIIYpqT1q462eTpRthnfqDZIFcbWOATSFSoNnpmXbVsYp7UdbMG23n8
-# Llln94/Lc94T0ietR4z7q+RJ+BUCbs3SYCObvJ8ug7N2MDLVgc3l8pB1aAqiP/E1
-# OoIFeiC3YNpfHvccxIvNbuVVY9Z/zPsazPO7XNljt/kAmTc/K2zkUMtMQZB1ZSkn
-# 1HfISmp9ZVSdXQg2YWK8raIiq28r1DYUQSnJL5M=
+# dXRob3JpdHkCEDAPb6zdZph0fKlGNqd4LbkwDQYJKoZIhvcNAQEBBQAEggIAmqE8
+# FNsnLUx4SGNp/g8Zo4Y5vL7xRagKjsxWaM6Yd4+MEQOHA9GAUWDMcFfEGksoxHp+
+# AwNl6T4eHCDqjxlEciJZNsKfzW578VobAtc25UAvVMsejhU0+8JPzF0eULEt5pWi
+# zM/GPiKrt4oZP4Id/iQCCntQ1qQ62SW+egfC8fu9AryM1sRz21QIh3kxuLP2Jpi5
+# rEvOGRXTqOQ9ivSr4AoVBbZjTKjcraMiMIm/YF+xdgKn1liQfIvnloZuoy/8YwEU
+# l2FEIMCYR5lkTTE2Le0PIuXVyp3qn1iTi7kOnrW9EpYvK6Mf+6KyYzBe6Ek25e8u
+# nmeINMYO/i1kwZlw5BHKGR1MykMYTxA2sTOKpixACu8Ou0Npvj5kOYbdJonprMx3
+# DM282m5Ico0RMy5vkPgB/T5caAdEaz7qRKQHIZJyJCVnIpQGh4WVSUMD4QVUdhXY
+# TjnbhcvNrTntVNSl7iSQz1NXaFNyql2xxfPY8LeA9cm/gIEH1X/mYP/Bc65r3HRZ
+# ORNNNmtSdifV8vwvruRpBjzIspLU77jS0/qiR9fzRvjj0CbSyMOBodFYRm2Rbg8/
+# 3Lb5O8YDkiCFLmEus3vP+wn+FGGFtC1w/TzK1yrPscWIbW9VB99h55v98ReAaKkW
+# C2hImdu1vTsl/OXAEk5tPw4/0CEvE0efA4dflVY=
 # SIG # End signature block
