@@ -1953,19 +1953,19 @@ PS C:\&gt; $myDate
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="decimal">
-          <maml:name>decimalSeparator</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+          <maml:name>vat</maml:name>
           <maml:description>
-            <maml:para>The decimal separator used in the Datanorm file. The default value is the current culture's number decimal separator.</maml:para>
+            <maml:para>The value-added tax rate. The default value is 19.0 %.</maml:para>
           </maml:description>
-          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">Double</command:parameterValue>
           <dev:type>
-            <maml:name>String</maml:name>
+            <maml:name>Double</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
           <maml:name>cuDel</maml:name>
           <maml:description>
             <maml:para>Copper-DEL Notation, the price is in EUR per 100 kg copper. The price was in 02/2022 879 EUR for 100 kg copper.</maml:para>
@@ -1977,14 +1977,14 @@ PS C:\&gt; $myDate
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-          <maml:name>vat</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="decimal">
+          <maml:name>decimalSeparator</maml:name>
           <maml:description>
-            <maml:para>The value-added tax rate. The default value is 19.0 %.</maml:para>
+            <maml:para>The decimal separator used in the Datanorm file. The default value is the current culture's number decimal separator.</maml:para>
           </maml:description>
-          <command:parameterValue required="true" variableLength="false">Double</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
           <dev:type>
-            <maml:name>Double</maml:name>
+            <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -2014,7 +2014,19 @@ PS C:\&gt; $myDate
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="decimal">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+        <maml:name>cuDel</maml:name>
+        <maml:description>
+          <maml:para>Copper-DEL Notation, the price is in EUR per 100 kg copper. The price was in 02/2022 879 EUR for 100 kg copper.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Double</command:parameterValue>
+        <dev:type>
+          <maml:name>Double</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="decimal">
         <maml:name>decimalSeparator</maml:name>
         <maml:description>
           <maml:para>The decimal separator used in the Datanorm file. The default value is the current culture's number decimal separator.</maml:para>
@@ -2034,30 +2046,6 @@ PS C:\&gt; $myDate
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
           <maml:name>String</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-        <maml:name>cuDel</maml:name>
-        <maml:description>
-          <maml:para>Copper-DEL Notation, the price is in EUR per 100 kg copper. The price was in 02/2022 879 EUR for 100 kg copper.</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">Double</command:parameterValue>
-        <dev:type>
-          <maml:name>Double</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-        <maml:name>vat</maml:name>
-        <maml:description>
-          <maml:para>The value-added tax rate. The default value is 19.0 %.</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">Double</command:parameterValue>
-        <dev:type>
-          <maml:name>Double</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -2085,6 +2073,18 @@ PS C:\&gt; $myDate
           <maml:uri />
         </dev:type>
         <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+        <maml:name>vat</maml:name>
+        <maml:description>
+          <maml:para>The value-added tax rate. The default value is 19.0 %.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Double</command:parameterValue>
+        <dev:type>
+          <maml:name>Double</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
     </command:parameters>
     <command:inputTypes>
@@ -4822,9 +4822,32 @@ EULANDA&gt;
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>force</maml:name>
+          <maml:description>
+            <maml:para>If the parameter is set, the SQL browser service will be started if it was not started. However, if the service is disabled, then an exception is thrown.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>force</maml:name>
+        <maml:description>
+          <maml:para>If the parameter is set, the SQL browser service will be started if it was not started. However, if the service is disabled, then an exception is thrown.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
         <maml:name>localIp</maml:name>
         <maml:description>
@@ -18533,6 +18556,18 @@ No technical information available</dev:code>
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>cuSurcharge</maml:name>
+        <maml:description>
+          <maml:para>The XML import is a general approach to import data natively into the EULANDA ERP system. The format is as far as possible compatible to the EULANDA-ERP software from the year 2000. The copper processing uses a user field UserN3, which contains the copper added value of the article. This is added to the purchase and sales price during import. The price unit of the item is taken into account. If the price unit is specified as more than 1, the value in UserN3 is multiplied by this factor. The UserN3 field, in turn, is maintained by the Datanorm import function and always refers to a unit of the article, so it is independent of the price unit.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
         <maml:name>path</maml:name>
         <maml:description>
@@ -18544,6 +18579,18 @@ No technical information available</dev:code>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>show</maml:name>
+        <maml:description>
+          <maml:para>Displays a progress bar during execution.</maml:para>
+        </maml:description>
+        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
         <maml:name>udl</maml:name>
@@ -18568,30 +18615,6 @@ No technical information available</dev:code>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-        <maml:name>cuSurcharge</maml:name>
-        <maml:description>
-          <maml:para>The XML import is a general approach to import data natively into the EULANDA ERP system. The format is as far as possible compatible to the EULANDA-ERP software from the year 2000. The copper processing uses a user field UserN3, which contains the copper added value of the article. This is added to the purchase and sales price during import. The price unit of the item is taken into account. If the price unit is specified as more than 1, the value in UserN3 is multiplied by this factor. The UserN3 field, in turn, is maintained by the Datanorm import function and always refers to a unit of the article, so it is independent of the price unit.</maml:para>
-        </maml:description>
-        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
-        <dev:type>
-          <maml:name>SwitchParameter</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>False</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-        <maml:name>show</maml:name>
-        <maml:description>
-          <maml:para>Displays a progress bar during execution.</maml:para>
-        </maml:description>
-        <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
-        <dev:type>
-          <maml:name>SwitchParameter</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>False</dev:defaultValue>
       </command:parameter>
     </command:parameters>
     <command:inputTypes>
@@ -19650,7 +19673,7 @@ ArticleNo;EAN;SalesPreis
     <command:syntax>
       <command:syntaxItem>
         <maml:name>Merge-IpGeoInfo</maml:name>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
           <maml:name>xmlFile1</maml:name>
           <maml:description>
             <maml:para>Specifies the path of the first XML file. This file must exist on the disk.</maml:para>
@@ -19662,7 +19685,7 @@ ArticleNo;EAN;SalesPreis
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
           <maml:name>xmlFile2</maml:name>
           <maml:description>
             <maml:para>Specifies the path of the second XML file. This file must exist on the disk.</maml:para>
@@ -19674,7 +19697,7 @@ ArticleNo;EAN;SalesPreis
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
           <maml:name>outputFile</maml:name>
           <maml:description>
             <maml:para>Specifies the path of the output file. The cmdlet will create this file, containing the merged IP geolocation information.</maml:para>
@@ -19689,7 +19712,7 @@ ArticleNo;EAN;SalesPreis
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
         <maml:name>outputFile</maml:name>
         <maml:description>
           <maml:para>Specifies the path of the output file. The cmdlet will create this file, containing the merged IP geolocation information.</maml:para>
@@ -19701,7 +19724,7 @@ ArticleNo;EAN;SalesPreis
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
         <maml:name>xmlFile1</maml:name>
         <maml:description>
           <maml:para>Specifies the path of the first XML file. This file must exist on the disk.</maml:para>
@@ -19713,7 +19736,7 @@ ArticleNo;EAN;SalesPreis
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
         <maml:name>xmlFile2</maml:name>
         <maml:description>
           <maml:para>Specifies the path of the second XML file. This file must exist on the disk.</maml:para>
@@ -26053,6 +26076,142 @@ PS C:\&gt; $ini['Mail']['Mapi']
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
+      <command:name>Restore-MssqlDatabase</command:name>
+      <command:verb>Restore</command:verb>
+      <command:noun>MssqlDatabase</command:noun>
+      <maml:description>
+        <maml:para>Restores a SQL Server database from a backup file.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>The Restore-MssqlDatabase function restores a SQL Server database from a backup file. It takes the connection information to the master database and the path to the backup file as input parameters. The function attempts to restore the specified database from the backup and handles errors during the restore process. After the restore is completed, the function verifies the success of the restore operation.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Restore-MssqlDatabase</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>conn</maml:name>
+          <maml:description>
+            <maml:para>The connection can be established via an existing ADO object of the type 'ADODB.Connection'. If the connection is already open, it remains open even after the function has been executed. If it was closed, it will be closed again after the function has been executed.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Object</command:parameterValue>
+          <dev:type>
+            <maml:name>Object</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+          <maml:name>udl</maml:name>
+          <maml:description>
+            <maml:para>Alternatively to a connection, a string to a UDL file can be specified. In this case an ADO object is created and closed again at the end of the function.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+          <maml:name>connStr</maml:name>
+          <maml:description>
+            <maml:para>A `ConnectionString` can be specified here, with which a database can be opened.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>conn</maml:name>
+        <maml:description>
+          <maml:para>The connection can be established via an existing ADO object of the type 'ADODB.Connection'. If the connection is already open, it remains open even after the function has been executed. If it was closed, it will be closed again after the function has been executed.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Object</command:parameterValue>
+        <dev:type>
+          <maml:name>Object</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+        <maml:name>connStr</maml:name>
+        <maml:description>
+          <maml:para>A `ConnectionString` can be specified here, with which a database can be opened.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+        <maml:name>udl</maml:name>
+        <maml:description>
+          <maml:para>Alternatively to a connection, a string to a UDL file can be specified. In this case an ADO object is created and closed again at the end of the function.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>This function requires the SQL Server module and relies on the `Get-Conn` function to establish a connection to the SQL Server instance. It is recommended to have sysadmin rights on the SQL Server instance to perform database restores.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-- Example 1: Restore a SQL Server database using a UDL file. --</maml:title>
+        <dev:code>PS C:\&gt; Restore-MssqlDatabse -udl 'C:\temp\Eulanda_1 JohnDoe.udl'</dev:code>
+        <dev:remarks>
+          <maml:para>Restores the database specified in the `Eulanda_1 JohnDoe.udl` file. The user specified in the UDL file must be in the sysadmin role to perform the restore function.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version:</maml:linkText>
+        <maml:uri>https://github.com/Eulanda/EulandaConnect/blob/master/docs/Restore-MssqlDatabase.md</maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Backup-MssqlDatabase</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
       <command:name>Select-OutdatedFilenames</command:name>
       <command:verb>Select</command:verb>
       <command:noun>OutdatedFilenames</command:noun>
@@ -29876,6 +30035,138 @@ PS C:\&gt; Set-TrackingNo -trackingNo $trackingNo -deliveryNo 430220 -udl "C:\te
       <maml:navigationLink>
         <maml:linkText>Online Version:</maml:linkText>
         <maml:uri>https://github.com/Eulanda/EulandaConnect/blob/master/docs/Test-IpAddress.md</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Test-MssqlAdministrator</command:name>
+      <command:verb>Test</command:verb>
+      <command:noun>MssqlAdministrator</command:noun>
+      <maml:description>
+        <maml:para>Checks if the current user in the database has the sysadmin role.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>The Test-MssqlAdministrator function checks whether the current user in the specified SQL Server database has the sysadmin role. It can be used to determine whether or not the user has administrative privileges in the database.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Test-MssqlAdministrator</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>conn</maml:name>
+          <maml:description>
+            <maml:para>The connection can be established via an existing ADO object of the type 'ADODB.Connection'. If the connection is already open, it remains open even after the function has been executed. If it was closed, it will be closed again after the function has been executed.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Object</command:parameterValue>
+          <dev:type>
+            <maml:name>Object</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+          <maml:name>udl</maml:name>
+          <maml:description>
+            <maml:para>Alternatively to a connection, a string to a UDL file can be specified. In this case an ADO object is created and closed again at the end of the function.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+          <maml:name>connStr</maml:name>
+          <maml:description>
+            <maml:para>A `ConnectionString` can be specified here, with which a database can be opened.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>conn</maml:name>
+        <maml:description>
+          <maml:para>The connection can be established via an existing ADO object of the type 'ADODB.Connection'. If the connection is already open, it remains open even after the function has been executed. If it was closed, it will be closed again after the function has been executed.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Object</command:parameterValue>
+        <dev:type>
+          <maml:name>Object</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+        <maml:name>connStr</maml:name>
+        <maml:description>
+          <maml:para>A `ConnectionString` can be specified here, with which a database can be opened.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+        <maml:name>udl</maml:name>
+        <maml:description>
+          <maml:para>Alternatively to a connection, a string to a UDL file can be specified. In this case an ADO object is created and closed again at the end of the function.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>None</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para></maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>Example 1: Tests if the user specified in udl is in the sysadmin role</maml:title>
+        <dev:code>PS C:\&gt; Test-MssqlAdministrator -udl '.\source\tests\Eulanda_1 Pester.udl'</dev:code>
+        <dev:remarks>
+          <maml:para>This example checks if the current user has the sysadmin role in the database configured in the UDL file '.\source\tests\Eulanda_1 Pester.udl'. If the user is sysadmin, the result will return "True", otherwise "False".</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version:</maml:linkText>
+        <maml:uri>https://github.com/Eulanda/EulandaConnect/blob/master/docs/Test-MssqlAdministrator.md</maml:uri>
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>

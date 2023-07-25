@@ -338,6 +338,10 @@ function Backup-MssqlDatabase {
         # Get connection and open it
         $myConn = Get-Conn -conn $conn -ConnStr $connStr -udl $udl
 
+        # Create time stamp to enhance the filename to be stored
+        [string]$timeStamp = Get-Date -Format "yyyy-MM-dd-HH-mm-ss-ffff"
+
+
         # Extract parameters from connection
         $connItems = Get-ConnItems -conn $myConn
         [string]$datasource = $connItems['Data Source']
@@ -354,28 +358,25 @@ function Backup-MssqlDatabase {
         Get-MssqlInstances | ForEach-Object { $instances[$_.Instance] = $_ }
         [string]$backupPath = $instances[$instance].BackupPath
 
+
         # Backup database from connection
         $backupFile = "$backupPath\$database.bak"
         $sql = "BACKUP DATABASE [$database] TO  DISK = N'$backupFile' WITH FORMAT, INIT,  NAME = N'Full Database Backup', SKIP, NOREWIND, NOUNLOAD, NO_COMPRESSION,  STATS = 10"
         Write-Verbose ((Get-ResStr 'VERBOSE_BACKUP_DATABASE_TO_FILE') -f $database, $backupFile)
         $myConn.Execute($sql) | Out-Null
 
+
         # Zip the database backup file
         $zipFile = "$backupPath\$database.zip"
-        $result = $zipFile
-        $sourcePath = $backupFile
-        $sourceFiles = Get-ChildItem -Path $sourcePath -Recurse
-        Write-Verbose "Zip database as '$zipFile'"
-        $sourceFiles | ForEach-Object {
-            $currentFile = $_
-            Compress-Archive -Path $currentFile.FullName -DestinationPath $zipFile -CompressionLevel Optimal -Update
+        if (($storageFolder) -or ($server) -or ($removeBak)) {
+            Compress-Archive -Path $backupFile -DestinationPath $zipFile -CompressionLevel Optimal -Update
+            $result = $zipFile
+        } else {
+            $result = $backupFile
         }
 
-        # Create time stamp to enhance the filename to be stored
-        [string]$timeStamp = Get-Date -Format "yyyy-MM-dd-HH-mm-ss-ffff"
 
-
-        # Filesystem is used for storeing zip file
+        # File system or NAS is used to store zip file
         if ($storageFolder) {
             Write-Verbose ((Get-ResStr 'VERBOSE_COPY_ZIP_TO_FILE') -f  "$storageFolder\$database-$timeStamp.zip")
             Copy-Item -Path $zipFile -Destination "$storageFolder\$database-$timeStamp.zip" -Force
@@ -388,7 +389,8 @@ function Backup-MssqlDatabase {
             }
         }
 
-        # Remote server (ftp/sftp) is used for storeing zip file
+
+        # A remote server (ftp/sftp) is used to store the zip file
         if ($server) {
             if ($password.GetType().Name -eq 'String') {
                 [securestring]$password = ConvertTo-SecureString -String $password -AsPlainText -Force
@@ -423,11 +425,13 @@ function Backup-MssqlDatabase {
             }
         }
 
+
         # Clean-Up mssql backup folder
         if ($removeBak) {
             Remove-Item $backupFile -force
             Write-Verbose ((Get-ResStr 'VERBOSE_DELETED_BACKUP_FROM_SQL') -f "$backupFile")
         }
+
     }
 
     end {
@@ -614,8 +618,7 @@ function Confirm-System {
 
     begin {
         Write-Verbose -Message ((Get-ResStr 'STARTING_FUNCTION') -f $myInvocation.Mycommand)
-        # Test-ValidateLeastOne -validParams @('all','administrator','controlledFolderAccess','memory','drives','network') @PSBoundParameters
-        Test-ValidateLeastOne -validParams @() @PSBoundParameters
+        Test-SpecificParameters -BoundParameters $PSBoundParameters -CommandName $MyInvocation.MyCommand.Name
         New-Variable -Name 'item' -Scope 'Private' -Value ([PSCustomObject]@{})
         New-Variable -Name 'i' -Scope 'Private' -Value ([int]0)
         New-Variable -Name 'diskModel' -Scope 'Private' -Value ''
@@ -1609,11 +1612,18 @@ function Convert-FromDatanorm {
         }
 
         # Create a new object that contains all supported record types of ol processed files
-        $datanorm = New-Object PSObject -Property @{
-            a = $a
-            b = $b
-            v = $v
-            p = $p
+        if ($a -and $a.Count -gt 0 -or
+            $b -and $b.Count -gt 0 -or
+            $v -and $v.Count -gt 0 -or
+            $p -and $p.Count -gt 0) {
+            $datanorm = New-Object PSObject -Property @{
+                a = $a
+                b = $b
+                v = $v
+                p = $p
+            }
+        } else {
+            $datanorm = $null
         }
     }
 
@@ -1802,19 +1812,26 @@ function Convert-SubnetToBitmask {
 
     process {
         try {
-            if ((! $subnet) -and (! $Cidr)) {
-                $subnet = Get-Subnet # get it fron local ip
+            <#
+            if (($null -eq $subnet) -and ($null -eq $cidr)) {
+                $subnet = Get-Subnet # get it from local ip
             }
-
-            if (! $cidr) {
+#>
+            if ($null -eq $cidr) {
                 $cidr = Get-Cidr -subnet $subnet
             }
+
+            if ($cidr -lt 0 -or $cidr -gt 32) {
+                throw "CIDR value ($cidr) is out of the valid range (0-32)"
+            }
+
             $result = ('1' * $cidr).PadRight(32, '0')
         }
         catch {
-            $result= [string]"0".PadRight(32, '0')
+            throw $_  # Propagate the error
         }
     }
+
 
     end {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
@@ -1971,10 +1988,22 @@ function ConvertTo-WrappedLines {
 
         if ($asString) {
             if ($useCrLf) {
-                [string]$result = $result -join "`r`n"
+                [string]$result = $result.trim() -join "`r`n"
             } else {
-                [string]$result = $result -join "`n"
+                [string]$result = $result.trim() -join "`n"
             }
+        } else {
+            $result = ,$result
+            try {
+                if ($result[0].Count -gt 1)  {
+                    if ($result[0][0] -eq "") {
+                        $result[0].RemoveAt(0)
+                    }
+                }
+            }
+            catch {
+            }
+
         }
     }
 
@@ -2258,7 +2287,7 @@ function Deny-RemoteFingerprint {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
         Return $result
     }
-    # Test:  Deny-RemoteFingerprint -server 'myftp.eulanda.eu'
+    # Test:  Deny-RemoteFingerprint -server '192.168.42.1'
 }
 
 function Export-ArticleToXml {
@@ -2678,6 +2707,9 @@ Function Find-MssqlServer {
         ,
         [Parameter(Mandatory = $false)]
         [int]$timeoutSeconds = 2
+        ,
+        [Parameter(Mandatory = $false)]
+        [switch]$force
      )
 
     begin {
@@ -2706,7 +2738,28 @@ Function Find-MssqlServer {
     }
 
     process {
-        # $result = New-Object System.Collections.ArrayList
+
+        if (($localIp -eq (Get-LocalIp)) -or ($localIp = '127.0.0.1')) {
+            $service = Get-Service -Name SQLBrowser
+            if ($service.Status -ne 'Running') {
+                if ($force) {
+                    if ($service.StartType -eq 'Disabled') {
+                        Throw "The SQL Server Browser service is disabled and cannot be started"
+                    }
+                    if (Test-Administrator) {
+                        Start-Service -Name SQLBrowser
+                        do {
+                            $service.Refresh()
+                            Start-Sleep -Seconds 1
+                        } while ($service.Status -ne 'Running')
+                    } else {
+                        Throw "To start this service, you need administrative rights. The rights of the current session are not sufficient."
+                    }
+                } else {
+                    Throw "Local SQL Server Browser service is not running"
+                }
+            }
+        }
 
         # Create UDP client
         $udpClient = New-Object System.Net.Sockets.UdpClient
@@ -3558,7 +3611,7 @@ function Get-Bool {
 
     process {
         $boolStr = $boolStr.ToUpper()
-        if (($boolStr -eq "1") -or ($boolStr -eq "$TRUE") -or ($boolStr -eq "TRUE")) {
+        if (($boolStr -eq "1") -or ($boolStr -eq "$TRUE") -or ($boolStr -eq '$TRUE') -or ($boolStr -eq "TRUE")) {
             [bool]$result = $true
         } else {
             [bool]$result = $false
@@ -4023,6 +4076,7 @@ function Get-DataFromSql {
     }
 
     process {
+        if (! $conn) { $closeConn = $true } else { $closeConn = $false }
         $myConn = Get-Conn -conn $conn -udl $udl -connStr $connStr
         $result = New-Object System.Collections.ArrayList
         $rs = $Null
@@ -4049,13 +4103,16 @@ function Get-DataFromSql {
                 $rs.MoveNext() | Out-Null
             }
         }
+        if ($closeConn) {
+            $myConn.close()
+        }
     }
 
     end {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
         Return $result
     }
-    # Test:  Get-DataFromSql -sql @('SELECT TOP 10 ArtNummer, Vk, Kurztext1 FROM Artikel')  -udl 'C:\temp\Eulanda_1 Eulanda.udl'
+    # Test:  Get-DataFromSql -sql @('SELECT TOP 10 ArtNummer, Vk, Kurztext1 FROM Artikel')  -udl '.\source\tests\Eulanda_1 Pester.udl'
 }
 
 function Get-DeliveryId {
@@ -4856,10 +4913,28 @@ function Get-GatewayIp {
 
     process {
         try {
-            $result= (Get-NetRoute -DestinationPrefix '0.0.0.0/0' `
-                -ErrorAction SilentlyContinue | `
-                Sort-Object -Property RouteMetric | `
-                Select-Object -First 1).NextHop
+            <#
+                # Not working in some LTE networks 2023-07-14
+                $result= (Get-NetRoute -DestinationPrefix '0.0.0.0/0' `
+                    -ErrorAction SilentlyContinue | `
+                    Sort-Object -Property RouteMetric | `
+                    Select-Object -First 1).NextHop
+            #>
+
+            $netRoutes = Get-NetRoute -DestinationPrefix '0.0.0.0/0' | Sort-Object -Property RouteMetric
+            $routePrint = route print
+            $matchingRoutes = @()
+
+            # For each route in $netRoutes, check if it exists in $routePrint
+            foreach ($route in $netRoutes) {
+                if ($routePrint -match $route.NextHop) {
+                    $matchingRoutes += $route
+                }
+            }
+
+            # Sort the matching routes by their RouteMetric and select the first one
+            $result = ($matchingRoutes | Sort-Object -Property RouteMetric | Select-Object -First 1).NextHop
+
         }
         catch {
             $result='0.0.0.0'
@@ -5132,7 +5207,31 @@ function Get-IniBool {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
         Return $result
     }
-    # Test:  Get-IniBool -section 'Settings' -variable 'Name'
+
+    <# Test:
+
+        $pesterFolder = Resolve-Path -path ".\source\tests"
+        $iniPath = Join-Path -path $pesterFolder "pester.ini"
+        $ini = Read-IniFile -path $iniPath
+
+        # Should be all true
+        $testBool = Get-IniBool -section 'PESTERTEST' -variable 'TrueBool'
+        # or
+        $testBool = Get-IniBool -section 'PESTERTEST' -variable 'TrueOne'
+        # or
+        $testBool = Get-IniBool -section 'PESTERTEST' -variable 'TrueDollarBool'
+
+        # Should be all false
+        $testBool = Get-IniBool -section 'PESTERTEST' -variable 'FalseBool'
+        # or
+        $testBool = Get-IniBool -section 'PESTERTEST' -variable 'FalseZero'
+        # or
+        $testBool = Get-IniBool -section 'PESTERTEST' -variable 'FalseDollarBool'
+
+        # General
+        Get-IniBool -section 'Settings' -variable 'Name'
+
+    #>
 }
 
 function Get-IpGeoInfo {
@@ -5180,8 +5279,11 @@ function Get-IpGeoInfo {
                 $global:geoHashTable = Import-Clixml -Path $xmlGeoPath
 
                 <#
+                    # On The Fly Update if the format changes
+
                     # Check and update the existing entries to use the new structure
                     # We have added createdate and changedate
+
                     $keys = $global:geoHashTable.Keys
                     $tempHashTable = @{}
                     foreach ($key in $keys) {
@@ -5200,6 +5302,7 @@ function Get-IpGeoInfo {
                     $global:geoHashTable = $tempHashTable
                     $global:geoHashTable | Export-Clixml -Path $xmlGeoPath
                 #>
+
             } else {
                 $global:geoHashTable = @{}
             }
@@ -9370,20 +9473,16 @@ Function Install-SignTool {
 function Merge-IpGeoInfo {
     [CmdletBinding()]
     param (
-        [Parameter(Mandatory = $false)]
-        [string]$xmlFile1 = $(Throw ((Get-ResStr 'PARAM_MANDATORY_MISSED') -f 'xmlFile1', $myInvocation.Mycommand))
-        ,
-        [Parameter(Mandatory = $false)]
-        [string]$xmlFile2 = $(Throw ((Get-ResStr 'PARAM_MANDATORY_MISSED') -f 'xmlFile2', $myInvocation.Mycommand))
-        ,
-        [Parameter(Mandatory = $false)]
-        [string]$outputFile = $(Throw ((Get-ResStr 'PARAM_MANDATORY_MISSED') -f 'outputFile', $myInvocation.Mycommand))
+        [Parameter(Mandatory = $true)]
+        [string]$xmlFile1,
+        [Parameter(Mandatory = $true)]
+        [string]$xmlFile2,
+        [Parameter(Mandatory = $true)]
+        [string]$outputFile
     )
 
     begin {
         Write-Verbose -Message ((Get-ResStr 'STARTING_FUNCTION') -f $myInvocation.Mycommand)
-        New-Variable -Name 'ipGeoInfos1' -Scope 'Private' -Value ($null)
-        New-Variable -Name 'ipGeoInfos2' -Scope 'Private' -Value ($null)
         New-Variable -Name 'mergedIpGeoInfos' -Scope 'Private' -Value ([System.Collections.Hashtable]::new())
         $initialVariables = Get-CurrentVariables -Debug:$DebugPreference
     }
@@ -9394,22 +9493,22 @@ function Merge-IpGeoInfo {
         $ipGeoInfos2 = Import-Clixml -Path $xmlFile2
 
         # Add all entries from the first set to the result
-        foreach ($info in $ipGeoInfos1) {
-            $mergedIpGeoInfos[$info.IP] = $info
+        foreach ($key in $ipGeoInfos1.Keys) {
+            $mergedIpGeoInfos[$key] = $ipGeoInfos1[$key]
         }
 
         # Merge the second set into the result
-        foreach ($info in $ipGeoInfos2) {
-            if (-not $mergedIpGeoInfos.ContainsKey($info.IP) -or
-                ($mergedIpGeoInfos.ContainsKey($info.IP) -and $mergedIpGeoInfos[$info.IP].ChangeDate -lt $info.ChangeDate)) {
-                $mergedIpGeoInfos[$info.IP] = $info
+        foreach ($key in $ipGeoInfos2.Keys) {
+            if (-not $mergedIpGeoInfos.ContainsKey($key) -or
+                ($mergedIpGeoInfos.ContainsKey($key) -and $mergedIpGeoInfos[$key].changeDate -lt $ipGeoInfos2[$key].changeDate)) {
+                $mergedIpGeoInfos[$key] = $ipGeoInfos2[$key]
             }
         }
     }
 
     end {
         # Serialize the merged data back into an XML file
-        $mergedIpGeoInfos.Values | Export-Clixml -Path $outputFile
+        $mergedIpGeoInfos | Export-Clixml -Path $outputFile
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
         Return
     }
@@ -10344,7 +10443,7 @@ function New-SymbolicLink {
                 throw New-Object System.ComponentModel.Win32Exception -ArgumentList @([System.Runtime.InteropServices.Marshal]::GetLastWin32Error())
             }
         } else {
-            throw (Get-ResStr('ADMIN_RIGHTS_NEEDED') -f $myInvocation.MyCommand)
+            throw ((Get-ResStr 'ADMIN_RIGHTS_NEEDED') -f $myInvocation.MyCommand)
         }
     }
 
@@ -10538,8 +10637,14 @@ function Out-Goodbye {
         write-host ((Get-ResStr 'OUT_GOODBYE_ENDTIME') -f $(Use-Culture -culture $ecCulture -script {$($ecEndTime.toString())})) -ForegroundColor Blue
         Write-Host ((Get-ResStr 'OUT_GOODBYE_DURATION') -f $duration.TotalSeconds)  -ForegroundColor "blue"
 
-        if ($normally) { Write-Host (Get-ResStr 'OUT_GOODBYE_NORMALLY') -ForegroundColor "blue" }
-        if ($abnormally) { Write-Host (Get-ResStr 'OUT_GOODBYE_ABNORMALLY') -ForegroundColor "red" }
+        if ($normally) {
+            Write-Host (Get-ResStr 'OUT_GOODBYE_NORMALLY') -ForegroundColor "blue"
+            Write-Verbose (Get-ResStr 'OUT_GOODBYE_NORMALLY')  # For Pester test
+        }
+        if ($abnormally) {
+            Write-Host (Get-ResStr 'OUT_GOODBYE_ABNORMALLY') -ForegroundColor "red"
+            Write-Verbose (Get-ResStr 'OUT_GOODBYE_ABNORMALLY')  # For Pester test
+        }
     }
 
     end {
@@ -10624,10 +10729,11 @@ function Out-Welcome {
             New-Variable -Name 'ecProjectVersion' -Scope 'Global' -Option ReadOnly -Force -Value ([version](Read-VersionFromSynopsis -path $projectScript)) -Description 'Project version using for the EulandaConnect module'
         }
 
-        Write-Verbose "$myInvocation.Mycommand $((get-module -Name EulandaConnect).path)"
+        Write-Verbose "$($myInvocation.Mycommand) $((get-module -Name EulandaConnect).path)"
 
         if (! $noInfo) {
             Write-Host  ( (Get-ResStr 'OUT_WELCOME_VERSION') -f $ecModuleName, $($ecModuleVersion.ToString()))  -ForegroundColor Blue
+            Write-Verbose  ( (Get-ResStr 'OUT_WELCOME_VERSION') -f $ecModuleName, $($ecModuleVersion.ToString()))
             Write-Host  ( (Get-ResStr 'OUT_WELCOME_COPYRIGHT') -f $($ecModuleCopyright))  -ForegroundColor Blue
             Write-Host  ( (Get-ResStr 'OUT_WELCOME_LICENSEURI') -f $($ecModuleLicenseURI)) -ForegroundColor Blue
             Write-Host  ( (Get-ResStr 'OUT_WELCOME_PATH') -f $($ecModulePath)) -ForegroundColor Blue
@@ -11406,12 +11512,14 @@ function Rename-MssqlDatabase {
             "ALTER DATABASE [$newName] MODIFY FILE (NAME = [$newLogicalLdf], FILENAME = '$path\$newPhysicalLdf')", `
             "ALTER DATABASE [$newName] SET online"
         $myConn.Execute($sql) | Out-Null
+
+        $myConn.Close()
     }
 
     end {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
     }
-    # Test:  Rename-MssqlDatabase -oldName 'Eulanda_Truccamo' -newName 'Eulanda_MyTruccamo' -udl 'C:\temp\EULANDA_1 Truccamo.udl'
+    # Test:  Rename-MssqlDatabase -oldName 'Eulanda_Pester' -newName 'Eulanda_PesterNew' -server ".\PESTER"
 }
 
 Function Rename-RemoteFile {
@@ -11730,6 +11838,152 @@ function Resize-Image {
     # Test: Resize-Image -pathIn c:\temp\eulanda.jpg -pathOut c:\temp\eulanda-neu.jpg -maxWidth 50
 }
 
+function Restore-MssqlDatabase {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $false)]
+        [ValidateScript({ Test-ValidateConn -conn $_  })]
+        $conn
+        ,
+        [Parameter(Mandatory = $false)]
+        [ValidateScript({ Test-ValidatePathUDL -path $_  })]
+        [string]$udl
+        ,
+        [Parameter(Mandatory = $false)]
+        [ValidateScript({ Test-ValidateConnStr -connStr $_ })]
+        [string]$connStr
+    )
+
+    begin {
+        Write-Verbose -Message ((Get-ResStr 'STARTING_FUNCTION') -f $myInvocation.Mycommand)
+        Test-ValidateSingle -validParams (Get-SingleConnection) @PSBoundParameters
+
+        $initialVariables = Get-CurrentVariables -Debug:$DebugPreference
+    }
+
+    process {
+        # Get a temporary connection string
+        if ($conn) {
+            if ($conn.status -eq 1) {
+                $tempConnStr = $conn.ConnectionString
+            }
+            $tempUdl = (($conn.ConnectionString) -split "=")[1].trim()
+            $udlContent = Get-Content -Path $tempUdl
+            $tempConnStr = $udlContent | Where-Object {
+                $_ -match '^.+=.+$'
+            }
+        } elseif ($udl) {
+            $udlContent = Get-Content -Path $udl
+            $tempConnStr = $udlContent | Where-Object {
+                $_ -match '^.+=.+$'
+            }
+        } else {
+            $tempConnStr = $connStr
+        }
+
+
+        # Build a hashtable of all items
+        $connItems = @{}
+        $tempConnStr -split ';' | ForEach-Object {
+            $keyValue = $_ -split '='
+            if ($keyValue.Count -eq 2) {
+                $key = $keyValue[0].Trim()
+                $value = $keyValue[1].Trim()
+                if ($key -ne '') {
+                    $connItems[$key] = $value
+                }
+            }
+        }
+
+        [string]$database = $connItems['Initial Catalog']
+        [string]$datasource = $connItems['Data Source']
+        [string[]]$splitDataSource = $datasource -split '\\'
+        if ($splitDataSource.Count -gt 1) {
+            [string]$instance = $splitDataSource[1]
+        } else {
+            [string]$instance = "MSSQLSERVER"
+        }
+
+
+        # Patch to master database
+        $connItems['Initial Catalog'] = 'master'
+
+
+        # Build a new connection string and open the connection
+        $masterConnStr = ($connItems.GetEnumerator() | ForEach-Object {
+            "$($_.Key)=$($_.Value)"
+        }) -join ';'
+        $masterConn = Get-Conn -connStr $masterConnStr
+
+
+        # Get standard backup path
+        [hashtable]$instances = @{}
+        Get-MssqlInstances | ForEach-Object { $instances[$_.Instance] = $_ }
+        [string]$backupPath = $instances[$instance].BackupPath
+
+
+        # Restore database from connection
+        $backupFile = "$backupPath\$database.bak"
+
+
+        $sql = "SELECT DB_ID('$database')"
+        $rs = $masterConn.Execute($sql)
+
+        if ($rs -and -not $rs.EOF) {
+            $id = $rs.Fields.Item(0).Value
+            if ([DBNull]::Value -eq $id) { $id = [int]0 } else { $id = [int]$id }
+        } else {
+            $id = [int]0
+        }
+
+
+        # This type of restore ONLY supports the same folder structure as the backup at this time.
+        if ($id) {
+            $sql = @(
+                "USE [master];",
+                "ALTER DATABASE [$database] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;",
+                "RESTORE DATABASE [$database]",
+                "FROM DISK = '$backupPath\$database.bak';",
+                "ALTER DATABASE [$database] SET MULTI_USER;"
+            )
+        } else {
+            $sql = @(
+                "USE [master];",
+                "RESTORE DATABASE [$database]",
+                "FROM DISK = '$backupPath\$database.bak';"
+            )
+        }
+
+
+        $sql = $sql -join("`r`n")
+
+        $masterConn.Execute($sql) | Out-Null
+        if ($masterConn.Errors.count -gt 0) {
+            $errMessage = ""
+            foreach ($e in $masterConn.Errors) {
+                $errMessage = $errMessage + " " + $e.description
+            }
+            $errMessage = $errMessage.Trim()
+            try {
+                $masterConn.close()
+            }
+            catch {
+            }
+            Throw "$errMessage"
+        }
+        Write-Verbose (('Restore database {0} from {1}') -f $database, $backupFile)
+        $masterConn.close()
+
+
+    }
+
+    end {
+        Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
+        Return
+    }
+
+}
+
 function Select-OutdatedFilenames {
     [CmdletBinding()]
     param (
@@ -11869,6 +12123,23 @@ function Send-Mail {
     )
 
     begin {
+
+        function Get-Encoding ([string]$encodingName) {
+            switch ($encodingName.ToLower()) {
+                'utf8nobom' { return New-Object System.Text.UTF8Encoding $false }
+                'ascii' { return [System.Text.Encoding]::ASCII }
+                'bigendianunicode' { return [System.Text.Encoding]::BigEndianUnicode }
+                'bigendianutf32' { return [System.Text.Encoding]::GetEncoding("utf-32BE") }
+                'oem' { return [System.Text.Encoding]::GetEncoding(850) } # OEM-Multilingual Latin 1; Western European (DOS)
+                'unicode' { return [System.Text.Encoding]::Unicode }
+                'utf7' { return [System.Text.Encoding]::UTF7 }
+                'utf8' { return [System.Text.Encoding]::UTF8 }
+                'utf8bom' { return New-Object System.Text.UTF8Encoding $true }
+                'utf32' { return [System.Text.Encoding]::UTF32 }
+                default { throw "Invalid encoding name: $encodingName" }
+            }
+        }
+
         Write-Verbose -Message ((Get-ResStr 'STARTING_FUNCTION') -f $myInvocation.Mycommand)
         New-Variable -Name 'mailParams' -Scope 'Private' -Value ([System.Collections.Hashtable]@{})
         New-Variable -Name 'message' -Scope 'Private' -Value ([string]'')
@@ -11888,13 +12159,14 @@ function Send-Mail {
             $credential = New-Object System.Management.Automation.PSCredential ($user, $secPassword)
         }
 
+        $enc = Get-Encoding $encoding
         $mailParams = @{
             From = $from
             To = $to.Split(',')
             Subject = $subject
             Port = $port
             Priority = $priority
-            Encoding = $encoding
+            Encoding = $enc
             SmtpServer = $smtpServer
             DeliveryNotificationOption = $deliveryNotificationOption
         }
@@ -11928,7 +12200,7 @@ function Send-Mail {
         }
 
         catch {
-            write-host ((Get-ResStr 'EMAIL_SENT_ERROR') -f $to, $subject, $_) -foregroundcolor Red
+            write-host ((Get-ResStr 'EMAIL_SENT_ERROR') -f [string]($to -join(',')), $subject, $_) -foregroundcolor Red
         }
 
         Start-Sleep -Seconds 1
@@ -11938,7 +12210,7 @@ function Send-Mail {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
         Return
     }
-    # Test: Send-Mail -from 'cn@eulanda.de' -to 'info@eulanda.de' -server '192.168.41.1' -user 'noreply@eulanda.eu' -password 'JohnDoe' -subject 'One Testmail' -body 'Is better then nothing'
+    # Test: Send-Mail -from 'johne@doe.eu' -to 'info@doe.eu' -server '192.168.88.1' -user 'noreply@doe.eu' -password 'JohnDoe' -subject 'One Testmail' -body 'Is better then nothing' -usessl
 }
 
 Function Send-RemoteFile {
@@ -12754,6 +13026,10 @@ function Show-MsgBox {
     }
 
     process {
+        if ($env:PESTER_TEST_RUN -eq "1") {
+            throw "Test environment detected, aborting Show-MsgBox"
+        }
+
         Add-Type -AssemblyName PresentationFramework | Out-Null
         [int]$result = [System.Windows.MessageBox]::Show((new-object System.Windows.Window -Property @{TopMost = $True}), $prompt, $title, $btn, $icon, $btnDef)
     }
@@ -12780,6 +13056,10 @@ function Show-MsgBoxYes {
     }
 
     process {
+        if ($env:PESTER_TEST_RUN -eq "1") {
+            throw "Test environment detected, aborting Show-MsgBoxYes"
+        }
+
         [int]$answer = Show-MsgBox -prompt $prompt -title 'Info' -icon $mbNone -btnDef $mbNone
         if ($answer -eq $mbrYes) {
             [bool]$result = $true
@@ -13152,6 +13432,52 @@ function Test-IpAddress {
         Return $result
     }
     # Test: Test-IpAddress -ip 260.1.2.3 -verbose -debug
+}
+
+function Test-MssqlAdministrator {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $false)]
+        [ValidateScript({ Test-ValidateConn -conn $_  })]
+        $conn
+        ,
+        [Parameter(Mandatory = $false)]
+        [ValidateScript({ Test-ValidatePathUDL -path $_  })]
+        [string]$udl
+        ,
+        [Parameter(Mandatory = $false)]
+        [ValidateScript({ Test-ValidateConnStr -connStr $_ })]
+        [string]$connStr
+    )
+
+    Begin {
+        Write-Verbose -Message ((Get-ResStr 'STARTING_FUNCTION') -f $myInvocation.Mycommand)
+        Test-ValidateSingle -validParams (Get-SingleConnection) @PSBoundParameters
+        $initialVariables = Get-CurrentVariables -Debug:$DebugPreference
+    }
+
+    Process {
+        if (! $conn) { $shouldClose = $true } else { $shouldClose = $false }
+        $result = $false
+
+        $myConn = Get-Conn -conn $conn -udl $udl -connStr $connStr
+        if (($myConn) -and ($myConn.State -eq 1)) {
+            $sql = "SELECT IS_SRVROLEMEMBER('sysadmin')"
+            $rs = $myConn.Execute($sql)
+            if ($rs.Fields.Item(0).Value -eq 1) {
+                $result = $true
+            }
+            if ($shouldClose) {
+                $myConn.Close()
+            }
+        }
+    }
+
+    End {
+        Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
+        Return $result
+    }
+    # Test: Test-MssqlAdministrator -udl '.\source\tests\Eulanda_1 Pester.udl'
 }
 
 function Test-Numeric() {
@@ -14370,7 +14696,7 @@ function Get-ConnFromUdl {
     process {
         $conn = new-object -comObject ADODB.Connection
         $conn.CursorLocation = $adUseClient
-        $conn.ConnectionString = "File Name=$udl"
+        $conn.ConnectionString = "File Name=$(Resolve-Path $udl)"
         $conn.CommandTimeout = $adTimeout
         $conn.open()
     }
@@ -18632,6 +18958,48 @@ Function Test-SftpFolder {
     #>
 }
 
+function Test-SpecificParameters {
+    param(
+        [Parameter(Mandatory = $true)]
+        [HashTable]$BoundParameters,
+        [Parameter(Mandatory = $true)]
+        [string]$CommandName
+    )
+
+    # List of common parameters to be excluded
+    $commonParameters = @(
+        'Verbose',
+        'Debug',
+        'ErrorAction',
+        'WarningAction',
+        'InformationAction',
+        'ErrorVariable',
+        'WarningVariable',
+        'InformationVariable',
+        'OutVariable',
+        'OutBuffer',
+        'PipelineVariable'
+    )
+
+    if (-not (Get-Command $CommandName -ErrorAction SilentlyContinue)) {
+        Throw "The command '$CommandName' does not exist."
+    }
+
+
+    # Extract the names of the specific parameters
+    $specificParameters = (Get-Command $CommandName).Parameters.Keys | Where-Object { $_ -notin $commonParameters }
+
+    # Filter PSBoundParameters to get only the specific parameters
+    $specificBoundParameters = @($BoundParameters.Keys | Where-Object { $_ -notin $commonParameters })
+
+    # Raise an error if no specific parameters were passed
+    if ($specificBoundParameters.Count -eq 0) {
+        # Convert the parameter list into a formatted string
+        $parameterList = ($specificParameters | ForEach-Object { "-$_" }) -join ', '
+        Throw ((Get-ResStr 'PARAMS_AT_LEAST_ONE') -f $parameterList, $CommandName)
+    }
+}
+
 function Test-ValidateConn {
     [CmdletBinding()]
     param(
@@ -18719,66 +19087,6 @@ function Test-ValidateId {
     }
 
     return $id
-}
-
-Function Test-ValidateLeastOne {
-    [CmdletBinding()]
-    param (
-        [Parameter(ValueFromPipeline = $false)]
-        [string[]]$validParams = @()
-        ,
-        [Parameter(ValueFromRemainingArguments = $false)]
-        [string[]]$remainingArguments = $(Throw ((Get-ResStr 'PARAM_MANDATORY_MISSED') -f 'remainingArguments', $myInvocation.Mycommand))
-    )
-
-    begin {
-        $count = 0
-
-        $parentFunctionName = ""
-        $callStack = Get-PSCallStack
-        for ($i = 1; $i -lt $callStack.Count; $i++) {
-            $fn = $callStack[$i].FunctionName
-            if ($fn -ne $MyInvocation.MyCommand.Name) {
-                $parentFunctionName = $fn
-                break
-            }
-        }
-
-        $parentFunctionName = $parentFunctionName.Replace("<Begin>", "").TrimEnd()
-        $parentFunction = Get-Command -Name $parentFunctionName -All | Where-Object { $_.CommandType -eq 'Function' } | Select-Object -First 1
-        $commonParameters = [System.Management.Automation.PSCmdlet]::CommonParameters
-        $parentParameters = $parentFunction.Parameters.Keys | Where-Object { $_ -ne 'RemainingArguments' -and $commonParameters -notcontains $_ }
-
-        if ($null -eq $remainingArguments -or $remainingArguments.Count -eq 0) {
-            $remainingArguments = @()
-            foreach ($param in $parentParameters) {
-                $remainingArguments += "-$param"
-                $remainingArguments += $null
-            }
-        }
-
-        if ($validParams.Count -eq 0) {
-            $validParams = $parentParameters
-        }
-
-        for ($i = 0; $i -lt $remainingArguments.Count; $i += 2) {
-            $paramName = $remainingArguments[$i].Substring(1).TrimEnd(':')
-            $paramValue = $remainingArguments[$i+1]
-            if (-not [string]::IsNullOrEmpty($paramValue)) {
-                if ($validParams -contains $paramName) {
-                    $count++
-                }
-            }
-        }
-    }
-
-    process {
-        if ($count -lt 1) {
-            $validParamsList = $ValidParams -join ', '
-            $message = ((Get-ResStr 'PARAMS_AT_LEAST_ONE') -f $validParamsList, $parentFunctionName)
-            throw $message
-        }
-    }
 }
 
 function Test-ValidateMapping {
@@ -19007,8 +19315,8 @@ function Test-ValidateUrl {
 # SIG # Begin signature block
 # MIIpiQYJKoZIhvcNAQcCoIIpejCCKXYCAQExDzANBglghkgBZQMEAgEFADB5Bgor
 # BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
-# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCC9YVU8LmCDfQmT
-# OxEmEeMGXNNIPILixLjuAcWLul82ZaCCEngwggVvMIIEV6ADAgECAhBI/JO0YFWU
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCClbchsaKpcFsdW
+# tMzby6dI/rwN8oKKwY5bzFODcs+C6aCCEngwggVvMIIEV6ADAgECAhBI/JO0YFWU
 # jTanyYqJ1pQWMA0GCSqGSIb3DQEBDAUAMHsxCzAJBgNVBAYTAkdCMRswGQYDVQQI
 # DBJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcMB1NhbGZvcmQxGjAYBgNVBAoM
 # EUNvbW9kbyBDQSBMaW1pdGVkMSEwHwYDVQQDDBhBQUEgQ2VydGlmaWNhdGUgU2Vy
@@ -19111,23 +19419,23 @@ function Test-ValidateUrl {
 # IExpbWl0ZWQxLjAsBgNVBAMTJVNlY3RpZ28gUHVibGljIENvZGUgU2lnbmluZyBD
 # QSBFViBSMzYCEGilgQZhq4aQSRu7qELTizkwDQYJYIZIAWUDBAIBBQCgfDAQBgor
 # BgEEAYI3AgEMMQIwADAZBgkqhkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEE
-# AYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAvBgkqhkiG9w0BCQQxIgQgl7qiCSFkKmUy
-# rhBOkXdq8Xlko/e6Bf95wmHM4dcqyscwDQYJKoZIhvcNAQEBBQAEggIAx/+fZ9vl
-# 70Wn+8Pr4tthafG+PzjA+fjWhXTHDQB4lcPeaHhhEfgkr2wDE2TRqfNigb1tkRlf
-# btQBIrIZXnS93zM4b+UAd6CI1Aext6H/YxUcAE8EIcPsp2kob5K2wY/fsmBnjBMy
-# PBkxbi31eYXeBPHhgOWEJCddK/VywN42b02mAWTvZMnJ0IvoW4EPbxn4+6yjUXyn
-# A0bST6Lpfka0Uf9TaQjPkxZo5BB6hz4S8wD0KV6XHL4I4dNzL83h4sb4MMejbRKA
-# 3lGd9sA67QOhZ4rjthwWoGzmko+NlYkWSxAlG9SJ1OGHP+NZ8mz50TuQ798GEf4P
-# hceqBxWwGBaHN8Kp5jm8XsYM+E51e//hQMXE7TsBhCeM/9p5b6uBam4Cj265030I
-# kRHMNchRuehlhlWe0yVgIGLiL6fAF7v9E76GU/0IncxQYhZcdrdLm08GYRJ/mam2
-# JesMRhRyY2LRomIJAI1r5Djwk45sLx9d5nnNSqspiceGCTm8Bak/pIkwKp6XhYiq
-# 5BQNnSqdaCIeBwT3ADYSDPTwvQPnx9+LejfM8yM+r5Dkl3QOdfRl6QTkViuN2Ngy
-# ++tq98LYZmqSF4XXTdDcrSWacEr34kxJqL9n6duI3uTgCf5snDJFJhpSkHRhuroM
-# HdeDTdHyxKBd9JBxgLNYdWJdVsgg4ULdHeuhghNPMIITSwYKKwYBBAGCNwMDATGC
+# AYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAvBgkqhkiG9w0BCQQxIgQg5QGCU/7t1RFE
+# aEpfh46xfd9hhdStVZWkExr6hVxCiFIwDQYJKoZIhvcNAQEBBQAEggIAU2CtHw7P
+# 7euBDH8YNyXFy11AGLmOp3q+Vh7aPo8KHgT6cSzU8qsnJVgL5XuTuvzjE/Uzqx3Z
+# YBjxrNLEJmCoAmJ1IR1/0McSFiaYr5eavybDXvGI6RN5/uilbVuU/L+9jr+KUo4S
+# DxT/YS2hz6Nqy59y5A6p7Ma50kFBwEcDgHZf7QV4WMm9YW59zAQSH/qVol2H16U+
+# uhzkH1FxBFJJ1vqIjS9xBkXACDMVuqpAEZ1t9zT6tvRuku34VE2rpq4HKB4OB7mV
+# YR00YRen2+RSQCkOIGXj2tefFHFosoEWChKc4yi10kOqToNpWCv3K88TSH52quxP
+# EuctyPw9HDIAUzfYAF2ZsKc8rWUT2yQgEqyzQqR0GGL2jorLtDqydMack2teFtbD
+# HLji3/51KLwE/wwz26fT2c3z24kjq4IfxUg/tT2FiZQZxm6UYf7VxfpxdTZgFY2V
+# vGd0DPvmfASXs2pzp/CZT2/p5fvMCEUK1OryhqOIObx8ffLL8HVT7csB58Kh/Kll
+# djG/2Nos+ou/FbrIvg5b4KKE+du/FDPFg+fyfRwV9lx0zw8lwf7rbGda29qcrPzW
+# aF5/g44dHYPJQScCspm+vcQnI5j0IWBh+JF1cIVYwLlkJOfK+Z6vdCRTplRNZlML
+# UkfriVymjgiafrku6KUrm9POUZYU0beM2jOhghNPMIITSwYKKwYBBAGCNwMDATGC
 # EzswghM3BgkqhkiG9w0BBwKgghMoMIITJAIBAzEPMA0GCWCGSAFlAwQCAgUAMIHw
 # BgsqhkiG9w0BCRABBKCB4ASB3TCB2gIBAQYKKwYBBAGyMQIBATAxMA0GCWCGSAFl
-# AwQCAQUABCDbVjMCy4NRvnLM9e8IOqt1/w7Du/jZR6iqEiu+12eBmAIVANHHG+XS
-# xtcMHdixKrTyR3mrpVnCGA8yMDIzMDcwNjAzMjQxOVqgbqRsMGoxCzAJBgNVBAYT
+# AwQCAQUABCDEUrPfTml8a+N+Z+iRw3oqxpV78YsJA/Mdts1xnm6DZAIVAN0DjSyJ
+# T+lSd1GOt8D8P7OXUcN3GA8yMDIzMDcyNTAzMTYxOFqgbqRsMGoxCzAJBgNVBAYT
 # AkdCMRMwEQYDVQQIEwpNYW5jaGVzdGVyMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
 # ZWQxLDAqBgNVBAMMI1NlY3RpZ28gUlNBIFRpbWUgU3RhbXBpbmcgU2lnbmVyICM0
 # oIIN6TCCBvUwggTdoAMCAQICEDlMJeF8oG0nqGXiO9kdItQwDQYJKoZIhvcNAQEM
@@ -19209,22 +19517,22 @@ function Test-ValidateUrl {
 # BAoTD1NlY3RpZ28gTGltaXRlZDElMCMGA1UEAxMcU2VjdGlnbyBSU0EgVGltZSBT
 # dGFtcGluZyBDQQIQOUwl4XygbSeoZeI72R0i1DANBglghkgBZQMEAgIFAKCCAWsw
 # GgYJKoZIhvcNAQkDMQ0GCyqGSIb3DQEJEAEEMBwGCSqGSIb3DQEJBTEPFw0yMzA3
-# MDYwMzI0MTlaMD8GCSqGSIb3DQEJBDEyBDCX0pdL77SAMIzI2urPzK3Rug6o5FnA
-# 1Jb9TsbSB7HO8ffKqxnUbJaSdRSAA3yiVgcwge0GCyqGSIb3DQEJEAIMMYHdMIHa
+# MjUwMzE2MThaMD8GCSqGSIb3DQEJBDEyBDBpfPfJ5idZZhD6hwXi/KGWTzmmQJs2
+# beWT1DUv3IqxxlQJF0uHtZaKAk+iMVxJBxUwge0GCyqGSIb3DQEJEAIMMYHdMIHa
 # MIHXMBYEFK5ir3UKDL1H1kYfdWjivIznyk+UMIG8BBQC1luV4oNwwVcAlfqI+SPd
 # k3+tjzCBozCBjqSBizCBiDELMAkGA1UEBhMCVVMxEzARBgNVBAgTCk5ldyBKZXJz
 # ZXkxFDASBgNVBAcTC0plcnNleSBDaXR5MR4wHAYDVQQKExVUaGUgVVNFUlRSVVNU
 # IE5ldHdvcmsxLjAsBgNVBAMTJVVTRVJUcnVzdCBSU0EgQ2VydGlmaWNhdGlvbiBB
-# dXRob3JpdHkCEDAPb6zdZph0fKlGNqd4LbkwDQYJKoZIhvcNAQEBBQAEggIAlwLE
-# YoH2RD3aN6r6ugQnsRjPj+Z8SR30WuEU7dgHYCgP/5JNCPm6by8V+1LnHzvR3Sn6
-# gtn5PBEIiR21HK/h1q5ebrf/AOMEGO5ODeK0QVGIWJT0lysZDQ0tcWUe4gkgUzJw
-# itNrqGf7aMFLswEh72UQSqhRfP/p1Mwvu0KzTtcF5Yx4pUxvkONUOcm5MQqamYSG
-# +OpWQsNZIwvkl4h3XVyVkbxdPj1uBwvdcTRLQL25xTl+SlWe10uDsQ+gae+457Av
-# yk6BLdIvQHX/hn9xvvX1pS6dBRV5Mtdq59CIu2X2R+gWW/4dnhnNMTfwyk7ma03Q
-# zsvJoX+ksNm2NGXcX8emEXEZOV0kC5Msnkjs8JsSz6f9VSHjjNkPEzcCxqe2Z2KZ
-# F8EgXLm0J/wYKxB40rGdNf3A1pFIAko11ACT3XSBY7jGK+9EjFuLA1fh1J09l4gX
-# y9FMWtdZ3+t08oC09fjCfKnocTjCMQ0rp9FbS9Jw2V4MilqJoBFCrElXXyalt9eD
-# O/EyMeYEe2jo5QaK+YUiwJI+ZqARKw7c+HBBzGqQwkEIgoOC6eoDN4f1QP3aD0qo
-# dGjVqsn3JFV29MZdiKe7JctwkX0VzKTAIrc+ina8iBVGOW6tY/NbhceonvrXbAQR
-# /LQ4CfLJbUqFj6lUrkS6jDHqESfzC9dEiIy2x3o=
+# dXRob3JpdHkCEDAPb6zdZph0fKlGNqd4LbkwDQYJKoZIhvcNAQEBBQAEggIALM36
+# +Igs+nDhYbdc4mi2JRKi+jPSd8anBJZZCwZefXlIBjnhEAwO3T3UGuDbkQ9jAPgE
+# 0r1WO7ty/VNtIsav9vgLWIB/0HxW22VVJAYTCV8fuJmZf8PTMz4EohWMX3Q5ECuq
+# fcc2oIH5O4mSOmRlxu3kktgxhHXzngHc3OHdNd+qNQuFkSMCPoXt3/EJPfFr5lj0
+# GhcKe42SP+G2yUhiGVEF6feVo/5eAwjw2we+HozhFxIDtPYyJNsNFcfsTaVbsHPx
+# 2JHyHRgUo+8aeSP+hVMjFdaQ4i7H42r3AuAa4w+MFaX9SRe7VwHChLYATSHolLxG
+# xHQRbpSLObGKxdzYVR+5XnM9Ea5imWlzOxMCJCNQV+3/2eFJtTXeQZkyi2Ag7tY/
+# bNYaS2nW9WDQmmcb5X64szURVUTaSQ8SLsw74k0eZK+uFmJaTptFYpnJCv2rwGKm
+# U5YE0Me3gQIIYpqT1q462eTpRthnfqDZIFcbWOATSFSoNnpmXbVsYp7UdbMG23n8
+# Llln94/Lc94T0ietR4z7q+RJ+BUCbs3SYCObvJ8ug7N2MDLVgc3l8pB1aAqiP/E1
+# OoIFeiC3YNpfHvccxIvNbuVVY9Z/zPsazPO7XNljt/kAmTc/K2zkUMtMQZB1ZSkn
+# 1HfISmp9ZVSdXQg2YWK8raIiq28r1DYUQSnJL5M=
 # SIG # End signature block
