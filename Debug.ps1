@@ -43,8 +43,7 @@ try {
     #  New-OpenVpnTls -openVpnPath  "$($env:ProgramFiles)\OpenVPN" -destination "$($home)\.eulandaconnect\pester\OpenVPN"
     # }
 
-    $pesterFolder = Resolve-Path -path ".\source\tests"
-    Restore-MssqlDatabase -udl "$pesterFolder\Eulanda_1 Pester.udl"
+    Export-ArticleToXml -udl '.\source\tests\Eulanda_1 Pester.udl'
 
 
 <#
