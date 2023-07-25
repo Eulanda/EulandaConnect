@@ -114,9 +114,11 @@ function Export-ArticleToXml {
         }
 
         if ($xmlArticle) {
-            $newNode = $xmlArticle.SelectSingleNode("//ARTIKELLISTE")
-            $node = $xml.ImportNode($newNode, $true)
-            $xml.DocumentElement.AppendChild($node) | Out-Null
+            if ($xmlArticle.OuterXml) {
+                $newNode = $xmlArticle.SelectSingleNode("//ARTIKELLISTE")
+                $node = $xml.ImportNode($newNode, $true)
+                $xml.DocumentElement.AppendChild($node) | Out-Null
+            }
         }
 
         if ($path) {
