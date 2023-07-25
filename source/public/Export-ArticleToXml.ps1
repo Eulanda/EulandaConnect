@@ -113,7 +113,7 @@ function Export-ArticleToXml {
             $xml.DocumentElement.AppendChild($node) | Out-Null
         }
 
-        if ($xmlArticle) {
+        if (! $xmlArticle) {
             [xml]$xmlArticle = '<ARTIKELLISTE />'
         } elseif (! $xmlArticle.OuterXml) {
             [xml]$xmlArticle = '<ARTIKELLISTE />'
