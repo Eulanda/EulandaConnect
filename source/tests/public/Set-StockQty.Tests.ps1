@@ -60,6 +60,7 @@ Describe 'Set-StockQty' -Tag 'integration', 'sql', 'sqladmin', 'eulanda' {
         { Set-StockQty -quantities $quantities -bookingInfo "Pestertest" -udl $udl } | Should -Not -Throw
     }
 
+
     It 'Set absolute stock to an non existing article should throw' {
         if ($skipTest) {
             Set-ItResult -Skipped -Because 'This test should be skipped due to user not in sysadmin role'
@@ -74,6 +75,7 @@ Describe 'Set-StockQty' -Tag 'integration', 'sql', 'sqladmin', 'eulanda' {
 
         { Set-StockQty -quantities $quantities -bookingInfo "Pestertest" -throwOnError -udl $udl } | Should -Throw
     }
+
 
     It 'Handles connection errors and missing UDL file appropriately' {
         if ($skipTest) {
