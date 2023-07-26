@@ -16,6 +16,8 @@ function Set-StockQty {
         [Parameter(Mandatory = $false)]
         [string]$bookingInfo
         ,
+        [switch]$throwOnError
+        ,
         [Parameter(Mandatory = $false)]
         [ValidateScript({ Test-ValidateConn -conn $_  })]
         $conn
@@ -69,7 +71,12 @@ function Set-StockQty {
             @ll_id = @ll_id OUT;
 "@
 
-        $myConn.Execute($sql) | out-null
+        $rs = $myConn.Execute($sql)
+        if ($throwOnError) {
+            if ($($rs.Fields.Item(0).Value) -ne '') {
+                Throw "Error: $($rs.Fields.Item(0).Value)"
+            }
+        }
     }
 
     end {
