@@ -44,9 +44,9 @@ Describe 'Get-DataFromSql' -Tag 'integration', 'sql', 'sqladmin' {
             $result = Get-DataFromSql -sql $sql -conn $conn
 
             $result.Count | Should -Be 3
-            $result.ArtNummer | Should -BeExactly "$articleNo"
+            $result.ArtNummer | Should -BeExactly $articleNo
             $result.Vk | Should -BeExactly 42.50
-            $result.Kurztext1 | Should -BeExactly 'Some Info'
+            $result.Kurztext1 | Should -BeExactly $text
             $conn.Close()
         }
     }

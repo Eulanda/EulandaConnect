@@ -43,7 +43,7 @@ try {
     #  New-OpenVpnTls -openVpnPath  "$($env:ProgramFiles)\OpenVPN" -destination "$($home)\.eulandaconnect\pester\OpenVPN"
     # }
 
-    Export-ArticleToXml -udl '.\source\tests\Eulanda_1 Pester.udl'
+    Export-StockToXml -udl '.\source\tests\Eulanda_1 Pester.udl'
 
 
 <#

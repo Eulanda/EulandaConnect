@@ -1,7 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 Set-StrictMode -version latest
 
-Describe 'Get-ArticleId' -Tag 'integration', 'sql', 'sqladmin', 'eulanda' {
+Describe 'Export-StockToXml' -Tag 'integration', 'sql', 'sqladmin', 'eulanda' {
 
     BeforeAll {
         $udl = Resolve-Path ".\source\tests\Eulanda_1 Pester.udl"
@@ -26,25 +26,27 @@ Describe 'Get-ArticleId' -Tag 'integration', 'sql', 'sqladmin', 'eulanda' {
     }
 
 
-    It 'Retrieves the ID of an existing article' {
+    It 'Exports one existing article to xml' {
         if ($skipTest) {
             Set-ItResult -Skipped -Because 'This test should be skipped due to user not in sysadmin role'
             Return
         }
 
-        $id = Get-ArticleId -articleNo $articleNo -udl $udl
-        $id | should -BeGreaterThan 0
+        [string]$xmlStr = Export-ArticleToXml -udl $udl -filter "ArtNummer = '$articleNo'"
+        [xml]$xml = $xmlStr
+        $xml.EULANDA.ARTIKELLISTE.ARTIKEL.ARTNUMMER | should -Be $articleNo
     }
 
 
-    It 'Retrieves the ID of an non existing article' {
+    It 'Handle filter with no result' {
         if ($skipTest) {
             Set-ItResult -Skipped -Because 'This test should be skipped due to user not in sysadmin role'
             Return
         }
 
-        $id = Get-ArticleId -articleNo 'nonexistingSKU' -udl $udl
-        $id | should -Be 0
+        [string]$xmlStr = Export-ArticleToXml -udl $udl -filter "ArtNummer = 'nonexistingSKU'"
+        [xml]$xml = $xmlStr
+        $xml.EULANDA.ARTIKELLISTE.GetType().Name | should -Be 'String'
     }
 
 
@@ -55,7 +57,7 @@ Describe 'Get-ArticleId' -Tag 'integration', 'sql', 'sqladmin', 'eulanda' {
         }
 
         $nonExistentUdl = 'C:\path\to\nonexistent.udl'
-        { $id = Get-ArticleId -articleNo $articleNo -udl $nonExistentUdl } | Should -Throw
+        { Export-ArticleToXml -udl $nonExistentUdl } | Should -Throw
     }
 
 
@@ -66,7 +68,7 @@ Describe 'Get-ArticleId' -Tag 'integration', 'sql', 'sqladmin', 'eulanda' {
         }
 
         $invalidConn = 'invalid connection'
-        { $id = Get-ArticleId -articleNo $articleNo -conn $invalidConn } | Should -Throw
+        { Export-ArticleToXml -conn $invalidConn } | Should -Throw
     }
 
 
@@ -78,8 +80,9 @@ Describe 'Get-ArticleId' -Tag 'integration', 'sql', 'sqladmin', 'eulanda' {
 
         $closedConn = Get-Conn -udl $udl
         $closedConn.close() # close it
-        $id = Get-ArticleId -articleNo $articleNo -conn $closedConn
-        $id | should -BeGreaterThan 0
+        $xmlStr = Export-ArticleToXml -conn $closedConn -filter "ArtNummer = '$articleNo'"
+        [xml]$xml = $xmlStr
+        $xml.EULANDA.ARTIKELLISTE.ARTIKEL.ARTNUMMER | should -Be $articleNo
     }
 
 }

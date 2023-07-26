@@ -26,13 +26,13 @@ Describe 'Export-ArticleToXml' -Tag 'integration', 'sql', 'sqladmin', 'eulanda' 
     }
 
 
-    It 'Exports all articles to xml' {
+    It 'Exports one existing article to xml' {
         if ($skipTest) {
             Set-ItResult -Skipped -Because 'This test should be skipped due to user not in sysadmin role'
             Return
         }
 
-        [string]$xmlStr = Export-ArticleToXml -udl $udl
+        [string]$xmlStr = Export-ArticleToXml -udl $udl -filter "ArtNummer = '$articleNo'"
         [xml]$xml = $xmlStr
         $xml.EULANDA.ARTIKELLISTE.ARTIKEL.ARTNUMMER | should -Be $articleNo
     }
@@ -44,7 +44,7 @@ Describe 'Export-ArticleToXml' -Tag 'integration', 'sql', 'sqladmin', 'eulanda' 
             Return
         }
 
-        [string]$xmlStr = Export-ArticleToXml -udl $udl -filter "ArtNummer = '0815'"
+        [string]$xmlStr = Export-ArticleToXml -udl $udl -filter "ArtNummer = 'nonexistingSKU'"
         [xml]$xml = $xmlStr
         $xml.EULANDA.ARTIKELLISTE.GetType().Name | should -Be 'String'
     }
@@ -80,7 +80,7 @@ Describe 'Export-ArticleToXml' -Tag 'integration', 'sql', 'sqladmin', 'eulanda' 
 
         $closedConn = Get-Conn -udl $udl
         $closedConn.close() # close it
-        $xmlStr = Export-ArticleToXml -conn $closedConn
+        $xmlStr = Export-ArticleToXml -conn $closedConn -filter "ArtNummer = '$articleNo'"
         [xml]$xml = $xmlStr
         $xml.EULANDA.ARTIKELLISTE.ARTIKEL.ARTNUMMER | should -Be $articleNo
     }

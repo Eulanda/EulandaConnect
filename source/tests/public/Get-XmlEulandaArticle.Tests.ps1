@@ -26,13 +26,13 @@ Describe 'Get-XmlEulandaArticle' -Tag 'integration', 'sql', 'sqladmin', 'eulanda
     }
 
 
-    It 'Get all articles as xml string' {
+    It 'Get one existing article as xml string' {
         if ($skipTest) {
             Set-ItResult -Skipped -Because 'This test should be skipped due to user not in sysadmin role'
             Return
         }
 
-        [string]$xmlStr = Get-XmlEulandaArticle -udl $udl
+        [string]$xmlStr = Get-XmlEulandaArticle -udl $udl -filter "ArtNummer = '$articleNo'"
         [xml]$xml = $xmlStr
         $xml.ARTIKELLISTE.ARTIKEL.ARTNUMMER | should -Be $articleNo
     }
@@ -44,7 +44,7 @@ Describe 'Get-XmlEulandaArticle' -Tag 'integration', 'sql', 'sqladmin', 'eulanda
             Return
         }
 
-        [string]$xmlStr = Get-XmlEulandaArticle -udl $udl -filter "ArtNummer = '0815'"
+        [string]$xmlStr = Get-XmlEulandaArticle -udl $udl -filter "ArtNummer = 'nonexistingSKU'"
         $xmlStr | should -BeNullOrEmpty
     }
 
@@ -79,7 +79,7 @@ Describe 'Get-XmlEulandaArticle' -Tag 'integration', 'sql', 'sqladmin', 'eulanda
 
         $closedConn = Get-Conn -udl $udl
         $closedConn.close() # close it
-        $xmlStr = Get-XmlEulandaArticle -conn $closedConn
+        $xmlStr = Get-XmlEulandaArticle -conn $closedConn -filter "ArtNummer = '$articleNo'"
         [xml]$xml = $xmlStr
         $xml.ARTIKELLISTE.ARTIKEL.ARTNUMMER | should -Be $articleNo
     }

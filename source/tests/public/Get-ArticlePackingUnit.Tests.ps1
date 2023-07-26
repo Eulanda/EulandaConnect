@@ -43,7 +43,7 @@ Describe 'Get-ArticlePackingUnit' -Tag 'integration', 'sql', 'sqladmin', 'euland
             Return
         }
 
-        $unit = Get-ArticlePackingUnit -articleNo '0815' -udl $udl
+        $unit = Get-ArticlePackingUnit -articleNo 'nonexistingSKU' -udl $udl
         $unit | should -Be 0
     }
 
