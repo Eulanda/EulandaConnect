@@ -112,7 +112,7 @@ function Convert-DataToXml {
                     $writer.WriteEndElement()
                 }
                 $writer.WriteEndElement()
-            } else {
+            } elseif ($data) {
                 foreach ($key in $data.Keys) {
                     $value = $data[$key]
                     if (($value -is [System.Collections.ArrayList]) -or ($value -is [System.Object[]])) {
@@ -160,6 +160,10 @@ function Convert-DataToXml {
                         if ($on) { Write-Host "$($spaces)$($nodeName) = '$strValue' (:$level)" -ForegroundColor Green }
                     }
                 }
+            } else {
+                # No data found
+                $writer.WriteStartElement($arrRoot)
+                $writer.WriteEndElement()
             }
 
             # If the level is '0' when the function results exits,
