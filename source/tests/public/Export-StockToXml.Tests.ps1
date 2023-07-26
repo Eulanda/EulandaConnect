@@ -14,6 +14,14 @@ Describe 'Export-StockToXml' -Tag 'integration', 'sql', 'sqladmin', 'eulanda' {
             Backup-MssqlDatabase -udl $udl
 
             . source\tests\include\Include-InsertArticle.ps1
+
+            [System.Array]$quantities = @()
+            $hash = @{}
+            $hash['articleNo'] = $articleNo
+            $hash['qty'] = 20
+            $quantities += $hash
+
+            Set-StockQty -quantities $quantities -bookingInfo "Pestertest" -udl $udl
         }
     }
 
@@ -26,15 +34,16 @@ Describe 'Export-StockToXml' -Tag 'integration', 'sql', 'sqladmin', 'eulanda' {
     }
 
 
-    It 'Exports one existing article to xml' {
+    It 'Exports one existing article stock to xml' {
         if ($skipTest) {
             Set-ItResult -Skipped -Because 'This test should be skipped due to user not in sysadmin role'
             Return
         }
 
-        [string]$xmlStr = Export-ArticleToXml -udl $udl -filter "ArtNummer = '$articleNo'"
+        [string]$xmlStr = Export-StockToXml -udl $udl -filter "ArtNummer = '$articleNo'"
         [xml]$xml = $xmlStr
-        $xml.EULANDA.ARTIKELLISTE.ARTIKEL.ARTNUMMER | should -Be $articleNo
+        $selectedNode = $xml.EULANDA.LAGERLISTE.ARTIKEL | Where-Object { $_.KONTO -eq '1000' }
+        $selectedNode.MENGE | Should -Be 20
     }
 
 
@@ -44,9 +53,15 @@ Describe 'Export-StockToXml' -Tag 'integration', 'sql', 'sqladmin', 'eulanda' {
             Return
         }
 
-        [string]$xmlStr = Export-ArticleToXml -udl $udl -filter "ArtNummer = 'nonexistingSKU'"
+        [string]$xmlStr = Export-StockToXml -udl $udl -filter "ArtNummer = 'UNKNOWN_SKU'"
         [xml]$xml = $xmlStr
-        $xml.EULANDA.ARTIKELLISTE.GetType().Name | should -Be 'String'
+
+        if ($xml.EULANDA.PSObject.Properties.Name -contains 'LAGERLISTE') {
+            $xml.EULANDA.LAGERLISTE | Should -BeNullOrEmpty
+        }
+        else {
+            $true | Should -BeTrue
+        }
     }
 
 
@@ -57,7 +72,7 @@ Describe 'Export-StockToXml' -Tag 'integration', 'sql', 'sqladmin', 'eulanda' {
         }
 
         $nonExistentUdl = 'C:\path\to\nonexistent.udl'
-        { Export-ArticleToXml -udl $nonExistentUdl } | Should -Throw
+        { Export-StockToXml -udl $nonExistentUdl } | Should -Throw
     }
 
 
@@ -68,7 +83,7 @@ Describe 'Export-StockToXml' -Tag 'integration', 'sql', 'sqladmin', 'eulanda' {
         }
 
         $invalidConn = 'invalid connection'
-        { Export-ArticleToXml -conn $invalidConn } | Should -Throw
+        { Export-StockToXml -conn $invalidConn } | Should -Throw
     }
 
 
@@ -80,9 +95,10 @@ Describe 'Export-StockToXml' -Tag 'integration', 'sql', 'sqladmin', 'eulanda' {
 
         $closedConn = Get-Conn -udl $udl
         $closedConn.close() # close it
-        $xmlStr = Export-ArticleToXml -conn $closedConn -filter "ArtNummer = '$articleNo'"
+        [string]$xmlStr = Export-StockToXml -conn $closedConn -filter "ArtNummer = '$articleNo'"
         [xml]$xml = $xmlStr
-        $xml.EULANDA.ARTIKELLISTE.ARTIKEL.ARTNUMMER | should -Be $articleNo
+        $selectedNode = $xml.EULANDA.LAGERLISTE.ARTIKEL | Where-Object { $_.KONTO -eq '1000' }
+        $selectedNode.MENGE | Should -Be 20
     }
 
 }
