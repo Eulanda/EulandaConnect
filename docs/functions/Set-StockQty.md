@@ -13,8 +13,8 @@ Changes the stock quantity of items
 ## SYNTAX
 
 ```
-Set-StockQty [[-quantities] <Array>] [[-stockGroup] <Int32>] [[-bookingInfo] <String>] [[-conn] <Object>]
- [[-udl] <String>] [[-connStr] <String>] [<CommonParameters>]
+Set-StockQty [[-quantities] <Array>] [[-stockGroup] <Int32>] [[-bookingInfo] <String>] [-throwOnError]
+ [[-conn] <Object>] [[-udl] <String>] [[-connStr] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -143,6 +143,21 @@ Aliases:
 
 Required: False
 Position: 4
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -throwOnError
+If an article is not found, normally no exception is generated, but if the parameter is active, a corresponding exception is generated.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

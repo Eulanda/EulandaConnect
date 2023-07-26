@@ -1134,7 +1134,7 @@ function Convert-DataToXml {
                     $writer.WriteEndElement()
                 }
                 $writer.WriteEndElement()
-            } else {
+            } elseif ($data) {
                 foreach ($key in $data.Keys) {
                     $value = $data[$key]
                     if (($value -is [System.Collections.ArrayList]) -or ($value -is [System.Object[]])) {
@@ -1182,6 +1182,10 @@ function Convert-DataToXml {
                         if ($on) { Write-Host "$($spaces)$($nodeName) = '$strValue' (:$level)" -ForegroundColor Green }
                     }
                 }
+            } else {
+                # No data found
+                $writer.WriteStartElement($arrRoot)
+                $writer.WriteEndElement()
             }
 
             # If the level is '0' when the function results exits,
@@ -12818,6 +12822,8 @@ function Set-StockQty {
         [Parameter(Mandatory = $false)]
         [string]$bookingInfo
         ,
+        [switch]$throwOnError
+        ,
         [Parameter(Mandatory = $false)]
         [ValidateScript({ Test-ValidateConn -conn $_  })]
         $conn
@@ -12871,7 +12877,12 @@ function Set-StockQty {
             @ll_id = @ll_id OUT;
 "@
 
-        $myConn.Execute($sql) | out-null
+        $rs = $myConn.Execute($sql)
+        if ($throwOnError) {
+            if ($($rs.Fields.Item(0).Value) -ne '') {
+                Throw "Error: $($rs.Fields.Item(0).Value)"
+            }
+        }
     }
 
     end {
@@ -19322,8 +19333,8 @@ function Test-ValidateUrl {
 # SIG # Begin signature block
 # MIIpiQYJKoZIhvcNAQcCoIIpejCCKXYCAQExDzANBglghkgBZQMEAgEFADB5Bgor
 # BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
-# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCDLSRHQKrAbJqIg
-# scpwEuTdE62rRnqNghBDRx1jfq3uDaCCEngwggVvMIIEV6ADAgECAhBI/JO0YFWU
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCB0CT6tKHP2eDo8
+# kyCqJdB1XD6TwCyyI4uyWPNisQaq56CCEngwggVvMIIEV6ADAgECAhBI/JO0YFWU
 # jTanyYqJ1pQWMA0GCSqGSIb3DQEBDAUAMHsxCzAJBgNVBAYTAkdCMRswGQYDVQQI
 # DBJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcMB1NhbGZvcmQxGjAYBgNVBAoM
 # EUNvbW9kbyBDQSBMaW1pdGVkMSEwHwYDVQQDDBhBQUEgQ2VydGlmaWNhdGUgU2Vy
@@ -19426,23 +19437,23 @@ function Test-ValidateUrl {
 # IExpbWl0ZWQxLjAsBgNVBAMTJVNlY3RpZ28gUHVibGljIENvZGUgU2lnbmluZyBD
 # QSBFViBSMzYCEGilgQZhq4aQSRu7qELTizkwDQYJYIZIAWUDBAIBBQCgfDAQBgor
 # BgEEAYI3AgEMMQIwADAZBgkqhkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEE
-# AYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAvBgkqhkiG9w0BCQQxIgQgsrp6KdbFcEuT
-# 1ARGLyxxhubzkTp5d/2lBWEh9P8d2ZowDQYJKoZIhvcNAQEBBQAEggIAanVXZLzY
-# iMeZ7Spxw1Zim5wajCs5rnYLCLEndJXY6rtXr4albo6s+Zt016Iu6qSFUOHXzTxA
-# LEaGb0QDT/mLiU92E4UywYnCZ3a8s2HcydZRpK99tXX8Gvzz6u+QBYDx/KKNI979
-# nmGb9B+x4swaE7L5xEFXrqOIDW4YxurchkCkTrhcROBeEzrksvYgB6DOQiVcJnKe
-# 5VbKrH+C3Ejk9wqaPc4jrwjEyB5W9iX+84xWhT81kc+oWvUVMhMLAjzM0EHDUmZc
-# qWsnJbpb30WLgQEAgyoKNPUcmW/grHKuR/ejC8yjJNySySSTqSRPjc9RxNGh911B
-# TDPhu+VuiwxBmUQGmZQ3UDHKG5Qu9twTkbatzJgSjWlPOUKNBbKQG19poEil+jdw
-# 4b8x59uIGogpqFFFONy4pYyfuK4h4nZXMoDC4CQE7/F0500hnOPR+eVDueY9tctm
-# yY9TT+lptCdFZhdZpzUgDBJ4bBNcID03YoLflY2/U55UBxoxqhGeCQFXFVXBhObL
-# 5bbH5b6gMMEy0hpl5fnLkLBsjT/6Tt3O9oPRvCzyZXEyMwB9ybD2fkD7T6vq+JoF
-# hWP9f1kV2XtiaBG5kuvPsj+9EacgRHeBm1UAo7DoaK74tXwWkWDibEiZ064SiN7j
-# twsNBKATFLNiwP2N0mBqr4YxKzhG9AInhuGhghNPMIITSwYKKwYBBAGCNwMDATGC
+# AYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAvBgkqhkiG9w0BCQQxIgQgVLRdh1QIE+JZ
+# FBJ4wnKzY9wxFlpaDxSXN8HvWym+3VwwDQYJKoZIhvcNAQEBBQAEggIAAy1xFFaH
+# u6q915SCWNiZc5/Eim1NzRNJTP1EygvMxWdDLnb6mPdC5x+nAlGm8C146QxuL59m
+# Tt3FOsLM/MBKJf3NINYOYrn3yLDvpWqVlWBeYOOOMzKjy5eDY4QEawb523X2nJmJ
+# ecR3GS1DQp9Mqh3FFcpwB8BuK6U0m+OcDzM3LSltl9emZ3AsTu9U0fp9kboOnPe0
+# sAOqaWd/S+NSIjLpBTbWi1cpAnHoKw/qp7E4JM9FIp0zfly6UeXJubM5rOwmosN2
+# dltdqT8KLvFC/aslmfq4w+whyCMmNSfLOoJG53j1evFlop7q+5mCPdsOzeijTMSp
+# toUjDfuAt71IYFE6WtkSW2FL7LUBAoFpWm4oOl2qFcCrn0FJKhydLMoZ2+Y9gVNF
+# MDz96ggi2bJw9nScq2R6R7sAGYTTH9strN85ZkzWnzAfo91nq0v5dwaowCf77av8
+# mGMfueycBB9ReKl8IVFyEugjDqJf5o/voHa6m2LD3aD4QPXv54ItBQGpUnLmq9cE
+# kqcMva5MkUEUmT/7AmmMz4fhE7yFrp5kGfFafGS+triPbnTebTfdkGzNDrHMM+g8
+# mrVKh9ImbME7kS/XBkKUARjaurMH/S0c4U4nEr72twrVeD1nM3O8ebZDgN+ncwTx
+# qR+viK1Vhis1gcKWSDFCaO1T12EU8PaErGqhghNPMIITSwYKKwYBBAGCNwMDATGC
 # EzswghM3BgkqhkiG9w0BBwKgghMoMIITJAIBAzEPMA0GCWCGSAFlAwQCAgUAMIHw
 # BgsqhkiG9w0BCRABBKCB4ASB3TCB2gIBAQYKKwYBBAGyMQIBATAxMA0GCWCGSAFl
-# AwQCAQUABCBuav21zxv/uZLjdsriDYQuj9/7WZ/KpDhJdPY2DF66YQIVAMwlmFG4
-# ZDmmm2uq7LNN5z3nbRCXGA8yMDIzMDcyNTE0NTgzNFqgbqRsMGoxCzAJBgNVBAYT
+# AwQCAQUABCAQWhRtypwxjsdw1MuBC23GMn2/wu5JAmhRlJCfnA3SZQIVAJFvWyT6
+# kMnN4QngjFTaaWOnFTGFGA8yMDIzMDcyNjE4NDMwNFqgbqRsMGoxCzAJBgNVBAYT
 # AkdCMRMwEQYDVQQIEwpNYW5jaGVzdGVyMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
 # ZWQxLDAqBgNVBAMMI1NlY3RpZ28gUlNBIFRpbWUgU3RhbXBpbmcgU2lnbmVyICM0
 # oIIN6TCCBvUwggTdoAMCAQICEDlMJeF8oG0nqGXiO9kdItQwDQYJKoZIhvcNAQEM
@@ -19524,22 +19535,22 @@ function Test-ValidateUrl {
 # BAoTD1NlY3RpZ28gTGltaXRlZDElMCMGA1UEAxMcU2VjdGlnbyBSU0EgVGltZSBT
 # dGFtcGluZyBDQQIQOUwl4XygbSeoZeI72R0i1DANBglghkgBZQMEAgIFAKCCAWsw
 # GgYJKoZIhvcNAQkDMQ0GCyqGSIb3DQEJEAEEMBwGCSqGSIb3DQEJBTEPFw0yMzA3
-# MjUxNDU4MzRaMD8GCSqGSIb3DQEJBDEyBDC52jwoOSZuUtHWaXHYNO5GyttX7Hrl
-# woT7goVzaPx2QIGzQNbFrOUcnfUB4+9hqVcwge0GCyqGSIb3DQEJEAIMMYHdMIHa
+# MjYxODQzMDRaMD8GCSqGSIb3DQEJBDEyBDCEsuPKcU04qOin4+zDUyBsaqz2TLcM
+# 7MkUo4nbphnxnrqFqe9wSsKWAbORBNcS5kQwge0GCyqGSIb3DQEJEAIMMYHdMIHa
 # MIHXMBYEFK5ir3UKDL1H1kYfdWjivIznyk+UMIG8BBQC1luV4oNwwVcAlfqI+SPd
 # k3+tjzCBozCBjqSBizCBiDELMAkGA1UEBhMCVVMxEzARBgNVBAgTCk5ldyBKZXJz
 # ZXkxFDASBgNVBAcTC0plcnNleSBDaXR5MR4wHAYDVQQKExVUaGUgVVNFUlRSVVNU
 # IE5ldHdvcmsxLjAsBgNVBAMTJVVTRVJUcnVzdCBSU0EgQ2VydGlmaWNhdGlvbiBB
-# dXRob3JpdHkCEDAPb6zdZph0fKlGNqd4LbkwDQYJKoZIhvcNAQEBBQAEggIAmqE8
-# FNsnLUx4SGNp/g8Zo4Y5vL7xRagKjsxWaM6Yd4+MEQOHA9GAUWDMcFfEGksoxHp+
-# AwNl6T4eHCDqjxlEciJZNsKfzW578VobAtc25UAvVMsejhU0+8JPzF0eULEt5pWi
-# zM/GPiKrt4oZP4Id/iQCCntQ1qQ62SW+egfC8fu9AryM1sRz21QIh3kxuLP2Jpi5
-# rEvOGRXTqOQ9ivSr4AoVBbZjTKjcraMiMIm/YF+xdgKn1liQfIvnloZuoy/8YwEU
-# l2FEIMCYR5lkTTE2Le0PIuXVyp3qn1iTi7kOnrW9EpYvK6Mf+6KyYzBe6Ek25e8u
-# nmeINMYO/i1kwZlw5BHKGR1MykMYTxA2sTOKpixACu8Ou0Npvj5kOYbdJonprMx3
-# DM282m5Ico0RMy5vkPgB/T5caAdEaz7qRKQHIZJyJCVnIpQGh4WVSUMD4QVUdhXY
-# TjnbhcvNrTntVNSl7iSQz1NXaFNyql2xxfPY8LeA9cm/gIEH1X/mYP/Bc65r3HRZ
-# ORNNNmtSdifV8vwvruRpBjzIspLU77jS0/qiR9fzRvjj0CbSyMOBodFYRm2Rbg8/
-# 3Lb5O8YDkiCFLmEus3vP+wn+FGGFtC1w/TzK1yrPscWIbW9VB99h55v98ReAaKkW
-# C2hImdu1vTsl/OXAEk5tPw4/0CEvE0efA4dflVY=
+# dXRob3JpdHkCEDAPb6zdZph0fKlGNqd4LbkwDQYJKoZIhvcNAQEBBQAEggIAoFH0
+# n0Ov5th4estQnTDtsVWkFbzo2OtdFKOxbz34Asqrkhi0gg33WB2k/nMuVtsbnxbt
+# Mvw6cUm+HvdKhDuKHgU2hBXTOfOLNROXvQIzSh9eAU/OPbTx4KWKJHjw+m9/1oYH
+# VMQhAvs15xZDCi/bS9wWpTuOD97pkRot1Sauyxhaxuhl4bzFGLv+KJhnNtBox14w
+# 04Z4Yt3DGLR/ONpwY1K4QiHEVuHZrNb7nDihbWgUliQCGCmul6qZ2u7V/FoAPH97
+# DJHDF2DZ17cxtvhRPmemaKvFYxw4KwplKaye+9XWrszvEGNAZ29tpKvjG9EPy7rq
+# 4SsbkVakot7su9Iwb8rAEXKor7PnGMd7BUnjwDwiuA+epVvmJnRoXXQXB6ph+HKR
+# 9tX++kCOmBqcAPQlQ1pX//qMlnSSVtmZcH5c4OQOBE77psX5lAbVfAaBsaU5kOKa
+# USdeyhMx217FzVkQpZVPfS7fZ3LjC1wCsCwK32Y/B9KEKzj3YUnGcxxXIbyzGOnS
+# Rz9BosjY7givPReJwQYIEO87GjagZF5OhbXmfYE2POdryAi6CPEkrSsZGIXjUhVP
+# O97a/COkzU94lNlpoGTSkdd6vCZR68Uxy8Ko4ypqbq/4GJfi6krFVESNX1CPC//p
+# kWcDfu5tMrpOY/n3GBJpWJBaNe+T/Kr+a3xkfOU=
 # SIG # End signature block
