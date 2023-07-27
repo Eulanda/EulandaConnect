@@ -13,13 +13,13 @@ Describe 'Get-BreadcrumbId' -Tag 'integration', 'sql', 'sqladmin', 'eulanda' {
     }
 
 
-    It 'Retrieves the ID of an existing breadcrum path' {
+    It 'Retrieves the ID of an existing breadcrumb path' {
         $id = Get-BreadcrumbId -tablename $tablename -breadcrumbPath $breadcrumbPath -udl $udl
         $id | should -Be $breadcrumbId
     }
 
 
-    It 'Retrieves the ID of an non breadcrum path' {
+    It 'Retrieves the ID of an non existing breadcrumb path' {
         $id = Get-BreadcrumbId -tablename $tablename -breadcrumbPath '\shop\NotExisting' -udl $udl
         $id | should -Be (-1)
     }
