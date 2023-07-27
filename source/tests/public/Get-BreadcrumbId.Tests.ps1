@@ -6,13 +6,16 @@ Describe 'Get-BreadcrumbId' -Tag 'integration', 'sql', 'sqladmin', 'eulanda' {
     BeforeAll {
         $udl = Resolve-Path ".\source\tests\Eulanda_1 Pester.udl"
         $tablename = 'article'
-        $breadcrumbPath = '\shop\hardware' # uses predefined path
+
+        # Uses predefined path and id at the moment, the test database has this already set on creating
+        $breadcrumbPath = '\shop\hardware'
+        $breadcrumbId = 49
     }
 
 
     It 'Retrieves the ID of an existing breadcrum path' {
         $id = Get-BreadcrumbId -tablename $tablename -breadcrumbPath $breadcrumbPath -udl $udl
-        $id | should -BeGreaterThan 0
+        $id | should -Be $breadcrumbId
     }
 
 
@@ -42,7 +45,7 @@ Describe 'Get-BreadcrumbId' -Tag 'integration', 'sql', 'sqladmin', 'eulanda' {
         $closedConn = Get-Conn -udl $udl
         $closedConn.close() # close it
         $id = Get-BreadcrumbId -tablename $tablename -breadcrumbPath $breadcrumbPath -conn $closedConn
-        $id | should -BeGreaterThan 0
+        $id | should -Be $breadcrumbId
     }
 
 }
