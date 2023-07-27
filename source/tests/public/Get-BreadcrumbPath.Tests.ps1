@@ -33,7 +33,7 @@ Describe 'Get-BreadcrumbPath' -Tag 'integration', 'sql', 'sqladmin', 'eulanda' {
     It 'Handles connection errors and no connection parameter' {
         $sql = Get-BreadcrumbPath -breadcrumbId $breadcrumbId
 
-        # Prüfen Sie, ob der SQL-Code die wichtigen Teile enthält
+        # Check if the SQL code contains the important parts
         $sql.Contains('DECLARE @BreadcrumbPath varchar(1024);') | Should -Be $true
         $sql.Contains('DECLARE @ID int') | Should -Be $true
         $sql.Contains('WITH CTE AS') | Should -Be $true
@@ -41,7 +41,7 @@ Describe 'Get-BreadcrumbPath' -Tag 'integration', 'sql', 'sqladmin', 'eulanda' {
         $sql.Contains('SELECT TOP 1 @BreadcrumbPath=Pfad') | Should -Be $true
         $sql.Contains('SET @BreadcrumbPath = SUBSTRING') | Should -Be $true
 
-        # Prüfen Sie, ob der BreadcrumbId korrekt eingefügt wurde
+        # Check if the BreadcrumbId is inserted correctly
         $sql.Contains("@ID int = $breadcrumbId") | Should -Be $true
     }
 
