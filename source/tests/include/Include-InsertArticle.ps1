@@ -18,5 +18,14 @@ $conn = Get-Conn -udl $udl
 $sql = "INSERT INTO Artikel (ArtNummer, Barcode, Vk, VerpackEH, Kurztext1, Ultrakurztext, Langtext) VALUES ('$articleNo', '$barcode', 42.50, $packingUnit, '$text', '$text', '$text')"
 $conn.Execute($sql)
 
+$sql = "SELECT Id FROM Artikel WHERE ArtNummer = '$articleNo'"
+$rs = $conn.Execute($sql)
+$articleId = 0
+if (($rs) -and (!$rs.eof)) { $articleId = $rs.fields(0).value }
+$rs.close()
 
 $conn.close()
+
+# At the moment fix in master database for testing
+$breadcrumbPath = '\shop\hardware'
+$propertyId = 49

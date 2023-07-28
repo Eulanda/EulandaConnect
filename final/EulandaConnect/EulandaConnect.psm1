@@ -7716,7 +7716,8 @@ function Get-XmlEulandaArticle {
                     $writer.WriteRaw($xmlString)
 
                     # ADD NODE MERKMALLISTE (list of breadcrumb)
-                    $xmlString= Get-XmlEulandaBreadcrumb -articleNo $articleNo -tablename 'Article' -breadcrumbpath '\shop' -conn $myConn
+                    $articleId = Get-ArticleId -articleNo $articleNo -conn $myConn
+                    $xmlString= Get-XmlEulandaBreadcrumb -id $articleId -tablename 'Article' -breadcrumbRoot '\shop' -conn $myConn
                     $writer.WriteRaw($xmlString)
 
                 $writer.WriteEndElement()
@@ -7747,19 +7748,10 @@ function Get-XmlEulandaArticle {
 Function Get-XmlEulandaBreadcrumb {
     param(
         [Parameter(Mandatory = $false)]
-        [string]$barcode
+        [int]$id
         ,
         [Parameter(Mandatory = $false)]
-        [string]$articleNo
-        ,
-        [Parameter(Mandatory = $false)]
-        [int]$articleId
-        ,
-        [Parameter(Mandatory = $false)]
-        [guid]$articleUid
-        ,
-        [Parameter(Mandatory = $false)]
-        [string]$breadcrumbPath = $(Throw ((Get-ResStr 'PARAM_MANDATORY_MISSED') -f 'breadcrumbPath', $myInvocation.Mycommand))
+        [string]$breadcrumbRoot = $(Throw ((Get-ResStr 'PARAM_MANDATORY_MISSED') -f 'breadcrumbRoot', $myInvocation.Mycommand))
         ,
         [Parameter(Mandatory = $false)]
         [ValidateScript({ Test-ValidateMapping -strValue $_ -mapping (Get-MappingTablename) })]
@@ -7781,13 +7773,11 @@ Function Get-XmlEulandaBreadcrumb {
     Begin {
         Write-Verbose -Message ((Get-ResStr 'STARTING_FUNCTION') -f $myInvocation.Mycommand)
         $tablename = Test-ValidateMapping -strValue $tablename -mapping (Get-MappingTablename)
-        Test-ValidateSingle -validParams (Get-SingleArticleKeys) @PSBoundParameters
         Test-ValidateSingle -validParams (Get-SingleConnection) @PSBoundParameters
         New-Variable -Name 'memoryStream' -Scope 'Private' -Value ($null)
         New-Variable -Name 'myConn' -Scope 'Private' -Value ($null)
         New-Variable -Name 'nodeName' -Scope 'Private' -Value ([string]'')
         New-Variable -Name 'nodeValue' -Scope 'Private' -Value ([string]'')
-        New-Variable -Name 'paramsArticle' -Scope 'Private' -Value ([System.Collections.Hashtable]@{})
         New-Variable -Name 'rs' -Scope 'Private' -Value ($null)
         New-Variable -Name 'sql' -Scope 'Private' -Value ([string]'')
         New-Variable -Name 'streamReader' -Scope 'Private' -Value ($null)
@@ -7798,10 +7788,8 @@ Function Get-XmlEulandaBreadcrumb {
     }
 
     Process {
-        $paramsArticle = Get-UsedParameters -validParams (Get-SingleArticleKeys) -boundParams $PSBoundParameters
         try {
             $myConn = Get-Conn -conn $conn -udl $udl -connStr $connStr
-            $articleId = Get-ArticleId  @paramsArticle  -conn $myConn
 
             [string]$sql = @"
             DECLARE @root VARCHAR(128)
@@ -7810,7 +7798,7 @@ Function Get-XmlEulandaBreadcrumb {
             DECLARE @blank VARCHAR(2)
             SET @bs = '\'
             SET @blank = ''
-            SET @root = '$breadcrumbPath'
+            SET @root = '$breadcrumbRoot'
             IF @root = @blank SET @root=@bs
             IF LEN(@root)>1 AND SUBSTRING(@root,LEN(@root),1) <> @bs SET @root = @root + @bs
             EXEC cn_MerkOpenPath @keyid=@keyid OUT, @basekeyid=0, @path=@root, @tablename='$tablename'
@@ -7819,7 +7807,7 @@ Function Get-XmlEulandaBreadcrumb {
             LEFT JOIN merkmal m ON m.id=me.kopfid
             WHERE m.tabelle = '$tablename' and
             m.merkmaltyp = 1 and
-            me.objektid = (SELECT id FROM $tablename WHERE Id = $articleId) and
+            me.objektid = (SELECT id FROM $tablename WHERE Id = $id) and
             @bs + dbo.cnf_merkpfad(m.id,@keyid) <> '\' and
             not @bs + dbo.cnf_merkpfad(m.id,@keyid) like '%.USER%'
             ORDER BY @bs + dbo.cnf_merkpfad(m.id,@keyid)
@@ -7877,7 +7865,7 @@ Function Get-XmlEulandaBreadcrumb {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
         Return $result
     }
-    # Test:  Get-XmlEulandaBreadcrumb -articleNo '130100' -tablename 'Article' -breadcrumbpath '\shop' -udl 'C:\temp\Eulanda_1 Truccamo.udl'
+    # Test:  Get-XmlEulandaBreadcrumb -id 100 -tablename 'Article' -breadcrumRoot '\shop' -udl 'C:\temp\Eulanda_1 Truccamo.udl'
 }
 function Get-XmlEulandaDelivery {
     [CmdletBinding()]
@@ -9647,71 +9635,6 @@ function New-Delivery {
     # Test:  New-Delivery -salesOrderNo 131 -udl 'C:\temp\EULANDA_1 Truccamo.udl'
 }
 
-function New-DeliveryPropertyItem {
-    [CmdletBinding()]
-    param(
-        [Parameter(Mandatory = $false)]
-        [ValidateScript({ Test-ValidateId -id $_ })]
-        [int]$deliveryId
-        ,
-        [Parameter(Mandatory = $false)]
-        [ValidateScript({ Test-ValidateNo -no $_ })]
-        [int]$deliveryNo
-        ,
-        [Parameter(Mandatory = $false)]
-        [ValidateScript({ Test-ValidateId -id $_ })]
-        [int]$propertyId = $(Throw ((Get-ResStr 'PARAM_MANDATORY_MISSED') -f 'propertyId', $myInvocation.Mycommand))
-        ,
-        [Parameter(Mandatory = $false)]
-        [ValidateScript({ Test-ValidateConn -conn $_  })]
-        $conn
-        ,
-        [Parameter(Mandatory = $false)]
-        [ValidateScript({ Test-ValidatePathUDL -path $_  })]
-        [string]$udl
-        ,
-        [Parameter(Mandatory = $false)]
-        [ValidateScript({ Test-ValidateConnStr -connStr $_ })]
-        [string]$connStr
-    )
-
-    begin {
-        Write-Verbose -Message ((Get-ResStr 'STARTING_FUNCTION') -f $myInvocation.Mycommand)
-        Test-ValidateSingle -validParams (Get-SingleDeliveryKeys) @PSBoundParameters
-        Test-ValidateSingle -validParams (Get-SingleConnection) @PSBoundParameters
-        New-Variable -Name 'myConn' -Scope 'Private' -Value ($null)
-        New-Variable -Name 'sql' -Scope 'Private' -Value ([string]'')
-        New-Variable -Name 'sqlFrag' -Scope 'Private' -Value ([string]'')
-        $initialVariables = Get-CurrentVariables -Debug:$DebugPreference
-    }
-
-    process {
-        $myConn = Get-Conn -conn $conn -udl $udl -connStr $connStr
-        if ($deliveryId) {
-            [string]$sqlFrag = "Id = $deliveryId"
-        } else {
-            [string]$sqlFrag = "KopfNummer = $deliveryNo"
-        }
-
-        [string]$sql = @"
-            DECLARE @KopfId INT;
-            DECLARE @ObjektId INT;
-            SELECT TOP 1 @ObjektId = ID FROM Lieferschein WHERE $sqlFrag;
-            SET @KopfId = $propertyId;
-            INSERT INTO MerkmalElement (KopfId, ObjektId)
-            SELECT @KopfId, @ObjektId
-            WHERE NOT EXISTS (SELECT 1 FROM MerkmalElement WHERE KopfId = @KopfId AND ObjektId = @ObjektId);
-"@
-        $myConn.Execute($sql) | out-null
-    }
-
-    end {
-        Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
-        Return
-    }
-    # Test:  New-DeliveryPropertyItem -deliveryNo 66 -propertyId 2710 -udl 'C:\temp\EULANDA_1 Truccamo.udl'
-}
-
 class EulException : Exception {
     [string] $additionalData
     EulException($message, $additionalData) : base($message) {
@@ -10001,6 +9924,62 @@ function New-OpenVpnTls {
            New-OpenVpnTls
 
     #>
+}
+
+function New-PropertyItem {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $false)]
+        [ValidateScript({ Test-ValidateId -id $_ })]
+        [int]$id
+        ,
+        [Parameter(Mandatory = $false)]
+        [ValidateScript({ Test-ValidateId -id $_ })]
+        [int]$propertyId = $(Throw ((Get-ResStr 'PARAM_MANDATORY_MISSED') -f 'propertyId', $myInvocation.Mycommand))
+        ,
+        [Parameter(Mandatory = $false)]
+        [ValidateScript({ Test-ValidateConn -conn $_  })]
+        $conn
+        ,
+        [Parameter(Mandatory = $false)]
+        [ValidateScript({ Test-ValidatePathUDL -path $_  })]
+        [string]$udl
+        ,
+        [Parameter(Mandatory = $false)]
+        [ValidateScript({ Test-ValidateConnStr -connStr $_ })]
+        [string]$connStr
+    )
+
+    begin {
+        Write-Verbose -Message ((Get-ResStr 'STARTING_FUNCTION') -f $myInvocation.Mycommand)
+        Test-ValidateSingle -validParams (Get-SingleConnection) @PSBoundParameters
+        New-Variable -Name 'myConn' -Scope 'Private' -Value ($null)
+        New-Variable -Name 'sql' -Scope 'Private' -Value ([string]'')
+        $initialVariables = Get-CurrentVariables -Debug:$DebugPreference
+    }
+
+    process {
+        $myConn = Get-Conn -conn $conn -udl $udl -connStr $connStr
+
+        Test-ValidateProperty -id $id -propertyId $propertyId -conn $myConn
+
+        [string]$sql = @"
+            DECLARE @KopfId INT;
+            DECLARE @ObjektId INT;
+            SELECT TOP 1 @ObjektId = $id
+            SET @KopfId = $propertyId;
+            INSERT INTO MerkmalElement (KopfId, ObjektId)
+            SELECT @KopfId, @ObjektId
+            WHERE NOT EXISTS (SELECT 1 FROM MerkmalElement WHERE KopfId = @KopfId AND ObjektId = @ObjektId);
+"@
+        $myConn.Execute($sql) | out-null
+    }
+
+    end {
+        Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
+        Return
+    }
+    # Test:  New-PropertyItem -id 42 -propertyId 4711 -udl 'C:\temp\EULANDA_1 Truccamo.udl'
 }
 
 function New-PurchaseOrder {
@@ -11025,69 +11004,6 @@ Function Receive-RemoteFile {
     #>
 }
 
-function Remove-DeliveryPropertyItem {
-    [CmdletBinding()]
-    param(
-        [parameter(Mandatory = $false)]
-        [ValidateScript({ Test-ValidateId -id $_ })]
-        [int]$deliveryId
-        ,
-        [parameter(Mandatory = $false)]
-        [ValidateScript({ Test-ValidateNo -no $_ })]
-        [int]$deliveryNo
-        ,
-        [Parameter(Mandatory = $false)]
-        [ValidateScript({ Test-ValidateId -id $_ })]
-        [int]$propertyId = $(Throw ((Get-ResStr 'PARAM_MANDATORY_MISSED') -f 'propertyId', $myInvocation.Mycommand))
-        ,
-        [Parameter(Mandatory = $false)]
-        [ValidateScript({ Test-ValidateConn -conn $_  })]
-        $conn
-        ,
-        [Parameter(Mandatory = $false)]
-        [ValidateScript({ Test-ValidatePathUDL -path $_  })]
-        [string]$udl
-        ,
-        [Parameter(Mandatory = $false)]
-        [ValidateScript({ Test-ValidateConnStr -connStr $_ })]
-        [string]$connStr
-    )
-
-    begin {
-        Write-Verbose -Message ((Get-ResStr 'STARTING_FUNCTION') -f $myInvocation.Mycommand)
-        Test-ValidateSingle -validParams (Get-SingleDeliveryKeys) @PSBoundParameters
-        Test-ValidateSingle -validParams (Get-SingleConnection) @PSBoundParameters
-        New-Variable -Name 'myConn' -Scope 'Private' -Value ($null)
-        New-Variable -Name 'sql' -Scope 'Private' -Value ([string]'')
-        New-Variable -Name 'sqlFrag' -Scope 'Private' -Value ([string]'')
-        $initialVariables = Get-CurrentVariables -Debug:$DebugPreference
-    }
-
-    process {
-        $myConn = Get-Conn -conn $conn -udl $udl -connStr $connStr
-        if ($deliveryId) {
-            [string]$sqlFrag = "Id = $deliveryId"
-        } else  {
-            [string]$sqlFrag = "KopfNummer = $deliveryNo"
-        }
-
-        [string]$sql = @"
-            DECLARE @KopfId INT;
-            DECLARE @ObjektId INT;
-            SELECT TOP 1 @ObjektId = ID FROM Lieferschein WHERE $sqlFrag;
-            SET @KopfId = $propertyId;
-            DELETE MerkmalElement WHERE KopfId = @KopfId AND ObjektId = @ObjektId;
-"@
-        $myConn.Execute($sql) | out-null
-    }
-
-    end {
-        Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
-        Return
-    }
-    # Test:  Remove-DeliveryPropertyItem -deliveryNo 66 -propertyId 2710 -udl 'C:\temp\EULANDA_1 Truccamo.udl'
-}
-
 function Remove-ItemWithRetry {
     [CmdletBinding()]
     param(
@@ -11135,6 +11051,60 @@ function Remove-ItemWithRetry {
         Return
     }
     # Test:  Remove-ItemWithRetry -path 'C:\temp\readme.txt'
+}
+
+function Remove-PropertyItem {
+    [CmdletBinding()]
+    param(
+        [parameter(Mandatory = $false)]
+        [ValidateScript({ Test-ValidateId -id $_ })]
+        [int]$id
+        ,
+        [Parameter(Mandatory = $false)]
+        [ValidateScript({ Test-ValidateId -id $_ })]
+        [int]$propertyId = $(Throw ((Get-ResStr 'PARAM_MANDATORY_MISSED') -f 'propertyId', $myInvocation.Mycommand))
+        ,
+        [Parameter(Mandatory = $false)]
+        [ValidateScript({ Test-ValidateConn -conn $_  })]
+        $conn
+        ,
+        [Parameter(Mandatory = $false)]
+        [ValidateScript({ Test-ValidatePathUDL -path $_  })]
+        [string]$udl
+        ,
+        [Parameter(Mandatory = $false)]
+        [ValidateScript({ Test-ValidateConnStr -connStr $_ })]
+        [string]$connStr
+    )
+
+    begin {
+        Write-Verbose -Message ((Get-ResStr 'STARTING_FUNCTION') -f $myInvocation.Mycommand)
+        Test-ValidateSingle -validParams (Get-SingleConnection) @PSBoundParameters
+        New-Variable -Name 'myConn' -Scope 'Private' -Value ($null)
+        New-Variable -Name 'sql' -Scope 'Private' -Value ([string]'')
+        $initialVariables = Get-CurrentVariables -Debug:$DebugPreference
+    }
+
+    process {
+        $myConn = Get-Conn -conn $conn -udl $udl -connStr $connStr
+
+        Test-ValidateProperty -id $id -propertyId $propertyId -conn $myConn
+
+        [string]$sql = @"
+            DECLARE @KopfId INT;
+            DECLARE @ObjektId INT;
+            SET @ObjektId = $id;
+            SET @KopfId = $propertyId;
+            DELETE MerkmalElement WHERE KopfId = @KopfId AND ObjektId = @ObjektId;
+"@
+        $myConn.Execute($sql) | out-null
+    }
+
+    end {
+        Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
+        Return
+    }
+    # Test:  Remove-PropertyItem -id 42 -propertyId 2710 -udl 'C:\temp\EULANDA_1 Truccamo.udl'
 }
 
 Function Remove-RemoteFile {
@@ -13271,87 +13241,6 @@ function Test-Administrator {
     # Test:  Test-Administrator
 }
 
-function Test-ArticlePropertyItem {
-    [CmdletBinding()]
-    param(
-        [Parameter(Mandatory = $false)]
-        [string]$barcode
-        ,
-        [Parameter(Mandatory = $false)]
-        [string]$articleNo
-        ,
-        [Parameter(Mandatory = $false)]
-        [ValidateScript({ Test-ValidateId -id $_ })]
-        [int]$articleId
-        ,
-        [Parameter(Mandatory = $false)]
-        [guid]$articleUid
-        ,
-        [Parameter(Mandatory = $false)]
-        [ValidateRange("Positive")]
-        [int]$propertyId = $(Throw ((Get-ResStr 'PARAM_MANDATORY_MISSED') -f 'propertyId', $myInvocation.Mycommand))
-        ,
-        [Parameter(Mandatory = $false)]
-        [ValidateScript({ Test-ValidateConn -conn $_  })]
-        $conn
-        ,
-        [Parameter(Mandatory = $false)]
-        [ValidateScript({ Test-ValidatePathUDL -path $_  })]
-        [string]$udl
-        ,
-        [Parameter(Mandatory = $false)]
-        [ValidateScript({ Test-ValidateConnStr -connStr $_ })]
-        [string]$connStr
-    )
-
-    begin {
-        Write-Verbose -Message ((Get-ResStr 'STARTING_FUNCTION') -f $myInvocation.Mycommand)
-        Test-ValidateSingle -validParams (Get-SingleArticleKeys) @PSBoundParameters
-        Test-ValidateSingle -validParams (Get-SingleConnection) @PSBoundParameters
-        New-Variable -Name 'myConn' -Scope 'Private' -Value ($null)
-        New-Variable -Name 'paramsArticle' -Scope 'Private' -Value ([System.Collections.Hashtable]@{})
-        New-Variable -Name 'rs' -Scope 'Private' -Value ($null)
-        New-Variable -Name 'sql' -Scope 'Private' -Value ([string]'')
-        New-Variable -Name 'result' -Scope 'Private' -Value ([boolean]$false)
-        $initialVariables = Get-CurrentVariables -Debug:$DebugPreference
-    }
-
-    process {
-        $myConn = Get-Conn -conn $conn -udl $udl -connStr $connStr
-        $paramsArticle = Get-UsedParameters -validParams (Get-SingleArticleKeys) -boundParams $PSBoundParameters
-        $articleId = Get-ArticleId @paramsArticle -conn $myConn
-
-        [bool]$result = $false
-
-        [string]$sql = @"
-        SELECT CASE WHEN EXISTS
-            (SELECT me.ObjektId
-                FROM MerkmalElement me
-                JOIN Merkmal m ON
-                    m.Id = me.KopfId AND
-                    m.id = $propertyId AND
-                    m.Tabelle = 'Artikel' AND m.MerkmalTyp = 1
-            WHERE me.ObjektId = $articleId )
-        THEN 1 ELSE 0 END [Item]
-"@
-        $rs = $Null
-        $rs = $myConn.Execute($sql)
-        if ($rs) {
-            if (! $rs.eof) {
-                if ($rs.fields('Item').Value -eq 1) {
-                    $result = $true
-                }
-            }
-        }
-    }
-
-    end {
-        Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
-        Return $result
-    }
-    # Test:  Test-ArticlePropertyItem -articleNo '206003' -propertyId 1358 -udl 'C:\temp\EULANDA_1 Truccamo.udl'
-}
-
 function Test-Console {
     [CmdletBinding()]
     param( )
@@ -13588,6 +13477,65 @@ function Test-PrivateIp {
         Return $result
     }
     # Test:  Test-PrivateIP -ip '192.168.178.2'
+}
+
+function Test-PropertyItem {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $false)]
+        [ValidateScript({ Test-ValidateId -id $_ })]
+        [int]$id
+        ,
+        [Parameter(Mandatory = $false)]
+        [ValidateRange("Positive")]
+        [int]$propertyId = $(Throw ((Get-ResStr 'PARAM_MANDATORY_MISSED') -f 'propertyId', $myInvocation.Mycommand))
+        ,
+        [Parameter(Mandatory = $false)]
+        [ValidateScript({ Test-ValidateConn -conn $_  })]
+        $conn
+        ,
+        [Parameter(Mandatory = $false)]
+        [ValidateScript({ Test-ValidatePathUDL -path $_  })]
+        [string]$udl
+        ,
+        [Parameter(Mandatory = $false)]
+        [ValidateScript({ Test-ValidateConnStr -connStr $_ })]
+        [string]$connStr
+    )
+
+    begin {
+        Write-Verbose -Message ((Get-ResStr 'STARTING_FUNCTION') -f $myInvocation.Mycommand)
+        Test-ValidateSingle -validParams (Get-SingleConnection) @PSBoundParameters
+        New-Variable -Name 'myConn' -Scope 'Private' -Value ($null)
+        New-Variable -Name 'rs' -Scope 'Private' -Value ($null)
+        New-Variable -Name 'sql' -Scope 'Private' -Value ([string]'')
+        New-Variable -Name 'result' -Scope 'Private' -Value ([boolean]$false)
+        $initialVariables = Get-CurrentVariables -Debug:$DebugPreference
+    }
+
+    process {
+        $myConn = Get-Conn -conn $conn -udl $udl -connStr $connStr
+
+        Test-ValidateProperty -id $id -propertyId $propertyId -conn $myConn
+
+        [bool]$result = $false
+
+        [string]$sql = "SELECT Id From MerkmalElement WHERE KopfID = $propertyId AND ObjektID = $id"
+
+        $rs = $Null
+        $rs = $myConn.Execute($sql)
+        if ($rs) {
+            if (! $rs.eof) {
+                $result = $true
+            }
+        }
+    }
+
+    end {
+        Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
+        Return $result
+    }
+    # Test:  Test-PropertyItem -id 42 -propertyId 1358  -udl 'C:\temp\EULANDA_1 Truccamo.udl'
 }
 
 Function Test-RemoteFile {
@@ -19239,6 +19187,95 @@ function Test-ValidatePathXML {
     return $true
 }
 
+function Test-ValidateProperty {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $false)]
+        [ValidateScript({ Test-ValidateId -id $_ })]
+        [int]$id
+        ,
+        [Parameter(Mandatory = $false)]
+        [ValidateScript({ Test-ValidateId -id $_ })]
+        [int]$propertyId = $(Throw ((Get-ResStr 'PARAM_MANDATORY_MISSED') -f 'propertyId', $myInvocation.Mycommand))
+        ,
+        [Parameter(Mandatory = $false)]
+        [ValidateScript({ Test-ValidateConn -conn $_  })]
+        $conn
+        ,
+        [Parameter(Mandatory = $false)]
+        [ValidateScript({ Test-ValidatePathUDL -path $_  })]
+        [string]$udl
+        ,
+        [Parameter(Mandatory = $false)]
+        [ValidateScript({ Test-ValidateConnStr -connStr $_ })]
+        [string]$connStr
+    )
+
+    begin {
+        Write-Verbose -Message ((Get-ResStr 'STARTING_FUNCTION') -f $myInvocation.Mycommand)
+        Test-ValidateSingle -validParams (Get-SingleConnection) @PSBoundParameters
+        New-Variable -Name 'myConn' -Scope 'Private' -Value ($null)
+        New-Variable -Name 'sql' -Scope 'Private' -Value ([string]'')
+        $initialVariables = Get-CurrentVariables -Debug:$DebugPreference
+    }
+
+    process {
+        $myConn = Get-Conn -conn $conn -udl $udl -connStr $connStr
+
+        # Make sure that everything is present, the propertyId and also the record to be inserted into the tree
+
+        if ($id -eq $null -or $id -eq 0) {
+            $throwMsg = ( "The property for -propertyId '{0}' do not exist. Function: {1}" -f $propertyId, $myInvocation.Mycommand)
+            # If $id is NULL or 0, check only the table name
+            [string]$sql = @"
+            DECLARE @TabellenName nvarchar(128);
+            SELECT @TabellenName = Tabelle FROM Merkmal WHERE ID = $propertyId;
+
+            IF @TabellenName IS NOT NULL
+            BEGIN
+                SELECT 1 AS Result;
+            END
+            ELSE
+            BEGIN
+                SELECT 0 AS Result;
+            END
+"@
+        } else {
+            # Otherwise check both the table name and the ID
+            $throwMsg = ("The -id '{0}' for the object or the property for -propertyId {1} do not exist. Function: {2}" -f $id, $propertyId, $myInvocation.Mycommand)
+            [string]$sql = @"
+            DECLARE @TabellenName nvarchar(128), @Sql nvarchar(max), @RowCount int, @IgnoredId int;
+            SELECT @TabellenName = Tabelle FROM Merkmal WHERE ID = $propertyId;
+
+            IF @TabellenName IS NOT NULL
+            BEGIN
+                SET @Sql = N'SELECT @IgnoredId = ID FROM ' + QUOTENAME(@TabellenName) + ' WHERE ID = $id; SET @RowCount = @@ROWCOUNT;';
+
+                -- Execute the SQL statement and save the number of rows returned
+                EXEC sp_executesql @Sql, N'@IgnoredId int OUTPUT, @RowCount int OUTPUT', @IgnoredId=@IgnoredId OUTPUT, @RowCount=@RowCount OUTPUT;
+
+                SELECT CASE WHEN @RowCount > 0 THEN 1 ELSE 0 END AS Result;
+            END
+            ELSE
+            BEGIN
+                SELECT 0 AS Result;
+            END
+"@
+        }
+
+        $rs = $myConn.Execute($sql)
+        if ((!$rs) -or ($rs.eof) -or (!$rs.fields(0).value))  {
+            Throw $throwMsg
+        }
+    }
+
+    end {
+        Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
+        Return
+    }
+    # Test:  Test-ValidateProperty -id 42 -propertyId 4711 -udl 'C:\temp\EULANDA_1 Truccamo.udl'
+}
+
 function Test-ValidateSelect {
     [CmdletBinding()]
     param(
@@ -19331,10 +19368,10 @@ function Test-ValidateUrl {
 
 
 # SIG # Begin signature block
-# MIIpiQYJKoZIhvcNAQcCoIIpejCCKXYCAQExDzANBglghkgBZQMEAgEFADB5Bgor
+# MIIpiAYJKoZIhvcNAQcCoIIpeTCCKXUCAQExDzANBglghkgBZQMEAgEFADB5Bgor
 # BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
-# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCB0CT6tKHP2eDo8
-# kyCqJdB1XD6TwCyyI4uyWPNisQaq56CCEngwggVvMIIEV6ADAgECAhBI/JO0YFWU
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCAFETF4J5jR3JmF
+# WDqF450iI/XYjQJ9Bu2t1nFwgckKbaCCEngwggVvMIIEV6ADAgECAhBI/JO0YFWU
 # jTanyYqJ1pQWMA0GCSqGSIb3DQEBDAUAMHsxCzAJBgNVBAYTAkdCMRswGQYDVQQI
 # DBJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcMB1NhbGZvcmQxGjAYBgNVBAoM
 # EUNvbW9kbyBDQSBMaW1pdGVkMSEwHwYDVQQDDBhBQUEgQ2VydGlmaWNhdGUgU2Vy
@@ -19433,124 +19470,124 @@ function Test-ValidateUrl {
 # KNX5jSiwwUBrA8vNyCh6d8ZCorwimYkDyGtstF0D9UoU9dX66QrfTsK+zxO7/0QF
 # 1qIc5CTZe6Kcsuxe99p5UbPU665d5BvOwq0lJKg59k+6exo1Cc5awip+d4krfyWl
 # D1sMkS0eiRSN1UNVs3Hg5gbaEEBx98sQMBF45vv0DFgY/SQVRp9yaFayTyfbb/qk
-# jc8xghZnMIIWYwIBATBrMFcxCzAJBgNVBAYTAkdCMRgwFgYDVQQKEw9TZWN0aWdv
+# jc8xghZmMIIWYgIBATBrMFcxCzAJBgNVBAYTAkdCMRgwFgYDVQQKEw9TZWN0aWdv
 # IExpbWl0ZWQxLjAsBgNVBAMTJVNlY3RpZ28gUHVibGljIENvZGUgU2lnbmluZyBD
 # QSBFViBSMzYCEGilgQZhq4aQSRu7qELTizkwDQYJYIZIAWUDBAIBBQCgfDAQBgor
 # BgEEAYI3AgEMMQIwADAZBgkqhkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEE
-# AYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAvBgkqhkiG9w0BCQQxIgQgVLRdh1QIE+JZ
-# FBJ4wnKzY9wxFlpaDxSXN8HvWym+3VwwDQYJKoZIhvcNAQEBBQAEggIAAy1xFFaH
-# u6q915SCWNiZc5/Eim1NzRNJTP1EygvMxWdDLnb6mPdC5x+nAlGm8C146QxuL59m
-# Tt3FOsLM/MBKJf3NINYOYrn3yLDvpWqVlWBeYOOOMzKjy5eDY4QEawb523X2nJmJ
-# ecR3GS1DQp9Mqh3FFcpwB8BuK6U0m+OcDzM3LSltl9emZ3AsTu9U0fp9kboOnPe0
-# sAOqaWd/S+NSIjLpBTbWi1cpAnHoKw/qp7E4JM9FIp0zfly6UeXJubM5rOwmosN2
-# dltdqT8KLvFC/aslmfq4w+whyCMmNSfLOoJG53j1evFlop7q+5mCPdsOzeijTMSp
-# toUjDfuAt71IYFE6WtkSW2FL7LUBAoFpWm4oOl2qFcCrn0FJKhydLMoZ2+Y9gVNF
-# MDz96ggi2bJw9nScq2R6R7sAGYTTH9strN85ZkzWnzAfo91nq0v5dwaowCf77av8
-# mGMfueycBB9ReKl8IVFyEugjDqJf5o/voHa6m2LD3aD4QPXv54ItBQGpUnLmq9cE
-# kqcMva5MkUEUmT/7AmmMz4fhE7yFrp5kGfFafGS+triPbnTebTfdkGzNDrHMM+g8
-# mrVKh9ImbME7kS/XBkKUARjaurMH/S0c4U4nEr72twrVeD1nM3O8ebZDgN+ncwTx
-# qR+viK1Vhis1gcKWSDFCaO1T12EU8PaErGqhghNPMIITSwYKKwYBBAGCNwMDATGC
-# EzswghM3BgkqhkiG9w0BBwKgghMoMIITJAIBAzEPMA0GCWCGSAFlAwQCAgUAMIHw
-# BgsqhkiG9w0BCRABBKCB4ASB3TCB2gIBAQYKKwYBBAGyMQIBATAxMA0GCWCGSAFl
-# AwQCAQUABCAQWhRtypwxjsdw1MuBC23GMn2/wu5JAmhRlJCfnA3SZQIVAJFvWyT6
-# kMnN4QngjFTaaWOnFTGFGA8yMDIzMDcyNjE4NDMwNFqgbqRsMGoxCzAJBgNVBAYT
-# AkdCMRMwEQYDVQQIEwpNYW5jaGVzdGVyMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
-# ZWQxLDAqBgNVBAMMI1NlY3RpZ28gUlNBIFRpbWUgU3RhbXBpbmcgU2lnbmVyICM0
-# oIIN6TCCBvUwggTdoAMCAQICEDlMJeF8oG0nqGXiO9kdItQwDQYJKoZIhvcNAQEM
-# BQAwfTELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQ
-# MA4GA1UEBxMHU2FsZm9yZDEYMBYGA1UEChMPU2VjdGlnbyBMaW1pdGVkMSUwIwYD
-# VQQDExxTZWN0aWdvIFJTQSBUaW1lIFN0YW1waW5nIENBMB4XDTIzMDUwMzAwMDAw
-# MFoXDTM0MDgwMjIzNTk1OVowajELMAkGA1UEBhMCR0IxEzARBgNVBAgTCk1hbmNo
-# ZXN0ZXIxGDAWBgNVBAoTD1NlY3RpZ28gTGltaXRlZDEsMCoGA1UEAwwjU2VjdGln
-# byBSU0EgVGltZSBTdGFtcGluZyBTaWduZXIgIzQwggIiMA0GCSqGSIb3DQEBAQUA
-# A4ICDwAwggIKAoICAQCkkyhSS88nh3akKRyZOMDnDtTRHOxoywFk5IrNd7BxZYK8
-# n/yLu7uVmPslEY5aiAlmERRYsroiW+b2MvFdLcB6og7g4FZk7aHlgSByIGRBbMfD
-# CPrzfV3vIZrCftcsw7oRmB780yAIQrNfv3+IWDKrMLPYjHqWShkTXKz856vpHBYu
-# sLA4lUrPhVCrZwMlobs46Q9vqVqakSgTNbkf8z3hJMhrsZnoDe+7TeU9jFQDkdD8
-# Lc9VMzh6CRwH0SLgY4anvv3Sg3MSFJuaTAlGvTS84UtQe3LgW/0Zux88ahl7brst
-# RCq+PEzMrIoEk8ZXhqBzNiuBl/obm36Ih9hSeYn+bnc317tQn/oYJU8T8l58qbEg
-# Wimro0KHd+D0TAJI3VilU6ajoO0ZlmUVKcXtMzAl5paDgZr2YGaQWAeAzUJ1rPu0
-# kdDF3QFAaraoEO72jXq3nnWv06VLGKEMn1ewXiVHkXTNdRLRnG/kXg2b7HUm7v7T
-# 9ZIvUoXo2kRRKqLMAMqHZkOjGwDvorWWnWKtJwvyG0rJw5RCN4gghKiHrsO6I3J7
-# +FTv+GsnsIX1p0OF2Cs5dNtadwLRpPr1zZw9zB+uUdB7bNgdLRFCU3F0wuU1qi1S
-# Etklz/DT0JFDEtcyfZhs43dByP8fJFTvbq3GPlV78VyHOmTxYEsFT++5L+wJEwID
-# AQABo4IBgjCCAX4wHwYDVR0jBBgwFoAUGqH4YRkgD8NBd0UojtE1XwYSBFUwHQYD
-# VR0OBBYEFAMPMciRKpO9Y/PRXU2kNA/SlQEYMA4GA1UdDwEB/wQEAwIGwDAMBgNV
-# HRMBAf8EAjAAMBYGA1UdJQEB/wQMMAoGCCsGAQUFBwMIMEoGA1UdIARDMEEwNQYM
-# KwYBBAGyMQECAQMIMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20v
-# Q1BTMAgGBmeBDAEEAjBEBgNVHR8EPTA7MDmgN6A1hjNodHRwOi8vY3JsLnNlY3Rp
-# Z28uY29tL1NlY3RpZ29SU0FUaW1lU3RhbXBpbmdDQS5jcmwwdAYIKwYBBQUHAQEE
-# aDBmMD8GCCsGAQUFBzAChjNodHRwOi8vY3J0LnNlY3RpZ28uY29tL1NlY3RpZ29S
-# U0FUaW1lU3RhbXBpbmdDQS5jcnQwIwYIKwYBBQUHMAGGF2h0dHA6Ly9vY3NwLnNl
-# Y3RpZ28uY29tMA0GCSqGSIb3DQEBDAUAA4ICAQBMm2VY+uB5z+8VwzJt3jOR63dY
-# 4uu9y0o8dd5+lG3DIscEld9laWETDPYMnvWJIF7Bh8cDJMrHpfAm3/j4MWUN4Ott
-# UVemjIRSCEYcKsLe8tqKRfO+9/YuxH7t+O1ov3pWSOlh5Zo5d7y+upFkiHX/XYUW
-# NCfSKcv/7S3a/76TDOxtog3Mw/FuvSGRGiMAUq2X1GJ4KoR5qNc9rCGPcMMkeTqX
-# 8Q2jo1tT2KsAulj7NYBPXyhxbBlewoNykK7gxtjymfvqtJJlfAd8NUQdrVgYa2L7
-# 3mzECqls0yFGcNwvjXVMI8JB0HqWO8NL3c2SJnR2XDegmiSeTl9O048P5RNPWURl
-# S0Nkz0j4Z2e5Tb/MDbE6MNChPUitemXk7N/gAfCzKko5rMGk+al9NdAyQKCxGSoY
-# IbLIfQVxGksnNqrgmByDdefHfkuEQ81D+5CXdioSrEDBcFuZCkD6gG2UYXvIbrnI
-# Z2ckXFCNASDeB/cB1PguEc2dg+X4yiUcRD0n5bCGRyoLG4R2fXtoT4239xO07aAt
-# 7nMP2RC6nZksfNd1H48QxJTmfiTllUqIjCfWhWYd+a5kdpHoSP7IVQrtKcMf3jim
-# wBT7Mj34qYNiNsjDvgCHHKv6SkIciQPc9Vx8cNldeE7un14g5glqfCsIo0j1FfwE
-# T9/NIRx65fWOGtS5QDCCBuwwggTUoAMCAQICEDAPb6zdZph0fKlGNqd4LbkwDQYJ
-# KoZIhvcNAQEMBQAwgYgxCzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpOZXcgSmVyc2V5
-# MRQwEgYDVQQHEwtKZXJzZXkgQ2l0eTEeMBwGA1UEChMVVGhlIFVTRVJUUlVTVCBO
-# ZXR3b3JrMS4wLAYDVQQDEyVVU0VSVHJ1c3QgUlNBIENlcnRpZmljYXRpb24gQXV0
-# aG9yaXR5MB4XDTE5MDUwMjAwMDAwMFoXDTM4MDExODIzNTk1OVowfTELMAkGA1UE
-# BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2Fs
-# Zm9yZDEYMBYGA1UEChMPU2VjdGlnbyBMaW1pdGVkMSUwIwYDVQQDExxTZWN0aWdv
-# IFJTQSBUaW1lIFN0YW1waW5nIENBMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIIC
-# CgKCAgEAyBsBr9ksfoiZfQGYPyCQvZyAIVSTuc+gPlPvs1rAdtYaBKXOR4O168TM
-# STTL80VlufmnZBYmCfvVMlJ5LsljwhObtoY/AQWSZm8hq9VxEHmH9EYqzcRaydvX
-# XUlNclYP3MnjU5g6Kh78zlhJ07/zObu5pCNCrNAVw3+eolzXOPEWsnDTo8Tfs8Vy
-# rC4Kd/wNlFK3/B+VcyQ9ASi8Dw1Ps5EBjm6dJ3VV0Rc7NCF7lwGUr3+Az9ERCleE
-# yX9W4L1GnIK+lJ2/tCCwYH64TfUNP9vQ6oWMilZx0S2UTMiMPNMUopy9Jv/TUyDH
-# YGmbWApU9AXn/TGs+ciFF8e4KRmkKS9G493bkV+fPzY+DjBnK0a3Na+WvtpMYMyo
-# u58NFNQYxDCYdIIhz2JWtSFzEh79qsoIWId3pBXrGVX/0DlULSbuRRo6b83XhPDX
-# 8CjFT2SDAtT74t7xvAIo9G3aJ4oG0paH3uhrDvBbfel2aZMgHEqXLHcZK5OVmJyX
-# nuuOwXhWxkQl3wYSmgYtnwNe/YOiU2fKsfqNoWTJiJJZy6hGwMnypv99V9sSdvqK
-# QSTUG/xypRSi1K1DHKRJi0E5FAMeKfobpSKupcNNgtCN2mu32/cYQFdz8HGj+0p9
-# RTbB942C+rnJDVOAffq2OVgy728YUInXT50zvRq1naHelUF6p4MCAwEAAaOCAVow
-# ggFWMB8GA1UdIwQYMBaAFFN5v1qqK0rPVIDh2JvAnfKyA2bLMB0GA1UdDgQWBBQa
-# ofhhGSAPw0F3RSiO0TVfBhIEVTAOBgNVHQ8BAf8EBAMCAYYwEgYDVR0TAQH/BAgw
-# BgEB/wIBADATBgNVHSUEDDAKBggrBgEFBQcDCDARBgNVHSAECjAIMAYGBFUdIAAw
-# UAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2VydHJ1c3QuY29tL1VTRVJU
-# cnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUFBwEBBGow
-# aDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVz
-# dFJTQUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2Vy
-# dHJ1c3QuY29tMA0GCSqGSIb3DQEBDAUAA4ICAQBtVIGlM10W4bVTgZF13wN6Mgst
-# JYQRsrDbKn0qBfW8Oyf0WqC5SVmQKWxhy7VQ2+J9+Z8A70DDrdPi5Fb5WEHP8ULl
-# EH3/sHQfj8ZcCfkzXuqgHCZYXPO0EQ/V1cPivNVYeL9IduFEZ22PsEMQD43k+Thi
-# vxMBxYWjTMXMslMwlaTW9JZWCLjNXH8Blr5yUmo7Qjd8Fng5k5OUm7Hcsm1BbWfN
-# yW+QPX9FcsEbI9bCVYRm5LPFZgb289ZLXq2jK0KKIZL+qG9aJXBigXNjXqC72NzX
-# StM9r4MGOBIdJIct5PwC1j53BLwENrXnd8ucLo0jGLmjwkcd8F3WoXNXBWiap8k3
-# ZR2+6rzYQoNDBaWLpgn/0aGUpk6qPQn1BWy30mRa2Coiwkud8TleTN5IPZs0lpoJ
-# X47997FSkc4/ifYcobWpdR9xv1tDXWU9UIFuq/DQ0/yysx+2mZYm9Dx5i1xkzM3u
-# J5rloMAMcofBbk1a0x7q8ETmMm8c6xdOlMN4ZSA7D0GqH+mhQZ3+sbigZSo04N6o
-# +TzmwTC7wKBjLPxcFgCo0MR/6hGdHgbGpm0yXbQ4CStJB6r97DDa8acvz7f9+tCj
-# hNknnvsBZne5VhDhIG7GrrH5trrINV0zdo7xfCAMKneutaIChrop7rRaALGMq+P5
-# CslUXdS5anSevUiumDGCBCwwggQoAgEBMIGRMH0xCzAJBgNVBAYTAkdCMRswGQYD
-# VQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGDAWBgNV
-# BAoTD1NlY3RpZ28gTGltaXRlZDElMCMGA1UEAxMcU2VjdGlnbyBSU0EgVGltZSBT
-# dGFtcGluZyBDQQIQOUwl4XygbSeoZeI72R0i1DANBglghkgBZQMEAgIFAKCCAWsw
-# GgYJKoZIhvcNAQkDMQ0GCyqGSIb3DQEJEAEEMBwGCSqGSIb3DQEJBTEPFw0yMzA3
-# MjYxODQzMDRaMD8GCSqGSIb3DQEJBDEyBDCEsuPKcU04qOin4+zDUyBsaqz2TLcM
-# 7MkUo4nbphnxnrqFqe9wSsKWAbORBNcS5kQwge0GCyqGSIb3DQEJEAIMMYHdMIHa
-# MIHXMBYEFK5ir3UKDL1H1kYfdWjivIznyk+UMIG8BBQC1luV4oNwwVcAlfqI+SPd
-# k3+tjzCBozCBjqSBizCBiDELMAkGA1UEBhMCVVMxEzARBgNVBAgTCk5ldyBKZXJz
-# ZXkxFDASBgNVBAcTC0plcnNleSBDaXR5MR4wHAYDVQQKExVUaGUgVVNFUlRSVVNU
-# IE5ldHdvcmsxLjAsBgNVBAMTJVVTRVJUcnVzdCBSU0EgQ2VydGlmaWNhdGlvbiBB
-# dXRob3JpdHkCEDAPb6zdZph0fKlGNqd4LbkwDQYJKoZIhvcNAQEBBQAEggIAoFH0
-# n0Ov5th4estQnTDtsVWkFbzo2OtdFKOxbz34Asqrkhi0gg33WB2k/nMuVtsbnxbt
-# Mvw6cUm+HvdKhDuKHgU2hBXTOfOLNROXvQIzSh9eAU/OPbTx4KWKJHjw+m9/1oYH
-# VMQhAvs15xZDCi/bS9wWpTuOD97pkRot1Sauyxhaxuhl4bzFGLv+KJhnNtBox14w
-# 04Z4Yt3DGLR/ONpwY1K4QiHEVuHZrNb7nDihbWgUliQCGCmul6qZ2u7V/FoAPH97
-# DJHDF2DZ17cxtvhRPmemaKvFYxw4KwplKaye+9XWrszvEGNAZ29tpKvjG9EPy7rq
-# 4SsbkVakot7su9Iwb8rAEXKor7PnGMd7BUnjwDwiuA+epVvmJnRoXXQXB6ph+HKR
-# 9tX++kCOmBqcAPQlQ1pX//qMlnSSVtmZcH5c4OQOBE77psX5lAbVfAaBsaU5kOKa
-# USdeyhMx217FzVkQpZVPfS7fZ3LjC1wCsCwK32Y/B9KEKzj3YUnGcxxXIbyzGOnS
-# Rz9BosjY7givPReJwQYIEO87GjagZF5OhbXmfYE2POdryAi6CPEkrSsZGIXjUhVP
-# O97a/COkzU94lNlpoGTSkdd6vCZR68Uxy8Ko4ypqbq/4GJfi6krFVESNX1CPC//p
-# kWcDfu5tMrpOY/n3GBJpWJBaNe+T/Kr+a3xkfOU=
+# AYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAvBgkqhkiG9w0BCQQxIgQgauh1wySvNH7/
+# nTEKO63s41emg+0cC7HkB5EwfbmC4qswDQYJKoZIhvcNAQEBBQAEggIAtMN0/3Hn
+# nCMAoYpbVAEgtnOEwl0VyTX/4bYroYCxGtngAifPCyM0l5d97D4MwLdTDZHQtJXE
+# hiAFE4JdoSU9dcIYlJdtL1D7JasPzbqejsOIsfDr2exJsTwcYc7APm/knveROe8o
+# zsLIcpci//f3g0hKlmjiavIa9Iboq5baXvLSI2EWgdGUP9Tu2GoctxbAGQcYC6tq
+# 3nkx04+i3++vLKMajB0oMHY014qFXEB+B6DIif1fO6cRKy2P+EBGs+5072LdwgE+
+# 5/1prtiFJB2LNR5gNflvxIExejI9Ad5YYc2EjdIDTuxHfi/QC5BAeEcGUhaG4zLr
+# cEp9pK9sZsgvFilSHY+9pqE8FLNSi8AESn+sUtiwskJlD+MbZlMBZlulGNBm82iK
+# 0IFN2v7k9m6voXY5m7X1xWJbx193F99N8Q8czf/6OneC55cKhY4KBhNN4khl1b2j
+# qNIcqE4gTcLKI7cB5FbhEqbWgzIuAGIH1g/nNXq+wlxZRp152qZ3z8NflyJr6Yr9
+# c6/L+B6JP7cYPyVtvTyBZYQLj4EeClhks8TNi4jPrPzZ0lSSEdY6QMEmszfbPkIX
+# 2Uj+qtzplsJPz7no5agc/tfCyX/XJCB9I4saWZn1r/I735BQFZfd+NufpWD6sC8a
+# T1HPOg3FXLEp2XJFXmtGPvHrDwY6KkUa552hghNOMIITSgYKKwYBBAGCNwMDATGC
+# EzowghM2BgkqhkiG9w0BBwKgghMnMIITIwIBAzEPMA0GCWCGSAFlAwQCAgUAMIHv
+# BgsqhkiG9w0BCRABBKCB3wSB3DCB2QIBAQYKKwYBBAGyMQIBATAxMA0GCWCGSAFl
+# AwQCAQUABCDCkDbuffO8adIKVJWa4/NjZq+Jo1JU32bRLpfiMKpbrAIUP7Rvu/Ga
+# bFLX0/ZiJjVC9qLPdu8YDzIwMjMwNzI4MTc0MDQzWqBupGwwajELMAkGA1UEBhMC
+# R0IxEzARBgNVBAgTCk1hbmNoZXN0ZXIxGDAWBgNVBAoTD1NlY3RpZ28gTGltaXRl
+# ZDEsMCoGA1UEAwwjU2VjdGlnbyBSU0EgVGltZSBTdGFtcGluZyBTaWduZXIgIzSg
+# gg3pMIIG9TCCBN2gAwIBAgIQOUwl4XygbSeoZeI72R0i1DANBgkqhkiG9w0BAQwF
+# ADB9MQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAw
+# DgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxJTAjBgNV
+# BAMTHFNlY3RpZ28gUlNBIFRpbWUgU3RhbXBpbmcgQ0EwHhcNMjMwNTAzMDAwMDAw
+# WhcNMzQwODAyMjM1OTU5WjBqMQswCQYDVQQGEwJHQjETMBEGA1UECBMKTWFuY2hl
+# c3RlcjEYMBYGA1UEChMPU2VjdGlnbyBMaW1pdGVkMSwwKgYDVQQDDCNTZWN0aWdv
+# IFJTQSBUaW1lIFN0YW1waW5nIFNpZ25lciAjNDCCAiIwDQYJKoZIhvcNAQEBBQAD
+# ggIPADCCAgoCggIBAKSTKFJLzyeHdqQpHJk4wOcO1NEc7GjLAWTkis13sHFlgryf
+# /Iu7u5WY+yURjlqICWYRFFiyuiJb5vYy8V0twHqiDuDgVmTtoeWBIHIgZEFsx8MI
+# +vN9Xe8hmsJ+1yzDuhGYHvzTIAhCs1+/f4hYMqsws9iMepZKGRNcrPznq+kcFi6w
+# sDiVSs+FUKtnAyWhuzjpD2+pWpqRKBM1uR/zPeEkyGuxmegN77tN5T2MVAOR0Pwt
+# z1UzOHoJHAfRIuBjhqe+/dKDcxIUm5pMCUa9NLzhS1B7cuBb/Rm7HzxqGXtuuy1E
+# Kr48TMysigSTxleGoHM2K4GX+hubfoiH2FJ5if5udzfXu1Cf+hglTxPyXnypsSBa
+# KaujQod34PRMAkjdWKVTpqOg7RmWZRUpxe0zMCXmloOBmvZgZpBYB4DNQnWs+7SR
+# 0MXdAUBqtqgQ7vaNereeda/TpUsYoQyfV7BeJUeRdM11EtGcb+ReDZvsdSbu/tP1
+# ki9ShejaRFEqoswAyodmQ6MbAO+itZadYq0nC/IbSsnDlEI3iCCEqIeuw7ojcnv4
+# VO/4ayewhfWnQ4XYKzl021p3AtGk+vXNnD3MH65R0Hts2B0tEUJTcXTC5TWqLVIS
+# 2SXP8NPQkUMS1zJ9mGzjd0HI/x8kVO9urcY+VXvxXIc6ZPFgSwVP77kv7AkTAgMB
+# AAGjggGCMIIBfjAfBgNVHSMEGDAWgBQaofhhGSAPw0F3RSiO0TVfBhIEVTAdBgNV
+# HQ4EFgQUAw8xyJEqk71j89FdTaQ0D9KVARgwDgYDVR0PAQH/BAQDAgbAMAwGA1Ud
+# EwEB/wQCMAAwFgYDVR0lAQH/BAwwCgYIKwYBBQUHAwgwSgYDVR0gBEMwQTA1Bgwr
+# BgEEAbIxAQIBAwgwJTAjBggrBgEFBQcCARYXaHR0cHM6Ly9zZWN0aWdvLmNvbS9D
+# UFMwCAYGZ4EMAQQCMEQGA1UdHwQ9MDswOaA3oDWGM2h0dHA6Ly9jcmwuc2VjdGln
+# by5jb20vU2VjdGlnb1JTQVRpbWVTdGFtcGluZ0NBLmNybDB0BggrBgEFBQcBAQRo
+# MGYwPwYIKwYBBQUHMAKGM2h0dHA6Ly9jcnQuc2VjdGlnby5jb20vU2VjdGlnb1JT
+# QVRpbWVTdGFtcGluZ0NBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2Vj
+# dGlnby5jb20wDQYJKoZIhvcNAQEMBQADggIBAEybZVj64HnP7xXDMm3eM5Hrd1ji
+# 673LSjx13n6UbcMixwSV32VpYRMM9gye9YkgXsGHxwMkysel8Cbf+PgxZQ3g621R
+# V6aMhFIIRhwqwt7y2opF87739i7Efu347Wi/elZI6WHlmjl3vL66kWSIdf9dhRY0
+# J9Ipy//tLdr/vpMM7G2iDczD8W69IZEaIwBSrZfUYngqhHmo1z2sIY9wwyR5Opfx
+# DaOjW1PYqwC6WPs1gE9fKHFsGV7Cg3KQruDG2PKZ++q0kmV8B3w1RB2tWBhrYvve
+# bMQKqWzTIUZw3C+NdUwjwkHQepY7w0vdzZImdHZcN6CaJJ5OX07Tjw/lE09ZRGVL
+# Q2TPSPhnZ7lNv8wNsTow0KE9SK16ZeTs3+AB8LMqSjmswaT5qX010DJAoLEZKhgh
+# ssh9BXEaSyc2quCYHIN158d+S4RDzUP7kJd2KhKsQMFwW5kKQPqAbZRhe8huuchn
+# ZyRcUI0BIN4H9wHU+C4RzZ2D5fjKJRxEPSflsIZHKgsbhHZ9e2hPjbf3E7TtoC3u
+# cw/ZELqdmSx813UfjxDElOZ+JOWVSoiMJ9aFZh35rmR2kehI/shVCu0pwx/eOKbA
+# FPsyPfipg2I2yMO+AIccq/pKQhyJA9z1XHxw2V14Tu6fXiDmCWp8KwijSPUV/ARP
+# 380hHHrl9Y4a1LlAMIIG7DCCBNSgAwIBAgIQMA9vrN1mmHR8qUY2p3gtuTANBgkq
+# hkiG9w0BAQwFADCBiDELMAkGA1UEBhMCVVMxEzARBgNVBAgTCk5ldyBKZXJzZXkx
+# FDASBgNVBAcTC0plcnNleSBDaXR5MR4wHAYDVQQKExVUaGUgVVNFUlRSVVNUIE5l
+# dHdvcmsxLjAsBgNVBAMTJVVTRVJUcnVzdCBSU0EgQ2VydGlmaWNhdGlvbiBBdXRo
+# b3JpdHkwHhcNMTkwNTAyMDAwMDAwWhcNMzgwMTE4MjM1OTU5WjB9MQswCQYDVQQG
+# EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxm
+# b3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxJTAjBgNVBAMTHFNlY3RpZ28g
+# UlNBIFRpbWUgU3RhbXBpbmcgQ0EwggIiMA0GCSqGSIb3DQEBAQUAA4ICDwAwggIK
+# AoICAQDIGwGv2Sx+iJl9AZg/IJC9nIAhVJO5z6A+U++zWsB21hoEpc5Hg7XrxMxJ
+# NMvzRWW5+adkFiYJ+9UyUnkuyWPCE5u2hj8BBZJmbyGr1XEQeYf0RirNxFrJ29dd
+# SU1yVg/cyeNTmDoqHvzOWEnTv/M5u7mkI0Ks0BXDf56iXNc48RaycNOjxN+zxXKs
+# Lgp3/A2UUrf8H5VzJD0BKLwPDU+zkQGObp0ndVXRFzs0IXuXAZSvf4DP0REKV4TJ
+# f1bgvUacgr6Unb+0ILBgfrhN9Q0/29DqhYyKVnHRLZRMyIw80xSinL0m/9NTIMdg
+# aZtYClT0Bef9Maz5yIUXx7gpGaQpL0bj3duRX58/Nj4OMGcrRrc1r5a+2kxgzKi7
+# nw0U1BjEMJh0giHPYla1IXMSHv2qyghYh3ekFesZVf/QOVQtJu5FGjpvzdeE8Nfw
+# KMVPZIMC1Pvi3vG8Aij0bdonigbSlofe6GsO8Ft96XZpkyAcSpcsdxkrk5WYnJee
+# 647BeFbGRCXfBhKaBi2fA179g6JTZ8qx+o2hZMmIklnLqEbAyfKm/31X2xJ2+opB
+# JNQb/HKlFKLUrUMcpEmLQTkUAx4p+hulIq6lw02C0I3aa7fb9xhAV3PwcaP7Sn1F
+# NsH3jYL6uckNU4B9+rY5WDLvbxhQiddPnTO9GrWdod6VQXqngwIDAQABo4IBWjCC
+# AVYwHwYDVR0jBBgwFoAUU3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFBqh
+# +GEZIA/DQXdFKI7RNV8GEgRVMA4GA1UdDwEB/wQEAwIBhjASBgNVHRMBAf8ECDAG
+# AQH/AgEAMBMGA1UdJQQMMAoGCCsGAQUFBwMIMBEGA1UdIAQKMAgwBgYEVR0gADBQ
+# BgNVHR8ESTBHMEWgQ6BBhj9odHRwOi8vY3JsLnVzZXJ0cnVzdC5jb20vVVNFUlRy
+# dXN0UlNBQ2VydGlmaWNhdGlvbkF1dGhvcml0eS5jcmwwdgYIKwYBBQUHAQEEajBo
+# MD8GCCsGAQUFBzAChjNodHRwOi8vY3J0LnVzZXJ0cnVzdC5jb20vVVNFUlRydXN0
+# UlNBQWRkVHJ1c3RDQS5jcnQwJQYIKwYBBQUHMAGGGWh0dHA6Ly9vY3NwLnVzZXJ0
+# cnVzdC5jb20wDQYJKoZIhvcNAQEMBQADggIBAG1UgaUzXRbhtVOBkXXfA3oyCy0l
+# hBGysNsqfSoF9bw7J/RaoLlJWZApbGHLtVDb4n35nwDvQMOt0+LkVvlYQc/xQuUQ
+# ff+wdB+PxlwJ+TNe6qAcJlhc87QRD9XVw+K81Vh4v0h24URnbY+wQxAPjeT5OGK/
+# EwHFhaNMxcyyUzCVpNb0llYIuM1cfwGWvnJSajtCN3wWeDmTk5SbsdyybUFtZ83J
+# b5A9f0VywRsj1sJVhGbks8VmBvbz1kteraMrQoohkv6ob1olcGKBc2NeoLvY3NdK
+# 0z2vgwY4Eh0khy3k/ALWPncEvAQ2ted3y5wujSMYuaPCRx3wXdahc1cFaJqnyTdl
+# Hb7qvNhCg0MFpYumCf/RoZSmTqo9CfUFbLfSZFrYKiLCS53xOV5M3kg9mzSWmglf
+# jv33sVKRzj+J9hyhtal1H3G/W0NdZT1QgW6r8NDT/LKzH7aZlib0PHmLXGTMze4n
+# muWgwAxyh8FuTVrTHurwROYybxzrF06Uw3hlIDsPQaof6aFBnf6xuKBlKjTg3qj5
+# PObBMLvAoGMs/FwWAKjQxH/qEZ0eBsambTJdtDgJK0kHqv3sMNrxpy/Pt/360KOE
+# 2See+wFmd7lWEOEgbsausfm2usg1XTN2jvF8IAwqd661ogKGuinutFoAsYyr4/kK
+# yVRd1LlqdJ69SK6YMYIELDCCBCgCAQEwgZEwfTELMAkGA1UEBhMCR0IxGzAZBgNV
+# BAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYGA1UE
+# ChMPU2VjdGlnbyBMaW1pdGVkMSUwIwYDVQQDExxTZWN0aWdvIFJTQSBUaW1lIFN0
+# YW1waW5nIENBAhA5TCXhfKBtJ6hl4jvZHSLUMA0GCWCGSAFlAwQCAgUAoIIBazAa
+# BgkqhkiG9w0BCQMxDQYLKoZIhvcNAQkQAQQwHAYJKoZIhvcNAQkFMQ8XDTIzMDcy
+# ODE3NDA0M1owPwYJKoZIhvcNAQkEMTIEMKuXS6dmI45ppT/G9JF8YtxBwImexGjB
+# AsJGoAZmQ/JWt2fX6+zMfiUQwq4WvqhbuTCB7QYLKoZIhvcNAQkQAgwxgd0wgdow
+# gdcwFgQUrmKvdQoMvUfWRh91aOK8jOfKT5QwgbwEFALWW5Xig3DBVwCV+oj5I92T
+# f62PMIGjMIGOpIGLMIGIMQswCQYDVQQGEwJVUzETMBEGA1UECBMKTmV3IEplcnNl
+# eTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoTFVRoZSBVU0VSVFJVU1Qg
+# TmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0aW9uIEF1
+# dGhvcml0eQIQMA9vrN1mmHR8qUY2p3gtuTANBgkqhkiG9w0BAQEFAASCAgBsZjYB
+# eDg/q9ikm+yO6PgmcnadgLd5N0819alFOI2OyGXLpDyVarXIAGGUcYQKRlFFRN1m
+# sM/rXANBJsilLf90Ih8gXAPyZCZQJndPzyFNibpalzvFtePeMlwXwKcaPXDZWET1
+# mkXj4Rj5ZDAuCss5BpuUI0RtgE+MnG+xJJT23jam3GvV09Tji086JQu2PZ3IxuJN
+# 5Wo9TvcePZgUdmsszN9kUO3ydDrnvdX3bHluEbJ4jDcw6TJngWeOjJA0qJEedeoN
+# bZSOw0PybHB6SY09voMTrON6T4jNTzZcbF1HT0MfPkTUi6qCx5AtyFT2OQkeY31D
+# 2DznDVZ8f8LoZzJf9TsqXuU+YWMpvae0IEVbhFJyuht0yGoFP1RimXDtakq21VFG
+# oYsWVuZj5mMkg3R7Amnjs65bkTgEYgmFFNSrTh0UlFb6kDfAd4gO2iNNUmSOELE0
+# kcyyUPzfC7jhyoGAHu7JnH5Vq850+Sg0wOummc6ruuGOCiWhs43gF4Dah84es5lb
+# kLUkdrPVXkXHl9sDCCtWiYUKck6dRPxojeNBhupurZizon0U3BqAg7dDzSp8z5Eu
+# IqdocGd24XCV6CDPjhxTHSvdOAKN/1fdPcdcWuO4GB0BK4qYCUqskvh45KnjmS1A
+# Ovrx01A9SnPa6asjlWqRSbMPIprgHPBOfUzLiQ==
 # SIG # End signature block

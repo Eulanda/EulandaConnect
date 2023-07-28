@@ -1,53 +1,53 @@
 ---
 external help file: EulandaConnect-help.xml
 Module Name: EulandaConnect
-online version: https://github.com/Eulanda/EulandaConnect/blob/master/docs/Remove-DeliveryPropertyItem.md
+online version: https://github.com/Eulanda/EulandaConnect/blob/master/docs/Test-PropertyItem.md
 schema: 2.0.0
 ---
 
-# Remove-DeliveryPropertyItem
+# Test-PropertyItem
 
 ## SYNOPSIS
-Removes the delivery bill from the properties list
+Checks if there is an entry in the property tree for a specific record.
 
 ## SYNTAX
 
 ```
-Remove-DeliveryPropertyItem [[-deliveryId] <Int32>] [[-deliveryNo] <Int32>] [[-propertyId] <Int32>]
- [[-conn] <Object>] [[-udl] <String>] [[-connStr] <String>] [<CommonParameters>]
+Test-PropertyItem [[-id] <Int32>] [[-propertyId] <Int32>] [[-conn] <Object>] [[-udl] <String>]
+ [[-connStr] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-In the ERP system, you can remove a property for a delivery bill. The delivery bill is specified either by its delivery note number or its ID. The connection to the database is made via a connection object, a connection string or the specification of a UDL file.
-
-You can see what a property tree looks like in Example 1.
+If the property is set for a specific table, such as article or delivery bill, the function returns true, otherwise false. The record itself is specified by its ID, e.g. the articleId. The -propertyId is displayed in the ERP system, in the tree property via the right mouse button.
 
 ## EXAMPLES
 
 ### Example 1:How a property tree looks like
 ```ini
-Delivery Notes/
+Articles/
 ├─ My Properties/
-├─ Delivery Status/
-│  ├─ Complete
-│  ├─ Over Delivered
-│  ├─ Under Delivered
-├─ Tracking Information/
-│  ├─ Partial Missing
-│  ├─ Complete
-│  ├─ All Missing
-├─ Locked for Retransmission
+├─ Shop Catalog/
+│  ├─ Hardware
+│  ├─ Software
+│  ├─ Books
+├─ Colors/
+│  ├─ Red
+│  ├─ Green
+│  ├─ Blue
+├─ Special Flag
 ```
 
-This property tree is just an example. Using this structure, all delivery bills that are assigned to this property can be displayed immediately in the ERP system.
-Removing these properties can be done via this API. 
+This property tree is only an example. Based on this structure, all articles for example assigned to this property can be displayed immediately in the ERP system, so it is a kind of filter. However, these filters can also be used when printing, exporting or displaying a product online, or where ever a property is set.
 
-### Example 2:Removes a property with the specified propertyId from the delivery bill
+Setting these properties can be done manually or through this API. For example, it can be determined whether an article should be transferred to an online store system or not.
+
+### Example 2: Checks if an recordshas a certain property
 ```powershell
-PS C:\> Remove-DeliveryPropertyItem -propertyId 125 -deliveryNo 20230515  -udl "C:\temp\Eulanda_1 JohnDoe.udl"
+PS C:\> [bool]$blue = (Test-PropertyItem -id 3623 -propertyId 125 -udl "C:\temp\Eulanda_1 JohnDoe.udl")
 ```
 
-In this example, the property with id 25 is removed from the property tree for the delivery bill with number 20230515. The connection to the database is made via the specified UDL file.
+Here it is checked whether the record has the color blue or not. The ID for the blue property must be looked up in the ERP system beforehand.
+In this way, each article can be checked for this property. The database is accessed by specifying the UDL file.
 
 ## PARAMETERS
 
@@ -60,7 +60,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 3
+Position: 2
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -75,14 +75,14 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 5
+Position: 4
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -deliveryId
-The delivery note is searched for by its ID.
+### -id
+The `id` is a unique key in the table. It is normally only used internally to link tables together. The tablename is just assigned before.
 
 ```yaml
 Type: Int32
@@ -91,21 +91,6 @@ Aliases:
 
 Required: False
 Position: 0
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -deliveryNo
-The delivery note is found via its delivery note number.
-
-```yaml
-Type: Int32
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 1
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -120,7 +105,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 2
+Position: 1
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -135,7 +120,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 4
+Position: 3
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

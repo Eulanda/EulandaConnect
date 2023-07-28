@@ -972,6 +972,9 @@ function Update-OnlineDocs {
 
             $hugoPath = (Get-Command hugo).Source
             & $hugoPath
+
+            Copy-Item "$targetBase\public\sitemap.xml"  "$targetBase\public\de\sitemap.xml" -Force
+
         } catch {
             Throw "Error while running Hugo:: $_"
         } finally {

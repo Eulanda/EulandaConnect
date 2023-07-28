@@ -112,7 +112,8 @@ function Get-XmlEulandaArticle {
                     $writer.WriteRaw($xmlString)
 
                     # ADD NODE MERKMALLISTE (list of breadcrumb)
-                    $xmlString= Get-XmlEulandaBreadcrumb -articleNo $articleNo -tablename 'Article' -breadcrumbpath '\shop' -conn $myConn
+                    $articleId = Get-ArticleId -articleNo $articleNo -conn $myConn
+                    $xmlString= Get-XmlEulandaBreadcrumb -id $articleId -tablename 'Article' -breadcrumbRoot '\shop' -conn $myConn
                     $writer.WriteRaw($xmlString)
 
                 $writer.WriteEndElement()

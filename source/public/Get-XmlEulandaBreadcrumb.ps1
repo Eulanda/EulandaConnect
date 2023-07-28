@@ -1,19 +1,10 @@
 Function Get-XmlEulandaBreadcrumb {
     param(
         [Parameter(Mandatory = $false)]
-        [string]$barcode
+        [int]$id
         ,
         [Parameter(Mandatory = $false)]
-        [string]$articleNo
-        ,
-        [Parameter(Mandatory = $false)]
-        [int]$articleId
-        ,
-        [Parameter(Mandatory = $false)]
-        [guid]$articleUid
-        ,
-        [Parameter(Mandatory = $false)]
-        [string]$breadcrumbPath = $(Throw ((Get-ResStr 'PARAM_MANDATORY_MISSED') -f 'breadcrumbPath', $myInvocation.Mycommand))
+        [string]$breadcrumbRoot = $(Throw ((Get-ResStr 'PARAM_MANDATORY_MISSED') -f 'breadcrumbRoot', $myInvocation.Mycommand))
         ,
         [Parameter(Mandatory = $false)]
         [ValidateScript({ Test-ValidateMapping -strValue $_ -mapping (Get-MappingTablename) })]
@@ -35,13 +26,11 @@ Function Get-XmlEulandaBreadcrumb {
     Begin {
         Write-Verbose -Message ((Get-ResStr 'STARTING_FUNCTION') -f $myInvocation.Mycommand)
         $tablename = Test-ValidateMapping -strValue $tablename -mapping (Get-MappingTablename)
-        Test-ValidateSingle -validParams (Get-SingleArticleKeys) @PSBoundParameters
         Test-ValidateSingle -validParams (Get-SingleConnection) @PSBoundParameters
         New-Variable -Name 'memoryStream' -Scope 'Private' -Value ($null)
         New-Variable -Name 'myConn' -Scope 'Private' -Value ($null)
         New-Variable -Name 'nodeName' -Scope 'Private' -Value ([string]'')
         New-Variable -Name 'nodeValue' -Scope 'Private' -Value ([string]'')
-        New-Variable -Name 'paramsArticle' -Scope 'Private' -Value ([System.Collections.Hashtable]@{})
         New-Variable -Name 'rs' -Scope 'Private' -Value ($null)
         New-Variable -Name 'sql' -Scope 'Private' -Value ([string]'')
         New-Variable -Name 'streamReader' -Scope 'Private' -Value ($null)
@@ -52,10 +41,8 @@ Function Get-XmlEulandaBreadcrumb {
     }
 
     Process {
-        $paramsArticle = Get-UsedParameters -validParams (Get-SingleArticleKeys) -boundParams $PSBoundParameters
         try {
             $myConn = Get-Conn -conn $conn -udl $udl -connStr $connStr
-            $articleId = Get-ArticleId  @paramsArticle  -conn $myConn
 
             [string]$sql = @"
             DECLARE @root VARCHAR(128)
@@ -64,7 +51,7 @@ Function Get-XmlEulandaBreadcrumb {
             DECLARE @blank VARCHAR(2)
             SET @bs = '\'
             SET @blank = ''
-            SET @root = '$breadcrumbPath'
+            SET @root = '$breadcrumbRoot'
             IF @root = @blank SET @root=@bs
             IF LEN(@root)>1 AND SUBSTRING(@root,LEN(@root),1) <> @bs SET @root = @root + @bs
             EXEC cn_MerkOpenPath @keyid=@keyid OUT, @basekeyid=0, @path=@root, @tablename='$tablename'
@@ -73,7 +60,7 @@ Function Get-XmlEulandaBreadcrumb {
             LEFT JOIN merkmal m ON m.id=me.kopfid
             WHERE m.tabelle = '$tablename' and
             m.merkmaltyp = 1 and
-            me.objektid = (SELECT id FROM $tablename WHERE Id = $articleId) and
+            me.objektid = (SELECT id FROM $tablename WHERE Id = $id) and
             @bs + dbo.cnf_merkpfad(m.id,@keyid) <> '\' and
             not @bs + dbo.cnf_merkpfad(m.id,@keyid) like '%.USER%'
             ORDER BY @bs + dbo.cnf_merkpfad(m.id,@keyid)
@@ -131,5 +118,5 @@ Function Get-XmlEulandaBreadcrumb {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
         Return $result
     }
-    # Test:  Get-XmlEulandaBreadcrumb -articleNo '130100' -tablename 'Article' -breadcrumbpath '\shop' -udl 'C:\temp\Eulanda_1 Truccamo.udl'
+    # Test:  Get-XmlEulandaBreadcrumb -id 100 -tablename 'Article' -breadcrumRoot '\shop' -udl 'C:\temp\Eulanda_1 Truccamo.udl'
 }
