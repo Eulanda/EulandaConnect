@@ -3595,18 +3595,6 @@ $rs.Close()
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="5" aliases="none">
-          <maml:name>breadcrumbPath</maml:name>
-          <maml:description>
-            <maml:para>Specifies the root of a property tree path starting with a forward slash `/`. This parameter is used to search for the corresponding branch in the property tree and retrieve its ID. The retrieved ID is used to check if the current article is included in one or more breadcrumbs or catalogs. For each article, the resulting breadcrumbs or catalogs are outputted in their own node.</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-          <dev:type>
-            <maml:name>String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="6" aliases="none">
           <maml:name>path</maml:name>
           <maml:description>
@@ -3688,6 +3676,18 @@ $rs.Close()
           </dev:type>
           <dev:defaultValue>False</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>breadcrumbRoot</maml:name>
+          <maml:description>
+            <maml:para>Specifies the root of a property tree path. This parameter is used to search for the corresponding branch in the property tree and retrieve its ID. The retrieved ID is used for the tree starting from this point.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
@@ -3695,18 +3695,6 @@ $rs.Close()
         <maml:name>alias</maml:name>
         <maml:description>
           <maml:para>Specifies an alternate field name to use as the unique identifier for each record. This field is always output as 'ID.ALIAS' in the XML.</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-        <dev:type>
-          <maml:name>String</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="5" aliases="none">
-        <maml:name>breadcrumbPath</maml:name>
-        <maml:description>
-          <maml:para>Specifies the root of a property tree path starting with a forward slash `/`. This parameter is used to search for the corresponding branch in the property tree and retrieve its ID. The retrieved ID is used to check if the current article is included in one or more breadcrumbs or catalogs. For each article, the resulting breadcrumbs or catalogs are outputted in their own node.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -3839,6 +3827,18 @@ $rs.Close()
         <maml:name>udl</maml:name>
         <maml:description>
           <maml:para>Alternatively to a connection, a string to a UDL file can be specified. In this case an ADO object is created and closed again at the end of the function.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>breadcrumbRoot</maml:name>
+        <maml:description>
+          <maml:para>Specifies the root of a property tree path. This parameter is used to search for the corresponding branch in the property tree and retrieve its ID. The retrieved ID is used for the tree starting from this point.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -4194,18 +4194,6 @@ EULANDA&gt;
     <command:syntax>
       <command:syntaxItem>
         <maml:name>Export-PropertyToXml</maml:name>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
-          <maml:name>breadcrumbPath</maml:name>
-          <maml:description>
-            <maml:para>Specifies the root of a property tree path starting with a backslash ``. This parameter is used to search for the corresponding branch in the property tree and retrieve its ID. The retrieved ID is used the tree from that point.</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-          <dev:type>
-            <maml:name>String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
           <maml:name>tablename</maml:name>
           <maml:description>
@@ -4277,21 +4265,21 @@ EULANDA&gt;
           </dev:type>
           <dev:defaultValue>False</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>breadcrumbRoot</maml:name>
+          <maml:description>
+            <maml:para>Specifies the root of a property tree path. This parameter is used to search for the corresponding branch in the property tree and retrieve its ID. The retrieved ID is used for the tree starting from this point.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
-        <maml:name>breadcrumbPath</maml:name>
-        <maml:description>
-          <maml:para>Specifies the root of a property tree path starting with a backslash ``. This parameter is used to search for the corresponding branch in the property tree and retrieve its ID. The retrieved ID is used the tree from that point.</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-        <dev:type>
-          <maml:name>String</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
         <maml:name>conn</maml:name>
         <maml:description>
@@ -4356,6 +4344,18 @@ EULANDA&gt;
         <maml:name>udl</maml:name>
         <maml:description>
           <maml:para>Alternatively to a connection, a string to a UDL file can be specified. In this case an ADO object is created and closed again at the end of the function.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>breadcrumbRoot</maml:name>
+        <maml:description>
+          <maml:para>Specifies the root of a property tree path. This parameter is used to search for the corresponding branch in the property tree and retrieve its ID. The retrieved ID is used for the tree starting from this point.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -12304,18 +12304,6 @@ C:\Program Files (x86)</dev:code>
     <command:syntax>
       <command:syntaxItem>
         <maml:name>Get-PropertySql</maml:name>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
-          <maml:name>breadcrumbPath</maml:name>
-          <maml:description>
-            <maml:para>Specifies the root of a property tree path starting with a backslash ``. This parameter is used to search for the corresponding branch in the property tree and retrieve its ID. The retrieved ID is used the tree from that point.</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-          <dev:type>
-            <maml:name>String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
           <maml:name>tablename</maml:name>
           <maml:description>
@@ -12328,13 +12316,25 @@ C:\Program Files (x86)</dev:code>
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>breadcrumbRoot</maml:name>
+          <maml:description>
+            <maml:para>Specifies the root of a property tree path. This parameter is used to search for the corresponding branch in the property tree and retrieve its ID. The retrieved ID is used for the tree starting from this point.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
-        <maml:name>breadcrumbPath</maml:name>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+        <maml:name>tablename</maml:name>
         <maml:description>
-          <maml:para>Specifies the root of a property tree path starting with a backslash ``. This parameter is used to search for the corresponding branch in the property tree and retrieve its ID. The retrieved ID is used the tree from that point.</maml:para>
+          <maml:para>The parameter specifies the name of the table for which the property tree should be exported. Currently, three tables are supported: Article, Address, and Delivery. The valid table names can be retrieved using the `Get-MappingTablename` function, which allows input in both the native and English names.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -12343,10 +12343,10 @@ C:\Program Files (x86)</dev:code>
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
-        <maml:name>tablename</maml:name>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>breadcrumbRoot</maml:name>
         <maml:description>
-          <maml:para>The parameter specifies the name of the table for which the property tree should be exported. Currently, three tables are supported: Article, Address, and Delivery. The valid table names can be retrieved using the `Get-MappingTablename` function, which allows input in both the native and English names.</maml:para>
+          <maml:para>Specifies the root of a property tree path. This parameter is used to search for the corresponding branch in the property tree and retrieve its ID. The retrieved ID is used for the tree starting from this point.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
@@ -17227,18 +17227,6 @@ No technical information available</dev:code>
     <command:syntax>
       <command:syntaxItem>
         <maml:name>Get-XmlEulandaProperty</maml:name>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
-          <maml:name>breadcrumbPath</maml:name>
-          <maml:description>
-            <maml:para>Specifies the root of a property tree path starting with a backslash ``. This parameter is used to search for the corresponding branch in the property tree and retrieve its ID. The retrieved ID is used the tree from that point.</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-          <dev:type>
-            <maml:name>String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
           <maml:name>tablename</maml:name>
           <maml:description>
@@ -17287,21 +17275,21 @@ No technical information available</dev:code>
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>breadcrumbRoot</maml:name>
+          <maml:description>
+            <maml:para>Specifies the root of a property tree path. This parameter is used to search for the corresponding branch in the property tree and retrieve its ID. The retrieved ID is used for the tree starting from this point.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
-        <maml:name>breadcrumbPath</maml:name>
-        <maml:description>
-          <maml:para>Specifies the root of a property tree path starting with a backslash ``. This parameter is used to search for the corresponding branch in the property tree and retrieve its ID. The retrieved ID is used the tree from that point.</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
-        <dev:type>
-          <maml:name>String</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
         <maml:name>conn</maml:name>
         <maml:description>
@@ -17342,6 +17330,18 @@ No technical information available</dev:code>
         <maml:name>udl</maml:name>
         <maml:description>
           <maml:para>Alternatively to a connection, a string to a UDL file can be specified. In this case an ADO object is created and closed again at the end of the function.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>breadcrumbRoot</maml:name>
+        <maml:description>
+          <maml:para>Specifies the root of a property tree path. This parameter is used to search for the corresponding branch in the property tree and retrieve its ID. The retrieved ID is used for the tree starting from this point.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>

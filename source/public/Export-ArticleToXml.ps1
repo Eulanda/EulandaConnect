@@ -27,7 +27,7 @@ function Export-ArticleToXml {
         [string]$customerGroups
         ,
         [Parameter(Mandatory = $false)]
-        [string]$breadcrumbPath = '\Shop'
+        [string]$breadcrumbRoot = '\Shop'
         ,
         [Parameter(Mandatory = $false)]
         [switch]$noEmptyPropertyTree
@@ -84,8 +84,8 @@ function Export-ArticleToXml {
         [xml]$xmlMetadata = Get-XmlEulandaMetadata
 
         # XML RAW for PropertyTree
-        if ($breadcrumbPath) {
-            [xml]$xmlPropertyTree = Get-XmlEulandaProperty -breadcrumbPath $breadcrumbPath -tablename 'Article' -conn $myConn
+        if ($breadcrumbRoot) {
+            [xml]$xmlPropertyTree = Get-XmlEulandaProperty -breadcrumbRoot $breadcrumbRoot -tablename 'Article' -conn $myConn
         } else {
             [xml]$xmlPropertyTree = '<MERKMALBAUM><ARTIKEL /></MERKMALBAUM>'
         }

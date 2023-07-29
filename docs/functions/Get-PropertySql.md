@@ -13,7 +13,7 @@ Generates the SQL statement used by Get-XmlEulandaProperty
 ## SYNTAX
 
 ```
-Get-PropertySql [[-breadcrumbPath] <String>] [[-tablename] <String>] [<CommonParameters>]
+Get-PropertySql [-breadcrumbRoot <String>] [[-tablename] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -85,21 +85,6 @@ The example demonstrates how to use the `Get-PropertySql` cmdlet to generate the
 
 ## PARAMETERS
 
-### -breadcrumbPath
-Specifies the root of a property tree path starting with a backslash `\`. This parameter is used to search for the corresponding branch in the property tree and retrieve its ID. The retrieved ID is used the tree from that point.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 0
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -tablename
 The parameter specifies the name of the table for which the property tree should be exported. Currently, three tables are supported: Article, Address, and Delivery. The valid table names can be retrieved using the `Get-MappingTablename` function, which allows input in both the native and English names.
 
@@ -110,6 +95,21 @@ Aliases:
 
 Required: False
 Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -breadcrumbRoot
+Specifies the root of a property tree path. This parameter is used to search for the corresponding branch in the property tree and retrieve its ID. The retrieved ID is used for the tree starting from this point.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

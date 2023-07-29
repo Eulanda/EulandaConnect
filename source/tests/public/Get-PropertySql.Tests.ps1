@@ -4,11 +4,11 @@ Set-StrictMode -version latest
 Describe 'Get-PropertySql' -Tag 'eulanda' {
 
     It "Generates correct SQL for given breadcrumb path and tablename" {
-        $breadcrumbPath = '\Shop'
+        $breadcrumbRoot = '\Shop'
         $tablename = 'Artikel' # Test only german, the substitution is already tested
 
         # Invoke function
-        $result = Get-PropertySql -breadcrumbPath $breadcrumbPath -tablename $tablename
+        $result = Get-PropertySql -breadcrumbRoot $breadcrumbRoot -tablename $tablename
 
         # Check that SQL contains the required elements
         $result | Should -Match "FROM Merkmal"

@@ -2323,7 +2323,7 @@ function Export-ArticleToXml {
         [string]$customerGroups
         ,
         [Parameter(Mandatory = $false)]
-        [string]$breadcrumbPath = '\Shop'
+        [string]$breadcrumbRoot = '\Shop'
         ,
         [Parameter(Mandatory = $false)]
         [switch]$noEmptyPropertyTree
@@ -2380,8 +2380,8 @@ function Export-ArticleToXml {
         [xml]$xmlMetadata = Get-XmlEulandaMetadata
 
         # XML RAW for PropertyTree
-        if ($breadcrumbPath) {
-            [xml]$xmlPropertyTree = Get-XmlEulandaProperty -breadcrumbPath $breadcrumbPath -tablename 'Article' -conn $myConn
+        if ($breadcrumbRoot) {
+            [xml]$xmlPropertyTree = Get-XmlEulandaProperty -breadcrumbRoot $breadcrumbRoot -tablename 'Article' -conn $myConn
         } else {
             [xml]$xmlPropertyTree = '<MERKMALBAUM><ARTIKEL /></MERKMALBAUM>'
         }
@@ -2538,7 +2538,7 @@ function Export-PropertyToXml {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $false)]
-        [string]$breadcrumbPath = $(Throw ((Get-ResStr 'PARAM_MANDATORY_MISSED') -f 'breadcrumbPath', $myInvocation.Mycommand))
+        [string]$breadcrumbRoot = $(Throw ((Get-ResStr 'PARAM_MANDATORY_MISSED') -f 'breadcrumbRoot', $myInvocation.Mycommand))
         ,
         [Parameter(Mandatory = $false)]
         [switch]$noEmptyPropertyTree
@@ -2588,10 +2588,10 @@ function Export-PropertyToXml {
         [xml]$xmlMetadata = Get-XmlEulandaMetadata
 
         # XML RAW for PropertyTree
-        if ($breadcrumbPath) {
-            [xml]$xmlPropertyTree = Get-XmlEulandaProperty -breadcrumbPath $breadcrumbPath -tablename $tablename -conn $myConn
+        if ($breadcrumbRoot) {
+            [xml]$xmlPropertyTree = Get-XmlEulandaProperty -breadcrumbRoot $breadcrumbRoot -tablename $tablename -conn $myConn
         } else {
-            [xml]$xmlPropertyTree = '<MERKMALBAUM><ARTIKEL /></MERKMALBAUM>'
+            [xml]$xmlPropertyTree = "<MERKMALBAUM><$($tablename.ToUpper()) /></MERKMALBAUM>"
         }
 
         if ($noEmptyPropertyTree -and
@@ -2622,8 +2622,8 @@ function Export-PropertyToXml {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
         Return $result
     }
-    # Test:  Export-PropertyToXml -breadcrumbPath '\Shop' -tablename 'Article' -udl 'C:\temp\Eulanda_1 Eulanda.udl' -path "$(Get-DesktopDir)\PROPERTYTREE.xml"
-    # Test:  Export-PropertyToXml -breadcrumbPath '\Produkte' -tablename 'Address' -udl 'C:\temp\Eulanda_1 Eulanda.udl'
+    # Test:  Export-PropertyToXml -breadcrumbRoot '\Shop' -tablename 'Article' -udl 'C:\temp\Eulanda_1 Eulanda.udl' -path "$(Get-DesktopDir)\PROPERTYTREE.xml"
+    # Test:  Export-PropertyToXml -breadcrumbRoot '\Produkte' -tablename 'Address' -udl 'C:\temp\Eulanda_1 Eulanda.udl'
 }
 
 Function Export-StockToXml {
@@ -6071,7 +6071,7 @@ function Get-PropertySql {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $false)]
-        [string]$breadcrumbPath = $(Throw ((Get-ResStr 'PARAM_MANDATORY_MISSED') -f 'breadcrumbPath', $myInvocation.Mycommand))
+        [string]$breadcrumbRoot = $(Throw ((Get-ResStr 'PARAM_MANDATORY_MISSED') -f 'breadcrumbRoot', $myInvocation.Mycommand))
         ,
         [Parameter(Mandatory = $false)]
         [ValidateScript({ Test-ValidateMapping -strValue $_ -mapping (Get-MappingTablename) })]
@@ -6088,7 +6088,7 @@ function Get-PropertySql {
     }
 
     process {
-        [string]$BreadcrumbSql = Get-BreadcrumbId -breadcrumbPath $breadcrumbPath -tablename $tablename
+        [string]$BreadcrumbSql = Get-BreadcrumbId -breadcrumbPath $breadcrumbRoot -tablename $tablename
 
         [string]$sql = @"
             $BreadcrumbSql
@@ -6125,7 +6125,7 @@ function Get-PropertySql {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
         Return $result
     }
-    # Test:  Get-PropertySql -breadcrumbPath '\Shop' -tablename 'Article'
+    # Test:  Get-PropertySql -breadcrumbRoot '\Shop' -tablename 'Article'
 }
 
 function Get-PublicIp {
@@ -8186,7 +8186,7 @@ function Get-XmlEulandaProperty {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $false)]
-        [string]$breadcrumbPath = $(Throw ((Get-ResStr 'PARAM_MANDATORY_MISSED') -f 'breadcrumbPath', $myInvocation.Mycommand))
+        [string]$breadcrumbRoot = $(Throw ((Get-ResStr 'PARAM_MANDATORY_MISSED') -f 'breadcrumbRoot', $myInvocation.Mycommand))
         ,
         [Parameter(Mandatory = $false)]
         [ValidateScript({ Test-ValidateMapping -strValue $_ -mapping (Get-MappingTablename) })]
@@ -8231,12 +8231,20 @@ function Get-XmlEulandaProperty {
         try {
             $myConn = Get-Conn -conn $conn -udl $udl -connStr $connStr
 
-            [string[]]$sql= Get-PropertySql -breadcrumbPath $breadcrumbPath -tablename $tablename
+            [string[]]$sql= Get-PropertySql -breadcrumbRoot $breadcrumbRoot -tablename $tablename
             [System.Object]$data = Get-DataFromSql -sql $sql -conn $myConn
             if ($data) {
+                $language = $ecCulture.Substring(0,2)
                 [xml]$xmlFlat = Convert-DataToXml -data $data -root 'EULANDA' -arrRoot 'MERKMALLISTE' -arrSubRoot 'MERKMAL'
+                $rs = $myConn.Execute("SELECT Msg FROM cnMessages WHERE Type = 1071 AND SubTypeChar = 'AR' AND Language = '$language'")
+                if (($rs) -and (! $rs.eof)) {
+                    $rootName = $rs.Fields(0).value
+                } else {
+                    $rootName = 'Root'
+                }
+                $xmlFlat.InnerXml = $xmlFlat.InnerXml -replace ':\w+@\d+', $rootName
             } else {
-                [xml]$xmlFlat = '<MERKMALBAUM><ARTIKEL /></MERKMALBAUM>'
+                [xml]$xmlFlat = "<MERKMALBAUM><$($tablename.ToUpper()) /></MERKMALBAUM>"
             }
 
             # Create a hash map with all ID values
@@ -8266,13 +8274,14 @@ function Get-XmlEulandaProperty {
             $properties = $xmlFlat.SelectNodes("//MERKMAL")
             foreach ($property in $properties) {
                 $parentId = $property.ParentId
-                if ($parentId -eq $rootId) {
+                if ($parentId -eq $rootId -or $parentId -eq "") {
                     $root.AppendChild($xmlHierarchy.ImportNode($property, $true)) | Out-Null
                 } else {
                     $parent = $xmlHierarchy.SelectSingleNode("//MERKMAL[ID=$parentId]")
                     $parent.AppendChild($xmlHierarchy.ImportNode($property, $true)) | Out-Null
                 }
             }
+
 
             # Move all the child elements of 'MERKMALBAUM' to 'MERKMALBAUM\ARTIKEL' or what ever
             # MERKMALBAUM (eng. =PropertyTree), ARTIKEL (eng. = Article)
@@ -8297,7 +8306,7 @@ function Get-XmlEulandaProperty {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
         Return $result
     }
-    # Test:  Get-XmlEulandaProperty -breadcrumbPath '\Produkte' -tablename 'Adresse' -udl 'C:\temp\Eulanda_1 Eulanda.udl'
+    # Test:  Get-XmlEulandaProperty -breadcrumbRoot '\Produkte' -tablename 'Adresse' -udl 'C:\temp\Eulanda_1 Eulanda.udl'
 }
 
 
@@ -19370,8 +19379,8 @@ function Test-ValidateUrl {
 # SIG # Begin signature block
 # MIIpiAYJKoZIhvcNAQcCoIIpeTCCKXUCAQExDzANBglghkgBZQMEAgEFADB5Bgor
 # BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
-# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCAFETF4J5jR3JmF
-# WDqF450iI/XYjQJ9Bu2t1nFwgckKbaCCEngwggVvMIIEV6ADAgECAhBI/JO0YFWU
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCAGRXfcDVLegvhI
+# jfNNCsDclEIiMp1mccHfEWtSBkGcZqCCEngwggVvMIIEV6ADAgECAhBI/JO0YFWU
 # jTanyYqJ1pQWMA0GCSqGSIb3DQEBDAUAMHsxCzAJBgNVBAYTAkdCMRswGQYDVQQI
 # DBJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcMB1NhbGZvcmQxGjAYBgNVBAoM
 # EUNvbW9kbyBDQSBMaW1pdGVkMSEwHwYDVQQDDBhBQUEgQ2VydGlmaWNhdGUgU2Vy
@@ -19474,23 +19483,23 @@ function Test-ValidateUrl {
 # IExpbWl0ZWQxLjAsBgNVBAMTJVNlY3RpZ28gUHVibGljIENvZGUgU2lnbmluZyBD
 # QSBFViBSMzYCEGilgQZhq4aQSRu7qELTizkwDQYJYIZIAWUDBAIBBQCgfDAQBgor
 # BgEEAYI3AgEMMQIwADAZBgkqhkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEE
-# AYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAvBgkqhkiG9w0BCQQxIgQgauh1wySvNH7/
-# nTEKO63s41emg+0cC7HkB5EwfbmC4qswDQYJKoZIhvcNAQEBBQAEggIAtMN0/3Hn
-# nCMAoYpbVAEgtnOEwl0VyTX/4bYroYCxGtngAifPCyM0l5d97D4MwLdTDZHQtJXE
-# hiAFE4JdoSU9dcIYlJdtL1D7JasPzbqejsOIsfDr2exJsTwcYc7APm/knveROe8o
-# zsLIcpci//f3g0hKlmjiavIa9Iboq5baXvLSI2EWgdGUP9Tu2GoctxbAGQcYC6tq
-# 3nkx04+i3++vLKMajB0oMHY014qFXEB+B6DIif1fO6cRKy2P+EBGs+5072LdwgE+
-# 5/1prtiFJB2LNR5gNflvxIExejI9Ad5YYc2EjdIDTuxHfi/QC5BAeEcGUhaG4zLr
-# cEp9pK9sZsgvFilSHY+9pqE8FLNSi8AESn+sUtiwskJlD+MbZlMBZlulGNBm82iK
-# 0IFN2v7k9m6voXY5m7X1xWJbx193F99N8Q8czf/6OneC55cKhY4KBhNN4khl1b2j
-# qNIcqE4gTcLKI7cB5FbhEqbWgzIuAGIH1g/nNXq+wlxZRp152qZ3z8NflyJr6Yr9
-# c6/L+B6JP7cYPyVtvTyBZYQLj4EeClhks8TNi4jPrPzZ0lSSEdY6QMEmszfbPkIX
-# 2Uj+qtzplsJPz7no5agc/tfCyX/XJCB9I4saWZn1r/I735BQFZfd+NufpWD6sC8a
-# T1HPOg3FXLEp2XJFXmtGPvHrDwY6KkUa552hghNOMIITSgYKKwYBBAGCNwMDATGC
+# AYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAvBgkqhkiG9w0BCQQxIgQgMnKw1BvEVIkt
+# jQwTR+iHy5UOcNGME2IGZEkwj5Bgl8owDQYJKoZIhvcNAQEBBQAEggIANVqMbtA2
+# kPnf5TdPEUbY8ZEY/SVYJMWHIHwNCQPQiGE48bhMUjLEltS+JrJPs22DRzzbbdax
+# 1Y4gQEd10Ttt0dI3SMFB0xV3fy9iilOJiIaL3llfYIaLZJXk9tjo3zOtQoEUERsK
+# VR5Xy7o3lidw0CDljMM7aYLh/AloEBIFJj17auwMkJ/v/wzxQ+1XpngE5cGZPLY8
+# hdL8+GBDACEs25sboKHPk4V0OXAeZvW36T9cl3sw6WYPZl2rcOCtTup2Sa++tW98
+# P/fm7EgMY0X9roRSO5jf3zLCBOAg/APvoU3nW9YHq0REi0FtBOXrSyOD0splz9dK
+# 61+Us4rp6Ndmw0/8ZgfKEZbNaB2+B01hpiSvjWZtgykeXOxosqqA+CuHuW393ItE
+# nhi6VQqMvOr+Nh0xp6juVG1aSFb6Ck/QaYBibctdAWXBO+pmxmoiTNDURAri3+vH
+# 5dUvRJS7pYeKQM0pVsL47n5CUuM9sN2VVwDO20yZAQjPrWrT24gNZwVnIdA7rzAS
+# e/a2iURK3yF4CBZOOalWN4FojkoHSrObTn8m+zi1Aw9LZjgtdEowoyQTmNL24rrB
+# ZjtfGfMhiwZCCPsCgGv/nPUeR6w0Y5AWxbTnbjEib6Pp92hI9jUkFVizWQAeK51W
+# FPH9cMOak0vd25tLaIkl2ejvGi+ufddTvFehghNOMIITSgYKKwYBBAGCNwMDATGC
 # EzowghM2BgkqhkiG9w0BBwKgghMnMIITIwIBAzEPMA0GCWCGSAFlAwQCAgUAMIHv
 # BgsqhkiG9w0BCRABBKCB3wSB3DCB2QIBAQYKKwYBBAGyMQIBATAxMA0GCWCGSAFl
-# AwQCAQUABCDCkDbuffO8adIKVJWa4/NjZq+Jo1JU32bRLpfiMKpbrAIUP7Rvu/Ga
-# bFLX0/ZiJjVC9qLPdu8YDzIwMjMwNzI4MTc0MDQzWqBupGwwajELMAkGA1UEBhMC
+# AwQCAQUABCCWCouknYKVPCjOxyl8CZAL52LjUsBnMLvYqbyBAQbcGQIUfOdYleCX
+# RebG0YJqUKvsSSlVLAIYDzIwMjMwNzI5MTMyMjUxWqBupGwwajELMAkGA1UEBhMC
 # R0IxEzARBgNVBAgTCk1hbmNoZXN0ZXIxGDAWBgNVBAoTD1NlY3RpZ28gTGltaXRl
 # ZDEsMCoGA1UEAwwjU2VjdGlnbyBSU0EgVGltZSBTdGFtcGluZyBTaWduZXIgIzSg
 # gg3pMIIG9TCCBN2gAwIBAgIQOUwl4XygbSeoZeI72R0i1DANBgkqhkiG9w0BAQwF
@@ -19572,22 +19581,22 @@ function Test-ValidateUrl {
 # ChMPU2VjdGlnbyBMaW1pdGVkMSUwIwYDVQQDExxTZWN0aWdvIFJTQSBUaW1lIFN0
 # YW1waW5nIENBAhA5TCXhfKBtJ6hl4jvZHSLUMA0GCWCGSAFlAwQCAgUAoIIBazAa
 # BgkqhkiG9w0BCQMxDQYLKoZIhvcNAQkQAQQwHAYJKoZIhvcNAQkFMQ8XDTIzMDcy
-# ODE3NDA0M1owPwYJKoZIhvcNAQkEMTIEMKuXS6dmI45ppT/G9JF8YtxBwImexGjB
-# AsJGoAZmQ/JWt2fX6+zMfiUQwq4WvqhbuTCB7QYLKoZIhvcNAQkQAgwxgd0wgdow
+# OTEzMjI1MVowPwYJKoZIhvcNAQkEMTIEMDYF2VsM473hXz2fsX896vBd7EtmKtQF
+# 0SjtTZUc+YiFguouFfVdOWhUwvxNLmp/2jCB7QYLKoZIhvcNAQkQAgwxgd0wgdow
 # gdcwFgQUrmKvdQoMvUfWRh91aOK8jOfKT5QwgbwEFALWW5Xig3DBVwCV+oj5I92T
 # f62PMIGjMIGOpIGLMIGIMQswCQYDVQQGEwJVUzETMBEGA1UECBMKTmV3IEplcnNl
 # eTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoTFVRoZSBVU0VSVFJVU1Qg
 # TmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0aW9uIEF1
-# dGhvcml0eQIQMA9vrN1mmHR8qUY2p3gtuTANBgkqhkiG9w0BAQEFAASCAgBsZjYB
-# eDg/q9ikm+yO6PgmcnadgLd5N0819alFOI2OyGXLpDyVarXIAGGUcYQKRlFFRN1m
-# sM/rXANBJsilLf90Ih8gXAPyZCZQJndPzyFNibpalzvFtePeMlwXwKcaPXDZWET1
-# mkXj4Rj5ZDAuCss5BpuUI0RtgE+MnG+xJJT23jam3GvV09Tji086JQu2PZ3IxuJN
-# 5Wo9TvcePZgUdmsszN9kUO3ydDrnvdX3bHluEbJ4jDcw6TJngWeOjJA0qJEedeoN
-# bZSOw0PybHB6SY09voMTrON6T4jNTzZcbF1HT0MfPkTUi6qCx5AtyFT2OQkeY31D
-# 2DznDVZ8f8LoZzJf9TsqXuU+YWMpvae0IEVbhFJyuht0yGoFP1RimXDtakq21VFG
-# oYsWVuZj5mMkg3R7Amnjs65bkTgEYgmFFNSrTh0UlFb6kDfAd4gO2iNNUmSOELE0
-# kcyyUPzfC7jhyoGAHu7JnH5Vq850+Sg0wOummc6ruuGOCiWhs43gF4Dah84es5lb
-# kLUkdrPVXkXHl9sDCCtWiYUKck6dRPxojeNBhupurZizon0U3BqAg7dDzSp8z5Eu
-# IqdocGd24XCV6CDPjhxTHSvdOAKN/1fdPcdcWuO4GB0BK4qYCUqskvh45KnjmS1A
-# Ovrx01A9SnPa6asjlWqRSbMPIprgHPBOfUzLiQ==
+# dGhvcml0eQIQMA9vrN1mmHR8qUY2p3gtuTANBgkqhkiG9w0BAQEFAASCAgAIkGJW
+# Nb2s4ymB8M9CjuVBrAlx1aLgzLL7S2lYktXmAu6OIfG5CA/2MQuS1lNovibhTQw1
+# caWEzp70Tq0hedbg+eBWYAAfkHvqGksUhPRIBjlLqD/70trzWv2akea3Xnnea6RL
+# NmjclwqrCkYwP7v30RCaSQJrFIk/58fYN7IG0v9yQLXL9B5h4sDrPDnoTBbM4KsH
+# gO/rBqz05GOLXpFe6/M4JMsWp3aAyZiar2aZCl9NjYdd9GEQNzN25+VLCL97IHca
+# FRfiHSBqDrdjfgkoAYbRnXr1zaY3ofkjMNQRXt9DxzSxovOYsNxVpt34Mma4TBQs
+# eZmqM8gCwBSmiwQC+XhCvQtco7cBgvMTFcaKih29yCa8TNu2MBSUSvaTYmtwgTTl
+# 7FgjWz2bsXs2MckY+aTEmdQRqwRTMh8113oSSyfeOXaKgds2UNyitCJ5puqrz9mD
+# pjt8vvxIQY3e8+MSQmUwicExbkQALstfumKCds4JP7ktGfSCAVH8LjJiykomezgS
+# qs7si3HiPhszH0Qce9rtRefNZX3lr1hALpOvTxPt6ItDTEQm+lhzVsNFKEGONobo
+# fOZVlMvOUwb7JeFF1BDS4FUA9pFz3z/dvq6itffEdeSKsmmZbV/BRBpO3aiYzbuz
+# a/bso1JjPadojvKxuBNQ1xzBMqm0tx8/jHephQ==
 # SIG # End signature block

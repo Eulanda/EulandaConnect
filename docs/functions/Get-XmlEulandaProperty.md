@@ -13,8 +13,8 @@ Exports the property tree starting from a certain path as a xml fragment.
 ## SYNTAX
 
 ```
-Get-XmlEulandaProperty [[-breadcrumbPath] <String>] [[-tablename] <String>] [[-conn] <Object>]
- [[-udl] <String>] [[-connStr] <String>] [<CommonParameters>]
+Get-XmlEulandaProperty [-breadcrumbRoot <String>] [[-tablename] <String>] [[-conn] <Object>] [[-udl] <String>]
+ [[-connStr] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -58,21 +58,6 @@ PS C:\> Get-XmlEulandaProperty -breadcrumbPath '\Produkte' -tablename 'Address' 
 This example demonstrates how to export the property tree of an article in a fragmental XML format. The `-breadcrumbPath` parameter specifies the path of the property tree to be exported, starting with the root `\`. The `-tablename` parameter specifies the name of the table to which the property tree belongs. The `-udl` parameter specifies the path to the UDL file for the database connection.
 
 ## PARAMETERS
-
-### -breadcrumbPath
-Specifies the root of a property tree path starting with a backslash `\`. This parameter is used to search for the corresponding branch in the property tree and retrieve its ID. The retrieved ID is used the tree from that point.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 0
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
 
 ### -conn
 The connection can be established via an existing ADO object of the type 'ADODB.Connection'. If the connection is already open, it remains open even after the function has been executed. If it was closed, it will be closed again after the function has been executed.
@@ -129,6 +114,21 @@ Aliases:
 
 Required: False
 Position: 3
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -breadcrumbRoot
+Specifies the root of a property tree path. This parameter is used to search for the corresponding branch in the property tree and retrieve its ID. The retrieved ID is used for the tree starting from this point.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

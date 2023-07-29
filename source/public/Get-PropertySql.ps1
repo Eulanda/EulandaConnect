@@ -2,7 +2,7 @@ function Get-PropertySql {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $false)]
-        [string]$breadcrumbPath = $(Throw ((Get-ResStr 'PARAM_MANDATORY_MISSED') -f 'breadcrumbPath', $myInvocation.Mycommand))
+        [string]$breadcrumbRoot = $(Throw ((Get-ResStr 'PARAM_MANDATORY_MISSED') -f 'breadcrumbRoot', $myInvocation.Mycommand))
         ,
         [Parameter(Mandatory = $false)]
         [ValidateScript({ Test-ValidateMapping -strValue $_ -mapping (Get-MappingTablename) })]
@@ -19,7 +19,7 @@ function Get-PropertySql {
     }
 
     process {
-        [string]$BreadcrumbSql = Get-BreadcrumbId -breadcrumbPath $breadcrumbPath -tablename $tablename
+        [string]$BreadcrumbSql = Get-BreadcrumbId -breadcrumbPath $breadcrumbRoot -tablename $tablename
 
         [string]$sql = @"
             $BreadcrumbSql
@@ -56,5 +56,5 @@ function Get-PropertySql {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
         Return $result
     }
-    # Test:  Get-PropertySql -breadcrumbPath '\Shop' -tablename 'Article'
+    # Test:  Get-PropertySql -breadcrumbRoot '\Shop' -tablename 'Article'
 }

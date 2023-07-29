@@ -13,7 +13,7 @@ This PowerShell function exports the entire property tree starting from a specif
 ## SYNTAX
 
 ```
-Export-PropertyToXml [[-breadcrumbPath] <String>] [-noEmptyPropertyTree] [[-tablename] <String>]
+Export-PropertyToXml [-breadcrumbRoot <String>] [-noEmptyPropertyTree] [[-tablename] <String>]
  [[-path] <String>] [[-conn] <Object>] [[-udl] <String>] [[-connStr] <String>] [<CommonParameters>]
 ```
 
@@ -71,21 +71,6 @@ PS C:\> Export-PropertyToXml -breadcrumbPath '\shop' -tablename 'Article' -udl '
 Exports the property tree of articles under the specified breadcrumb path in XML format using the UDL file specified.
 
 ## PARAMETERS
-
-### -breadcrumbPath
-Specifies the root of a property tree path starting with a backslash `\`. This parameter is used to search for the corresponding branch in the property tree and retrieve its ID. The retrieved ID is used the tree from that point.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 0
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
 
 ### -conn
 The connection can be established via an existing ADO object of the type 'ADODB.Connection'. If the connection is already open, it remains open even after the function has been executed. If it was closed, it will be closed again after the function has been executed.
@@ -172,6 +157,21 @@ Aliases:
 
 Required: False
 Position: 4
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -breadcrumbRoot
+Specifies the root of a property tree path. This parameter is used to search for the corresponding branch in the property tree and retrieve its ID. The retrieved ID is used for the tree starting from this point.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

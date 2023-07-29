@@ -14,7 +14,7 @@ This PowerShell function exports an XML message type for EULANDA articles, calli
 
 ```
 Export-ArticleToXml [[-select] <String>] [[-filter] <String[]>] [[-alias] <String>] [[-order] <String>]
- [-reorder] [-revers] [[-customerGroups] <String>] [[-breadcrumbPath] <String>] [-noEmptyPropertyTree]
+ [-reorder] [-revers] [[-customerGroups] <String>] [-breadcrumbRoot <String>] [-noEmptyPropertyTree]
  [[-path] <String>] [[-conn] <Object>] [[-udl] <String>] [[-connStr] <String>] [<CommonParameters>]
 ```
 
@@ -82,21 +82,6 @@ Aliases:
 
 Required: False
 Position: 2
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -breadcrumbPath
-Specifies the root of a property tree path starting with a forward slash `/`. This parameter is used to search for the corresponding branch in the property tree and retrieve its ID. The retrieved ID is used to check if the current article is included in one or more breadcrumbs or catalogs. For each article, the resulting breadcrumbs or catalogs are outputted in their own node.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 5
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -262,6 +247,21 @@ Aliases:
 
 Required: False
 Position: 8
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -breadcrumbRoot
+Specifies the root of a property tree path. This parameter is used to search for the corresponding branch in the property tree and retrieve its ID. The retrieved ID is used for the tree starting from this point.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

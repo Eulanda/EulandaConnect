@@ -2,7 +2,7 @@ function Export-PropertyToXml {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $false)]
-        [string]$breadcrumbPath = $(Throw ((Get-ResStr 'PARAM_MANDATORY_MISSED') -f 'breadcrumbPath', $myInvocation.Mycommand))
+        [string]$breadcrumbRoot = $(Throw ((Get-ResStr 'PARAM_MANDATORY_MISSED') -f 'breadcrumbRoot', $myInvocation.Mycommand))
         ,
         [Parameter(Mandatory = $false)]
         [switch]$noEmptyPropertyTree
@@ -52,10 +52,10 @@ function Export-PropertyToXml {
         [xml]$xmlMetadata = Get-XmlEulandaMetadata
 
         # XML RAW for PropertyTree
-        if ($breadcrumbPath) {
-            [xml]$xmlPropertyTree = Get-XmlEulandaProperty -breadcrumbPath $breadcrumbPath -tablename $tablename -conn $myConn
+        if ($breadcrumbRoot) {
+            [xml]$xmlPropertyTree = Get-XmlEulandaProperty -breadcrumbRoot $breadcrumbRoot -tablename $tablename -conn $myConn
         } else {
-            [xml]$xmlPropertyTree = '<MERKMALBAUM><ARTIKEL /></MERKMALBAUM>'
+            [xml]$xmlPropertyTree = "<MERKMALBAUM><$($tablename.ToUpper()) /></MERKMALBAUM>"
         }
 
         if ($noEmptyPropertyTree -and
@@ -86,6 +86,6 @@ function Export-PropertyToXml {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
         Return $result
     }
-    # Test:  Export-PropertyToXml -breadcrumbPath '\Shop' -tablename 'Article' -udl 'C:\temp\Eulanda_1 Eulanda.udl' -path "$(Get-DesktopDir)\PROPERTYTREE.xml"
-    # Test:  Export-PropertyToXml -breadcrumbPath '\Produkte' -tablename 'Address' -udl 'C:\temp\Eulanda_1 Eulanda.udl'
+    # Test:  Export-PropertyToXml -breadcrumbRoot '\Shop' -tablename 'Article' -udl 'C:\temp\Eulanda_1 Eulanda.udl' -path "$(Get-DesktopDir)\PROPERTYTREE.xml"
+    # Test:  Export-PropertyToXml -breadcrumbRoot '\Produkte' -tablename 'Address' -udl 'C:\temp\Eulanda_1 Eulanda.udl'
 }

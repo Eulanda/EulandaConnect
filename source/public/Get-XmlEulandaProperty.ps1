@@ -2,7 +2,7 @@ function Get-XmlEulandaProperty {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $false)]
-        [string]$breadcrumbPath = $(Throw ((Get-ResStr 'PARAM_MANDATORY_MISSED') -f 'breadcrumbPath', $myInvocation.Mycommand))
+        [string]$breadcrumbRoot = $(Throw ((Get-ResStr 'PARAM_MANDATORY_MISSED') -f 'breadcrumbRoot', $myInvocation.Mycommand))
         ,
         [Parameter(Mandatory = $false)]
         [ValidateScript({ Test-ValidateMapping -strValue $_ -mapping (Get-MappingTablename) })]
@@ -47,12 +47,20 @@ function Get-XmlEulandaProperty {
         try {
             $myConn = Get-Conn -conn $conn -udl $udl -connStr $connStr
 
-            [string[]]$sql= Get-PropertySql -breadcrumbPath $breadcrumbPath -tablename $tablename
+            [string[]]$sql= Get-PropertySql -breadcrumbRoot $breadcrumbRoot -tablename $tablename
             [System.Object]$data = Get-DataFromSql -sql $sql -conn $myConn
             if ($data) {
+                $language = $ecCulture.Substring(0,2)
                 [xml]$xmlFlat = Convert-DataToXml -data $data -root 'EULANDA' -arrRoot 'MERKMALLISTE' -arrSubRoot 'MERKMAL'
+                $rs = $myConn.Execute("SELECT Msg FROM cnMessages WHERE Type = 1071 AND SubTypeChar = 'AR' AND Language = '$language'")
+                if (($rs) -and (! $rs.eof)) {
+                    $rootName = $rs.Fields(0).value
+                } else {
+                    $rootName = 'Root'
+                }
+                $xmlFlat.InnerXml = $xmlFlat.InnerXml -replace ':\w+@\d+', $rootName
             } else {
-                [xml]$xmlFlat = '<MERKMALBAUM><ARTIKEL /></MERKMALBAUM>'
+                [xml]$xmlFlat = "<MERKMALBAUM><$($tablename.ToUpper()) /></MERKMALBAUM>"
             }
 
             # Create a hash map with all ID values
@@ -82,13 +90,14 @@ function Get-XmlEulandaProperty {
             $properties = $xmlFlat.SelectNodes("//MERKMAL")
             foreach ($property in $properties) {
                 $parentId = $property.ParentId
-                if ($parentId -eq $rootId) {
+                if ($parentId -eq $rootId -or $parentId -eq "") {
                     $root.AppendChild($xmlHierarchy.ImportNode($property, $true)) | Out-Null
                 } else {
                     $parent = $xmlHierarchy.SelectSingleNode("//MERKMAL[ID=$parentId]")
                     $parent.AppendChild($xmlHierarchy.ImportNode($property, $true)) | Out-Null
                 }
             }
+
 
             # Move all the child elements of 'MERKMALBAUM' to 'MERKMALBAUM\ARTIKEL' or what ever
             # MERKMALBAUM (eng. =PropertyTree), ARTIKEL (eng. = Article)
@@ -113,6 +122,6 @@ function Get-XmlEulandaProperty {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
         Return $result
     }
-    # Test:  Get-XmlEulandaProperty -breadcrumbPath '\Produkte' -tablename 'Adresse' -udl 'C:\temp\Eulanda_1 Eulanda.udl'
+    # Test:  Get-XmlEulandaProperty -breadcrumbRoot '\Produkte' -tablename 'Adresse' -udl 'C:\temp\Eulanda_1 Eulanda.udl'
 }
 
