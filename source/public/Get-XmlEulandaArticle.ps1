@@ -108,7 +108,7 @@ function Get-XmlEulandaArticle {
                     $writer.WriteRaw($xmlString)
 
                     # ADD NODE PREISLISTE (price list)
-                    $xmlString= Get-XmlEulandaTierPrice -articleNo $articleNo -customerGroups $customerGroups -conn $myConn
+                    $xmlString= Get-XmlEulandaTieredPrices -articleNo $articleNo -customerGroups $customerGroups -conn $myConn
                     $writer.WriteRaw($xmlString)
 
                     # ADD NODE MERKMALLISTE (list of breadcrumb)

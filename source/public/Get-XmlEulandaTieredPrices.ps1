@@ -1,4 +1,4 @@
-Function Get-XmlEulandaTierPrice {
+Function Get-XmlEulandaTieredPrices {
     param(
         [Parameter(Mandatory = $false)]
         [string]$barcode
@@ -184,5 +184,5 @@ Function Get-XmlEulandaTierPrice {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
         Return $result
     }
-    # Test:  Get-XmlEulandaTierPrice -articleNo '1100' -customerGroups 'HA,HB,HC' -udl 'C:\temp\Eulanda_1 Eulanda.udl'
+    # Test:  Get-XmlEulandaTieredPrice -articleNo '1100' -customerGroups 'HA,HB,HC' -udl 'C:\temp\Eulanda_1 Eulanda.udl'
 }
