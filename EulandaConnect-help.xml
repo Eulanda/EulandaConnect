@@ -18011,20 +18011,20 @@ No technical information available</dev:code>
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
-      <command:name>Get-XmlEulandaTierPrice</command:name>
+      <command:name>Get-XmlEulandaTieredPrices</command:name>
       <command:verb>Get</command:verb>
-      <command:noun>XmlEulandaTierPrice</command:noun>
+      <command:noun>XmlEulandaTieredPrices</command:noun>
       <maml:description>
         <maml:para>Retrieves the tier prices for an article from the EULANDA ERP software, either from the regular tier price table or by simulating them based on the article's rebate group and a list of customer groups.</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>The `Get-XmlEulandaTierPrice` function retrieves the tier prices for an article from the EULANDA ERP software by connecting to the SQL database and executing a SQL query. The article can be identified by its barcode, article number, article ID, or article UID. At least one of these parameters must be specified. The function supports three ways of specifying the database connection: a UDL file, a connection string, or a connection object.</maml:para>
+      <maml:para>The `Get-XmlEulandaTieredPrices` function retrieves the tier prices for an article from the EULANDA ERP software by connecting to the SQL database and executing a SQL query. The article can be identified by its barcode, article number, article ID, or article UID. At least one of these parameters must be specified. The function supports three ways of specifying the database connection: a UDL file, a connection string, or a connection object.</maml:para>
       <maml:para>The function can retrieve the tier prices from the regular tier price table or simulate them based on the article's rebate group and a list of customer groups. If the `customerGroups` parameter is specified, the function simulates the tier price structure for the article based on the rebate group and a list of customer groups, and returns the simulated prices as an XML structure. If the `customerGroups` parameter is not specified, the function retrieves the tier prices from the regular tier price table and returns them as an XML structure.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
-        <maml:name>Get-XmlEulandaTierPrice</maml:name>
+        <maml:name>Get-XmlEulandaTieredPrices</maml:name>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
           <maml:name>barcode</maml:name>
           <maml:description>
@@ -18285,7 +18285,7 @@ No technical information available</dev:code>
     <command:relatedLinks>
       <maml:navigationLink>
         <maml:linkText>Online Version:</maml:linkText>
-        <maml:uri>https://github.com/Eulanda/EulandaConnect/blob/master/docs/Get-XmlEulandaTierPrice.md</maml:uri>
+        <maml:uri>https://github.com/Eulanda/EulandaConnect/blob/master/docs/Get-XmlEulandaTieredPrices.md</maml:uri>
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>

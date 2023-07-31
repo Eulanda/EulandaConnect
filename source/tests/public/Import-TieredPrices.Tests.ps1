@@ -1,7 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 Set-StrictMode -version latest
 
-Describe 'Import-TieredPrices' -Tag 'CSV' {
+Describe 'Import-TieredPrices' {
 
     BeforeAll {
         $udl = Resolve-Path ".\source\tests\Eulanda_1 Pester.udl"

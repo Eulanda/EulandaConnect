@@ -1,11 +1,11 @@
 ---
 external help file: EulandaConnect-help.xml
 Module Name: EulandaConnect
-online version: https://github.com/Eulanda/EulandaConnect/blob/master/docs/Get-XmlEulandaTierPrice.md
+online version: https://github.com/Eulanda/EulandaConnect/blob/master/docs/Get-XmlEulandaTieredPrices.md
 schema: 2.0.0
 ---
 
-# Get-XmlEulandaTierPrice
+# Get-XmlEulandaTieredPrices
 
 ## SYNOPSIS
 Retrieves the tier prices for an article from the EULANDA ERP software, either from the regular tier price table or by simulating them based on the article's rebate group and a list of customer groups.
@@ -13,13 +13,13 @@ Retrieves the tier prices for an article from the EULANDA ERP software, either f
 ## SYNTAX
 
 ```
-Get-XmlEulandaTierPrice [[-barcode] <String>] [[-articleNo] <String>] [[-articleId] <Int32>]
+Get-XmlEulandaTieredPrices [[-barcode] <String>] [[-articleNo] <String>] [[-articleId] <Int32>]
  [[-articleUid] <Guid>] [[-customerGroups] <String>] [[-conn] <Object>] [[-udl] <String>] [[-connStr] <String>]
  [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-The `Get-XmlEulandaTierPrice` function retrieves the tier prices for an article from the EULANDA ERP software by connecting to the SQL database and executing a SQL query. The article can be identified by its barcode, article number, article ID, or article UID. At least one of these parameters must be specified. The function supports three ways of specifying the database connection: a UDL file, a connection string, or a connection object.
+The `Get-XmlEulandaTieredPrices` function retrieves the tier prices for an article from the EULANDA ERP software by connecting to the SQL database and executing a SQL query. The article can be identified by its barcode, article number, article ID, or article UID. At least one of these parameters must be specified. The function supports three ways of specifying the database connection: a UDL file, a connection string, or a connection object.
 
 The function can retrieve the tier prices from the regular tier price table or simulate them based on the article's rebate group and a list of customer groups. If the `customerGroups` parameter is specified, the function simulates the tier price structure for the article based on the rebate group and a list of customer groups, and returns the simulated prices as an XML structure. If the `customerGroups` parameter is not specified, the function retrieves the tier prices from the regular tier price table and returns them as an XML structure.
 
@@ -194,5 +194,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ### System.String
 ## NOTES
+
+## RELATED LINKS
 
 ## RELATED LINKS
