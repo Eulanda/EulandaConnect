@@ -1,7 +1,7 @@
 Import-Module -Name .\EulandaConnect.psd1
 Set-StrictMode -version latest
 
-Describe 'Test-ShopExtension' -Tag 'integration', 'sql', 'sqladmin', 'eulanda' {
+Describe 'Get-XmlEulandaShop' -Tag 'integration', 'sql', 'sqladmin', 'eulanda' {
 
     BeforeAll {
         $udl = Resolve-Path ".\source\tests\Eulanda_1 Pester.udl"
@@ -1009,6 +1009,15 @@ Describe 'Test-ShopExtension' -Tag 'integration', 'sql', 'sqladmin', 'eulanda' {
               exec('CREATE trigger [dbo].[tr_lbz_ins_ShopBestandQueue] on [dbo].[LagerBuchungsZeile] for insert,update as RETURN');
 "@
 
+            # add shop extensions
+            $myConn = Get-Conn -udl $udl
+            $myConn.Execute($sqlShop)
+
+            # add an extension record
+            $sql = "INSERT esolArtikelShop (id, ArticleType) VALUES($articleID, 1)"
+            $myConn.Execute($sql)
+
+            $myConn.Close()
         }
     }
 
@@ -1022,22 +1031,17 @@ Describe 'Test-ShopExtension' -Tag 'integration', 'sql', 'sqladmin', 'eulanda' {
     }
 
 
-    It 'Shop extension should exist after executing sqlShop' {
+    It 'Gets xml node for the shop part of an article' {
         if ($skipTest) {
             Set-ItResult -Skipped -Because 'This test should be skipped due to user not in sysadmin role'
             Return
         }
 
-        $shop = Test-ShopExtension -udl $udl
-        $shop | Should -BeFalse
 
-        $myConn = Get-Conn -udl $udl
-        $myConn.Execute($sqlShop)
+        [string]$xmlStr = Get-XmlEulandaShop -articleId $articleId -udl $udl
+        [xml]$xml = $xmlStr
+        $xml.SHOP.ARTICLETYPE | Should -Be 1
 
-        $shop = Test-ShopExtension -udl $udl
-        $shop | Should -BeTrue
-
-        $myConn.Close()
     }
 
 }
