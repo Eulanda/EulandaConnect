@@ -40,7 +40,25 @@ function New-SalesOrder {
 
         $rs = new-object -comObject ADODB.Recordset
         $rs.CursorLocation = $adUseClient
-        $rs.Open($sql, $myConn, $adOpenKeyset, $adLockOptimistic, $adCmdText)
+        try {
+            $rs.Open($sql, $myConn, $adOpenKeyset, $adLockOptimistic, $adCmdText)
+        }
+        catch {
+            if ($myConn.Errors.count -gt 0) {
+                $errMessage = ""
+                foreach ($e in $myConn.Errors) {
+                    $errMessage = $errMessage + " " + $e.description
+                }
+                $errMessage = $errMessage.Trim()
+                try {
+                    $myConn.close()
+                }
+                catch {
+                }
+                Throw "$errMessage"
+            } else { Throw $_ }
+        }
+
 
         # Toggle all record sets until you find an open one
         Do {

@@ -18,7 +18,8 @@ New-SalesOrder [[-invoiceAddressId] <Int32>] [[-conn] <Object>] [[-udl] <String>
 ```
 
 ## DESCRIPTION
-Based on the ID of the invoice recipient's address, an order header is created and its Id is returned as the function result. The connection to the database is opened by specifying a connection object, which can be a connection, a connection string or a path specification of a UDL file.
+Based on the ID of the invoice recipient's address, an order header is created whose ID is returned as a function result. The connection to the database is opened by specifying a connection object. This can be a COM object, a connection string or a path specification of a UDL file.
+The address, which is given with the ID, must contain a valid payment term. In case of a freshly installed database, the table `KonZiel` is preset with a payment target, which has the ID 1.
 
 ## EXAMPLES
 
