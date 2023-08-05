@@ -29,7 +29,7 @@ Describe 'Test-SalesOrder' -Tag 'integration', 'sql', 'sqladmin', 'eulanda' {
     }
 
 
-    It 'Close sales order from sales order no and check status' {
+    It 'Tests if sales order exists on an existing sales order' {
         if ($skipTest) {
             Set-ItResult -Skipped -Because 'This test should be skipped due to user not in sysadmin role'
             Return
@@ -52,6 +52,18 @@ Describe 'Test-SalesOrder' -Tag 'integration', 'sql', 'sqladmin', 'eulanda' {
         # Cleanup
         $sql = "DELETE Auftrag WHERE Id = $salesOrderId"
         $myConn.Execute($sql) | Out-Null
+    }
+
+    It 'Tests if sales order exists on non existing sales order' {
+        if ($skipTest) {
+            Set-ItResult -Skipped -Because 'This test should be skipped due to user not in sysadmin role'
+            Return
+        }
+
+        # Act
+        $salesOrderExists = Test-SalesOrder -salesOrderNo 999999 -conn $myConn
+        $salesOrderExists | should -BeFalse
+
     }
 
 }
