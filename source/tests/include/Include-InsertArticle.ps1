@@ -28,4 +28,4 @@ $conn.close()
 
 # At the moment fix in master database for testing
 $breadcrumbPath = '\shop\hardware'
-$propertyId = 49
+$propertyId = 55
