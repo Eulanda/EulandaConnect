@@ -7,15 +7,34 @@ Describe 'Get-BreadcrumbId' -Tag 'integration', 'sql', 'sqladmin', 'eulanda' {
         $udl = Resolve-Path ".\source\tests\Eulanda_1 Pester.udl"
         $tablename = 'article'
 
-        # Uses predefined path and id at the moment, the test database has this already set on creating
-        $breadcrumbPath = '\shop\hardware'
-        $breadcrumbId = 55
+        # Test-MssqlAdministartor rights
+        $skipTest = -not (Test-MssqlAdministrator -udl $udl)
+
+        # Skip backup because for restoring you need special rights
+        if (! $skipTest) {
+            Backup-MssqlDatabase -udl $udl
+
+            . source\tests\include\Include-InsertProperty.ps1
+        }
+    }
+
+
+    AfterAll {
+        # Skip restore because for restoring you need special rights
+        if (! $skipTest) {
+            Restore-MssqlDatabase -udl $udl
+        }
     }
 
 
     It 'Retrieves the ID of an existing breadcrumb path' {
-        $id = Get-BreadcrumbId -tablename $tablename -breadcrumbPath $breadcrumbPath -udl $udl
-        $id | should -Be $breadcrumbId
+        if ($skipTest) {
+            Set-ItResult -Skipped -Because 'This test should be skipped due to user not in sysadmin role'
+            Return
+        }
+
+        $id = Get-BreadcrumbId -tablename $tablename -breadcrumbPath $hardwarePath -udl $udl
+        $id | should -Be $hardwareId
     }
 
 
@@ -25,27 +44,32 @@ Describe 'Get-BreadcrumbId' -Tag 'integration', 'sql', 'sqladmin', 'eulanda' {
     }
 
     It 'Exception on not existing tablename' {
-        { Get-BreadcrumbId -tablename 'NonExistingTablename' -breadcrumbPath $breadcrumbPath -udl $udl } | Should -Throw
+        { Get-BreadcrumbId -tablename 'NonExistingTablename' -breadcrumbPath $hardwarePath -udl $udl } | Should -Throw
     }
 
 
     It 'Handles connection errors and missing UDL file appropriately' {
         $nonExistentUdl = 'C:\path\to\nonexistent.udl'
-        { Get-BreadcrumbId  -tablename $tablename -breadcrumbPath $breadcrumbPath -udl $nonExistentUdl } | Should -Throw
+        { Get-BreadcrumbId  -tablename $tablename -breadcrumbPath $hardwarePath -udl $nonExistentUdl } | Should -Throw
     }
 
 
     It 'Handles invalid connection object' {
         $invalidConn = 'invalid connection'
-        { Get-BreadcrumbId  -tablename $tablename -breadcrumbPath $breadcrumbPath  -conn $invalidConn } | Should -Throw
+        { Get-BreadcrumbId  -tablename $tablename -breadcrumbPath $hardwarePath  -conn $invalidConn } | Should -Throw
     }
 
 
     It 'Handles closed database connection appropriately' {
+        if ($skipTest) {
+            Set-ItResult -Skipped -Because 'This test should be skipped due to user not in sysadmin role'
+            Return
+        }
+
         $closedConn = Get-Conn -udl $udl
         $closedConn.close() # close it
-        $id = Get-BreadcrumbId -tablename $tablename -breadcrumbPath $breadcrumbPath -conn $closedConn
-        $id | should -Be $breadcrumbId
+        $id = Get-BreadcrumbId -tablename $tablename -breadcrumbPath $hardwarePath -conn $closedConn
+        $id | should -Be $hardwareId
     }
 
 }

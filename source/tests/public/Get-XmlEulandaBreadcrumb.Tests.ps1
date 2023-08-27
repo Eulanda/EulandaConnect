@@ -14,6 +14,8 @@ Describe 'Get-XmlEulandaBreadcrumb' -Tag 'integration', 'sql', 'sqladmin', 'eula
             Backup-MssqlDatabase -udl $udl
 
             . source\tests\include\Include-InsertArticle.ps1
+            . source\tests\include\Include-InsertProperty.ps1
+
 
             New-PropertyItem -id $articleId -propertyId $propertyId -udl $udl
         }

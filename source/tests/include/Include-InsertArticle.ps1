@@ -25,7 +25,3 @@ if (($rs) -and (!$rs.eof)) { $articleId = $rs.fields(0).value }
 $rs.close()
 
 $conn.close()
-
-# At the moment fix in master database for testing
-$breadcrumbPath = '\shop\hardware'
-$propertyId = 55
