@@ -1,9 +1,6 @@
 function Get-DmsFolderDelivery {
     [CmdletBinding()]
     param (
-        [Parameter(Mandatory = $false)]
-        [string]$dmsBaseFolder = $(Throw ((Get-ResStr 'PARAM_MANDATORY_MISSED') -f 'dmsBaseFolder', $myInvocation.Mycommand))
-        ,
         [parameter(Mandatory = $false)]
         [ValidateScript({ Test-ValidateId -id $_ })]
         [int]$deliveryId
@@ -57,7 +54,8 @@ function Get-DmsFolderDelivery {
                 (SELECT ladr.Match FROM Lieferschein [lf] JOIN Adresse [ladr] ON lf.AdresseId = ladr.Id AND $sqlFrag) AS [Match],
                 (SELECT lf.KopfNummer FROM Lieferschein [lf] JOIN Adresse [ladr] ON lf.AdresseId = ladr.Id AND $sqlFrag) AS [DeliveryNo],
                 (SELECT Valtext FROM cnf_RegValues('\VENDOR\esol\MODULES\DMS\DATAOBJECTS\Eulanda.Adresse') WHERE Name = 'FolderPath') AS [AddressPath],
-                (SELECT Valtext FROM cnf_RegValues('\VENDOR\esol\MODULES\DMS\DATAOBJECTS\Eulanda.Lieferschein') WHERE Name = 'FolderPath') AS [DeliveryPath]
+                (SELECT Valtext FROM cnf_RegValues('\VENDOR\esol\MODULES\DMS\DATAOBJECTS\Eulanda.Lieferschein') WHERE Name = 'FolderPath') AS [DeliveryPath],
+                (SELECT Valtext FROM cnf_RegValues('\VENDOR\esol\MODULES\DMS') WHERE Name = 'BaseFolder') AS [BaseFolder]
 "@
 
         $rs = $Null
@@ -68,12 +66,12 @@ function Get-DmsFolderDelivery {
                 $deliveryNo = $rs.fields('DeliveryNo').value
                 $addressPath = $rs.fields('AddressPath').value
                 $deliveryPath = $rs.fields('DeliveryPath').value
+                $baseFolder = $rs.fields('BaseFolder').value
             }
         } else {
             throw ((Get-ResStr 'DELIVERYNOTE_NOT_FOUND_CONDITION') -f $sqlFrag, $myInvocation.Mycommand)
         }
-
-        [string]$result = "$dmsBaseFolder\$addressPath\$match\$deliveryPath\$deliveryNo"
+        [string]$result = "$baseFolder\$addressPath\$match\$deliveryPath\$deliveryNo"
     }
 
     end {

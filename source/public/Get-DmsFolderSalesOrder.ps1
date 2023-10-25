@@ -2,9 +2,6 @@ function Get-DmsFolderSalesOrder {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $false)]
-        [string]$dmsBaseFolder = $(Throw ((Get-ResStr 'PARAM_MANDATORY_MISSED') -f 'dmsBaseFolder', $myInvocation.Mycommand))
-        ,
-        [Parameter(Mandatory = $false)]
         [ValidateScript({ Test-ValidateNo -no $_ })]
         [int]$salesOrderNo
         ,
@@ -62,7 +59,8 @@ function Get-DmsFolderSalesOrder {
                 (SELECT radr.Match FROM Auftrag [so] JOIN Adresse [radr] ON so.AdresseId = radr.Id AND $sqlFrag) As [Match],
                 (SELECT so.KopfNummer FROM Auftrag [so] JOIN Adresse [radr] ON so.AdresseId = radr.Id AND $sqlFrag) As [SalesOrderNo],
                 (SELECT Valtext FROM cnf_RegValues('\VENDOR\esol\MODULES\DMS\DATAOBJECTS\Eulanda.Adresse') WHERE Name = 'FolderPath') AS [AddressPath],
-                (SELECT Valtext FROM cnf_RegValues('\VENDOR\esol\MODULES\DMS\DATAOBJECTS\Eulanda.Auftrag') WHERE Name = 'FolderPath') AS [SalesOrderPath]
+                (SELECT Valtext FROM cnf_RegValues('\VENDOR\esol\MODULES\DMS\DATAOBJECTS\Eulanda.Auftrag') WHERE Name = 'FolderPath') AS [SalesOrderPath],
+                (SELECT Valtext FROM cnf_RegValues('\VENDOR\esol\MODULES\DMS') WHERE Name = 'BaseFolder') AS [BaseFolder]
 "@
 
         $rs = $myConn.Execute($sql)
@@ -72,12 +70,12 @@ function Get-DmsFolderSalesOrder {
                 $salesOrderNo = $rs.fields('SalesOrderNo').value
                 $addressPath = $rs.fields('AddressPath').value
                 $salesOrderPath = $rs.fields('SalesOrderPath').value
+                $baseFolder = $rs.fields('BaseFolder').value
             }
         } else {
             throw ((Get-ResStr 'SALESORDER_NOT_FOUND_CONDITION') -f $sqlFrag, $($myInvocation.MyCommand))
         }
-
-        [string]$result = "$dmsBaseFolder\$addressPath\$match\$salesOrderPath\$salesOrderNo"
+        [string]$result = "$baseFolder\$addressPath\$match\$salesOrderPath\$salesOrderNo"
     }
 
     end {

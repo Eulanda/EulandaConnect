@@ -4624,9 +4624,6 @@ function Get-Distance {
 function Get-DmsFolderDelivery {
     [CmdletBinding()]
     param (
-        [Parameter(Mandatory = $false)]
-        [string]$dmsBaseFolder = $(Throw ((Get-ResStr 'PARAM_MANDATORY_MISSED') -f 'dmsBaseFolder', $myInvocation.Mycommand))
-        ,
         [parameter(Mandatory = $false)]
         [ValidateScript({ Test-ValidateId -id $_ })]
         [int]$deliveryId
@@ -4680,7 +4677,8 @@ function Get-DmsFolderDelivery {
                 (SELECT ladr.Match FROM Lieferschein [lf] JOIN Adresse [ladr] ON lf.AdresseId = ladr.Id AND $sqlFrag) AS [Match],
                 (SELECT lf.KopfNummer FROM Lieferschein [lf] JOIN Adresse [ladr] ON lf.AdresseId = ladr.Id AND $sqlFrag) AS [DeliveryNo],
                 (SELECT Valtext FROM cnf_RegValues('\VENDOR\esol\MODULES\DMS\DATAOBJECTS\Eulanda.Adresse') WHERE Name = 'FolderPath') AS [AddressPath],
-                (SELECT Valtext FROM cnf_RegValues('\VENDOR\esol\MODULES\DMS\DATAOBJECTS\Eulanda.Lieferschein') WHERE Name = 'FolderPath') AS [DeliveryPath]
+                (SELECT Valtext FROM cnf_RegValues('\VENDOR\esol\MODULES\DMS\DATAOBJECTS\Eulanda.Lieferschein') WHERE Name = 'FolderPath') AS [DeliveryPath],
+                (SELECT Valtext FROM cnf_RegValues('\VENDOR\esol\MODULES\DMS') WHERE Name = 'BaseFolder') AS [BaseFolder]
 "@
 
         $rs = $Null
@@ -4691,12 +4689,12 @@ function Get-DmsFolderDelivery {
                 $deliveryNo = $rs.fields('DeliveryNo').value
                 $addressPath = $rs.fields('AddressPath').value
                 $deliveryPath = $rs.fields('DeliveryPath').value
+                $baseFolder = $rs.fields('BaseFolder').value
             }
         } else {
             throw ((Get-ResStr 'DELIVERYNOTE_NOT_FOUND_CONDITION') -f $sqlFrag, $myInvocation.Mycommand)
         }
-
-        [string]$result = "$dmsBaseFolder\$addressPath\$match\$deliveryPath\$deliveryNo"
+        [string]$result = "$baseFolder\$addressPath\$match\$deliveryPath\$deliveryNo"
     }
 
     end {
@@ -4709,9 +4707,6 @@ function Get-DmsFolderDelivery {
 function Get-DmsFolderSalesOrder {
     [CmdletBinding()]
     param (
-        [Parameter(Mandatory = $false)]
-        [string]$dmsBaseFolder = $(Throw ((Get-ResStr 'PARAM_MANDATORY_MISSED') -f 'dmsBaseFolder', $myInvocation.Mycommand))
-        ,
         [Parameter(Mandatory = $false)]
         [ValidateScript({ Test-ValidateNo -no $_ })]
         [int]$salesOrderNo
@@ -4770,7 +4765,8 @@ function Get-DmsFolderSalesOrder {
                 (SELECT radr.Match FROM Auftrag [so] JOIN Adresse [radr] ON so.AdresseId = radr.Id AND $sqlFrag) As [Match],
                 (SELECT so.KopfNummer FROM Auftrag [so] JOIN Adresse [radr] ON so.AdresseId = radr.Id AND $sqlFrag) As [SalesOrderNo],
                 (SELECT Valtext FROM cnf_RegValues('\VENDOR\esol\MODULES\DMS\DATAOBJECTS\Eulanda.Adresse') WHERE Name = 'FolderPath') AS [AddressPath],
-                (SELECT Valtext FROM cnf_RegValues('\VENDOR\esol\MODULES\DMS\DATAOBJECTS\Eulanda.Auftrag') WHERE Name = 'FolderPath') AS [SalesOrderPath]
+                (SELECT Valtext FROM cnf_RegValues('\VENDOR\esol\MODULES\DMS\DATAOBJECTS\Eulanda.Auftrag') WHERE Name = 'FolderPath') AS [SalesOrderPath],
+                (SELECT Valtext FROM cnf_RegValues('\VENDOR\esol\MODULES\DMS') WHERE Name = 'BaseFolder') AS [BaseFolder]
 "@
 
         $rs = $myConn.Execute($sql)
@@ -4780,12 +4776,12 @@ function Get-DmsFolderSalesOrder {
                 $salesOrderNo = $rs.fields('SalesOrderNo').value
                 $addressPath = $rs.fields('AddressPath').value
                 $salesOrderPath = $rs.fields('SalesOrderPath').value
+                $baseFolder = $rs.fields('BaseFolder').value
             }
         } else {
             throw ((Get-ResStr 'SALESORDER_NOT_FOUND_CONDITION') -f $sqlFrag, $($myInvocation.MyCommand))
         }
-
-        [string]$result = "$dmsBaseFolder\$addressPath\$match\$salesOrderPath\$salesOrderNo"
+        [string]$result = "$baseFolder\$addressPath\$match\$salesOrderPath\$salesOrderNo"
     }
 
     end {
@@ -10276,7 +10272,25 @@ function New-SalesOrder {
 
         $rs = new-object -comObject ADODB.Recordset
         $rs.CursorLocation = $adUseClient
-        $rs.Open($sql, $myConn, $adOpenKeyset, $adLockOptimistic, $adCmdText)
+        try {
+            $rs.Open($sql, $myConn, $adOpenKeyset, $adLockOptimistic, $adCmdText)
+        }
+        catch {
+            if ($myConn.Errors.count -gt 0) {
+                $errMessage = ""
+                foreach ($e in $myConn.Errors) {
+                    $errMessage = $errMessage + " " + $e.description
+                }
+                $errMessage = $errMessage.Trim()
+                try {
+                    $myConn.close()
+                }
+                catch {
+                }
+                Throw "$errMessage"
+            } else { Throw $_ }
+        }
+
 
         # Toggle all record sets until you find an open one
         Do {
@@ -19379,8 +19393,8 @@ function Test-ValidateUrl {
 # SIG # Begin signature block
 # MIIpiQYJKoZIhvcNAQcCoIIpejCCKXYCAQExDzANBglghkgBZQMEAgEFADB5Bgor
 # BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
-# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCAOybNtZJR//Sre
-# ++ufJkf/VXbHH+ukUGYCGfqtkJG/gKCCEngwggVvMIIEV6ADAgECAhBI/JO0YFWU
+# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCA/3+FuAWrEFeFd
+# 9AXRbUwIL2QjglNYqApBdkBGPXta9KCCEngwggVvMIIEV6ADAgECAhBI/JO0YFWU
 # jTanyYqJ1pQWMA0GCSqGSIb3DQEBDAUAMHsxCzAJBgNVBAYTAkdCMRswGQYDVQQI
 # DBJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcMB1NhbGZvcmQxGjAYBgNVBAoM
 # EUNvbW9kbyBDQSBMaW1pdGVkMSEwHwYDVQQDDBhBQUEgQ2VydGlmaWNhdGUgU2Vy
@@ -19483,23 +19497,23 @@ function Test-ValidateUrl {
 # IExpbWl0ZWQxLjAsBgNVBAMTJVNlY3RpZ28gUHVibGljIENvZGUgU2lnbmluZyBD
 # QSBFViBSMzYCEGilgQZhq4aQSRu7qELTizkwDQYJYIZIAWUDBAIBBQCgfDAQBgor
 # BgEEAYI3AgEMMQIwADAZBgkqhkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEE
-# AYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAvBgkqhkiG9w0BCQQxIgQgQ49oQY0vc0K6
-# a4wW+da5LhCddnp4woywQww8hH4L5nAwDQYJKoZIhvcNAQEBBQAEggIAssIWKshY
-# 3DE2/eVb04tJdZLInNtI1vZCApetaJ+86USyBuaI0zWY5CTTT23k6kwe3jy0yAYA
-# NCPbPPaNjVFZkXFWrXUFmimW8gj1lpnWOzMrjTe7qXNaCHS/mQDoNQMJvmtMNr91
-# JB8B4HtI8ypzsZix3VeQz7RWlENwtgBlx4zAcEzoFuDwemVfevk6npYGoFBqSK2F
-# UUjE3TOq4EtHociPu0gD5Bbdhu2uueBay/E/NAXVZlWLYu6A2rhENMihjdaNgd9Q
-# U74rkRwDTlzVxfxoLEd1SZQa1++pPV7A09qcCJLPseFqRCj9GALgSZhNGJtAlm+C
-# frCxwwE+/ZSPkadSXuKdBwYxt32NF2DO2nXmgWuqYrLI59dFMKvOjjJGU56zFdRO
-# u3De6cYRVVaecabQCFkCrTRN8eJtzH7Mxya58ko3dr4ZS6H+vccV/o1lReZkN9eJ
-# 3K4+xln6ZP8xleoVfgg1l1b6s/joU1a72qbASiopRcICG5atUWUejC+70bD8q81Q
-# gMXk7qAiuYjd++1W1nhpOMqEvUWBLHxVOkMf5HFKhMSCBmogPmqzniF3T/8ROMXI
-# jiDiumerSAyTg7TTsxmPqoC2q+bDDTTT3rRZEL+BDKCgehaC64fPAopH4KUOpJ2J
-# 7/kVVLFurQsyRtIiDCdVwcXnnzn9xtx7L7ChghNPMIITSwYKKwYBBAGCNwMDATGC
+# AYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAvBgkqhkiG9w0BCQQxIgQgS6cFN5slHNEg
+# cP9CQIykZgIZpu3MY2dgi5rNTADOTGQwDQYJKoZIhvcNAQEBBQAEggIAKbr9yCIX
+# yYqebtDJ9K+F6b4TCYfaRpG7hqUOSAXC9M4GBTMx4arFeBBouUUfDLWLvMxml6l+
+# tld66H4Qa09AIX8EViQgDVCkQ+GLy4dzfBbzpAg2g8hEuhMz9OJTp1G4bNxBO+/k
+# BfHbRkwxswKKllM/agNFb3NePcbukk4ACaD3qED36aKsPTRlYyPq3twUUiCorM3S
+# p7k5hPQxban0e7lk7RxjegZzu2cMsbkyBDM5Ul3osAPYC/PambBURLxTAdJGj5ku
+# hc8rnGl//YSGZtYBSg7LuXawhU/koEpE0Imj8aBbr5QImTs9e7A7agb+svZWusmN
+# La1DVbqwSY8gvH9IwV+zFUJt6yoQ5jNo7ObGnItH8Jqg1Gr2dr9l1EPrrPCmR5B9
+# HSba8N415Ue7DDwaXngwRM8G/Jx4QxNqIcTi2UXPCbdSs5Bd2VPgF9zUjLdi4KTS
+# FwxEjE3OVQVDDtYvPlBF5KEbuYN5EQRBWN/4G2dI/uKOHLJTSDcYh1DmMRW7HU4x
+# wp8huLzeYNZHfwOIiK146/p5XlA1JPiDjKM/Mb9pNzr541RvX72FuiEUPFytcb7i
+# svDBrPy5HdphH4dCqDe9abMVS0LUg1zQwBQCmiSArfCpDm9IzV0MM4O773Z9uPNj
+# +8a6t/mWy1nicRc98V1pmX6LwXWBpaRzuHChghNPMIITSwYKKwYBBAGCNwMDATGC
 # EzswghM3BgkqhkiG9w0BBwKgghMoMIITJAIBAzEPMA0GCWCGSAFlAwQCAgUAMIHw
 # BgsqhkiG9w0BCRABBKCB4ASB3TCB2gIBAQYKKwYBBAGyMQIBATAxMA0GCWCGSAFl
-# AwQCAQUABCATwyqBhvGlgDDd6LNXAb1npcEfGHAZPaxM3S91C95gnAIVAIDL7+PP
-# 4LmMVhNleb/LkCIlbP+EGA8yMDIzMDczMTEyMDE1N1qgbqRsMGoxCzAJBgNVBAYT
+# AwQCAQUABCBzESuEjcuDiZhy6C+jt8wT3GxVVgT8KcGAsTepX0E1owIVAP/0AZv/
+# pkaanzAaVhboHGotNpXnGA8yMDIzMTAyNTEwNDY1NlqgbqRsMGoxCzAJBgNVBAYT
 # AkdCMRMwEQYDVQQIEwpNYW5jaGVzdGVyMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
 # ZWQxLDAqBgNVBAMMI1NlY3RpZ28gUlNBIFRpbWUgU3RhbXBpbmcgU2lnbmVyICM0
 # oIIN6TCCBvUwggTdoAMCAQICEDlMJeF8oG0nqGXiO9kdItQwDQYJKoZIhvcNAQEM
@@ -19580,23 +19594,23 @@ function Test-ValidateUrl {
 # VQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGDAWBgNV
 # BAoTD1NlY3RpZ28gTGltaXRlZDElMCMGA1UEAxMcU2VjdGlnbyBSU0EgVGltZSBT
 # dGFtcGluZyBDQQIQOUwl4XygbSeoZeI72R0i1DANBglghkgBZQMEAgIFAKCCAWsw
-# GgYJKoZIhvcNAQkDMQ0GCyqGSIb3DQEJEAEEMBwGCSqGSIb3DQEJBTEPFw0yMzA3
-# MzExMjAxNTdaMD8GCSqGSIb3DQEJBDEyBDCavgrGdhNTZefS6xyzD7+nw5wpW2QF
-# XOs7hjzJFJeZlS7/xPBZevyNhqttWUK7mH8wge0GCyqGSIb3DQEJEAIMMYHdMIHa
+# GgYJKoZIhvcNAQkDMQ0GCyqGSIb3DQEJEAEEMBwGCSqGSIb3DQEJBTEPFw0yMzEw
+# MjUxMDQ2NTZaMD8GCSqGSIb3DQEJBDEyBDDWzUvZ6ms8/9aT6wbRXoUNytIMccuc
+# YdLcHlyHGqNg/5GeVJ8fvCXTwJw9NFHLjSswge0GCyqGSIb3DQEJEAIMMYHdMIHa
 # MIHXMBYEFK5ir3UKDL1H1kYfdWjivIznyk+UMIG8BBQC1luV4oNwwVcAlfqI+SPd
 # k3+tjzCBozCBjqSBizCBiDELMAkGA1UEBhMCVVMxEzARBgNVBAgTCk5ldyBKZXJz
 # ZXkxFDASBgNVBAcTC0plcnNleSBDaXR5MR4wHAYDVQQKExVUaGUgVVNFUlRSVVNU
 # IE5ldHdvcmsxLjAsBgNVBAMTJVVTRVJUcnVzdCBSU0EgQ2VydGlmaWNhdGlvbiBB
-# dXRob3JpdHkCEDAPb6zdZph0fKlGNqd4LbkwDQYJKoZIhvcNAQEBBQAEggIAMeQK
-# 5IPz54n5b0nqWuHjvJVdsyE/n6KJkbwDpJhUhYJRe6UIxu6zfe/INOhDMUaR5HS8
-# 6lXDNLhc10nOZ7LBsYmgL7LrO0uWPL7WR24ike9VXLNV6dlaNs9hY/td3JoXJV1U
-# jR7XMq7uZYHlFWXCxMbGMNXCzQTpje/oui6M63gg5X75gs15gGjaxfLsQW8x0AjD
-# LcWTy4/X4C84PC4PakkKRv/7s4cOi6nPcIMN1gEs0l3/XuXfIcfX4/3E6NAPGDG0
-# DL/PElPaSqIfykaOAQs285s1eBF6YP/ViyT5muAS6aWEL8J0Fo98agUC5oXzSje9
-# Lu5sZtbIMAgSd7ZC35j8GmMdnDiU0A6PBGp/J8IOgWXodyl2qf0dtEwcXB5VDTyE
-# XkixA5Qu2gdJ+u+T030Jm7T1C6LpSDVE/dCEw3/CTB2YTso3ux277jBSh4sgO+S6
-# tD3iW/BWAcDdO/JSAFtXxLsSkhFVS27y2c2WIOLekZ74ntxogmmhTJ2aaRTofTPK
-# 9XiUSbLfSDb+9r5tp+BbY4cby03j+0ElKpxUSj10Tkcj4Ur5TIntVVq0ThDNlvI2
-# Aqz/5Q5uvFLvb1Jo6P8MN3YFwDFJm2AYynA0ACV8nJP5ZTmjzEjIKHwgmTAlngBk
-# AcszK7+fB0ztp3/kt8XJgcLtEtCieTue64FOYIo=
+# dXRob3JpdHkCEDAPb6zdZph0fKlGNqd4LbkwDQYJKoZIhvcNAQEBBQAEggIAHbfi
+# jOs1tnUso2qR9upE/qF9rfVmvO0dR56rC72nU6HMSZ3fC6WOkWW2+2J2r13OMmCT
+# KNNqQ18agA3+znbC7Dhr7UIUw4QurmhUyNOBUGioktUkVejVP+49w9wPa7X4Kd3O
+# QfO794UEUBcSH2k4RErYMOIuSdljOP23gg/qyiIueO3pgntl17/eVV6NOBFoT/bP
+# sCBzzdovJpwt3sCgeKH7glRi+OsDzeViPKaPqN3sda7Vv3PiKNJjIJP6p2rYiOKG
+# bzYoGN6ZPRT1ceFPKZ/E0rJbIDwbaD+iAER21Axnd6vtqp2t64YQKFw9HKuQuJ18
+# 4Yfy3smo4wZwlzOWcITIHHl7pN6TSi9ENrJElJn7G5XcydQ0LXv6+nwxUXA1xwkL
+# s5dBd74imAECa9wjD7Uo4889tI0fAtBN63HdTXOjrhqrAjPts/W8NK4sAgFIja9S
+# sTOzNOxL7pw2s/G9kFzyRZv9Mr3ERcC4jvcr6+dGq3Aqi9Qquj8RiBDdrdrUf2iT
+# kPrKZL7pnG7RBWKj8JmhG11RJEtrrrfpkazSHzK7Encmtt5jptghj4WfrHz3Pssf
+# YRzbG9vI8IH15XyzHr7olqCj0caZYI+3BVQ20/+itFk3St9CuJqn8K4LczlMjZpH
+# OFu9EivJ3F3EHiQn9VjZ/FqaVd69WA4g99O0V2Y=
 # SIG # End signature block

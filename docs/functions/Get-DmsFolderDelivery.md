@@ -13,8 +13,8 @@ Delivers the DMS folder to a delivery bill
 ## SYNTAX
 
 ```
-Get-DmsFolderDelivery [[-dmsBaseFolder] <String>] [[-deliveryId] <Int32>] [[-deliveryNo] <Int32>]
- [[-conn] <Object>] [[-udl] <String>] [[-connStr] <String>] [<CommonParameters>]
+Get-DmsFolderDelivery [[-deliveryId] <Int32>] [[-deliveryNo] <Int32>] [[-conn] <Object>] [[-udl] <String>]
+ [[-connStr] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -93,21 +93,6 @@ Aliases:
 
 Required: False
 Position: 2
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -dmsBaseFolder
-Basic folder for the DMS system. For example `\\server\release\eulanda\dms`.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 0
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

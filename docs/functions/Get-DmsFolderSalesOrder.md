@@ -13,8 +13,8 @@ Delivers the DMS folder to a sales order
 ## SYNTAX
 
 ```
-Get-DmsFolderSalesOrder [[-dmsBaseFolder] <String>] [[-salesOrderNo] <Int32>] [[-salesOrderId] <Int32>]
- [[-customerOrderNo] <Int32>] [[-conn] <Object>] [[-udl] <String>] [[-connStr] <String>] [<CommonParameters>]
+Get-DmsFolderSalesOrder [[-salesOrderNo] <Int32>] [[-salesOrderId] <Int32>] [[-customerOrderNo] <Int32>]
+ [[-conn] <Object>] [[-udl] <String>] [[-connStr] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -78,21 +78,6 @@ Aliases:
 
 Required: False
 Position: 3
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -dmsBaseFolder
-Basic folder for the DMS system. For example `\\server\release\eulanda\dms`.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 0
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
