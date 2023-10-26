@@ -14,6 +14,7 @@ Describe 'Test-PropertyItem' -Tag 'integration', 'sql', 'sqladmin', 'eulanda' {
             Backup-MssqlDatabase -udl $udl
 
             . source\tests\include\Include-InsertArticle.ps1
+            . source\tests\include\Include-InsertProperty.ps1
         }
     }
 

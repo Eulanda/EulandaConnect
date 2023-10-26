@@ -9,6 +9,8 @@
     $softwarePath = "\$shopFolder\$softwareFolder"
     $softwareId = 0
 
+    $propertyId = 0
+
     $sql = @"
     DECLARE @rootId int
     DECLARE @shopId int
@@ -53,6 +55,7 @@ $rs = Get-AdoRs -recordset $rs
 if (($rs) -and (!$rs.eof)) {
       $hardwareId = $rs.Fields.Item('HardwareId').Value
       $softwareId = $rs.Fields.Item('SoftwareId').Value
+      $propertyId = $hardwareId
 }
 $rs.close()
 

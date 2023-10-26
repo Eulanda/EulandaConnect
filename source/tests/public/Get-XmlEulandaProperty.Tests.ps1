@@ -14,6 +14,7 @@ Describe 'Get-XmlEulandaProperty' -Tag 'integration', 'sql', 'sqladmin', 'euland
             Backup-MssqlDatabase -udl $udl
 
             . source\tests\include\Include-InsertArticle.ps1
+            . source\tests\include\Include-InsertProperty.ps1
         }
     }
 
