@@ -57,7 +57,16 @@ W1B 3AD London </ANSCHRIFT>
             <SPEDAUFTRAGNR />
             <STRASSE>44 Baker Street</STRASSE>
             <TEL />
-            <TRACKINGNR />
+            <TRACKINGLISTE>
+                <TRACKING>
+                    <SHIPMENTID>1Z12345642</SHIPMENTID>
+                    <CARRIERNAME>UPS</CARRIERNAME>
+                </TRACKING>
+                <TRACKING>
+                    <SHIPMENTID>1Z12345643</SHIPMENTID>
+                    <CARRIERNAME>UPS</CARRIERNAME>
+                </TRACKING>                
+            </TRACKINGLISTE>
             <USTID />
             <USERD1 />
             <USERD2 />

@@ -6,7 +6,7 @@ The following structure is used for transmitting item master data, address maste
 
 
 
-```ini
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <EULANDA>
     <METADATA>
@@ -325,7 +325,13 @@ The following structure is used for transmitting item master data, address maste
          <SPEDAUFTRAGNR />
          <STRASSE>Bakers Street 2</STRASSE>
          <TEL />
-         <TRACKINGNR />
+         <TRACKINGLISTE>
+             <TRACKING>
+                 <SHIPMENTID>1Z12345642</SHIPMENTID>
+                 <CARRIERNAME>UPS</CARRIERNAME>
+             </TRACKING>
+             <!-- REPEAT: TRACKING -->
+         </TRACKINGLISTE>
          <USTID />
          <USERD1>0001-01-01T00:00:00.0+00:00</USERD1>
          <USERD2>0001-01-01T00:00:00.0+00:00</USERD2>
