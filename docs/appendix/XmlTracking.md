@@ -30,7 +30,7 @@ The structure is a subset of the XML description of a delivery note. The field d
                     <CARRIERNAME>UPS</CARRIERNAME>
                 </TRACKING>                
             </TRACKINGLISTE>
-            </LIEFERSCHEINPOSLISTE>
+            <LIEFERSCHEINPOSLISTE />
         </LIEFERSCHEIN>
     </LIEFERSCHEINLISTE>
 </EULANDA>
