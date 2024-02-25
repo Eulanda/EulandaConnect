@@ -88,3 +88,4 @@ PowerShell unfortunately does not have a built-in function to process classic IN
 
 [Get-IniBool](./functions/Get-IniBool.md)
 
+

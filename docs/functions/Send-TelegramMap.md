@@ -211,3 +211,4 @@ Important: Treat your bot token as a password and do not share it with others. T
 [Send-TelegramMessage](./functions/Send-TelegramMessage.md)
 
 [Send-TelegramPhoto](./functions/Send-TelegramPhoto.md)
+

@@ -748,7 +748,7 @@ function Publish-ToPsGallery {
     [string]$apiKey = ConvertFrom-SecureString -SecureString $secureApiKey -AsPlainText # -AsPlainText needs pwsh 7
 
     try {
-        Publish-Module -Path $finalFolder -NuGetApiKey $apiKey -force -SkipAutomaticTags
+        # Publish-Module -Path $finalFolder -NuGetApiKey $apiKey -force -SkipAutomaticTags
 
         # Wait 30 seconds to see the module listed
         Start-Sleep -Seconds 30
