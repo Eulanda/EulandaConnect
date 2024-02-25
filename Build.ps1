@@ -655,7 +655,7 @@ function Update-Markdown {
             if ($endPos -ne -1) {
                 # Correctly calculate the start of the content to be retained after "### CommonParameters"
                 # and ensure we are adding a newline before it to maintain formatting.
-                $newContent = $content.Substring(0, $startPos) + "`n" + $content.Substring($endPos)
+                $newContent = $content.Substring(0, $startPos) + "`r`n" + $content.Substring($endPos)
 
                 Set-Content -Path $_.FullName -Value $newContent
             }
