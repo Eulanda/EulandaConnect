@@ -742,13 +742,14 @@ function Publish-ToPsGallery {
     #   [string]$apiKey = "9fiewtYvkix2KcuQXpt2hVJ8r6BrZf4D7pdlGvsRGiHc0Rj"
     #   [securestring]$secureApiKey = ConvertTo-SecureString -String $apiKey -AsPlainText -Force
     #   $secureApiKey | Export-Clixml -Path "$ecHomeFolder\secureNuGetApiKey.xml"
+    #   $finalFolder = "C:\Git\Powershell\EulandaConnect\final\EulandaConnect"
 
     # Upload all to PsGallery
     [securestring]$secureApiKey = Import-Clixml -Path "$ecHomeFolder\secureNuGetApiKey.xml"
     [string]$apiKey = ConvertFrom-SecureString -SecureString $secureApiKey -AsPlainText # -AsPlainText needs pwsh 7
 
     try {
-        # Publish-Module -Path $finalFolder -NuGetApiKey $apiKey -force -SkipAutomaticTags
+        Publish-Module -Path $finalFolder -NuGetApiKey $apiKey -force -SkipAutomaticTags
 
         # Wait 30 seconds to see the module listed
         Start-Sleep -Seconds 30
