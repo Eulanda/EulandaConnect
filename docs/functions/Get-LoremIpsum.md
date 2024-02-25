@@ -13,7 +13,8 @@ The Get-LoremIpsum function generates a specified number of paragraphs of lorem 
 ## SYNTAX
 
 ```
-Get-LoremIpsum [[-MinParagraphs] <Int32>] [[-MaxParagraphs] <Int32>] [<CommonParameters>]
+Get-LoremIpsum [[-minParagraphs] <Int32>] [[-maxParagraphs] <Int32>] [-ProgressAction <ActionPreference>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -30,7 +31,7 @@ This example generates 2 to 4 paragraphs of lorem ipsum text and returns the tex
 
 ## PARAMETERS
 
-### -MaxParagraphs
+### -maxParagraphs
 MaxParagraphs (optional): Specifies the maximum number of paragraphs to generate. If not specified, the default value of 5 is used. The parameter accepts integer values.
 
 ```yaml
@@ -45,7 +46,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -MinParagraphs
+### -minParagraphs
 MinParagraphs (optional): Specifies the minimum number of paragraphs to generate. If not specified, the default value of 1 is used. The parameter accepts integer values.
 
 ```yaml
@@ -59,6 +60,7 @@ Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
+
 
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
@@ -76,3 +78,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 - If both parameters are not specified, the function generates one paragraph of lorem ipsum text by default.
 
 ## RELATED LINKS
+

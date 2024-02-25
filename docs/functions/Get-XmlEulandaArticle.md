@@ -15,7 +15,7 @@ Returns one or more articles as an XML fragment, allowing for filtering, sorting
 ```
 Get-XmlEulandaArticle [[-select] <String>] [[-filter] <String[]>] [[-alias] <String>] [[-order] <String>]
  [-reorder] [-revers] [[-customerGroups] <String>] [[-conn] <Object>] [[-udl] <String>] [[-connStr] <String>]
- [<CommonParameters>]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -335,6 +335,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -348,3 +349,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
+

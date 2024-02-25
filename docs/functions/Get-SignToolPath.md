@@ -13,7 +13,7 @@ Determines the path to Windows signtool.exe
 ## SYNTAX
 
 ```
-Get-SignToolPath [<CommonParameters>]
+Get-SignToolPath [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -36,6 +36,7 @@ The result contains the path incl. the program name. The path depends on the ver
 
 ## PARAMETERS
 
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -53,4 +54,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 [Approve-Signature](../functions/Approve-Signature.md)
 
 [Install-SignTool](../functions/Install-SignTool.md)
+
+
+
 

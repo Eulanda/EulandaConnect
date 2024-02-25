@@ -13,7 +13,8 @@ This PowerShell function named `New-Snapshot` creates a Volume Shadow Copy (snap
 ## SYNTAX
 
 ```
-New-Snapshot [[-volume] <String>] [[-symbolicLink] <Object>] [<CommonParameters>]
+New-Snapshot [[-volume] <String>] [[-symbolicLink] <Object>] [-ProgressAction <ActionPreference>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -69,6 +70,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -86,3 +88,4 @@ The function requires administrative rights! If the function is run without thes
 ## RELATED LINKS
 
 [Remove-Snapshot](./functions/Remove-Snapshot.md)
+

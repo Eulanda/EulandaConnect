@@ -13,7 +13,7 @@ Shows the file extensions like txt, exe etc. of known extension in the file expl
 ## SYNTAX
 
 ```
-Show-Extensions [<CommonParameters>]
+Show-Extensions [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -29,6 +29,7 @@ PS C:\> Show-Extensions
 Enables the display of file extensions for known files.
 
 ## PARAMETERS
+
 
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
@@ -47,3 +48,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 [Hide-Extensions](./functions/Hide-Extensions.md)
 
 [Update-Desktop](./functions/Update-Desktop.md)
+

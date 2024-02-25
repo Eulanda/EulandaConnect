@@ -13,7 +13,7 @@ Sends a refresh message to the windows desktop
 ## SYNTAX
 
 ```
-Update-Desktop [<CommonParameters>]
+Update-Desktop [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -29,6 +29,7 @@ PS C:\> Upate-Desktop
 Refreshes the desktop.
 
 ## PARAMETERS
+
 
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
@@ -47,3 +48,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 [Hide-Extensions](../functions/Hide-Extensions.md)
 
 [Show-Extensions](../functions/Show-Extensions.md)
+

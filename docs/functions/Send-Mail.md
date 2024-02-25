@@ -17,7 +17,7 @@ Send-Mail [[-from] <String>] [[-to] <String[]>] [[-cc] <String[]>] [[-bcc] <Stri
  [[-smtpServer] <String>] [[-priority] <String>] [[-encoding] <String>] [[-user] <String>]
  [[-password] <String>] [[-secPassword] <SecureString>] [[-credential] <PSCredential>] [-useSsl] [-bodyAsHtml]
  [[-port] <Int32>] [[-deliveryNotificationOption] <String[]>] [[-subject] <String>] [[-body] <String>]
- [[-attachment] <String[]>] [<CommonParameters>]
+ [[-attachment] <String[]>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -341,6 +341,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -356,3 +357,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 [https://adamtheautomator.com/powershell-get-credential](https://adamtheautomator.com/powershell-get-credential)
 [https://stackoverflow.com/questions/53785662/why-does-send-mailmessage-fail-to-send-using-starttls-over-port-587](https://stackoverflow.com/questions/53785662/why-does-send-mailmessage-fail-to-send-using-starttls-over-port-587)
 [https://www.codyhosterman.com/2016/06/force-the-invoke-restmethod-powershell-cmdlet-to-use-tls-1-2](https://www.codyhosterman.com/2016/06/force-the-invoke-restmethod-powershell-cmdlet-to-use-tls-1-2)
+

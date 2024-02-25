@@ -14,7 +14,7 @@ Creates a SQL command to retrieve stock informations
 
 ```
 Get-StockSql [[-filter] <String[]>] [[-alias] <String>] [[-qtyStatic] <Int32>] [[-warehouse] <String>]
- [-legacy] [<CommonParameters>]
+ [-legacy] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -146,6 +146,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -158,3 +159,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## RELATED LINKS
 
 [https://github.com/Eulanda/EulandaConnect/blob/master/docs/Get-DataFromSql.md](https://github.com/Eulanda/EulandaConnect/blob/master/docs/Get-DataFromSql.md)
+
+
+

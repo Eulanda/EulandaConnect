@@ -16,7 +16,7 @@ The Receive-RemoteFile function provides a convenient way to download files from
 Receive-RemoteFile [[-server] <String>] [[-protocol] <String>] [[-port] <Int32>] [-activeMode]
  [[-resumeAge] <Int32>] [[-resumeRetries] <Int32>] [[-certificate] <String>] [[-user] <String>]
  [[-password] <Object>] [[-remoteFolder] <String>] [[-remoteFile] <String>] [[-localFolder] <String>]
- [[-localFile] <String>] [<CommonParameters>]
+ [[-localFile] <String>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -231,6 +231,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -244,3 +245,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
+

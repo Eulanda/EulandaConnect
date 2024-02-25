@@ -15,7 +15,8 @@ Sends a photo with a caption via Telegram API, without requiring a locally insta
 ```
 Send-TelegramPhoto [[-token] <String>] [[-encryptedToken] <String>] [[-secureToken] <SecureString>]
  [[-pathToToken] <String>] [[-chatId] <String>] [[-caption] <String>] [[-uri] <String>] [[-parseMode] <String>]
- [-disableContentTypeDetection] [-disableNotification] [<CommonParameters>]
+ [-disableContentTypeDetection] [-disableNotification] [-ProgressAction <ActionPreference>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -199,6 +200,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -231,3 +233,4 @@ Important: Treat your bot token as a password and do not share it with others. T
 [Send-TelegramMessage](./functions/Send-TelegramMessage.md)
 
 [Send-TelegramMap](./functions/Send-TelegramMap.md)
+

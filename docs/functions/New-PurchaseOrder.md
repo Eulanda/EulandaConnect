@@ -14,7 +14,7 @@ The New-PurchaseOrder function creates a new purchase order for a specific suppl
 
 ```
 New-PurchaseOrder [[-supplierID] <Int32>] [[-processedBy] <String>] [[-conn] <Object>] [[-udl] <String>]
- [[-connStr] <String>] [<CommonParameters>]
+ [[-connStr] <String>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -106,6 +106,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -121,3 +122,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 This function requires an ADODB connection to the database. It can either be passed directly via the 'conn' parameter, or indirectly via a UDL file or a connection string.
 
 ## RELATED LINKS
+

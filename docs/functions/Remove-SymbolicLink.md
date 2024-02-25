@@ -13,7 +13,7 @@ Removes an existing symbolic link.
 ## SYNTAX
 
 ```
-Remove-SymbolicLink [[-symbolicLink] <String>] [<CommonParameters>]
+Remove-SymbolicLink [[-symbolicLink] <String>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -47,6 +47,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -64,3 +65,4 @@ The function requires administrative rights! If the function is run without thes
 ## RELATED LINKS
 
 [New-SymbolicLink](./functions/New-SymbolicLink.md)
+

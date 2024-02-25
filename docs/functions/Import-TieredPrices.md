@@ -18,7 +18,8 @@ Import-TieredPrices [[-barcodeName] <String>] [[-articleNoName] <String>] [[-art
  [[-qty2Name] <String>] [[-price3Name] <String>] [[-qty3Name] <String>] [[-price4Name] <String>]
  [[-qty4Name] <String>] [[-price5Name] <String>] [[-qty5Name] <String>] [[-priceList] <String>]
  [[-priceListId] <Int32>] [[-csvDelimiter] <String>] [[-decimalSeparator] <String>] [[-path] <String>]
- [[-conn] <Object>] [[-udl] <String>] [[-connStr] <String>] [<CommonParameters>]
+ [[-conn] <Object>] [[-udl] <String>] [[-connStr] <String>] [-ProgressAction <ActionPreference>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -401,6 +402,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -414,3 +416,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
+

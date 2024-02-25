@@ -14,7 +14,8 @@ This PowerShell function the `Id` of the article based on its barcode or article
 
 ```
 Get-ArticleId [[-barcode] <String>] [[-articleNo] <String>] [[-articleId] <Int32>] [[-articleUid] <Guid>]
- [[-conn] <Object>] [[-udl] <String>] [[-connStr] <String>] [<CommonParameters>]
+ [[-conn] <Object>] [[-udl] <String>] [[-connStr] <String>] [-ProgressAction <ActionPreference>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -138,6 +139,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -151,3 +153,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
+

@@ -13,7 +13,8 @@ Restores a SQL Server database from a backup file.
 ## SYNTAX
 
 ```
-Restore-MssqlDatabase [[-conn] <Object>] [[-udl] <String>] [[-connStr] <String>] [<CommonParameters>]
+Restore-MssqlDatabase [[-conn] <Object>] [[-udl] <String>] [[-connStr] <String>]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -75,6 +76,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -92,3 +94,4 @@ This function requires the SQL Server module and relies on the `Get-Conn` functi
 ## RELATED LINKS
 
 [Backup-MssqlDatabase](./functions/Backup-MssqlDatabase.md)
+

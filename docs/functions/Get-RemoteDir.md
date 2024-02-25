@@ -15,13 +15,13 @@ Retrieves a list of files or directories from an FTP or SFTP server.
 ```
 Get-RemoteDir [[-server] <String>] [[-protocol] <String>] [[-port] <Int32>] [-activeMode]
  [[-certificate] <String>] [[-user] <String>] [[-password] <Object>] [[-dirType] <String>] [[-mask] <String>]
- [[-remoteFolder] <String>] [<CommonParameters>]
+ [[-remoteFolder] <String>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 The `Get-RemoteDir` function is a versatile tool for retrieving a list of files or directories from a remote server. This function supports the FTP, FTPS, and SFTP protocols, allowing a wide range of remote servers to be accessed.
 
-Authentication can be performed using a username and password, which is commonly used for FTP/FTPS servers. For SFTP servers, a client certificate can be used for a more secure authentication method.
+Authentication can be performed using ausername and password, which is commonly used for FTP/FTPS servers. For SFTP servers, a client certificate can be used for a more secure authentication method.
 
 In addition, the function includes features to adjust the behavior of the request. For instance, the `-activeMode` switch allows FTP connections to use active mode instead of the default passive mode.
 
@@ -194,6 +194,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -207,3 +208,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
+

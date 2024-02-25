@@ -626,7 +626,7 @@ function Update-Markdown {
 
     Write-Host "Project-Folder: $projectFolder"
 
-    Import-Module -Name platyps
+    Import-Module -Name platyps -force
     Remove-Module -Name EulandaConnect -force -ErrorAction SilentlyContinue
     # UNINSTALL-MODULE is neccessary, because Update-MarkdownHelp takes after removing module tone of the installed versions
     # The Problem occurs with Install-SignTool where the new parameter URL was not detected.
@@ -636,6 +636,33 @@ function Update-Markdown {
     New-MarkdownHelp -Module EulandaConnect -OutputFolder "$projectFolder\docs\functions" -erroraction silentlycontinue
 
     # Update-ReadmeTableOfContents # we don't need it any more (06/2023)
+
+
+    # Patch for PlatyPS due to the introduction of the -ProgressAction parameter in PowerShell 7.4
+    $path = "$projectFolder\docs\functions"
+
+    # Patch for PlatyPS due to the introduction of the -ProgressAction parameter in PowerShell 7.4
+    $path = "$projectFolder\docs\functions"
+
+    Get-ChildItem -Path $path -Filter *.md | ForEach-Object {
+        $content = Get-Content $_.FullName -Raw
+
+        $startPos = $content.IndexOf("### -ProgressAction")
+
+        if ($startPos -ne -1) {
+            $endPos = $content.IndexOf("### CommonParameters", $startPos)
+
+            if ($endPos -ne -1) {
+                # Correctly calculate the start of the content to be retained after "### CommonParameters"
+                # and ensure we are adding a newline before it to maintain formatting.
+                $newContent = $content.Substring(0, $startPos) + "`n" + $content.Substring($endPos)
+
+                Set-Content -Path $_.FullName -Value $newContent
+            }
+        }
+}
+
+
 }
 
 
@@ -656,7 +683,7 @@ function ConvertTo-Maml {
     $manifest | Set-Content -Path "$projectFolder\EulandaConnect.psd1" -Encoding UTF8 -Force
 
     # Create a new MAML help from markdown, using this dummy module
-    Import-Module -Name platyps
+    Import-Module -Name platyps -force
     Import-Module -Name "$projectFolder\EulandaConnect.psm1"
     New-ExternalHelp $docFolder -OutputPath $projectFolder -force
 

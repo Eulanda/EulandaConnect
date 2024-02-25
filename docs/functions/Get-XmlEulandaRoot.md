@@ -13,7 +13,7 @@ Get-XmlEulandaRoot creates an XML root node for EULANDA_XML format
 ## SYNTAX
 
 ```
-Get-XmlEulandaRoot [<CommonParameters>]
+Get-XmlEulandaRoot [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -34,6 +34,7 @@ Function `Get-XmlEulandaRoot` generates an empty XML node for the EULANDA_XML fo
 
 ## PARAMETERS
 
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -47,3 +48,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
+

@@ -13,7 +13,7 @@ Tests whether the current PowerShell session is running in a console or RDP sess
 ## SYNTAX
 
 ```
-Test-Console [<CommonParameters>]
+Test-Console [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -30,6 +30,7 @@ Test whether the current PowerShell session is running in a console or RDP sessi
 
 ## PARAMETERS
 
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -43,3 +44,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
+

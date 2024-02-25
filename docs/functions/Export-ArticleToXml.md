@@ -15,7 +15,8 @@ This PowerShell function exports an XML message type for EULANDA articles, calli
 ```
 Export-ArticleToXml [[-select] <String>] [[-filter] <String[]>] [[-alias] <String>] [[-order] <String>]
  [-reorder] [-revers] [[-customerGroups] <String>] [-breadcrumbRoot <String>] [-noEmptyPropertyTree]
- [[-path] <String>] [[-conn] <Object>] [[-udl] <String>] [[-connStr] <String>] [<CommonParameters>]
+ [[-path] <String>] [[-conn] <Object>] [[-udl] <String>] [[-connStr] <String>]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -267,6 +268,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -280,3 +282,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
+

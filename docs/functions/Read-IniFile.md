@@ -13,7 +13,7 @@ Reads a classic Windows ini file
 ## SYNTAX
 
 ```
-Read-IniFile [[-path] <FileInfo>] [<CommonParameters>]
+Read-IniFile [[-path] <FileInfo>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -69,6 +69,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -86,3 +87,4 @@ PowerShell unfortunately does not have a built-in function to process classic IN
 ## RELATED LINKS
 
 [Get-IniBool](./functions/Get-IniBool.md)
+

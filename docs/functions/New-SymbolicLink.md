@@ -13,7 +13,8 @@ Creates a new symbolic link to a target directory or file.
 ## SYNTAX
 
 ```
-New-SymbolicLink [[-symbolicLink] <String>] [[-target] <String>] [[-flag] <Int32>] [<CommonParameters>]
+New-SymbolicLink [[-symbolicLink] <String>] [[-target] <String>] [[-flag] <Int32>]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -79,6 +80,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -96,3 +98,4 @@ The function requires administrative rights! If the function is run without thes
 ## RELATED LINKS
 
 [Remove-SymbolicLink](./functions/Remove-SymbolicLink.md)
+

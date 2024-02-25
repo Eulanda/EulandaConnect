@@ -13,7 +13,8 @@ Generates the SQL statement used by Get-XmlEulandaProperty
 ## SYNTAX
 
 ```
-Get-PropertySql [-breadcrumbRoot <String>] [[-tablename] <String>] [<CommonParameters>]
+Get-PropertySql [-breadcrumbRoot <String>] [[-tablename] <String>] [-ProgressAction <ActionPreference>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -115,6 +116,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -128,3 +130,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
+

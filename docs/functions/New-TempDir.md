@@ -13,7 +13,7 @@ Creates a random folder in the temporary files directory
 ## SYNTAX
 
 ```
-New-TempDir [<CommonParameters>]
+New-TempDir [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -36,6 +36,7 @@ Creates a randomly named folder in the temporary files directory and returns the
 
 ## PARAMETERS
 
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -49,3 +50,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
+

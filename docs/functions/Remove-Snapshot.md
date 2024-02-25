@@ -13,7 +13,7 @@ The `Remove-Snapshot` function deletes a snapshot that was previously created wi
 ## SYNTAX
 
 ```
-Remove-Snapshot [[-snapshot] <Object>] [<CommonParameters>]
+Remove-Snapshot [[-snapshot] <Object>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -47,6 +47,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -64,3 +65,4 @@ The function requires administrative rights! If the function is run without thes
 ## RELATED LINKS
 
 [New-Snapshot](../functions/New-Snapshot.md)
+

@@ -14,7 +14,7 @@ This PowerShell function converts a Datanorm 4.0 file into a structured PowerShe
 
 ```
 Convert-FromDatanorm [[-path] <String>] [[-vat] <Double>] [[-cuDel] <Double>] [-utf8] [-show]
- [[-decimalSeparator] <String>] [<CommonParameters>]
+ [[-decimalSeparator] <String>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -184,6 +184,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -205,3 +206,6 @@ It is important to note that due to the complexity and variety of data, there mi
 ## RELATED LINKS
 
 [Convert-FromDatanorm](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Convert-FromDatanorm.ps1)
+
+
+

@@ -11150,7 +11150,7 @@ LOG-DEF-2023-02-24--14-57-25-855.txt</dev:code>
       <command:syntaxItem>
         <maml:name>Get-LoremIpsum</maml:name>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
-          <maml:name>MinParagraphs</maml:name>
+          <maml:name>minParagraphs</maml:name>
           <maml:description>
             <maml:para>MinParagraphs (optional): Specifies the minimum number of paragraphs to generate. If not specified, the default value of 1 is used. The parameter accepts integer values.</maml:para>
           </maml:description>
@@ -11162,7 +11162,7 @@ LOG-DEF-2023-02-24--14-57-25-855.txt</dev:code>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
-          <maml:name>MaxParagraphs</maml:name>
+          <maml:name>maxParagraphs</maml:name>
           <maml:description>
             <maml:para>MaxParagraphs (optional): Specifies the maximum number of paragraphs to generate. If not specified, the default value of 5 is used. The parameter accepts integer values.</maml:para>
           </maml:description>
@@ -11177,7 +11177,7 @@ LOG-DEF-2023-02-24--14-57-25-855.txt</dev:code>
     </command:syntax>
     <command:parameters>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
-        <maml:name>MaxParagraphs</maml:name>
+        <maml:name>maxParagraphs</maml:name>
         <maml:description>
           <maml:para>MaxParagraphs (optional): Specifies the maximum number of paragraphs to generate. If not specified, the default value of 5 is used. The parameter accepts integer values.</maml:para>
         </maml:description>
@@ -11189,7 +11189,7 @@ LOG-DEF-2023-02-24--14-57-25-855.txt</dev:code>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
-        <maml:name>MinParagraphs</maml:name>
+        <maml:name>minParagraphs</maml:name>
         <maml:description>
           <maml:para>MinParagraphs (optional): Specifies the minimum number of paragraphs to generate. If not specified, the default value of 1 is used. The parameter accepts integer values.</maml:para>
         </maml:description>
@@ -12459,7 +12459,7 @@ C:\Program Files (x86)</dev:code>
     </command:details>
     <maml:description>
       <maml:para>The `Get-RemoteDir` function is a versatile tool for retrieving a list of files or directories from a remote server. This function supports the FTP, FTPS, and SFTP protocols, allowing a wide range of remote servers to be accessed.</maml:para>
-      <maml:para>Authentication can be performed using a username and password, which is commonly used for FTP/FTPS servers. For SFTP servers, a client certificate can be used for a more secure authentication method.</maml:para>
+      <maml:para>Authentication can be performed using ausername and password, which is commonly used for FTP/FTPS servers. For SFTP servers, a client certificate can be used for a more secure authentication method.</maml:para>
       <maml:para>In addition, the function includes features to adjust the behavior of the request. For instance, the `-activeMode` switch allows FTP connections to use active mode instead of the default passive mode.</maml:para>
       <maml:para>Furthermore, the `-mask` parameter allows to filter the results based on a specific file mask. This can be particularly useful when you're looking for files of a specific type or with a specific pattern in their name.</maml:para>
       <maml:para>Whether you need to list all text files in a directory, find all directories in a certain path, or simply list all files in a directory, `Get-RemoteDir` provides a simple and efficient way to do it.</maml:para>

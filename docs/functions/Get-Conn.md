@@ -13,7 +13,8 @@ This PowerShell function returns an open connection to a EULANDA database. This 
 ## SYNTAX
 
 ```
-Get-Conn [[-conn] <Object>] [[-udl] <String>] [[-connStr] <String>] [<CommonParameters>]
+Get-Conn [[-conn] <Object>] [[-udl] <String>] [[-connStr] <String>] [-ProgressAction <ActionPreference>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -75,6 +76,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -90,3 +92,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## RELATED LINKS
 
 [Get-ConnItems](./functions/Get-ConnItems.md)
+
+
+

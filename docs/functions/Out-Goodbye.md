@@ -13,7 +13,7 @@ Shows time span of the running script
 ## SYNTAX
 
 ```
-Out-Goodbye [-normally] [-abnormally] [<CommonParameters>]
+Out-Goodbye [-normally] [-abnormally] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -69,6 +69,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -84,3 +85,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## RELATED LINKS
 
 [Out-Welcome](./functions/Out-Welcome.md)
+

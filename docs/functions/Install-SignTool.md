@@ -14,7 +14,7 @@ Download the Windows SDK, unzip the SignTool and install the SignTool.
 
 ```
 Install-SignTool [[-signToolBasePath] <String>] [[-isoBasePath] <String>] [[-url] <String>] [-leaveIso]
- [-noBuild] [-noInstall] [<CommonParameters>]
+ [-noBuild] [-noInstall] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -132,6 +132,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -146,3 +147,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 [Approve-Signature](../functions/Approve-Signature.md)
 
 [Get-SignToolPath](../functions/Get-SignToolPath.md)
+
+
+

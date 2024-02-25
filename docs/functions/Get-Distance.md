@@ -14,7 +14,7 @@ Calculates the distance between two points on the Earth's surface, given their c
 
 ```
 Get-Distance [[-startLatitude] <Double>] [[-startLongitude] <Double>] [[-endLatitude] <Double>]
- [[-endLongitude] <Double>] [<CommonParameters>]
+ [[-endLongitude] <Double>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -91,6 +91,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -106,3 +107,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## RELATED LINKS
 
 [Convert-ToDecimalDegrees](../functions/Convert-ToDecimalDegrees.md)
+
+
+

@@ -16,7 +16,8 @@ This PowerShell function backs up a Microsoft SQL Server database to a file, com
 Backup-MssqlDatabase [[-server] <String>] [[-protocol] <String>] [[-port] <Int32>] [-activeMode]
  [[-resumeAge] <Int32>] [[-resumeRetries] <Int32>] [[-certificate] <String>] [[-user] <String>]
  [[-password] <Object>] [[-remoteFolder] <String>] [[-storageFolder] <String>] [-removeBak]
- [[-history] <Int32>] [[-conn] <Object>] [[-udl] <String>] [[-connStr] <String>] [<CommonParameters>]
+ [[-history] <Int32>] [[-conn] <Object>] [[-udl] <String>] [[-connStr] <String>]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -282,6 +283,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -297,3 +299,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## RELATED LINKS
 
 [Backup-MssqlDatabase.ps1 on GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Backup-MssqlDatabase.ps1)
+
+
+

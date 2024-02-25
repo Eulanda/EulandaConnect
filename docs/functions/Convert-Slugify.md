@@ -13,7 +13,8 @@ This PowerShell function converts a string so that only letters from a-z, unders
 ## SYNTAX
 
 ```
-Convert-Slugify [[-value] <String>] [[-strCase] <String>] [[-delimiter] <String>] [<CommonParameters>]
+Convert-Slugify [[-value] <String>] [[-strCase] <String>] [[-delimiter] <String>]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -86,6 +87,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -99,3 +101,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
+

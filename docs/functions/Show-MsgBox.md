@@ -14,7 +14,7 @@ Displays the Windows message box, for example the Yes/No box
 
 ```
 Show-MsgBox [[-prompt] <String>] [[-btn] <Int32>] [[-title] <String>] [[-icon] <Int32>] [[-btnDef] <Int32>]
- [<CommonParameters>]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -117,6 +117,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -135,3 +136,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## RELATED LINKS
 
 [Show-MsgBoxYes](./functions/Show-MsgBoxYes.md)
+

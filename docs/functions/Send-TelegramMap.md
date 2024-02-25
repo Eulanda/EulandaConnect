@@ -15,7 +15,7 @@ Sends a location via a Telegram message, visualized on a map based on given lati
 ```
 Send-TelegramMap [[-token] <String>] [[-encryptedToken] <String>] [[-secureToken] <SecureString>]
  [[-pathToToken] <String>] [[-chatId] <String>] [[-latitude] <Single>] [[-longitude] <Single>]
- [[-ip] <IPAddress>] [-disableNotification] [<CommonParameters>]
+ [[-ip] <IPAddress>] [-disableNotification] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -180,6 +180,7 @@ Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
+
 
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).

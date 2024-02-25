@@ -13,7 +13,8 @@ Displays an opening output with start time
 ## SYNTAX
 
 ```
-Out-Welcome [[-projectScript] <String>] [-noBanner] [-noInfo] [[-culture] <String>] [<CommonParameters>]
+Out-Welcome [[-projectScript] <String>] [-noBanner] [-noInfo] [[-culture] <String>]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -111,6 +112,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -126,3 +128,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## RELATED LINKS
 
 [Out-Goodbye](./functions/Out-Goodbye.md)
+

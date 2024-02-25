@@ -13,7 +13,8 @@ Generates an OpenVPN TLS key in a specified directory.
 ## SYNTAX
 
 ```
-New-OpenVpnTls [[-openVpnPath] <String>] [[-destination] <String>] [<CommonParameters>]
+New-OpenVpnTls [[-openVpnPath] <String>] [[-destination] <String>] [-ProgressAction <ActionPreference>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -86,6 +87,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -101,3 +103,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 Make sure that the OpenVPN installation directory and the destination directory are correctly specified. If the key already exists in the destination directory, this function will not overwrite the existing key.
 
 ## RELATED LINKS
+

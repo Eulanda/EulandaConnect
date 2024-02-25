@@ -13,7 +13,8 @@ Creates a condition for the where case of an SQL query to select a delivery note
 ## SYNTAX
 
 ```
-Get-DeliveryLink [[-deliveryId] <Int32>] [[-deliveryNo] <Int32>] [[-alias] <String>] [<CommonParameters>]
+Get-DeliveryLink [[-deliveryId] <Int32>] [[-deliveryNo] <Int32>] [[-alias] <String>]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -79,6 +80,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -91,3 +93,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
+

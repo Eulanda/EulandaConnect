@@ -13,7 +13,7 @@ This PowerShell function converts a string representation of a float number into
 ## SYNTAX
 
 ```
-ConvertTo-USFloat [[-inputString] <String>] [<CommonParameters>]
+ConvertTo-USFloat [[-inputString] <String>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -46,6 +46,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -61,3 +62,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 This function assumes that the last occurrence of dot or comma in the input string is the decimal separator. If there are non-numeric characters other than dot and comma, or if the input string is not a valid representation of a float number, the function will throw an error.
 
 ## RELATED LINKS
+

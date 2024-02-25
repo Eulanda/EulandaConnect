@@ -15,7 +15,7 @@ Sends a message via Telegram API, without requiring a locally installed Telegram
 ```
 Send-TelegramMessage [[-token] <String>] [[-encryptedToken] <String>] [[-secureToken] <SecureString>]
  [[-pathToToken] <String>] [[-chatId] <String>] [[-message] <String>] [[-parseMode] <String>]
- [-disableNotification] [<CommonParameters>]
+ [-disableNotification] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -176,6 +176,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -208,3 +209,4 @@ Important: Treat your bot token as a password and do not share it with others. T
 [Send-TelegramPhoto](./functions/Send-TelegramPhoto.md)
 
 [Send-TelegramMap](./functions/Send-TelegramMap.md)
+

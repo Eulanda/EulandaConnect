@@ -13,7 +13,7 @@ Provides the EULANDA style for HTML pages and HTML emails
 ## SYNTAX
 
 ```
-Get-HtmlStyle [<CommonParameters>]
+Get-HtmlStyle [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -58,6 +58,7 @@ The function returns the default stylesheet used by `EulandaConnect` for HTML fi
 
 ## PARAMETERS
 
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -71,3 +72,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
+

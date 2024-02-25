@@ -13,7 +13,7 @@ Hides the 'Hide extension' option in Windows File Explorer
 ## SYNTAX
 
 ```
-Hide-Extensions [<CommonParameters>]
+Hide-Extensions [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -29,6 +29,7 @@ PS C:\> Hide-Extensions
 This suppresses the display of file extensions for known files.
 
 ## PARAMETERS
+
 
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
@@ -47,3 +48,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 [Show-Extensions](./functions/Show-Extensions.md)
 
 [Update-Desktop](./functions/Update-Desktop.md)
+
+
+

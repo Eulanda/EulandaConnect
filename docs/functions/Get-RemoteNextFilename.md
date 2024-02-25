@@ -15,7 +15,7 @@ Finds the oldest file in a directory on a remote server that matches a specified
 ```
 Get-RemoteNextFilename [[-server] <String>] [[-protocol] <String>] [[-port] <Int32>] [-activeMode]
  [[-certificate] <String>] [[-user] <String>] [[-password] <Object>] [[-mask] <String>]
- [[-remoteFolder] <String>] [<CommonParameters>]
+ [[-remoteFolder] <String>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -170,6 +170,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -183,3 +184,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
+

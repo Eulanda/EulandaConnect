@@ -14,7 +14,7 @@ This PowerShell function retrieves geographic information for a specified IP add
 
 ```
 Get-IpGeoInfo [[-ip] <String>] [[-age] <Int32>] [[-apiWait] <Int32>] [[-xmlGeoPath] <String>]
- [<CommonParameters>]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -115,6 +115,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -130,3 +131,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## RELATED LINKS
 
 [Merge-IpGeoInfo](./functions/Merge-IpGeoInfo.md)
+
+
+

@@ -14,7 +14,7 @@ This function is designed to split large log files into smaller, more manageable
 
 ```
 Split-LogFile [[-inputPath] <String>] [[-outputFolder] <String>] [[-outputMask] <String>]
- [[-dateMask] <String>] [[-maxFileSize] <Int32>] [<CommonParameters>]
+ [[-dateMask] <String>] [[-maxFileSize] <Int32>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -114,6 +114,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -127,3 +128,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
+

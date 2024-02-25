@@ -14,7 +14,7 @@ This PowerShell function converts coordinates in Degrees-Minutes-Seconds (DMS) f
 
 ```
 Convert-ToDecimalDegrees [[-degrees] <Int32>] [[-minutes] <Int32>] [[-seconds] <Int32>] [[-direction] <String>]
- [<CommonParameters>]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -92,6 +92,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -107,3 +108,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## RELATED LINKS
 
 [Get-Distance](../functions/Get-Distance.md)
+
+
+

@@ -13,7 +13,8 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Merge-IpGeoInfo [-xmlFile1] <String> [-xmlFile2] <String> [-outputFile] <String> [<CommonParameters>]
+Merge-IpGeoInfo [-xmlFile1] <String> [-xmlFile2] <String> [-outputFile] <String>
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -77,6 +78,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -94,3 +96,6 @@ This function is part of a suite of tools designed to manage IP geographic infor
 ## RELATED LINKS
 
 [Get-IpGeoInfo](../functions/Get-IpGeoInfo.md)
+
+
+

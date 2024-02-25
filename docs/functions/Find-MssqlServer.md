@@ -14,7 +14,7 @@ This PowerShell function searches for all SQL-Servers in a specified IP range. S
 
 ```
 Find-MssqlServer [[-localIp] <String>] [[-remoteIp] <String>] [[-udpPort] <Int32>] [[-timeoutSeconds] <Int32>]
- [-force] [<CommonParameters>]
+ [-force] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -140,6 +140,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -153,3 +154,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
+

@@ -13,7 +13,8 @@ This PowerShell function converts special characters from other languages to the
 ## SYNTAX
 
 ```
-Convert-Accent [[-value] <String>] [[-strCase] <String>] [<CommonParameters>]
+Convert-Accent [[-value] <String>] [[-strCase] <String>] [-ProgressAction <ActionPreference>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -68,6 +69,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -83,3 +85,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## RELATED LINKS
 
 [Convert-Accent.ps1 on GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Convert-Accent.ps1)
+
+
+

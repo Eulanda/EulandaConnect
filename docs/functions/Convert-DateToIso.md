@@ -14,7 +14,7 @@ This PowerShell function converts a date to an ISO string. Source code on [GitHu
 
 ```
 Convert-DateToIso [[-value] <DateTime>] [-asUtc] [-noTime] [-noDate] [-noTimeZone] [-zeroTime] [-noonTime]
- [<CommonParameters>]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -143,6 +143,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -158,3 +159,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## RELATED LINKS
 
 [Convert-DateToIso](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Convert-DateToIso.ps1)
+
+
+

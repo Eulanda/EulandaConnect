@@ -13,7 +13,7 @@ This PowerShell function converts a Datanorm PsCustomObject into an XML string t
 ## SYNTAX
 
 ```
-Convert-DatanormToXml [[-datanorm] <Object>] [-show] [<CommonParameters>]
+Convert-DatanormToXml [[-datanorm] <Object>] [-show] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -95,6 +95,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -112,3 +113,6 @@ The EULANDA merchandise management system requires a specific XML format for dat
 ## RELATED LINKS
 
 [Convert-DatanormToXml.ps1 on GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Convert-DatanormToXml.ps1)
+
+
+

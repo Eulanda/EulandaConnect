@@ -13,7 +13,8 @@ Tests an xml schema against an xml file
 ## SYNTAX
 
 ```
-Test-XmlSchema [[-xmlFile] <String>] [[-schemaFile] <String>] [<CommonParameters>]
+Test-XmlSchema [[-xmlFile] <String>] [[-schemaFile] <String>] [-ProgressAction <ActionPreference>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -60,6 +61,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -73,3 +75,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
+

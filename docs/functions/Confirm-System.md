@@ -14,7 +14,7 @@ This PowerShell function retrieves various system information to quickly diagnos
 
 ```
 Confirm-System [-all] [-administrator] [-controlledFolderAccess] [-memory] [-drives] [-network]
- [<CommonParameters>]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -149,6 +149,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -164,3 +165,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## RELATED LINKS
 
 [Confirm-System.ps1 on GitHub](https://github.com/Eulanda/EulandaConnect/blob/master/source/public/Confirm-System.ps1)
+
+
+

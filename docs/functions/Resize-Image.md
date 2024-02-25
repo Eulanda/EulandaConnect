@@ -14,7 +14,7 @@ Changes the image size proportionally for jpg files
 
 ```
 Resize-Image [[-pathIn] <String>] [[-pathOut] <String>] [-modifier <String>] [-quality <Int32>]
- [-maxWidth <Int32>] [-maxHeight <Int32>] [-passthru] [<CommonParameters>]
+ [-maxWidth <Int32>] [-maxHeight <Int32>] [-passthru] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -144,6 +144,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -157,3 +158,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
+

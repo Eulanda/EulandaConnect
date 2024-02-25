@@ -14,7 +14,8 @@ This PowerShell function exports the stock level to an XML file. This function r
 
 ```
 Export-StockToXml [[-filter] <String[]>] [[-alias] <String>] [[-qtyStatic] <Int32>] [[-warehouse] <String>]
- [-legacy] [[-path] <String>] [[-conn] <Object>] [[-udl] <String>] [[-connStr] <String>] [<CommonParameters>]
+ [-legacy] [[-path] <String>] [[-conn] <Object>] [[-udl] <String>] [[-connStr] <String>]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -207,6 +208,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
@@ -219,3 +221,4 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
+
