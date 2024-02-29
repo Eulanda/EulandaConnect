@@ -62,7 +62,7 @@ function Get-DeliverySql {
             lf.Provinz,
             lf.SpedAuftragNr,
             lf.Strasse,
-            af.ShopLTel [Tel],
+            ISNULL(ISNULL(af.ShopLTel, adr.tel), readr.tel) [Tel],
             lf.TrackingNr,
             lf.UstId,
             lf.UserD1,
@@ -82,6 +82,7 @@ function Get-DeliverySql {
         FROM PRINT_Lieferschein [lf]
         JOIN Adresse [adr] ON adr.Id = lf.AdresseId
         JOIN Auftrag [af] ON af.Id = lf.Af_Id
+        JOIN Adresse [readr] ON readr.Id = af.AdresseId
         WHERE $(Get-DeliveryLink @paramsDelivery)
 "@
 
