@@ -17,7 +17,7 @@ Convert-ImageToBase64 [[-path] <String>] [-ProgressAction <ActionPreference>] [<
 ```
 
 ## DESCRIPTION
-The Convert-ImageToBase64 function loads an image file from the specified path and converts it to a Base64-encoded **MIME** string, using the file extension to determine the MIME type (jpeg, bmp, or png). The resulting string can be used to embed the image in HTML or other documents.
+The Convert-ImageToBase64 function loads an image file from the specified path and converts it to a Base64-encoded **MIME** string, using the file extension to determine the MIME type (jpeg, bmp, png, gif, ico or pdf). The resulting string can be used to embed the image in HTML or other documents.
 
 ## EXAMPLES
 
