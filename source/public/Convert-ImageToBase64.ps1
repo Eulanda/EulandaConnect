@@ -27,6 +27,7 @@ function Convert-ImageToBase64 {
             ".png"  { $mimeType = "image/png" }
             ".bmp"  { $mimeType = "image/bmp" }
             ".ico"  { $mimeType = "image/x-icon" }
+            ".pdf"  { $mimeType = "application/pdf" }
             default { throw "Unknown image file type: $extension" }
         }
         $result = "data:$mimeType;base64,$base64"
