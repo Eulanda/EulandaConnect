@@ -1,4 +1,4 @@
-﻿---
+---
 external help file: EulandaConnect-help.xml
 Module Name: EulandaConnect
 online version: https://github.com/Eulanda/EulandaConnect/blob/master/docs/Close-Delivery.md
