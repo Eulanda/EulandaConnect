@@ -1,3 +1,10 @@
+---
+external help file: EulandaConnect-help.xml
+Module Name: EulandaConnect
+schema: 2.0.0
+lastMod: 2025-07-26T15:34:00
+---
+
 # XML Delivery Note
 
 The delivery note is an XML document that is normally sent to a shipping company. The field descriptions are natively in German. There is an alphabetical [field description](./appendix/Fields.md) in the glossary.

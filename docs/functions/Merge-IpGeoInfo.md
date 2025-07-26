@@ -1,8 +1,9 @@
----
+﻿---
 external help file: EulandaConnect-help.xml
 Module Name: EulandaConnect
 online version: https://github.com/Eulanda/EulandaConnect/blob/master/docs/Merge-IpGeoInfo.md
 schema: 2.0.0
+lastMod: 2024-03-19T06:27:25
 ---
 
 # Merge-IpGeoInfo
@@ -96,6 +97,7 @@ This function is part of a suite of tools designed to manage IP geographic infor
 ## RELATED LINKS
 
 [Get-IpGeoInfo](../functions/Get-IpGeoInfo.md)
+
 
 
 

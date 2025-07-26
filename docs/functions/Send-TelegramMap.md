@@ -1,8 +1,9 @@
----
+﻿---
 external help file: EulandaConnect-help.xml
 Module Name: EulandaConnect
 online version: https://github.com/Eulanda/EulandaConnect/blob/master/docs/Send-TelegramMap.md
 schema: 2.0.0
+lastMod: 2024-03-19T06:27:25
 ---
 
 # Send-TelegramMap
@@ -211,5 +212,6 @@ Important: Treat your bot token as a password and do not share it with others. T
 [Send-TelegramMessage](./functions/Send-TelegramMessage.md)
 
 [Send-TelegramPhoto](./functions/Send-TelegramPhoto.md)
+
 
 

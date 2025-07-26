@@ -1,3 +1,10 @@
+---
+external help file: EulandaConnect-help.xml
+Module Name: EulandaConnect
+schema: 2.0.0
+lastMod: 2025-07-26T15:34:00
+---
+
 # Fields
 
 The field names used in the EULANDA merchandise management system have native German designations. There are efforts to provide an additional schema with English designations, but this is not even in planning yet. For this reason, there is a document here that lists and describes the names, as well as the places where they are used.

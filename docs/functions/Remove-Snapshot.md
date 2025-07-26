@@ -1,8 +1,9 @@
----
+﻿---
 external help file: EulandaConnect-help.xml
 Module Name: EulandaConnect
 online version: https://github.com/Eulanda/EulandaConnect/blob/master/docs/Remove-Snapshot.md
 schema: 2.0.0
+lastMod: 2024-03-19T06:27:25
 ---
 
 # Remove-Snapshot
@@ -65,6 +66,7 @@ The function requires administrative rights! If the function is run without thes
 ## RELATED LINKS
 
 [New-Snapshot](../functions/New-Snapshot.md)
+
 
 
 

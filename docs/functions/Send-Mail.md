@@ -1,8 +1,9 @@
----
+﻿---
 external help file: EulandaConnect-help.xml
 Module Name: EulandaConnect
 online version: https://github.com/Eulanda/EulandaConnect/blob/master/docs/Send-Mail.md
 schema: 2.0.0
+lastMod: 2024-03-19T06:27:25
 ---
 
 # Send-Mail
@@ -357,6 +358,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 [https://adamtheautomator.com/powershell-get-credential](https://adamtheautomator.com/powershell-get-credential)
 [https://stackoverflow.com/questions/53785662/why-does-send-mailmessage-fail-to-send-using-starttls-over-port-587](https://stackoverflow.com/questions/53785662/why-does-send-mailmessage-fail-to-send-using-starttls-over-port-587)
 [https://www.codyhosterman.com/2016/06/force-the-invoke-restmethod-powershell-cmdlet-to-use-tls-1-2](https://www.codyhosterman.com/2016/06/force-the-invoke-restmethod-powershell-cmdlet-to-use-tls-1-2)
+
 
 
 

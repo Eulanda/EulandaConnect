@@ -1,8 +1,9 @@
----
+﻿---
 external help file: EulandaConnect-help.xml
 Module Name: EulandaConnect
 online version: https://github.com/Eulanda/EulandaConnect/blob/master/docs/Get-AdoRs.md
 schema: 2.0.0
+lastMod: 2024-03-19T06:27:25
 ---
 
 # Get-AdoRs
@@ -61,4 +62,5 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
+
 

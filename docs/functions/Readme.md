@@ -1,5 +1,6 @@
 ---
 bookCollapseSection: true
+lastMod: 2025-07-26T15:34:00
 ---
 
 ![](/functions.png) 

@@ -1,3 +1,10 @@
+---
+external help file: EulandaConnect-help.xml
+Module Name: EulandaConnect
+schema: 2.0.0
+lastMod: 2025-07-26T15:34:00
+---
+
 # Importing Tracking Numbers with EulandaConnect
 
 Effortlessly import any number of tracking numbers to a delivery note using a simple CSV file. To get started, you'll need EULANDA ERP system version 8.5 and the PowerShell extension version 7.3.x EulandaConnect.

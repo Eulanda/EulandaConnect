@@ -1,3 +1,10 @@
+---
+external help file: EulandaConnect-help.xml
+Module Name: EulandaConnect
+schema: 2.0.0
+lastMod: 2025-07-26T15:34:00
+---
+
 # XML Stock
 
 The XML file with the stock figures can be used for inbound and outbound processing. Outbound, for example, to transfer the new stocks from the ERP system to a sales platform and inbound to transfer the stock from an external warehouse such as that of a logistics provider.

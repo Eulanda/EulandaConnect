@@ -1,8 +1,9 @@
----
+﻿---
 external help file: EulandaConnect-help.xml
 Module Name: EulandaConnect
 online version: https://github.com/Eulanda/EulandaConnect/blob/master/docs/Convert-OemToUtf8.md
 schema: 2.0.0
+lastMod: 2024-03-19T06:27:25
 ---
 
 # Convert-OemToUtf8
@@ -61,4 +62,5 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 The function was created to support legacy data formats, particularly the Datanorm standard, which still requires this type of conversion.  Datanorm is a German data format standard used in the commercial sector, especially in the building and electrical trades.  Despite its age, it is still in widespread use today.
 
 ## RELATED LINKS
+
 

@@ -1,3 +1,10 @@
+---
+external help file: EulandaConnect-help.xml
+Module Name: EulandaConnect
+schema: 2.0.0
+lastMod: 2025-07-26T15:34:00
+---
+
 # SFTP Functions
 
 `EulandaConnect` supports some basic functionalities that can be executed via SFTP. These include [Get-RemoteNextFilename.md](../functions/Get-RemoteNextFilename.md), [Remove-RemoteFile.md](../functions/Remove-RemoteFile.md), [Send-RemoteFile.md](../functions/Send-RemoteFile.md), and [Receive-RemoteFile.md](../functions/Receive-RemoteFile.md). The functions uses other libraries that are not part of the basic scope of PowerShell or Windows. Starting from version 2.6 of `EulandaConnect` uses for SFTP the POSH-SSH module, which, like `EulandaConnect`, can simply be installed via the `PSGallery` with `Install-Module -Name POSH-SSH`. You have to install it yourself. If you call a SFTP function and do not have installed POSH-SSH then you will get an exception.

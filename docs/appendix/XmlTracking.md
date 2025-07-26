@@ -1,3 +1,10 @@
+---
+external help file: EulandaConnect-help.xml
+Module Name: EulandaConnect
+schema: 2.0.0
+lastMod: 2025-07-26T15:34:00
+---
+
 # XML Tracking
 
 The tracking numbers for a delivery can be used inbound and outbound. Inbound if, for example, a logistics company has dispatched goods and this information is to be transferred back to merchandise management, or outbound if a delivery is transmitted to sales platforms.

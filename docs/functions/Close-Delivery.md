@@ -1,8 +1,9 @@
----
+﻿---
 external help file: EulandaConnect-help.xml
 Module Name: EulandaConnect
 online version: https://github.com/Eulanda/EulandaConnect/blob/master/docs/Close-Delivery.md
 schema: 2.0.0
+lastMod: 2024-03-19T06:27:25
 ---
 
 # Close-Delivery
@@ -123,6 +124,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## RELATED LINKS
 
 [Open-Delivery](./functions/Open-Delivery.md)
+
 
 
 

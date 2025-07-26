@@ -1,8 +1,9 @@
----
+﻿---
 external help file: EulandaConnect-help.xml
 Module Name: EulandaConnect
 online version: https://github.com/Eulanda/EulandaConnect/blob/master/docs/Read-IniFile.md
 schema: 2.0.0
+lastMod: 2024-03-19T06:27:25
 ---
 
 # Read-IniFile
@@ -87,6 +88,7 @@ PowerShell unfortunately does not have a built-in function to process classic IN
 ## RELATED LINKS
 
 [Get-IniBool](./functions/Get-IniBool.md)
+
 
 
 

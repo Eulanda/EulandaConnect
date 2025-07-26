@@ -1,8 +1,9 @@
----
+﻿---
 external help file: EulandaConnect-help.xml
 Module Name: EulandaConnect
 online version: https://github.com/Eulanda/EulandaConnect/blob/master/docs/Get-NewNumberFromSeries.md
 schema: 2.0.0
+lastMod: 2024-03-19T06:27:25
 ---
 
 # Get-NewNumberFromSeries
@@ -124,4 +125,5 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 Please ensure that the necessary resources such as the "cn_NumGetNext" stored procedure and ADODB connection are available and configured correctly.
 
 ## RELATED LINKS
+
 

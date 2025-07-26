@@ -1,5 +1,6 @@
----
+﻿---
 weight: 30
+lastMod: 2024-02-25T18:08:38
 ---
 
 # Changelog
@@ -82,4 +83,5 @@ The most important changes to EulandaConnect can be found listed chronologically
 | 2.1.18  | 02/25/2023  | `Enhanced`: All help files, including MAML, are now complete |
 | 2.1.12  | 02/24/2023  | `Enhanced`: The EulandaConnect module is now EV signed.      |
 | 2.1.11  | 02/20/2023  | `Bugfix`: have been made to 'adoConstants'                   |
+
 

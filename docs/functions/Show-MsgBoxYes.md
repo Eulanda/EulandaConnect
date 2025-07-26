@@ -1,8 +1,9 @@
----
+﻿---
 external help file: EulandaConnect-help.xml
 Module Name: EulandaConnect
 online version: https://github.com/Eulanda/EulandaConnect/blob/master/docs/Show-MsgBoxYes.md
 schema: 2.0.0
+lastMod: 2024-03-19T06:27:25
 ---
 
 # Show-MsgBoxYes
@@ -64,6 +65,7 @@ The display of the `Show-MsgBox` dialog is not suitable for unattended use, beca
 ## RELATED LINKS
 
 [Show-MsgBox](./functions/Show-MsgBox.md)
+
 
 
 

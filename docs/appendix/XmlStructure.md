@@ -1,3 +1,10 @@
+---
+external help file: EulandaConnect-help.xml
+Module Name: EulandaConnect
+schema: 2.0.0
+lastMod: 2025-07-26T15:34:00
+---
+
 # XML-Structure
 
 The following structure is used for transmitting item master data, address master data, order entries, price lists, and stock numbers. Certain branches are included depending on the task at hand. The file names are product-(uid).xml, stock-(uid).xml, prices-(uid).xml, address-(uid).xml, and order-(uid).xml. The (uid) stands for a placeholder of a 32-bit uid such as product-9155C2C8-DD27-4EED-B96E-70DDD222EB91.xml.

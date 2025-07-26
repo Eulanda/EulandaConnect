@@ -1,5 +1,6 @@
----
+﻿---
 weight: 10
+lastMod: 2023-06-29T10:46:27
 ---
 
 # Requirements
@@ -139,4 +140,5 @@ By appending the "-full" parameter to the help line, the descriptions of the par
 - On GitHub there is a typical Markdown documentation at:
    https://github.com/Eulanda/EulandaConnect/tree/master/docs
 - Upcoming things can be found at: [Roadmap](../general/Roadmap.md)
+
 

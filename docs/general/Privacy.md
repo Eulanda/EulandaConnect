@@ -1,5 +1,6 @@
----
+﻿---
 weight: 110
+lastMod: 2023-06-03T11:49:56
 ---
 
 # Datenschutz Deutsch
@@ -70,3 +71,4 @@ demand the restriction of the processing of your personal data in accordance wit
 ### Current validity and changes to this privacy policy
 
 This privacy policy is currently valid and has the status of May 2023. The further development of our website and offers or due to changed legal or official requirements may require changes to this privacy policy.
+

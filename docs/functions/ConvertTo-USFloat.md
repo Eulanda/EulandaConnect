@@ -1,8 +1,9 @@
----
+﻿---
 external help file: EulandaConnect-help.xml
 Module Name: EulandaConnect
 online version: https://github.com/Eulanda/EulandaConnect/blob/master/docs/ConvertTo-USFloat.md
 schema: 2.0.0
+lastMod: 2024-03-19T06:27:25
 ---
 
 # ConvertTo-USFloat
@@ -62,4 +63,5 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 This function assumes that the last occurrence of dot or comma in the input string is the decimal separator. If there are non-numeric characters other than dot and comma, or if the input string is not a valid representation of a float number, the function will throw an error.
 
 ## RELATED LINKS
+
 

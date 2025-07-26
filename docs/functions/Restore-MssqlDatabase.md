@@ -1,8 +1,9 @@
----
+﻿---
 external help file: EulandaConnect-help.xml
 Module Name: EulandaConnect
 online version: https://github.com/Eulanda/EulandaConnect/blob/master/docs/Restore-MssqlDatabase.md
 schema: 2.0.0
+lastMod: 2024-03-19T06:27:25
 ---
 
 # Restore-MssqlDatabase
@@ -94,6 +95,7 @@ This function requires the SQL Server module and relies on the `Get-Conn` functi
 ## RELATED LINKS
 
 [Backup-MssqlDatabase](./functions/Backup-MssqlDatabase.md)
+
 
 
 
