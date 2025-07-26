@@ -30,9 +30,6 @@ Steuernummer: 04023285185 Finanzamt Wiesbaden
 
 Produkte werden **nicht** an Privatpersonen vertrieben.
 
-Die Europäische Kommission stellt eine Plattform zur außergerichtlichen Online-Streitbeilegung (OS) bereit:
-http://ec.europa.eu/consumers/odr Unsere E-Mail Adresse finden Sie oben im Impressum. Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.
-
 ## Weiteres
 
 GLN/ILN: 4014751000000<br />D-U-N-S: 32-952-9911<br />Eingetragene Warenzeichen: EULANDA®
@@ -70,9 +67,6 @@ Tax number: 04023285185 Tax office Wiesbaden
 ## Sales 
 
 Products are **not** sold to private individuals.
-
-For settling consumer disputes out-of-court, the European Union offers a platform for online dispute resolution ("ODR platform") 
-at: http://ec.europa.eu/consumers/odr You will find our e-mail address in the imprint above. We are not prepared or obliged to participate in dispute settlement proceedings before a consumer conciliation body.
 
 ## Further information
 
