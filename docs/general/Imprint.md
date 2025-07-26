@@ -4,7 +4,7 @@ weight: 100
 
 # Impressum Deutsch
 
-EULANDA Software GmbH<br />Beuerbacher Weg 20<br />65510 Hünstetten - GERMANY
+EULANDA Software GmbH<br />Reichenberger Str. 21<br />65510 Idstein - GERMANY
 
 Tel: +49 (0) 6126-9373-0<br />Mail: info@eulanda.de<br />Homepage: www.eulanda.eu
 
@@ -42,7 +42,7 @@ https://www.haendlerbund.de/de/haendlerbund/interessenvertretung/faircommerce
 
 # Imprint English
 
-EULANDA Software GmbH<br />Beuerbacher Weg 20<br />65510 Hünstetten
+EULANDA Software GmbH<br />Reichenberger Str. 21<br />65510 Idstein
 
 Phone: +49 6126 9373-0<br />Mail: info@eulanda.de<br />Homepage: www.eulanda.eu
 
