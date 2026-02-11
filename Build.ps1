@@ -973,7 +973,7 @@ function Update-OnlineDocs {
     Write-Verbose -Message ('Starting: {0}' -f $myInvocation.Mycommand)
 
     $sourceBase = "$PSScriptRoot\docs"
-    $targetBase = "C:\Git\Hugo\EulandaConnect"
+    $targetBase = "C:\Git\Products\EulandaConnect-Hugo"
 
     if (Test-path "$targetBase\content\docs") {
         Remove-Item -Path "$targetBase\content\docs" -Recurse -Force

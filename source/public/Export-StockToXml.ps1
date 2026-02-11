@@ -70,5 +70,5 @@ Function Export-StockToXml {
         Get-CurrentVariables -InitialVariables $initialVariables -Debug:$DebugPreference
         Return $result
     }
-    # Test:  Export-StocktoXml -path "C:\Temp\Stock.xml" -udl "C:\Git\Powershell\ProcosSystem\EULANDA_1 ProcosUSA.udl"
+    # Test:  Export-StocktoXml -path "C:\Temp\Stock.xml" -udl "C:\Git\Customers\ProcosSystem\EULANDA_1 ProcosUSA.udl"
  }
