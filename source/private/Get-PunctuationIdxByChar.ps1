@@ -30,6 +30,11 @@ function Get-PunctuationIdxByChar {
     } else {
         if ($match -eq ' ') {
             return $idx
-        } else { return $idx+1 }
+        } else {
+            # A sentence punctuation as the very last character is no usable
+            # break point and would overflow Substring($idx+1) in the caller.
+            if ($idx -ge $text.Length-1) { return -1 }
+            return $idx+1
+        }
     }
 }
